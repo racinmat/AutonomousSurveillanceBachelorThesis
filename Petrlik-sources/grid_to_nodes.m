@@ -8,8 +8,8 @@ x_count = size(grid, 2);
 node = struct('id', NaN, 'x', NaN, 'y', NaN, 'neighbors', NaN(1,8), 'cost', 1);
 nodes = repmat(node, 1, y_count*x_count);
 id = 0;
-cost_neighbor = 10;
-cost_diagonal = 5;
+cost_neighbor = 10; % cena node, pokud je nìkde vedle ní pøekážka
+cost_diagonal = 5; % cena node, pokud je diagonálnì k ní pøekážka
 
 for k=1:y_count
     for m=1:x_count
@@ -18,6 +18,8 @@ for k=1:y_count
             nodes(id).id = id;
             nodes(id).x = (m-1)*params.cell_size+params.cell_size/2;
             nodes(id).y = (k-1)*params.cell_size+params.cell_size/2;
+            
+            % spoèítání id sousedù
             n_index = 0;
             for p = -1:1
                 for q = -1:1
@@ -30,6 +32,7 @@ for k=1:y_count
                 end
             end
                         
+            
             try
             if grid(k+1,m)==1
                 nodes(id).cost=nodes(id).cost+cost_neighbor;

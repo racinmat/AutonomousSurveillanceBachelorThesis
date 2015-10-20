@@ -15,7 +15,7 @@ if length(goals)>1
     params.swarm_splitting = true;
 end
 guiding_paths = get_guiding_path();
-get_goal_distances(guiding_paths);
+get_goal_distances(guiding_paths); % naplní nìjaké promìnné v output struktuøe délkami jednotlivých vedoucích cest (jedna cesta pro každou AoI)
 
 switch params.algorithm;
     
