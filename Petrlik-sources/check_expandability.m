@@ -14,7 +14,7 @@ function [ unexpandable_count ] = check_expandability( )
     end
     
     if unexpandable_count>0
-        fprintf('Not expandable nodes: %d/%d\n', unexpandable_count, length(all_nodes));
+      %  fprintf('Not expandable nodes: %d/%d\n', unexpandable_count, length(all_nodes));
     end
     
 end

@@ -17,6 +17,7 @@ for n = 1:number_of_uavs
         [s_best(2,n)-params.camera.y/2, s_best(2,n)-params.camera.y/2, s_best(2,n)+params.camera.y/2, s_best(2,n)+params.camera.y/2],colors(n,:));
     set(p(1,n), 'edgecolor', colors(n,:), 'LineWidth', 1, 'FaceColor', colors(n,:), 'FaceAlpha', 0.4);
 end
+save_video_frame();
 hold off
 end
 

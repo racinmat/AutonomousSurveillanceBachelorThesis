@@ -26,4 +26,5 @@ for m = 1:length(trajectory)
         set(edges(1,n), 'Color', colors(n,:));
     end
 end
+save_video_frame();
 

@@ -1,10 +1,10 @@
 function [ closedset ] = distance_transform( start, nodes )
 %A_STAR Summary of this function goes here
 %   Detailed explanation goes here
-disp('A* guiding path planning starting...');
+disp('Distance transform starting...');
 tic
 empty_node = struct('id', NaN, 'x', NaN, 'y', NaN, 'neighbors', NaN(1,8), ...
-    'g_score', Inf, 'f_score', Inf, 'came_from', NaN);
+    'cost', 1, 'g_score', Inf, 'f_score', Inf, 'came_from', NaN);
 closedset = empty_node;
 openset(1) = nodes(start);
 

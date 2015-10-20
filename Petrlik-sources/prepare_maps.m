@@ -6,7 +6,7 @@ global number_of_uavs maps
 
 %Maze
 for m = 1:number_of_uavs
-    maps(1,1).init_node.loc(1:3,m) = [51+m*30;51+m*10*0;0];
+    maps(1,1).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
     maps(1,1).init_node.rot(1:3,m) = [0;0;pi/2];
 end
 
@@ -40,7 +40,7 @@ maps(1,2).obstacles = ...
 
 %Company campus
 for m = 1:number_of_uavs
-    maps(1,3).init_node.loc(1:3,m) = [51+m*30;51+m*10*0;0];
+    maps(1,3).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
     maps(1,3).init_node.rot(1:3,m) = [0;0;pi/2];
 end
 
@@ -63,7 +63,7 @@ maps(1,3).obstacles = ...
 
 %Simple map
 for m = 1:number_of_uavs
-    maps(1,4).init_node.loc(1:3,m) = [51+m*30;51+m*10*0;0];
+    maps(1,4).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
     maps(1,4).init_node.rot(1:3,m) = [0;0;pi/2];
 end
 
@@ -76,7 +76,7 @@ maps(1,4).obstacles = ...
 
 %Large AoI
 for m = 1:number_of_uavs
-    maps(1,5).init_node.loc(1:3,m) = [381+m*30;51+m*10*0;0];
+    maps(1,5).init_node.loc(1:3,m) = [380+m*30;50+m*10*0;0];
     maps(1,5).init_node.rot(1:3,m) = [0;0;pi/2];
 end
 
@@ -89,7 +89,7 @@ maps(1,5).obstacles = ...
 
 %3 goals 2 obstacles
 for m = 1:number_of_uavs
-    maps(1,6).init_node.loc(1:3,m) = [401+m*30;51+m*10*0;0];
+    maps(1,6).init_node.loc(1:3,m) = [400+m*30;50+m*10*0;0];
     maps(1,6).init_node.rot(1:3,m) = [0;0;pi/2];
 end
 
@@ -104,4 +104,194 @@ maps(1,6).obstacles = ...
     Obstacle(199,519,101,201) ...
     Obstacle(699,519,101,201) ...
     Obstacle(199,199,601,101)};
+
+%Narrow Passage
+for m = 1:number_of_uavs
+    maps(1,7).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,7).init_node.rot(1:3,m) = [0;0;pi/2];
 end
+
+maps(1,7).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,7).obstacles = ...
+    {Obstacle(400,0,200,470) ...
+    Obstacle(400,480,200,520)};
+
+
+
+for m = 1:number_of_uavs
+    maps(1,71).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,71).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,71).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,71).obstacles = ...
+    {Obstacle(400,0,200,470) ...
+    Obstacle(400,480,200,520)};
+
+for m = 1:number_of_uavs
+    maps(1,72).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,72).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,72).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,72).obstacles = ...
+    {Obstacle(400,0,200,465) ...
+    Obstacle(400,485,200,515)};
+
+for m = 1:number_of_uavs
+    maps(1,73).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,73).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,73).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,73).obstacles = ...
+    {Obstacle(400,0,200,460) ...
+    Obstacle(400,490,200,510)};
+
+for m = 1:number_of_uavs
+    maps(1,74).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,74).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,74).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,74).obstacles = ...
+    {Obstacle(400,0,200,455) ...
+    Obstacle(400,495,200,505)};
+
+
+for m = 1:number_of_uavs
+    maps(1,75).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,75).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,75).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,75).obstacles = ...
+    {Obstacle(400,0,200,450) ...
+    Obstacle(400,500,200,500)};
+
+
+for m = 1:number_of_uavs
+    maps(1,76).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,76).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,76).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,76).obstacles = ...
+    {Obstacle(400,0,200,425) ...
+    Obstacle(400,525,200,475)};
+
+for m = 1:number_of_uavs
+    maps(1,76).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,76).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,76).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,76).obstacles = ...
+    {Obstacle(400,0,200,425) ...
+    Obstacle(400,525,200,475)};
+
+for m = 1:number_of_uavs
+    maps(1,77).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,77).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,77).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,77).obstacles = ...
+    {Obstacle(400,0,200,400) ...
+    Obstacle(400,550,200,450)};
+
+for m = 1:number_of_uavs
+    maps(1,78).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,78).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,78).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,78).obstacles = ...
+    {Obstacle(400,0,200,375) ...
+    Obstacle(400,575,200,425)};
+
+
+for m = 1:number_of_uavs
+    maps(1,81).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,81).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,81).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,81).obstacles = ...
+    {Obstacle(475,0,50,465) ...
+    Obstacle(475,485,50,515)};
+
+for m = 1:number_of_uavs
+    maps(1,82).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,82).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,82).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,82).obstacles = ...
+    {Obstacle(450,0,100,465) ...
+    Obstacle(450,485,100,515)};
+
+for m = 1:number_of_uavs
+    maps(1,83).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,83).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,83).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,83).obstacles = ...
+    {Obstacle(450,0,150,465) ...
+    Obstacle(450,485,150,515)};
+
+for m = 1:number_of_uavs
+    maps(1,84).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,84).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,84).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,84).obstacles = ...
+    {Obstacle(425,0,200,465) ...
+    Obstacle(425,485,200,515)};
+
+for m = 1:number_of_uavs
+    maps(1,85).init_node.loc(1:3,m) = [50+m*30;50+m*10*0;0];
+    maps(1,85).init_node.rot(1:3,m) = [0;0;pi/2];
+end
+
+maps(1,85).goals = ...
+    {Goal('rectangle',701,701,150,150)};
+
+maps(1,85).obstacles = ...
+    {Obstacle(400,0,250,465) ...
+    Obstacle(400,485,250,515)};
+
+
+end
+
+

@@ -23,6 +23,7 @@ for m = 1:number_of_uavs
 end
 
 drawnow;
+save_video_frame();
 if params.wait_for_keypress
     waitforbuttonpress;
 end

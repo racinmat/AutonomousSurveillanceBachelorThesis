@@ -55,23 +55,46 @@ for m=2:params.pso_iter
             particles(m,k).loc(1,n) = particles(m-1,k).loc(1,n) + particles(m,k).v(1,n);
             particles(m,k).loc(2,n) = particles(m-1,k).loc(2,n) + particles(m,k).v(2,n);
             particles(m,k).loc(3,n) = 0;
+            
+            particles(m,k).rot(3,n) = particles(m-1,k).rot(3,n) ...
+                + atan2(particles(m,k).v(2,n), particles(m,k).v(1,n));
         end
         
-        [~,~,uavs_colliding]=check_obstacle_vcollide(particles(m,k),zeros(3,number_of_uavs));
-        for n=1:number_of_uavs
-            if any(uavs_colliding(1,n))
-                particles(m,k).loc = particles(m-1,k).loc;
-            end
-        end
+        
+ %       [~,~,uavs_colliding]=check_obstacle_vcollide(particles(m,k),zeros(3,number_of_uavs));
+        
+%         if any(uavs_colliding)
+%             particles(m,k) = particles(m-1,k);
+%             particles_stuck = particles_stuck + 1;
+%             fprintf('Particle %d stuck in %d iteration of PSO. (obstacle collision)\n',k,m);
+%             for n=1:number_of_uavs
+%                 for l=1:2
+%                     maxv = params.pso_vmax*(pso_bounds(l,2)-pso_bounds(l,1));
+%                     particles(m,k).v(l,n) = -maxv + rand()*maxv*2 ...
+%                         + params.pso_phi_p*rand()*(best_particles(1,k).loc(1,n)-particles(m-1,k).loc(1,n)) ...
+%                         + params.pso_phi_g*rand()*(best_particle.loc(1,n)-particles(m-1,k).loc(1,n));
+%                 end
+%             end
+%             
+%         end
         
         %PSO state space bounds check
         if any(particles(m,k).loc(1,:)>pso_bounds(1,2)) || ...
                 any(particles(m,k).loc(1,:)<pso_bounds(1,1)) || ...
                 any(particles(m,k).loc(2,:)>pso_bounds(2,2)) || ...
                 any(particles(m,k).loc(2,:)<pso_bounds(2,1))
-            particles(m,k) = particles(m-1,k);
+            particles(m,k) = particles(m-2,k);
             particles_stuck = particles_stuck + 1;
-            fprintf('Particle %d stuck in %d iteration of PSO.\n',k,m);
+            fprintf('Particle %d stuck in %d iteration of PSO. (space bounds collision)\n',k,m);
+%             for n=1:number_of_uavs
+%                 for l=1:2
+%                     maxv = params.pso_vmax*(pso_bounds(l,2)-pso_bounds(l,1));
+%                     particles(m,k).v(l,n) = -maxv + rand()*maxv*2 ...
+%                         + params.pso_phi_p*rand()*(best_particles(1,k).loc(1,n)-particles(m-1,k).loc(1,n)) ...
+%                         + params.pso_phi_g*rand()*(best_particle.loc(1,n)-particles(m-1,k).loc(1,n));
+%                 end
+%             end
+            continue
         end
         
         %Motion model
@@ -79,10 +102,36 @@ for m=2:params.pso_iter
             select_input(particles(m,k).loc, particles(m-1,k));
         tmp_particle.v = particles(m,k).v;
         particles(m,k) = tmp_particle;
+        if any(isnan(particles(m,k).loc(1,:)))
+            particles_stuck = particles_stuck + 1;
+            if particles_stuck>=params.pso_particles
+                disp('All particles stuck.');
+            end
+            particles(m,k) = particles(m-2,k);
+            
+            fprintf('Particle %d stuck in %d iteration of PSO. (no valid input)\n',k,m);
+%             for n=1:number_of_uavs
+%                 for l=1:2
+%                     maxv = params.pso_vmax*(pso_bounds(l,2)-pso_bounds(l,1));
+%                     particles(m,k).v(l,n) = -maxv + rand()*maxv*2;
+                     particle(m,k).used_inputs(:) = false;
+%                     particles(m,k).rot(3,n) = particles(m-1,k).rot(3,n) ...
+%                 + atan2(particles(m,k).v(2,n), particles(m,k).v(1,n));
+%                 end
+%             end
+%              particles(m,k) = check_velocity_bounds(particles(m,k), particles(m-1,k), pso_bounds);
+        end
         
         %Current PSO node indexing
-        particles(m,k).prev = particles(m-1,k).index;
+%         particles(m,k).prev = particles(m-1,k).index;
         particles(m,k).index = particles(m,k).prev + 1;
+%         particles(m,k).index = m;
+         particles(m,k).prev = particles(m,k).index - 1;
+        %Visualization of every particle
+        if params.visualize && params.pso_visualize_all
+            visualize_growth(particles(m-1,k).loc(1:2,:), ...
+                particles(m,k).loc(1:2,:),particles(m,k).loc(1:2,:));
+        end
         
         %Evaluate PSO Cost Functions values
         cf = fitness_function(particles(m,k).loc);
@@ -102,7 +151,7 @@ for m=2:params.pso_iter
                 final_node_index = [m k];
                 
                 %Visualization
-                if params.visualize
+                if params.visualize && ~params.pso_visualize_all
                     visualize_growth(particles(m-1,k).loc(1:2,:), ...
                         particles(m,k).loc(1:2,:),particles(m,k).loc(1:2,:));
                 end
@@ -135,10 +184,10 @@ for m=2:params.pso_iter
     
     %End if all particles stuck
     if particles_stuck == params.pso_particles
-        break
+        %      break
     end
     
-    goal_reached = check_near_goal(best_particle.loc, goal_reached);
+    goal_reached = check_near_goal(best_particle.loc);
     output.goal_reached = goal_reached;
 end
 fprintf('PSO took %f seconds.\n', toc);
@@ -248,6 +297,7 @@ for n=1:number_of_uavs
             particle.v(m,n) = particle.v(m,n).*0.75;
             stuck_count = stuck_count +1;
             if stuck_count > 50
+                disp('Out of bounds');
                 break
             end
         end
@@ -268,7 +318,7 @@ for n=1:number_of_uavs
             break
         end
         for o=1:5
-            particle.v(dim,n) = particle.v(dim,n).*0.5;
+            particle.v(dim,n) = particle.v(dim,n)*0.5;
             [ ~, ~, uavs_colliding ] = check_obstacle_vcollide( prev_particle, ...
                 particle.v);
             if ~uavs_colliding(1,n)

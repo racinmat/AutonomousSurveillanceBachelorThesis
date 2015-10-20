@@ -34,9 +34,9 @@ if params.rrt_path_sampling_case == 1
                     else
                         while true
                             s_rand(:,n) = random_state_polar(center, 0, params.sampling_radius);
-                            if ~check_inside_obstacle(s_rand(:,n))
+%                            if ~check_inside_obstacle(s_rand(:,n))
                                 break
-                            end
+%                            end
                         end
                         break
                     end
@@ -108,12 +108,12 @@ elseif params.rrt_path_sampling_case == 3
                     s_rand(:,(m-1)*ratio+n) = random_state_goal(goal_reached(1,(m-1)*ratio+n));
                 else
                     while true
-                        s_rand(:,n) = random_state_polar(center, 0, params.sampling_radius);
-                        if ~check_inside_obstacle(s_rand(:,n))
+                        s_rand(:,(m-1)*ratio+n) = random_state_polar(center, 0, params.sampling_radius);
+   %                     if ~check_inside_obstacle(s_rand(:,(m-1)*ratio+n))
                             break
-                        end
+    %s                    end
                     end
-                    break
+   %                 break
                 end
             end
         end

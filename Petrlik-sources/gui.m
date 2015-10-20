@@ -1,6 +1,9 @@
 function gui
 
-global figures colors params obstacles goals stop maps output number_of_uavs
+global figures colors params obstacles goals stop maps output ...
+    number_of_uavs finished
+
+finished = false;
 prepare_parameters();
 prepare_maps();
 
@@ -24,8 +27,8 @@ ui.popup_algorithm = uicontrol('Style','popupmenu',...
 ui.text_numberofuavs = uicontrol('Style','text','String','Number of UAVs',...
     'Units','normalized','Position',[0.15 0.95 0.15 0.02]);
 ui.popup_numberofuavs = uicontrol('Style','popupmenu',...
-    'String',{'2','4','6','8','10'},...
-    'Value',params.number_of_uavs/2,...
+    'String',{'1','2','3','4','5','6','7','8','9','10'},...
+    'Value',params.number_of_uavs,...
     'Units','normalized',...
     'Position',[0.2 0.92 0.06 0.02],...
     'Callback',@popup_numberofuavs_Callback);
@@ -33,7 +36,7 @@ ui.popup_numberofuavs = uicontrol('Style','popupmenu',...
 ui.text_select_map = uicontrol('Style','text','String','Select map',...
     'Units','normalized','Position',[0.34 0.95 0.05 0.02]);
 ui.popup_map = uicontrol('Style','popupmenu',...
-    'String',{'Map 1','Map 2','Map 3','Map 4','Map 5','Map 6'},...
+    'String',{'Map 1','Map 2','Map 3','Map 4','Map 5','Map 6','Map 7'},...
     'Units','normalized',...
     'Position',[0.35 0.92 0.05 0.02],...
     'Callback',@popup_map_Callback);
@@ -45,10 +48,14 @@ ui.button_stop = uicontrol('Style','pushbutton','String','Stop',...
     'Enable', 'off', 'Callback',@button_stop_Callback);
 
 ui.axes = axes('Units','normalized','Position',[0.45 0.05 0.5 0.9]);
-set(gca,'xtick',[],'ytick',[])
+%set(gca,'xtick',[],'ytick',[])
 box on;
 
-params.initial_node = maps(1,params.map).init_node;
+if params.random_init
+    random_init_state();
+else
+    params.initial_node = maps(1,params.map).init_node;
+end
 obstacles = maps(1,params.map).obstacles;
 goals = maps(1,params.map).goals;
 init_goals();
@@ -64,8 +71,8 @@ figures.fig1.Visible = 'on';
 
     function popup_numberofuavs_Callback(source,~)
         val = source.Value;
-        params.number_of_uavs = val*2;
-        number_of_uavs = val*2;
+        params.number_of_uavs = val;
+        number_of_uavs = val;
         maps = [];
         prepare_maps();
         params.initial_node = maps(params.map).init_node;
@@ -118,7 +125,7 @@ figures.fig1.Visible = 'on';
         end
         
         init_goals();
-        scene_init();
+   %     scene_init();
     end
 
     function button_start_Callback(~,~)
@@ -142,15 +149,9 @@ figures.fig1.Visible = 'on';
         ui.popup_map.Enable = 'on';
         ui.popup_algorithm.Enable = 'on';
         ui.popup_numberofuavs.Enable = 'on';
-        stop = true;        
+        drawnow
+        stop = true;
+        pause(5);
         save_output();
-    end
-
-    function save_output()
-        dir_path = strcat('output/',date);
-        mkdir(dir_path)
-        matfile = fullfile(dir_path, datestr(clock,30));
-        data = struct('params', params, 'output', output); %#ok
-        save(matfile, 'data');
     end
 end

@@ -2,32 +2,42 @@ function [  ] = start_from_gui(  )
 
 global params goals nodes output
 
+if params.random_init
+    random_init_state();
+end
 tree_init();
+if params.visualize || params.final_path
+scene_init();
+end
+
+if length(goals)>1
+    disp('More goals -> swarm splitting enabled automatically');
+    params.swarm_splitting = true;
+end
+guiding_paths = get_guiding_path();
+get_goal_distances(guiding_paths);
 
 switch params.algorithm;
     
     %RRT
     case 1
-        final_nodes = generate_rrt_fast();
-        [last_node, ~] = get_best_fitness(final_nodes);
+        final_nodes = rrt();
+        [output.closest_node, output.distance_to_goal] = get_closest_node_to_goal();
+        if ~any(output.goal_reached)
+            last_node = output.closest_node;          
+        else
+            [last_node, ~] = get_best_fitness(final_nodes);
+        end
         
         %RRT-Path
     case 2
-        for m=1:length(goals)
-            map_grid = get_map_grid(m);
-            grid_nodes = grid_to_nodes( map_grid );           
-            [i, j] =  find(map_grid == 2, 1);
-            p1 = i*size(map_grid,2)+j;
-            [i, j] =  find(map_grid == 3, 1);
-            p2 = i*size(map_grid,2)+j;
-            guiding_path = a_star(p1, p2, grid_nodes);
-            guiding_paths{m} = guiding_path; %#ok
-            plot([guiding_path.x], [guiding_path.y], 'color', [170 222 135]./255, 'linewidth', 2)
-            hold on
-            drawnow
-        end
         final_nodes = rrt_path(guiding_paths);
-        [last_node, ~] = get_best_fitness(final_nodes);
+        [output.closest_node, output.distance_to_goal] = get_closest_node_to_goal();
+        if ~any(output.goal_reached)
+            last_node = output.closest_node;          
+        else
+            [last_node, ~] = get_best_fitness(final_nodes);
+        end
         
         %PSO
     case 3
@@ -38,12 +48,15 @@ switch params.algorithm;
 end
 
 %Path visualization
-path = get_path(nodes, last_node);
-output.path = path;
-visualize_path(path);
+path = get_path(last_node);
 
-visualize_best_config(last_node.loc);
-waitforbuttonpress;
-visualize_steps(path);
+save_output();
+if params.final_path
+    visualize_path(path);
+    
+    visualize_best_config(last_node.loc);
+    %waitforbuttonpress;
+    visualize_steps(path);
+end
 end
 

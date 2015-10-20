@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Debug/AutonomousSurveillanceBachelorThesis.vcxprojResolveAssemblyReference.cache
+/AutonomousSurveillanceBachelorThesis.vcxproj.user
+/AutonomousSurveillanceBachelorThesis.sln
+/AutonomousSurveillanceBachelorThesis.sdf
+/AutonomousSurveillanceBachelorThesis.opensdf
+/.vs/AutonomousSurveillanceBachelorThesis/v14/.suo

@@ -3,7 +3,7 @@ function [ path ] = a_star( start, goal, nodes )
 disp('A* guiding path planning starting...');
 tic
 empty_node = struct('id', NaN, 'x', NaN, 'y', NaN, 'neighbors', NaN(1,8), ...
-    'g_score', Inf, 'f_score', Inf, 'came_from', NaN);
+    'cost', 0, 'g_score', Inf, 'f_score', Inf, 'came_from', NaN);
 closedset = empty_node;
 openset(1) = nodes(start);
 
@@ -39,7 +39,7 @@ while ~is_empty(openset)
             continue
         end
         
-        tentative_g_score = current.g_score ...
+        tentative_g_score = current.g_score*current.cost ...
             + dist_between(current, neighbor);
         if ~contains(openset, neighbor)
             neighbor.g_score = tentative_g_score;
@@ -101,6 +101,7 @@ end
 %Returns distance of two nodes
 function dist = dist_between(node1, node2)
 dist = sqrt((node1.x-node2.x)^2+(node1.y-node2.y)^2);
+%dist = node2.cost;
 end
 
 %Returns heuristic cost estimate of neighbor node and goal
