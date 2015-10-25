@@ -112,7 +112,7 @@ params.cell_fill = params.cell_area/2 + 1;
 params.inflate_obstacles = 0;
 %Sampling method for swarm splitting when multiple AoIs are present
 %Details in BP, Default 1
-params.rrt_path_sampling_case = 1;
+params.rrt_path_sampling_case = 3; % zmìnil jsem na 3
 %Radius around the center of the guiding path cell to draw samples from
 params.sampling_radius = 60;
 %Probabilty to sample around guiding path
