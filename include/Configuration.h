@@ -1,8 +1,14 @@
 ﻿#pragma once
 
-class Configuration
+namespace App
 {
-public:
-	int cell_size = 50; // cell size for discretization of map for A*
 
-};
+	class Configuration
+	{
+	public:
+		int aStarCellSize = 50; // cell size for discretization of map for A*
+		int mapNumber = 1;
+		int uavCount = 3;
+	};
+
+}

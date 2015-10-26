@@ -1,50 +1,54 @@
 ﻿#include "../include/Rectangle.h"
 
-
-Rectangle::Rectangle(int x, int y, int height, int width)
+namespace App
 {
-	m_x = x;
-	m_y = y;
-	m_height = height;
-	m_width = width;
-}
 
-void Rectangle::setX(int x)
-{
-	m_x = x;
-}
+	Rectangle::Rectangle(int x, int y, int height, int width)
+	{
+		m_x = x;
+		m_y = y;
+		m_height = height;
+		m_width = width;
+	}
 
-void Rectangle::setY(int y)
-{
-	m_y = y;
-}
+	void Rectangle::setX(int x)
+	{
+		m_x = x;
+	}
 
-void Rectangle::setHeight(int height)
-{
-	m_height = height;
-}
+	void Rectangle::setY(int y)
+	{
+		m_y = y;
+	}
 
-void Rectangle::setWidth(int width)
-{
-	m_width = width;
-}
+	void Rectangle::setHeight(int height)
+	{
+		m_height = height;
+	}
 
-int Rectangle::getX() const
-{
-	return m_x;
-}
+	void Rectangle::setWidth(int width)
+	{
+		m_width = width;
+	}
 
-int Rectangle::getY() const
-{
-	return m_y;
-}
+	int Rectangle::getX() const
+	{
+		return m_x;
+	}
 
-int Rectangle::getHeight() const
-{
-	return m_height;
-}
+	int Rectangle::getY() const
+	{
+		return m_y;
+	}
 
-int Rectangle::getWidth() const
-{
-	return m_width;
+	int Rectangle::getHeight() const
+	{
+		return m_height;
+	}
+
+	int Rectangle::getWidth() const
+	{
+		return m_width;
+	}
+
 }

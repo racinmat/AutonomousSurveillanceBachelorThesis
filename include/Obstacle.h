@@ -1,10 +1,15 @@
 ﻿#pragma once
 #include "Rectangle.h"
 
-class Obstacle
+namespace App
 {
 
-public:
-	Obstacle(int x, int y, int height, int width);
-	Rectangle *rectangle;
-};
+	class Obstacle
+	{
+
+	public:
+		Obstacle(int x, int y, int height, int width);
+		App::Rectangle *rectangle;
+	};
+
+}

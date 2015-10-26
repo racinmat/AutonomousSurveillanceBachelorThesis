@@ -2,9 +2,14 @@
 #include <vector>
 #include "Map.h"
 
-class MapFactory
+namespace App
 {
-public:
-	std::vector<Map*> createMaps();
-	
-};
+
+	class MapFactory
+	{
+	public:
+		std::vector<App::Map*> createMaps();
+
+	};
+
+}
