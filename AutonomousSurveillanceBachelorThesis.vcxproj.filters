@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="Petrlik-sources\a_star.m" />
+    <None Include="Petrlik-sources\circle.m" />
+    <None Include="Petrlik-sources\coldetect.m" />
+    <None Include="Petrlik-sources\coldetect.mexw32" />
+    <None Include="Petrlik-sources\contains_obj.m" />
+    <None Include="Petrlik-sources\contains_obstacle.m" />
+    <None Include="Petrlik-sources\distance_transform.m" />
+    <None Include="Petrlik-sources\draw_map.m" />
+    <None Include="Petrlik-sources\draw_run.m" />
+    <None Include="Petrlik-sources\fitness_function.m" />
+    <None Include="Petrlik-sources\generate_rrt_fast.m" />
+    <None Include="Petrlik-sources\get_best_fitness.m" />
+    <None Include="Petrlik-sources\get_map_grid.m" />
+    <None Include="Petrlik-sources\get_new_node.m" />
+    <None Include="Petrlik-sources\get_path.m" />
+    <None Include="Petrlik-sources\Goal.m" />
+    <None Include="Petrlik-sources\Goal_map.m" />
+    <None Include="Petrlik-sources\grid_to_nodes.m" />
+    <None Include="Petrlik-sources\gui.m" />
+    <None Include="Petrlik-sources\gui_start.m" />
+    <None Include="Petrlik-sources\guiding_point_reached.m" />
+    <None Include="Petrlik-sources\check_expandability.m" />
+    <None Include="Petrlik-sources\check_inside_obstacle.m" />
+    <None Include="Petrlik-sources\check_localization_sep.m" />
+    <None Include="Petrlik-sources\check_near_goal.m" />
+    <None Include="Petrlik-sources\check_obstacle_vcollide.m" />
+    <None Include="Petrlik-sources\check_rdistance.m" />
+    <None Include="Petrlik-sources\check_world_bounds.m" />
+    <None Include="Petrlik-sources\init_goals.m" />
+    <None Include="Petrlik-sources\nearest_neighbor.m" />
+    <None Include="Petrlik-sources\Obstacle.m" />
+    <None Include="Petrlik-sources\prepare_maps.m" />
+    <None Include="Petrlik-sources\prepare_parameters.m" />
+    <None Include="Petrlik-sources\pso.m" />
+    <None Include="Petrlik-sources\random_guiding_path.m" />
+    <None Include="Petrlik-sources\random_state.m" />
+    <None Include="Petrlik-sources\random_state_biased.m" />
+    <None Include="Petrlik-sources\random_state_constraints.m" />
+    <None Include="Petrlik-sources\random_state_goal.m" />
+    <None Include="Petrlik-sources\random_state_guided.m" />
+    <None Include="Petrlik-sources\random_state_polar.m" />
+    <None Include="Petrlik-sources\rrt_path.m" />
+    <None Include="Petrlik-sources\scene_init.m" />
+    <None Include="Petrlik-sources\select_input.m" />
+    <None Include="Petrlik-sources\start_from_gui.m" />
+    <None Include="Petrlik-sources\tree_init.m" />
+    <None Include="Petrlik-sources\visualize_best_config.m" />
+    <None Include="Petrlik-sources\visualize_growth.m" />
+    <None Include="Petrlik-sources\visualize_path.m" />
+    <None Include="Petrlik-sources\visualize_steps.m" />
+    <None Include="Petrlik-sources\car_like_motion_model.m" />
+    <None Include="Petrlik-sources\detect_narrow_passage.m" />
+    <None Include="Petrlik-sources\experiment_gp.m" />
+    <None Include="Petrlik-sources\experiment_np_div.m" />
+    <None Include="Petrlik-sources\experiment_np_l.m" />
+    <None Include="Petrlik-sources\experiment_np_nn.m" />
+    <None Include="Petrlik-sources\experiment_np_w.m" />
+    <None Include="Petrlik-sources\experiment_random_init.m" />
+    <None Include="Petrlik-sources\get_closest_node_to_goal.m" />
+    <None Include="Petrlik-sources\get_curvature.m" />
+    <None Include="Petrlik-sources\get_goal_distances.m" />
+    <None Include="Petrlik-sources\get_guiding_path.m" />
+    <None Include="Petrlik-sources\grid_to_nodes_old.m" />
+    <None Include="Petrlik-sources\get_map_grid_old.m" />
+    <None Include="Petrlik-sources\check_obstacle_vcollide_single.m" />
+    <None Include="Petrlik-sources\line_line_intersection.m" />
+    <None Include="Petrlik-sources\line_point_intersection.m" />
+    <None Include="Petrlik-sources\line_segments_intersection.m" />
+    <None Include="Petrlik-sources\plot_distance_transform.m" />
+    <None Include="Petrlik-sources\random_init_state.m" />
+    <None Include="Petrlik-sources\results_experiment_gp.m" />
+    <None Include="Petrlik-sources\results_experiment_np.m" />
+    <None Include="Petrlik-sources\results_experiment_np_div.m" />
+    <None Include="Petrlik-sources\results_experiment_np_l.m" />
+    <None Include="Petrlik-sources\results_experiment_np_nn.m" />
+    <None Include="Petrlik-sources\results_experiment_np_w.m" />
+    <None Include="Petrlik-sources\results_experiment_random_init.m" />
+    <None Include="Petrlik-sources\rrt.m" />
+    <None Include="Petrlik-sources\run_experiments.m" />
+    <None Include="Petrlik-sources\save_output.m" />
+    <None Include="Petrlik-sources\save_video_frame.m" />
+    <None Include="Petrlik-sources\start_no_gui.m" />
+    <None Include="Petrlik-sources\trajectory_intersection.m" />
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Petrlik-sources\coldetect.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\MapFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Obstacle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Goal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Configuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Petrlik-sources\README.txt" />
+    <Text Include="Petrlik-sources\poznamky_ke_zdrojakum.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\MapFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Obstacle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Goal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
