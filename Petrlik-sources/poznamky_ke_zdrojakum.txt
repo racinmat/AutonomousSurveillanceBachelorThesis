@@ -1,0 +1,9 @@
+poznámky k Petrlíkovým zdrojákùm:
+soubor coldetect.mexw32 je binárnka pouze pro 32bitové windows.
+zde jsou k ní zdrojáky https://github.com/sauravag/FIRM-MATLAB/tree/master/ExternalToolboxes/coldetect
+zdrojáky používají hlavièkový soubor mex.h, který je v Matlabu C:\Program Files\MATLAB\R2014b\extern\include
+a v knihovnì stažitelné zde http://gamma.cs.unc.edu/V-COLLIDE/ (odkaz je v readme na odkazu na github)
+v readme u stažených zdrojákù se popisuje kompilace.
+K té je zapotøebí staèení glut souborù, jak se radí zde http://stackoverflow.com/questions/10467473/how-to-fix-this-error-include-gl-glut-h-cannot-open-source-file-gl-glut-h
+
+pro zkompilování

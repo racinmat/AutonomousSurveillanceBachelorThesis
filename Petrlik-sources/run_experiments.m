@@ -1,0 +1,7 @@
+clear all
+close all
+%experiment_gp
+%experiment_np_div
+experiment_np_nn
+experiment_np_w
+experiment_np_l

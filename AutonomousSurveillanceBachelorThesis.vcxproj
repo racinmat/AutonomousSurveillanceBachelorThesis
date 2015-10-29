@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CF1CB33E-0984-43AE-9777-FC8363A2D29D}</ProjectGuid>
+    <Keyword>ManagedCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\Configuration.cpp" />
+    <ClCompile Include="sources\Goal.cpp" />
+    <ClCompile Include="Petrlik-sources\coldetect.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sources\main.cpp" />
+    <ClCompile Include="sources\Map.cpp" />
+    <ClCompile Include="sources\MapFactory.cpp" />
+    <ClCompile Include="sources\Obstacle.cpp" />
+    <ClCompile Include="sources\Rectangle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="Petrlik-sources\a_star.m" />
+    <None Include="Petrlik-sources\car_like_motion_model.m" />
+    <None Include="Petrlik-sources\check_expandability.m" />
+    <None Include="Petrlik-sources\check_inside_obstacle.m" />
+    <None Include="Petrlik-sources\check_localization_sep.m" />
+    <None Include="Petrlik-sources\check_near_goal.m" />
+    <None Include="Petrlik-sources\check_obstacle_vcollide.m" />
+    <None Include="Petrlik-sources\check_obstacle_vcollide_single.m" />
+    <None Include="Petrlik-sources\check_rdistance.m" />
+    <None Include="Petrlik-sources\check_world_bounds.m" />
+    <None Include="Petrlik-sources\circle.m" />
+    <None Include="Petrlik-sources\coldetect.m" />
+    <None Include="Petrlik-sources\coldetect.mexw32" />
+    <None Include="Petrlik-sources\contains_obj.m" />
+    <None Include="Petrlik-sources\contains_obstacle.m" />
+    <None Include="Petrlik-sources\detect_narrow_passage.m" />
+    <None Include="Petrlik-sources\distance_transform.m" />
+    <None Include="Petrlik-sources\draw_map.m" />
+    <None Include="Petrlik-sources\draw_run.m" />
+    <None Include="Petrlik-sources\experiment_gp.m" />
+    <None Include="Petrlik-sources\experiment_np_div.m" />
+    <None Include="Petrlik-sources\experiment_np_l.m" />
+    <None Include="Petrlik-sources\experiment_np_nn.m" />
+    <None Include="Petrlik-sources\experiment_np_w.m" />
+    <None Include="Petrlik-sources\experiment_random_init.m" />
+    <None Include="Petrlik-sources\fitness_function.m" />
+    <None Include="Petrlik-sources\generate_rrt_fast.m" />
+    <None Include="Petrlik-sources\get_best_fitness.m" />
+    <None Include="Petrlik-sources\get_closest_node_to_goal.m" />
+    <None Include="Petrlik-sources\get_curvature.m" />
+    <None Include="Petrlik-sources\get_goal_distances.m" />
+    <None Include="Petrlik-sources\get_guiding_path.m" />
+    <None Include="Petrlik-sources\get_map_grid.m" />
+    <None Include="Petrlik-sources\get_map_grid_old.m" />
+    <None Include="Petrlik-sources\get_new_node.m" />
+    <None Include="Petrlik-sources\get_path.m" />
+    <None Include="Petrlik-sources\Goal.m" />
+    <None Include="Petrlik-sources\Goal_map.m" />
+    <None Include="Petrlik-sources\grid_to_nodes.m" />
+    <None Include="Petrlik-sources\grid_to_nodes_old.m" />
+    <None Include="Petrlik-sources\gui.m" />
+    <None Include="Petrlik-sources\guiding_point_reached.m" />
+    <None Include="Petrlik-sources\gui_start.m" />
+    <None Include="Petrlik-sources\init_goals.m" />
+    <None Include="Petrlik-sources\line_line_intersection.m" />
+    <None Include="Petrlik-sources\line_point_intersection.m" />
+    <None Include="Petrlik-sources\line_segments_intersection.m" />
+    <None Include="Petrlik-sources\nearest_neighbor.m" />
+    <None Include="Petrlik-sources\Obstacle.m" />
+    <None Include="Petrlik-sources\plot_distance_transform.m" />
+    <None Include="Petrlik-sources\prepare_maps.m" />
+    <None Include="Petrlik-sources\prepare_parameters.m" />
+    <None Include="Petrlik-sources\pso.m" />
+    <None Include="Petrlik-sources\random_guiding_path.m" />
+    <None Include="Petrlik-sources\random_init_state.m" />
+    <None Include="Petrlik-sources\random_state.m" />
+    <None Include="Petrlik-sources\random_state_biased.m" />
+    <None Include="Petrlik-sources\random_state_constraints.m" />
+    <None Include="Petrlik-sources\random_state_goal.m" />
+    <None Include="Petrlik-sources\random_state_guided.m" />
+    <None Include="Petrlik-sources\random_state_polar.m" />
+    <None Include="Petrlik-sources\results_experiment_gp.m" />
+    <None Include="Petrlik-sources\results_experiment_np.m" />
+    <None Include="Petrlik-sources\results_experiment_np_div.m" />
+    <None Include="Petrlik-sources\results_experiment_np_l.m" />
+    <None Include="Petrlik-sources\results_experiment_np_nn.m" />
+    <None Include="Petrlik-sources\results_experiment_np_w.m" />
+    <None Include="Petrlik-sources\results_experiment_random_init.m" />
+    <None Include="Petrlik-sources\rrt.m" />
+    <None Include="Petrlik-sources\rrt_path.m" />
+    <None Include="Petrlik-sources\run_experiments.m" />
+    <None Include="Petrlik-sources\save_output.m" />
+    <None Include="Petrlik-sources\save_video_frame.m" />
+    <None Include="Petrlik-sources\scene_init.m" />
+    <None Include="Petrlik-sources\select_input.m" />
+    <None Include="Petrlik-sources\start_from_gui.m" />
+    <None Include="Petrlik-sources\start_no_gui.m" />
+    <None Include="Petrlik-sources\trajectory_intersection.m" />
+    <None Include="Petrlik-sources\tree_init.m" />
+    <None Include="Petrlik-sources\visualize_best_config.m" />
+    <None Include="Petrlik-sources\visualize_growth.m" />
+    <None Include="Petrlik-sources\visualize_path.m" />
+    <None Include="Petrlik-sources\visualize_steps.m" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Petrlik-sources\poznamky_ke_zdrojakum.txt" />
+    <Text Include="Petrlik-sources\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Goal.h" />
+    <ClInclude Include="include\MapFactory.h" />
+    <ClInclude Include="include\Map.h" />
+    <ClInclude Include="include\Obstacle.h" />
+    <ClInclude Include="include\Configuration.h" />
+    <ClInclude Include="include\Rectangle.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
