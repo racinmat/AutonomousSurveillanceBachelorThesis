@@ -8,7 +8,7 @@ namespace App
 	class MapFactory
 	{
 	public:
-		std::vector<App::Map*> createMaps();
+		std::vector<App::Map*> createMaps(int uavCount);
 
 	};
 

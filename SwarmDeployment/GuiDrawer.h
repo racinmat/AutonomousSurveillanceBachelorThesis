@@ -8,11 +8,12 @@ namespace Ui
 	class GuiDrawer : public App::LoggerInterface
 	{
 	public:
-		GuiDrawer(QGraphicsScene* scene);
+		GuiDrawer(QGraphicsView* view);
 		~GuiDrawer();
-		virtual void logSelectedMap(App::Map* map) override;
+		virtual void logSelectedMap(App::Map* map, int worldWidth, int worldHeight) override;
 
 	protected:
+		QGraphicsView* view;
 		QGraphicsScene* scene;
 		void clear();
 		void drawGrid();

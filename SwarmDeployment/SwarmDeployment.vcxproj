@@ -103,6 +103,8 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="PointParticle.cpp" />
     <ClCompile Include="Rectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +146,8 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="PointParticle.h" />
     <ClInclude Include="Rectangle.h" />
   </ItemGroup>
   <ItemGroup>

@@ -46,4 +46,24 @@ namespace App
 		this->core = core;
 	}
 
+	int Configuration::getWorldHeight() const
+	{
+		return worldHeight;
+	}
+
+	void Configuration::setWorldHeight(int worldHeight)
+	{
+		this->worldHeight = worldHeight;
+	}
+
+	int Configuration::getWorldWidth() const
+	{
+		return worldWidth;
+	}
+
+	void Configuration::setWorldWidth(int worldWidth)
+	{
+		this->worldWidth = worldWidth;
+	}
+
 }

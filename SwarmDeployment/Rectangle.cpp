@@ -3,22 +3,21 @@
 namespace App
 {
 
-	Rectangle::Rectangle(int x, int y, int height, int width)
+	Rectangle::Rectangle(int x, int y, int width, int height)
 	{
-		m_x = x;
-		m_y = y;
+		location = new Point(x, y);
 		m_height = height;
 		m_width = width;
 	}
 
 	void Rectangle::setX(int x)
 	{
-		m_x = x;
+		location->setX(x);
 	}
 
 	void Rectangle::setY(int y)
 	{
-		m_y = y;
+		location->setY(y);
 	}
 
 	void Rectangle::setHeight(int height)
@@ -33,12 +32,12 @@ namespace App
 
 	int Rectangle::getX() const
 	{
-		return m_x;
+		return location->getX();
 	}
 
 	int Rectangle::getY() const
 	{
-		return m_y;
+		return location->getY();
 	}
 
 	int Rectangle::getHeight() const

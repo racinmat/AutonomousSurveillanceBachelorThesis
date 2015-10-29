@@ -3,9 +3,9 @@
 namespace App
 {
 
-	Obstacle::Obstacle(int x, int y, int height, int width)
+	Obstacle::Obstacle(int x, int y, int width, int height)
 	{
-		rectangle = new Rectangle(x, y, height, width);
+		rectangle = new Rectangle(x, y, width, height);
 	}
 
 }

@@ -1,11 +1,13 @@
 #include "GuiDrawer.h"
 #include <QGraphicsLineItem>
+#include <QGraphicsWidget>
 
 namespace Ui
 {
 
-	GuiDrawer::GuiDrawer(QGraphicsScene* scene) :
-		scene(scene)
+	GuiDrawer::GuiDrawer(QGraphicsView* view) :
+		view(view), 
+		scene(view->scene())
 	{
 		LoggerInterface();
 	}
@@ -15,8 +17,10 @@ namespace Ui
 	{
 	}
 
-	void GuiDrawer::logSelectedMap(App::Map* map)
+	void GuiDrawer::logSelectedMap(App::Map* map, int worldWidth, int worldHeight)
 	{
+		view->resize(worldWidth, worldHeight);
+
 		clear();
 		drawGrid();
 
@@ -36,23 +40,26 @@ namespace Ui
 
 	void GuiDrawer::clear()
 	{
-		scene->addRect(0, 0, 1000, 1000, QPen(Qt::white), QBrush(Qt::white));
+		double height = view->height();
+		double width = view->width();
+
+		scene->addRect(0, 0, width, height, QPen(Qt::white), QBrush(Qt::white));
 	}
 
 	void GuiDrawer::drawGrid()
 	{
-		for (int i = 0; i <= 1000; i+= 50)
+		double height = view->height();
+		double width = view->width();
+
+		for (int i = 0; i <= height; i+= 50)
 		{
-			scene->addLine(i, 0, i, 1000, QPen(Qt::gray));
+			scene->addLine(i, 0, i, height, QPen(Qt::gray));
 			scene->addText(QString("%1").arg(i), QFont())->moveBy(i, 0);
 		}
 
-	//	scene->addText("test");
-	//	scene->add
-
-		for (int i = 0; i <= 1000; i += 50)
+		for (int i = 0; i <= width; i += 50)
 		{
-			scene->addLine(0, i, 1000, i, QPen(Qt::gray));
+			scene->addLine(0, i, width, i, QPen(Qt::gray));
 			scene->addText(QString("%1").arg(i), QFont())->moveBy(0, i);
 		}
 

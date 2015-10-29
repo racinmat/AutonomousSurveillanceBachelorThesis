@@ -12,7 +12,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logSelectedMap(Map* map)
+	void LoggerInterface::logSelectedMap(Map* map, int worldWidth, int worldHeight)
 	{
 	}
 }

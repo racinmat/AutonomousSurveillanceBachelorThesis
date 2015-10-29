@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mockmodel.h"
 #include "qdebug.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -11,7 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->countUav->setRange(1, 10);
 	ui->graphicsView->setScene(new QGraphicsScene());
-	drawer = new Ui::GuiDrawer(ui->graphicsView->scene());
+	drawer = new Ui::GuiDrawer(ui->graphicsView);
+	ui->graphicsView->scale(0.9, -0.9);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
+	//Negative number in scale is switching direction of axis.
+	//Fuck, it also reverses texts.
 }
 
 MainWindow::~MainWindow()

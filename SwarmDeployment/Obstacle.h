@@ -8,7 +8,7 @@ namespace App
 	{
 
 	public:
-		Obstacle(int x, int y, int height, int width);
+		Obstacle(int x, int y, int width, int heigth);
 		App::Rectangle *rectangle;
 	};
 

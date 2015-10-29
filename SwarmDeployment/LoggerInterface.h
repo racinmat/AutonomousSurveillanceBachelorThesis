@@ -9,7 +9,7 @@ namespace App
 	public:
 		LoggerInterface();
 		~LoggerInterface();
-		virtual void logSelectedMap(Map* map);
+		virtual void logSelectedMap(Map* map, int worldWidth, int worldHeight);
 	};
 
 }

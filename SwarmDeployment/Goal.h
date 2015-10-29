@@ -8,7 +8,7 @@ namespace App
 	{
 
 	public:
-		Goal(int x, int y, int height, int width);
+		Goal(int x, int y, int width, int height);
 		~Goal();
 		Rectangle *rectangle;
 

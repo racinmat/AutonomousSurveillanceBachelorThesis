@@ -7,6 +7,7 @@ namespace App
 	{
 		obstacles = std::vector<Obstacle*>();
 		goals = std::vector<Goal*>();
+		uavsStart = std::vector<PointParticle*>();
 	}
 
 	void Map::addGoal(Goal *goal)
@@ -27,6 +28,16 @@ namespace App
 	std::vector<Obstacle*> Map::getObstacles()
 	{
 		return obstacles;
+	}
+
+	void Map::addUavStart(PointParticle* start)
+	{
+		uavsStart.push_back(start);
+	}
+
+	std::vector<PointParticle*> Map::getUavsStart()
+	{
+		return uavsStart;
 	}
 
 	void Map::addObstacle(Obstacle *obstacle)

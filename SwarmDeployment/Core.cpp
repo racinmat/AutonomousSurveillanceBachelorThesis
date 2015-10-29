@@ -2,6 +2,8 @@
 #include "Map.h"
 #include "Configuration.h"
 #include "MapFactory.h"
+#include "Path.h"
+#include "GuidingPathFactory.h"
 
 namespace App
 {
@@ -13,7 +15,7 @@ namespace App
 		configuration->setCore(this);
 
 		App::MapFactory* mapFactory = new App::MapFactory();
-		maps = mapFactory->createMaps();
+		maps = mapFactory->createMaps(configuration->getUavCount());
 		delete mapFactory;
 	}
 
@@ -25,8 +27,10 @@ namespace App
 	void Core::run()
 	{
 		App::Map* map = maps.at(configuration->getMapNumber());
+		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
-		logger->logSelectedMap(map);
+		GuidingPathFactory* pathFactory = new GuidingPathFactory();
+		std::vector<Path*> paths = pathFactory->createGuidingPaths(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
 
 	}
 
@@ -38,7 +42,7 @@ namespace App
 	void Core::logConfigurationChange()
 	{
 		App::Map* map = maps.at(configuration->getMapNumber());
-		logger->logSelectedMap(map);
+		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 	}
 
 }

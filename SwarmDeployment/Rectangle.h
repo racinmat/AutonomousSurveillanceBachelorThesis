@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Point.h"
 
 namespace App
 {
@@ -6,7 +7,7 @@ namespace App
 	class Rectangle
 	{
 	public:
-		Rectangle(int x, int y, int height, int width);
+		Rectangle(int x, int y, int width, int height);
 
 		int getX() const;
 		int getY() const;
@@ -19,8 +20,7 @@ namespace App
 		void setWidth(int width);
 
 	protected:
-		int m_x;
-		int m_y;
+		Point* location;
 		int m_height;
 		int m_width;
 
