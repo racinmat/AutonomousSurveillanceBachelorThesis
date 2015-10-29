@@ -17,14 +17,20 @@ namespace App
 
 	Grid** GuidingPathFactory::getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh)
 	{
-		Grid** grid = new Grid*[];
+		int gridRow = 0;
+		int rows = worldWidth / cellSize;	//todo: zkontrolovat, zda nemusím přičíst 1, podle zaokrouhlování
+		int columns = worldHeigh / cellSize;	//todo: zkontrolovat, zda nemusím přičíst 1, podle zaokrouhlování
+		Grid** grid = new Grid*[rows];
 		for (int i = 0; i < worldWidth; i+= cellSize)
 		{
-			grid[i] = new Grid[];
+			grid[gridRow] = new Grid[columns];
+			int gridColumn = 0;
 			for (int j = 0; j < worldHeigh; j+= cellSize)
 			{
-				grid[i][j] = analyzeCell(map, new Point(i > 0 ? i - cellSize : i, j > 0 ? j - cellSize : j), new Point(i, j));	//ternary operator checking borders of map
+				grid[gridRow][gridColumn] = analyzeCell(map, new Point(i > 0 ? i - cellSize : i, j > 0 ? j - cellSize : j), new Point(i, j));	//ternary operator checking borders of map
+				gridColumn++;
 			}
+			gridRow++;
 		}
 		return grid;
 	}

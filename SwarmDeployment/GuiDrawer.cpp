@@ -54,13 +54,13 @@ namespace Ui
 		for (int i = 0; i <= height; i+= 50)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
-			scene->addText(QString("%1").arg(i), QFont())->moveBy(i, 0);
+			scene->addText(QString("%1").arg(i))->moveBy(i, 0);
 		}
 
 		for (int i = 0; i <= width; i += 50)
 		{
 			scene->addLine(0, i, width, i, QPen(Qt::gray));
-			scene->addText(QString("%1").arg(i), QFont())->moveBy(0, i);
+			scene->addText(QString("%1").arg(i))->moveBy(0, i);
 		}
 
 	}
