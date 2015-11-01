@@ -8,22 +8,22 @@ namespace App
 
 	std::vector<App::Path*> GuidingPathFactory::createGuidingPaths(App::Map* map, int cellSize, int worldWidth, int worldHeigh)
 	{
-		Grid** mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh);	//map object and parameters to 2D matrix of enums (grid)
+		std::vector<std::vector<Grid>> mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh);	//map object and parameters to 2D matrix of enums (grid)
 		std::vector<Node*> nodes = gridToNodes(mapGrid);
 		//here comes A* algorithm
 		std::vector<App::Path*> paths = std::vector<App::Path*>(map->countGoals());
 		return paths;
 	}
 
-	Grid** GuidingPathFactory::getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh)
+	std::vector<std::vector<Grid>> GuidingPathFactory::getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh)
 	{
 		int gridRow = 0;
 		int rows = worldWidth / cellSize;	//todo: zkontrolovat, zda nemusím přičíst 1, podle zaokrouhlování
 		int columns = worldHeigh / cellSize;	//todo: zkontrolovat, zda nemusím přičíst 1, podle zaokrouhlování
-		Grid** grid = new Grid*[rows];
+		std::vector<std::vector<Grid>> grid = std::vector<std::vector<Grid>>(rows);
 		for (int i = 0; i < worldWidth; i+= cellSize)
 		{
-			grid[gridRow] = new Grid[columns];
+			grid[gridRow] = std::vector<Grid>(columns);
 			int gridColumn = 0;
 			for (int j = 0; j < worldHeigh; j+= cellSize)
 			{
@@ -41,7 +41,7 @@ namespace App
 		return Grid::Free;
 	}
 
-	std::vector<Node*> GuidingPathFactory::gridToNodes(Grid** mapGrid)
+	std::vector<Node*> GuidingPathFactory::gridToNodes(std::vector<std::vector<Grid>> mapGrid)
 	{
 		std::vector<Node*> nodes = std::vector<Node*>();
 		//here comes transfer from 2D matrix to array of nodes.
