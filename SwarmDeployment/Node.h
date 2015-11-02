@@ -15,6 +15,7 @@ namespace App
 		double getCost() const;
 		std::array<Node*, 8> getNeighbors() const;
 		void addNeighbor(Node* node, int position);
+		void increaseCost(double increase);
 
 	protected:
 		Point* point;

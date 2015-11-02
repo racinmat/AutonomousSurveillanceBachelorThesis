@@ -95,6 +95,10 @@ namespace App
 			}
 		}
 
+		double cost_neighbor = 10; // cena node, pokud je nìkde vedle ní pøekážka
+		double cost_diagonal = 5; // cena node, pokud je diagonálnì k ní pøekážka
+
+
 		//adding of neighbors, when all nodes are added
 		for (size_t i = 0; i < mapGrid.size(); i++)
 		{
@@ -111,10 +115,22 @@ namespace App
 							(p != 0 || q != 0)
 							&& i > 0 && j > 0 //kontrola 1. øádku a 1. sloupce
 							&& i < mapGrid.size() - 1 && j < row.size() - 1 //kontrola posledního øádku a posledního sloupce
-							&& gridType != Grid::Obstacle
-							) {
-							nodes[i]->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
-							n_index++;
+						) {
+							if (gridType == Grid::Obstacle)	//zvýšení ceny, pokud je soused pøekážka
+							{
+								if (p == 0 || q == 0)	//pøímý soused
+								{
+									nodes[i]->increaseCost(cost_neighbor);
+								} else	//soused na diagonále
+								{
+									nodes[i]->increaseCost(cost_diagonal);
+								}
+							} else // nechci mezi sousedy pøekážky
+							{
+								nodes[i]->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
+								n_index++;
+
+							}
 						}
 					}
 				}

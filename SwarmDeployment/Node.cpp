@@ -9,7 +9,7 @@ namespace App
 	}
 
 	Node::Node(Point* point) : 
-		point(point), cost(0)
+		point(point), cost(1)
 	{
 	}
 
@@ -39,5 +39,10 @@ namespace App
 			throw "Invalid position. Maximal position is " + (neighbors.size() - 1);
 		}
 		neighbors[position] = node;
+	}
+
+	void Node::increaseCost(double increase)
+	{
+		cost += increase;
 	}
 }
