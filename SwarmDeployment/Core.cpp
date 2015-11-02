@@ -4,6 +4,7 @@
 #include "MapFactory.h"
 #include "Path.h"
 #include "GuidingPathFactory.h"
+#include "MapProcessor.h"
 
 namespace App
 {
@@ -29,8 +30,10 @@ namespace App
 		App::Map* map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
+		MapProcessor* mapProcessor = new MapProcessor(logger);
+		auto nodes = mapProcessor->mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory* pathFactory = new GuidingPathFactory(logger);
-		std::vector<Path*> paths = pathFactory->createGuidingPaths(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
+//		std::vector<Path*> paths = pathFactory->createGuidingPaths(nodes, start, end);
 
 	}
 

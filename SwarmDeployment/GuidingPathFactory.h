@@ -10,12 +10,10 @@ namespace App
 	{
 	public:
 		GuidingPathFactory(LoggerInterface* logger);
-		std::vector<App::Path*> createGuidingPaths(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
+		virtual ~GuidingPathFactory();
+		std::vector<App::Path*> createGuidingPaths(std::vector<Node*> nodes, Node start, Node end);
 	
 	protected:
-		std::vector<std::vector<Grid>> getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
-		Grid analyzeCell(Map* map, Point* leftBottom, Point* rightUpper, double uavSize);
-		std::vector<Node*> gridToNodes(std::vector<std::vector<Grid>> mapGrid);
 		LoggerInterface* logger;
 	};
 

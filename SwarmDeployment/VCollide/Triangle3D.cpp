@@ -10,12 +10,6 @@ Triangle3D::~Triangle3D()
 {
 }
 
-double* Triangle3D::toArray() const
-{
-	double triangleArray[] = {point1->getX(), point1->getY(), point1->getZ(), point2->getX(), point2->getY(), point2->getZ(), point3->getX(), point3->getY(), point3->getZ()};
-	return triangleArray;
-}
-
 std::vector<double> Triangle3D::toVector() const
 {
 	return std::vector<double> ({ point1->getX(), point1->getY(), point1->getZ(), point2->getX(), point2->getY(), point2->getZ(), point3->getX(), point3->getY(), point3->getZ() });

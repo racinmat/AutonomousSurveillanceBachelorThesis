@@ -8,7 +8,7 @@ namespace App
 	{
 	public:
 		LoggerInterface();
-		~LoggerInterface();
+		virtual ~LoggerInterface();
 		virtual void logSelectedMap(Map* map, int worldWidth, int worldHeight);
 		virtual void logMapGrid(std::vector<std::vector<Grid>> mapGrid);
 	};

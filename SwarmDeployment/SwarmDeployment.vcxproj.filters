@@ -146,6 +146,9 @@
     <ClCompile Include="VCollide\PairData.cpp">
       <Filter>Source Files\VCollide</Filter>
     </ClCompile>
+    <ClCompile Include="MapProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -260,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="VCollide\PairData.H">
       <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="MapProcessor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
