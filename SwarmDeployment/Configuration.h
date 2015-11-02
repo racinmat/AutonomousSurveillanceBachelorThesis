@@ -21,6 +21,8 @@ namespace App
 		void setWorldHeight(int worldHeight);
 		int getWorldWidth() const;
 		void setWorldWidth(int worldWidth);
+		double getUavSize() const;
+		void setUavSize(double uav_size);
 
 	protected:
 		App::Core* core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -29,6 +31,7 @@ namespace App
 		int uavCount = 3;
 		int worldHeight = 1000;
 		int worldWidth = 1000;
+		double uavSize = 0.5;
 	};
 
 }

@@ -7,7 +7,7 @@ namespace App
 	{
 		int uavDistance = 30;
 
-		std::vector<Map*> maps = std::vector<Map*>();
+		auto maps = std::vector<Map*>();
 
 		Map* map0 = new Map();
 		for (int i = 0; i < uavCount; i++)

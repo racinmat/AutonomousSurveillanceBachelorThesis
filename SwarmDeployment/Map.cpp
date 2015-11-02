@@ -40,6 +40,11 @@ namespace App
 		return uavsStart;
 	}
 
+	int Map::countUavs() const
+	{
+		return uavsStart.size();
+	}
+
 	void Map::addObstacle(Obstacle *obstacle)
 	{
 		obstacles.push_back(obstacle);

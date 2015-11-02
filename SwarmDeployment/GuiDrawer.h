@@ -2,19 +2,23 @@
 #include "LoggerInterface.h"
 #include <QtWidgets/QGraphicsView>
 
+class QMainWindow;
+
 namespace Ui
 {
 
 	class GuiDrawer : public App::LoggerInterface
 	{
 	public:
-		GuiDrawer(QGraphicsView* view);
+		GuiDrawer(QGraphicsView* view, QMainWindow* window);
 		~GuiDrawer();
 		virtual void logSelectedMap(App::Map* map, int worldWidth, int worldHeight) override;
+		virtual void logMapGrid(std::vector<std::vector<App::Grid>> mapGrid) override;
 
 	protected:
 		QGraphicsView* view;
 		QGraphicsScene* scene;
+		QMainWindow* window;
 		void clear();
 		void drawGrid();
 	};

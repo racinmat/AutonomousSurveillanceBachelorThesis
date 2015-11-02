@@ -106,6 +106,22 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="PointParticle.cpp" />
     <ClCompile Include="Rectangle.cpp" />
+    <ClCompile Include="VCollide\build.cpp" />
+    <ClCompile Include="VCollide\coldetect.cpp" />
+    <ClCompile Include="VCollide\collide.cpp" />
+    <ClCompile Include="VCollide\NBody.cpp" />
+    <ClCompile Include="VCollide\overlap.cpp" />
+    <ClCompile Include="VCollide\PairData.cpp" />
+    <ClCompile Include="VCollide\Point2D.cpp" />
+    <ClCompile Include="VCollide\Point3D.cpp" />
+    <ClCompile Include="VCollide\RAPID.cpp" />
+    <ClCompile Include="VCollide\Rectangle2D.cpp" />
+    <ClCompile Include="VCollide\sample_client.cpp" />
+    <ClCompile Include="VCollide\simple.cpp" />
+    <ClCompile Include="VCollide\simple2.cpp" />
+    <ClCompile Include="VCollide\Triangle3D.cpp" />
+    <ClCompile Include="VCollide\VCollide.cpp" />
+    <ClCompile Include="VCollide\VInternal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -149,6 +165,24 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="PointParticle.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="VCollide\AABB.H" />
+    <ClInclude Include="VCollide\ColDetect.h" />
+    <ClInclude Include="VCollide\EndPoint.H" />
+    <ClInclude Include="VCollide\matvec.H" />
+    <ClInclude Include="VCollide\moments.H" />
+    <ClInclude Include="VCollide\NBody.H" />
+    <ClInclude Include="VCollide\obb.H" />
+    <ClInclude Include="VCollide\overlap.H" />
+    <ClInclude Include="VCollide\PairData.H" />
+    <ClInclude Include="VCollide\Point2D.h" />
+    <ClInclude Include="VCollide\Point3D.h" />
+    <ClInclude Include="VCollide\RAPID.H" />
+    <ClInclude Include="VCollide\RAPID_private.H" />
+    <ClInclude Include="VCollide\RAPID_version.H" />
+    <ClInclude Include="VCollide\Rectangle2D.h" />
+    <ClInclude Include="VCollide\Triangle3D.h" />
+    <ClInclude Include="VCollide\VCollide.H" />
+    <ClInclude Include="VCollide\VInternal.H" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">

@@ -33,6 +33,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Source Files\VCollide">
+      <UniqueIdentifier>{aebf88e1-c32a-4971-9450-fa85b8da745a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,8 +95,56 @@
     <ClCompile Include="Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VCollide\build.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\collide.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\coldetect.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\NBody.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\overlap.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\Point2D.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\Point3D.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
     <ClCompile Include="PointParticle.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\RAPID.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\Rectangle2D.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\simple.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\sample_client.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\simple2.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\Triangle3D.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\VCollide.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\VInternal.cpp">
+      <Filter>Source Files\VCollide</Filter>
+    </ClCompile>
+    <ClCompile Include="VCollide\PairData.cpp">
+      <Filter>Source Files\VCollide</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +206,60 @@
     </ClInclude>
     <ClInclude Include="PointParticle.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\AABB.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\ColDetect.h">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\EndPoint.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\matvec.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\moments.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\NBody.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\obb.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\overlap.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\Point2D.h">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\Point3D.h">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\RAPID.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\RAPID_private.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\RAPID_version.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\Rectangle2D.h">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\Triangle3D.h">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\VCollide.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\VInternal.H">
+      <Filter>Source Files\VCollide</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollide\PairData.H">
+      <Filter>Source Files\VCollide</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

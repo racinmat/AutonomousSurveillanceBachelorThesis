@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Path.h"
 #include "Map.h"
+#include "LoggerInterface.h"
 
 namespace App
 {
@@ -8,13 +9,14 @@ namespace App
 	class GuidingPathFactory
 	{
 	public:
-		GuidingPathFactory();
-		std::vector<App::Path*> createGuidingPaths(App::Map* map, int cellSize, int worldWidth, int worldHeigh);
+		GuidingPathFactory(LoggerInterface* logger);
+		std::vector<App::Path*> createGuidingPaths(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
 	
 	protected:
-		std::vector<std::vector<Grid>> getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh);	//returns 2D matrix as grid of map
-		Grid analyzeCell(Map* map, Point* leftBottom, Point* rightUpper);
+		std::vector<std::vector<Grid>> getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
+		Grid analyzeCell(Map* map, Point* leftBottom, Point* rightUpper, double uavSize);
 		std::vector<Node*> gridToNodes(std::vector<std::vector<Grid>> mapGrid);
+		LoggerInterface* logger;
 	};
 
 }

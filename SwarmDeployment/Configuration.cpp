@@ -66,4 +66,13 @@ namespace App
 		this->worldWidth = worldWidth;
 	}
 
+	double Configuration::getUavSize() const
+	{
+		return uavSize;
+	}
+
+	void Configuration::setUavSize(double uav_size)
+	{
+		uavSize = uav_size;
+	}
 }

@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 	core->setLogger(w.getLogger());
 
 	w.setConfiguration(configuration);
+	w.setCore(core);
 	w.show();
 
 	core->run();

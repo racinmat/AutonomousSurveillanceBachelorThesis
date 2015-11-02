@@ -20,6 +20,7 @@ public:
 	virtual void paintEvent(QPaintEvent *e) override;
 	~MainWindow() override;
 	App::LoggerInterface* getLogger() const;
+	void setCore(App::Core* core);
 	void setConfiguration(App::Configuration* configuration);
 
 private slots:
@@ -27,11 +28,14 @@ private slots:
 
 	void on_countUav_valueChanged(int arg1);
 
+	void on_start_clicked();
+
 protected:
 	Ui::MainWindow* ui;
 	App::Configuration* configuration;
 	Ui::GuiDrawer* drawer;
 	bool painting;
+	App::Core* core;
 };
 
 #endif // MAINWINDOW_H

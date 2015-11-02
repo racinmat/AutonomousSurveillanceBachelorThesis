@@ -1,13 +1,16 @@
 #include "GuiDrawer.h"
 #include <QGraphicsLineItem>
-#include <QGraphicsWidget>
+#include <QtWidgets/QMainWindow>
+#include <iostream>
+#include <QtCore/qtextstream.h>
 
 namespace Ui
 {
 
-	GuiDrawer::GuiDrawer(QGraphicsView* view) :
+	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window) :
 		view(view), 
-		scene(view->scene())
+		scene(view->scene()),
+		window(window)
 	{
 		LoggerInterface();
 	}
@@ -19,6 +22,8 @@ namespace Ui
 
 	void GuiDrawer::logSelectedMap(App::Map* map, int worldWidth, int worldHeight)
 	{
+		QTextStream cout(stdout);
+		cout << "logging selected map" << endl;
 		view->resize(worldWidth, worldHeight);
 
 		clear();
@@ -36,6 +41,32 @@ namespace Ui
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::gray), QBrush(Qt::gray));
 		}
 
+	}
+
+	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
+	{
+		QTextStream cout(stdout);
+		cout << "logging map grid" << endl;
+		int x = 25;
+		int y = 25;
+		for (auto row : mapGrid)
+		{
+			x = 25;
+			for (auto grid : row)
+			{
+				std::string gridText;
+				switch (grid)
+				{
+					case App::Grid::Obstacle: gridText = "obstacle"; break;
+					case App::Grid::Free: gridText = "free"; break;
+					case App::Grid::Goal: gridText = "goal"; break;
+					case App::Grid::UAV: gridText = "uav"; break;
+				}
+				scene->addText(QString::fromStdString(gridText))->moveBy(x, y);
+				x += 50;
+			}
+			y += 50;
+		}
 	}
 
 	void GuiDrawer::clear()

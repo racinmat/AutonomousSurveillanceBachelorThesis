@@ -29,8 +29,8 @@ namespace App
 		App::Map* map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
-		GuidingPathFactory* pathFactory = new GuidingPathFactory();
-		std::vector<Path*> paths = pathFactory->createGuidingPaths(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+		GuidingPathFactory* pathFactory = new GuidingPathFactory(logger);
+		std::vector<Path*> paths = pathFactory->createGuidingPaths(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 
 	}
 

@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qdebug.h"
+#include "QtCore"
+#include "QtGui"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -10,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->countUav->setRange(1, 10);
 	ui->graphicsView->setScene(new QGraphicsScene());
-	drawer = new Ui::GuiDrawer(ui->graphicsView);
+	drawer = new Ui::GuiDrawer(ui->graphicsView, this);
 	ui->graphicsView->scale(0.9, -0.9);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
 	//Negative number in scale is switching direction of axis.
 	//Fuck, it also reverses texts.
@@ -52,9 +55,20 @@ void MainWindow::on_countUav_valueChanged(int arg1)
 	}
 }
 
+void MainWindow::on_start_clicked()
+{
+	QMessageBox::information(this, "text1", "text2");
+	core->run();
+}
+
 App::LoggerInterface* MainWindow::getLogger() const
 {
 	return drawer;	//TODO: zjistit, jestli je opravdu v Core tøídì jako Logger GuiDrawer.
+}
+
+void MainWindow::setCore(App::Core* core)
+{
+	this->core = core;
 }
 
 void MainWindow::setConfiguration(App::Configuration* configuration)

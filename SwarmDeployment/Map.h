@@ -19,6 +19,7 @@ namespace App
 		std::vector<Obstacle*> getObstacles();
 		void addUavStart(PointParticle* start);
 		std::vector<PointParticle*> getUavsStart();
+		int countUavs() const;
 
 	protected:
 		std::vector<Goal*> goals;
