@@ -47,11 +47,10 @@ namespace Ui
 	{
 		QTextStream cout(stdout);
 		cout << "logging map grid" << endl;
-		int x = 25;
-		int y = 25;
+		int x = 5;
 		for (auto row : mapGrid)
 		{
-			x = 25;
+			int y = 35;
 			for (auto grid : row)
 			{
 				std::string gridText;
@@ -62,10 +61,12 @@ namespace Ui
 					case App::Grid::Goal: gridText = "goal"; break;
 					case App::Grid::UAV: gridText = "uav"; break;
 				}
-				scene->addText(QString::fromStdString(gridText))->moveBy(x, y);
-				x += 50;
+				auto text = scene->addText(QString::fromStdString(gridText));
+				text->moveBy(x, y);
+				text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+				y += 50;
 			}
-			y += 50;
+			x += 50;
 		}
 	}
 
@@ -85,13 +86,17 @@ namespace Ui
 		for (int i = 0; i <= height; i+= 50)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
-			scene->addText(QString("%1").arg(i))->moveBy(i, 0);
+			auto text = scene->addText(QString("%1").arg(i));
+			text->moveBy(i, 0);
+			text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 		}
 
 		for (int i = 0; i <= width; i += 50)
 		{
 			scene->addLine(0, i, width, i, QPen(Qt::gray));
-			scene->addText(QString("%1").arg(i))->moveBy(0, i);
+			auto text = scene->addText(QString("%1").arg(i));
+			text->moveBy(0, i);
+			text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 		}
 
 	}

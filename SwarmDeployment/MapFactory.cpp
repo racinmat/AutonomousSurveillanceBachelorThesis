@@ -29,10 +29,10 @@ namespace App
 		}
 		map1->addGoal(new Goal(1, 426, 149, 148));
 		map1->addGoal(new Goal(851, 426, 149, 148));
-		map1->addObstacle(new Obstacle(151, 299, 99, 401));
-		map1->addObstacle(new Obstacle(751, 299, 99, 401));
-		map1->addObstacle(new Obstacle(451, 599, 99, 401));
-		map1->addObstacle(new Obstacle(451, 0, 99, 401));
+		map1->addObstacle(new Obstacle(151, 301, 98, 398));
+		map1->addObstacle(new Obstacle(751, 301, 98, 398));
+		map1->addObstacle(new Obstacle(451, 601, 98, 398));
+		map1->addObstacle(new Obstacle(451, 0, 98, 398));
 		maps.push_back(map1);
 
 		Map* map2 = new Map();
