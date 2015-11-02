@@ -25,7 +25,7 @@ namespace App
 		Map* map1 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(401 + i * uavDistance, 501, 0, 0));
+			map1->addUavStart(new PointParticle(401 + i * uavDistance, 501, 0, 0));
 		}
 		map1->addGoal(new Goal(1, 426, 149, 148));
 		map1->addGoal(new Goal(851, 426, 149, 148));
@@ -38,7 +38,7 @@ namespace App
 		Map* map2 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
+			map2->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
 		}
 		map2->addGoal(new Goal(651, 850, 230, 100));
 		map2->addGoal(new Goal(651, 550, 230, 100));
@@ -54,7 +54,7 @@ namespace App
 		Map* map3 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
+			map3->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
 		}
 		map3->addGoal(new Goal(701, 701, 150, 150));
 		map3->addObstacle(new Obstacle(300, 300, 200, 400));
@@ -63,7 +63,7 @@ namespace App
 		Map* map4 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(380 + i * uavDistance, 50, 0, 0));
+			map4->addUavStart(new PointParticle(380 + i * uavDistance, 50, 0, 0));
 		}
 		map4->addGoal(new Goal(301, 500, 398, 400));
 		map4->addObstacle(new Obstacle(300, 300, 400, 200));
@@ -72,7 +72,7 @@ namespace App
 		Map* map5 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));
+			map5->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));
 		}
 		map5->addGoal(new Goal(385, 801, 230, 100));
 		map5->addGoal(new Goal(301, 521, 150, 180));
@@ -86,7 +86,7 @@ namespace App
 		Map* map6 = new Map();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));
+			map6->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));
 		}
 		map6->addGoal(new Goal(701, 701, 150, 150));
 		map6->addObstacle(new Obstacle(400, 0, 200, 470));

@@ -41,6 +41,11 @@ namespace Ui
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::gray), QBrush(Qt::gray));
 		}
 
+		for (App::PointParticle* start : map->getUavsStart())
+		{
+			App::Point* p = start->getLocation();
+			addCross(p->getX(), p->getY(), 3, getRandomColor());
+		}
 	}
 
 	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
@@ -61,9 +66,7 @@ namespace Ui
 					case App::Grid::Goal: gridText = "goal"; break;
 					case App::Grid::UAV: gridText = "uav"; break;
 				}
-				auto text = scene->addText(QString::fromStdString(gridText));
-				text->moveBy(x, y);
-				text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+				addText(QString::fromStdString(gridText), x, y);
 				y += 50;
 			}
 			x += 50;
@@ -86,18 +89,33 @@ namespace Ui
 		for (int i = 0; i <= height; i+= 50)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
-			auto text = scene->addText(QString("%1").arg(i));
-			text->moveBy(i, 0);
-			text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+			addText(QString("%1").arg(i), i, 0);
 		}
 
 		for (int i = 0; i <= width; i += 50)
 		{
 			scene->addLine(0, i, width, i, QPen(Qt::gray));
-			auto text = scene->addText(QString("%1").arg(i));
-			text->moveBy(0, i);
-			text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+			addText(QString("%1").arg(i), 0, i);
 		}
 
+	}
+
+	QGraphicsTextItem* GuiDrawer::addText(QString text, double x, double y)
+	{
+		auto textItem = scene->addText(text);
+		textItem->moveBy(x, y);
+		textItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+		return textItem;
+	}
+
+	void GuiDrawer::addCross(double x, double y, double size, Qt::GlobalColor color)
+	{
+		scene->addLine(x - size, y - size, x + size, y + size, QPen(color));
+		scene->addLine(x - size, y + size, x + size, y - size, QPen(color));
+	}
+
+	Qt::GlobalColor GuiDrawer::getRandomColor()
+	{
+		return Qt::GlobalColor(rand() % Qt::transparent);	//tansparent is last color of enum
 	}
 }

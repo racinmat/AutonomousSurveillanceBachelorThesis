@@ -21,6 +21,9 @@ namespace Ui
 		QMainWindow* window;
 		void clear();
 		void drawGrid();
+		QGraphicsTextItem* addText(QString text, double x, double y);
+		void addCross(double x, double y, double size, Qt::GlobalColor color);
+		Qt::GlobalColor getRandomColor();
 	};
 
 }
