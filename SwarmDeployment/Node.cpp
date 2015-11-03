@@ -2,14 +2,13 @@
 
 namespace App
 {
-	Node::Node(Point* point, double cost): 
-		point(point), cost(cost)
-						
+	Node::Node(Point* point, Grid gridType, double cost) :
+		point(point), gridType(gridType), cost(cost)
 	{
 	}
 
-	Node::Node(Point* point) : 
-		point(point), cost(1)
+	Node::Node(Point* point, Grid gridType) :
+		point(point), gridType(gridType), cost(1)
 	{
 	}
 
@@ -45,4 +44,15 @@ namespace App
 	{
 		cost += increase;
 	}
+
+	Grid Node::getGridType() const
+	{
+		return gridType;
+	}
+
+	bool Node::contains(int x, int y, int distance)
+	{
+		return x - point->getX() <= distance && y - point->getY() <= distance;
+	}
+
 }

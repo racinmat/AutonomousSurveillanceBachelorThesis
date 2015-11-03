@@ -99,6 +99,7 @@
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapFactory.cpp" />
+    <ClCompile Include="MapGraph.cpp" />
     <ClCompile Include="MapProcessor.cpp" />
     <ClCompile Include="mockmodel.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="LoggerInterface.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapFactory.h" />
+    <ClInclude Include="MapGraph.h" />
     <ClInclude Include="MapProcessor.h" />
     <ClInclude Include="mockmodel.h" />
     <ClInclude Include="Node.h" />

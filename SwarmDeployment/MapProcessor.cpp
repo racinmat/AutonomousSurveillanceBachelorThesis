@@ -1,5 +1,4 @@
 #include "MapProcessor.h"
-#include "GuidingPathFactory.h"
 #include "VCollide/ColDetect.h"
 
 namespace App
@@ -13,19 +12,51 @@ namespace App
 	{
 	}
 
-	std::vector<Node*> MapProcessor::mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	MapGraph* MapProcessor::mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
 		logger->logMapGrid(mapGrid);
 		auto nodes = gridToNodes(mapGrid, cellSize);
-		return nodes;
+
+		Node* startNode;
+
+		int uavCount = map->countUavs();
+		Point* middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
+		for (Node* node : nodes)
+		{
+			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
+			{
+				startNode = node;
+			}
+		}
+
+
+		std::vector<Node*> endNodes = std::vector<Node*>(map->getGoals().size());
+		for (size_t i = 0; i < map->getGoals().size(); i++)
+		{
+			Rectangle* goal = map->getGoals()[i]->rectangle;
+			int middleX = goal->getX() + goal->getWidth() / 2;
+			int middleY = goal->getY() + goal->getHeight() / 2;
+
+
+			for(Node* node : nodes)
+			{
+				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
+				{
+					endNodes[i] = node;
+				}
+			}
+		}
+
+		MapGraph* graph = new MapGraph(nodes, startNode, endNodes);
+		return graph;
 	}
 
 	std::vector<std::vector<Grid>> MapProcessor::getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		int gridRow = 0;
-		int rows = worldWidth / cellSize;	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
-		int columns = worldHeigh / cellSize;	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
+		int rows = ceil(double(worldWidth) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
+		int columns = ceil(double(worldHeigh) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
 		auto grid = std::vector<std::vector<Grid>>(rows);
 		for (int i = cellSize; i <= worldWidth; i += cellSize)
 		{
@@ -89,7 +120,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[i] = new Node(new Point(x, y));
+				nodes[i] = new Node(new Point(x, y), grid);
 
 				index++;
 			}
@@ -129,14 +160,15 @@ namespace App
 							{
 								nodes[i]->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
 								n_index++;
-
 							}
 						}
 					}
 				}
 			}
 		}
+
 		return nodes;
 	}
+
 
 }

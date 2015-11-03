@@ -2,16 +2,16 @@
 #include "Path.h"
 #include "Map.h"
 #include "LoggerInterface.h"
+#include "MapGraph.h"
 
 namespace App
 {
-
 	class MapProcessor
 	{
 	public:
 		MapProcessor(LoggerInterface* logger);
 		virtual ~MapProcessor();
-		std::vector<Node*> mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
+		MapGraph* mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
 
 	protected:
 		std::vector<std::vector<Grid>> getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map

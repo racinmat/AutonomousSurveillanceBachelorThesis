@@ -11,10 +11,12 @@ namespace App
 	public:
 		GuidingPathFactory(LoggerInterface* logger);
 		virtual ~GuidingPathFactory();
-		std::vector<App::Path*> createGuidingPaths(std::vector<Node*> nodes, Node start, Node end);
+		std::vector<App::Path*> createGuidingPaths(std::vector<Node*> nodes, Node* start, std::vector<Node*> ends);
 	
 	protected:
 		LoggerInterface* logger;
+		Path* findPath(std::vector<Node*> nodes, Node* start, Node* end);
+
 	};
 
 }
