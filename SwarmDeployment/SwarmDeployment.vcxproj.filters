@@ -36,6 +36,9 @@
     <Filter Include="Source Files\VCollide">
       <UniqueIdentifier>{aebf88e1-c32a-4971-9450-fa85b8da745a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{44c6fc12-224c-467f-8b14-7d6a584f8571}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

@@ -14,10 +14,16 @@ namespace App
 
 	MapGraph* MapProcessor::mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
+		//firstly we have to get map as 2D matrix, grid
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
 		logger->logMapGrid(mapGrid);
+		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
 
+		//now we determine starting and ending node.
+		//Start node is node, where starts UAV in middle
+		//End node is node in middle of each goal recrangle
+		//Todo: vymyslet, zda zde natvrdo používat pro nalezení støedu obdélníky èi ne
 		Node* startNode;
 
 		int uavCount = map->countUavs();
