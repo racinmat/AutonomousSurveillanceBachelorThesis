@@ -19,7 +19,7 @@ namespace AStar
 			auto iterator = find(node); //získám stejnou node, do které jsem pøišel odjinud a porovnám délky
 			NodeWrapper* another = (*iterator);
 			if (another->getTotalCost() > node->getTotalCost()) {
-				remove(another);
+				erase(another);
 				insert(node);
 				return false;
 			}
@@ -31,5 +31,26 @@ namespace AStar
 			return false;
 		}
 
+	}
+
+	NodeWrapper* OpenedSet::pollBest()
+	{
+		NodeWrapper* best = getBest();
+		erase(best);
+		return best;
+	}
+
+	NodeWrapper* OpenedSet::getBest()
+	{
+		double best = DBL_MAX;
+		NodeWrapper* bestNode = nullptr;
+		for (NodeWrapper* node : this) {
+			if (node->getTotalCost() < best)
+			{
+				best = node->getTotalCost();
+				bestNode = node;
+			}
+		}
+		return bestNode;
 	}
 }

@@ -22,15 +22,19 @@ namespace AStar
 		}
 
 		double getDistance(NodeWrapper* node) {
-			double xDistSquare = Math.pow((this.getX() - node.getX()), 2);
-			double yDistSquare = Math.pow((this.getY() - node.getY()), 2);
-			return Math.sqrt(xDistSquare + yDistSquare);
+			double xDist = this->getX() - node->getX();
+			xDist *= xDist;
+			double yDist = this->getY() - node->getY();
+			yDist *= yDist;
+			return std::sqrt(xDist + yDist);
 		}
 
 		double getDistance(App::Node* node) {
-			double xDistSquare = Math.pow((this.getX() - node.getX()), 2);
-			double yDistSquare = Math.pow((this.getY() - node.getY()), 2);
-			return Math.sqrt(xDistSquare + yDistSquare);
+			double xDist = this->getX() - node->getPoint()->getX();
+			xDist *= xDist;
+			double yDist = this->getY() - node->getPoint()->getY();
+			yDist *= yDist;
+			return std::sqrt(xDist + yDist);
 		}
 
 		std::set<NodeWrapper*> expand(App::Node* endNode) {
@@ -47,24 +51,20 @@ namespace AStar
 		}
 
 
-		NodeWrapper* getParent() {
+		NodeWrapper* getParent() const {
 			return parent;
 		}
 
-		App::Node* getNode() {
+		App::Node* getNode() const {
 			return node;
 		}
 
 		double getX() {
-			return node->getX();
+			return node->getPoint()->getX();
 		}
 
 		double getY() {
-			return node->getY();
-		}
-
-		bool isTarget() {
-			return node->isTarget();
+			return node->getPoint()->getY();
 		}
 
 		double getFromStart() {
@@ -79,14 +79,14 @@ namespace AStar
 			return this->parent != nullptr;
 		}
 		//TODO: implementovat metodu equals
-		std::vector<NodeWrapper*> getWay() {
-			List<NodeWrapper> wayToTarget = new ArrayList<NodeWrapper>();
-			NodeWrapper iter = this;
-			while (iter.hasParent()) {
-				wayToTarget.add(iter);
-				iter = iter.getParent();
+		std::set<NodeWrapper*> getWay() {
+			std::set<NodeWrapper*> wayToTarget = std::set<NodeWrapper*>();
+			NodeWrapper* iter = this;
+			while (iter->hasParent()) {
+				wayToTarget.insert(iter);
+				iter = iter->getParent();
 			}
-			wayToTarget.add(iter);       //pøidání poèátku
+			wayToTarget.insert(iter);       //pøidání poèátku
 			return wayToTarget;
 		}
 
@@ -98,17 +98,18 @@ namespace AStar
 			return totalCost;
 		}
 
-	protected:
+		bool operator<(const NodeWrapper& another); //needed for comparation when using count method of std::set
+		bool operator>(const NodeWrapper& another); //If nodes are same, wrappers should also behave as same.
+		bool operator==(const NodeWrapper& another);
+		bool operator!=(const NodeWrapper& another);
 
+	protected:
 		NodeWrapper* parent;
 		App::Node* node;
 		double fromStart;
 		double fromParent;
 		double heuristicToEnd;
 		double totalCost;
-
-
-
 	};
 
 }

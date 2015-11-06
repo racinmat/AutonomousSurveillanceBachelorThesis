@@ -21,19 +21,19 @@ namespace AStar
 
 		std::vector<App::Node*> open;
 		std::vector<App::Node*> closed;
-		App::Node* current = start;
-
-		while (current != end) {
+		NodeWrapper* current = new NodeWrapper(nullptr, start, end);
+		NodeWrapper* endWrapper = new NodeWrapper(nullptr, end, end);
+		while (current != endWrapper) {
 			current = examineNextNode(current, end);
 		}
 
-		return new App::Path();
+		return new App::Path();//todo: dodìlat
 	}
 
 	///Returns new current node, best neighbor of all opened nodes.
-	App::Node* AStar::examineNextNode(App::Node* current, App::Node* end)
+	NodeWrapper* AStar::examineNextNode(NodeWrapper* current, App::Node* end)
 	{
-		auto neighbors = current->getNeighbors();
+		auto neighbors = current->expand(end);
 		for (auto neighbor : neighbors)
 		{
 			if (!opened.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.

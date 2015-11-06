@@ -16,7 +16,7 @@ namespace AStar
 	protected:
 		NodeSet opened;
 		NodeSet closed;
-		App::Node* examineNextNode(App::Node* current, App::Node* end);
+		NodeWrapper* examineNextNode(NodeWrapper* current, App::Node* end);
 	};
 
 }

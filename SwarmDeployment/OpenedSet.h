@@ -9,6 +9,10 @@ namespace AStar
 		OpenedSet();
 		virtual ~OpenedSet();
 		virtual bool contains(NodeWrapper* nodeWrapper) override;
+		NodeWrapper* pollBest();
+
+	protected:
+		NodeWrapper* getBest();
 	};
 
 }

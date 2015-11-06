@@ -17,7 +17,7 @@ namespace AStar
 			auto iterator = find(node); //získám stejnou node, do které jsem pøišel odjinud a porovnám délky
 			NodeWrapper* another = (*iterator);
 			if (another->getTotalCost() > node->getTotalCost()) {
-				remove(another);
+				erase(another);
 				return false;
 			}
 			else {
