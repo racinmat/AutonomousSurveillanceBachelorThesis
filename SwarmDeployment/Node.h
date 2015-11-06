@@ -19,7 +19,9 @@ namespace App
 		void increaseCost(double increase);
 		Grid getGridType() const;
 		bool contains(int x, int y, int distance);
-
+		bool operator<(const Node& another); //needed for comparation when using count method of std::set
+		bool operator>(const Node& another); //If nodes are same, wrappers should also behave as same.
+		//I suppose count method uses <, > operators, it is written here: http://stackoverflow.com/questions/8118148/how-does-count-in-c-stl-set-work
 	protected:
 		Point* point;
 		double cost;

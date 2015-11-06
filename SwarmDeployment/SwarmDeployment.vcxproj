@@ -77,6 +77,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AStar.cpp" />
+    <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -103,11 +105,14 @@
     <ClCompile Include="MapProcessor.cpp" />
     <ClCompile Include="mockmodel.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeWrapper.cpp" />
     <ClCompile Include="Obstacle.cpp" />
+    <ClCompile Include="OpenedSet.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="PointParticle.cpp" />
     <ClCompile Include="Rectangle.cpp" />
+    <ClCompile Include="NodeSet.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
     <ClCompile Include="VCollide\coldetect.cpp" />
     <ClCompile Include="VCollide\collide.cpp" />
@@ -151,6 +156,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStar.h" />
+    <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
@@ -164,11 +171,15 @@
     <ClInclude Include="MapProcessor.h" />
     <ClInclude Include="mockmodel.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeWrapper.h" />
     <ClInclude Include="Obstacle.h" />
+    <ClInclude Include="OpenedSet.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="PathFindingAlgorithm.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="PointParticle.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="NodeSet.h" />
     <ClInclude Include="VCollide\AABB.H" />
     <ClInclude Include="VCollide\ColDetect.h" />
     <ClInclude Include="VCollide\EndPoint.H" />

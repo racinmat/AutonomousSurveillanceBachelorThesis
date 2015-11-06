@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "LoggerInterface.h"
 #include <set>
+#include "PathFindingAlgorithm.h"
 
 namespace App
 {
@@ -16,10 +17,7 @@ namespace App
 	
 	protected:
 		LoggerInterface* logger;
-		Path* findPath(std::vector<Node*> nodes, Node* start, Node* end);
-		std::set<Node*> opened;
-		std::set<Node*> closed;
-		Node* examineNextNode(Node* current, Node* end);
+		PathFindingAlgorithm* algorithm;
 	};
 
 }
