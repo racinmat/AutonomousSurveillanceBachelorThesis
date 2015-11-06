@@ -14,4 +14,11 @@ namespace App
 		virtual App::Path* findPath(std::vector<Node*> nodes, Node* start, Node* end) = 0;
 	};
 
+	inline PathFindingAlgorithm::PathFindingAlgorithm()
+	{
+	}
+
+	inline PathFindingAlgorithm::~PathFindingAlgorithm()
+	{
+	}
 }

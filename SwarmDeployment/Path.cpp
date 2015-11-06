@@ -5,15 +5,20 @@ namespace App
 
 	Path::Path()
 	{
-		nodes = std::vector<Node*>();
+		nodes = std::list<Node*>();
 	}
 
-	std::vector<Node*> Path::getNodes() const
+	std::list<Node*> Path::getNodes() const
 	{
 		return nodes;
 	}
 
-	void Path::addNode(Node* node)
+	void Path::addToStart(App::Node* node)
+	{
+		nodes.push_front(node);
+	}
+
+	void Path::addToEnd(Node* node)
 	{
 		nodes.push_back(node);
 	}

@@ -44,12 +44,14 @@ namespace AStar
 	{
 		double best = DBL_MAX;
 		NodeWrapper* bestNode = nullptr;
-		for (NodeWrapper* node : this) {
+		for (NodeWrapper* node : (*this))
+		{
 			if (node->getTotalCost() < best)
 			{
 				best = node->getTotalCost();
 				bestNode = node;
 			}
+
 		}
 		return bestNode;
 	}

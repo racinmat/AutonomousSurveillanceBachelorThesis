@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include "Node.h"
+#include <list>
 
 namespace App
 {
@@ -9,11 +10,12 @@ namespace App
 	{
 	public:
 		Path();
-		std::vector<App::Node*> getNodes() const;
-		void addNode(App::Node* node);
+		std::list<App::Node*> getNodes() const;
+		void addToEnd(App::Node* node);
+		void addToStart(App::Node* node);
 
 	protected:
-		std::vector<App::Node*> nodes;
+		std::list<App::Node*> nodes;
 	};
 
 }

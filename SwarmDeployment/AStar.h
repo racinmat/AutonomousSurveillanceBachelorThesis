@@ -1,7 +1,8 @@
 #pragma once
 #include "PathFindingAlgorithm.h"
-#include <set>
 #include "NodeSet.h"
+#include "ClosedSet.h"
+#include "OpenedSet.h"
 
 namespace AStar
 {
@@ -14,9 +15,10 @@ namespace AStar
 		App::Path* findPath(std::vector<App::Node*> nodes, App::Node* start, App::Node* end) override;
 
 	protected:
-		NodeSet opened;
-		NodeSet closed;
+		OpenedSet opened;
+		ClosedSet closed;
 		NodeWrapper* examineNextNode(NodeWrapper* current, App::Node* end);
+		App::Path* getNodesFromWrappers(std::set<NodeWrapper*> wrappers);
 	};
 
 }

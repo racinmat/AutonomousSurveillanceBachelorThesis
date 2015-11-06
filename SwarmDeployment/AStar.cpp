@@ -17,17 +17,14 @@ namespace AStar
 	App::Path* AStar::findPath(std::vector<App::Node*> nodes, App::Node* start, App::Node* end)
 	{
 		//here is A* algorithm
-		//sauce: http://code.activestate.com/recipes/577457-a-star-shortest-path-algorithm/
-
-		std::vector<App::Node*> open;
-		std::vector<App::Node*> closed;
 		NodeWrapper* current = new NodeWrapper(nullptr, start, end);
 		NodeWrapper* endWrapper = new NodeWrapper(nullptr, end, end);
 		while (current != endWrapper) {
 			current = examineNextNode(current, end);
 		}
 
-		return new App::Path();//todo: dodìlat
+		auto way = current->getWay();
+		return getNodesFromWrappers(way);
 	}
 
 	///Returns new current node, best neighbor of all opened nodes.
@@ -45,23 +42,18 @@ namespace AStar
 			}
 		}
 		closed.insert(current);
-		//todo: dodìlat výbìr nejlepší node
+		do {
+			current = opened.pollBest();
+		} while (closed.contains(current));
+		return current;
 	}
 
-	//private void examineNextNode(Node endNode, double distanceCoef) {
-	//		List<NodeWrapper> expanded = current.expand(endNode, distanceCoef, nodeExpansions);
-	//		for (NodeWrapper expandedNode : expanded) {
-	//			if (!opened.contains(expandedNode)) {
-	//				if (!closed.contains(expandedNode)) {
-	//					opened.add(expandedNode);
-	//				}
-	//			}
-	//		}
-	//		closed.add(current);
-	//		do {
-	//			current = opened.pollBest();
-	//		} while (closed.contains(current));
-	//	}
-
-
+	App::Path* AStar::getNodesFromWrappers(std::set<NodeWrapper*> wrappers)
+	{
+		App::Path* path = new App::Path();
+		for (NodeWrapper* wrapper : wrappers) {
+			path->addToStart(wrapper->getNode());
+		}
+		return path;
+	}
 }

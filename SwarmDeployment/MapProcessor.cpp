@@ -126,7 +126,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[i] = new Node(new Point(x, y), grid);
+				nodes[index] = new Node(new Point(x, y), grid);
 
 				index++;
 			}
