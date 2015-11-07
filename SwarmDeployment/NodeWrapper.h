@@ -22,10 +22,8 @@ namespace AStar
 		double getFromStart() const;
 		double getHeuristicToEnd() const;
 		bool hasParent();
-		std::set<NodeWrapper*> getWay();
+		std::vector<NodeWrapper*> getWay();
 		double getTotalCost();
-		bool operator<(const NodeWrapper& another); //needed for comparation when using count method of std::set
-		bool operator>(const NodeWrapper& another); //If nodes are same, wrappers should also behave as same.
 		bool operator==(const NodeWrapper& another);
 		bool operator!=(const NodeWrapper& another);
 
@@ -37,6 +35,7 @@ namespace AStar
 		double fromParent;
 		double heuristicToEnd;
 		double totalCost;
+		int pathLength; //použito pro urèení délky hledané cesty. Pro alokaci pole, kam se uloží nalezená cesta.
 	};
 
 }

@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include <QtWidgets/QApplication>
 #include "Core.h"
+#include "NodeWrapper.h"
+#include <iostream>
+
 
 int main(int argc, char *argv[])
 {
@@ -19,3 +22,4 @@ int main(int argc, char *argv[])
 	return a.exec();
 
 }
+

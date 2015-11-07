@@ -10,7 +10,7 @@ namespace AStar
 	}
 
 	NodeWrapper::NodeWrapper(NodeWrapper* parent, App::Node* node, App::Node* endNode):
-		parent(parent), node(node)
+		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
 	{
 		if (parent == nullptr)
 		{
@@ -95,34 +95,24 @@ namespace AStar
 		return this->parent != nullptr;
 	}
 
-	std::set<NodeWrapper*> NodeWrapper::getWay()
+	std::vector<NodeWrapper*> NodeWrapper::getWay()
 	{
-		std::set<NodeWrapper*> wayToTarget = std::set<NodeWrapper*>();
+		std::vector<NodeWrapper*> wayToTarget = std::vector<NodeWrapper*>(pathLength);
 		NodeWrapper* iter = this;
+		int index = pathLength;
 		while (iter->hasParent()) {
-			wayToTarget.insert(iter);
+			index--;
+			wayToTarget[index] = iter;
 			iter = iter->getParent();
 		}
-		wayToTarget.insert(iter);       //pøidání poèátku
+		index--;
+		wayToTarget[index] = iter;       //pøidání poèátku
 		return wayToTarget;
 	}
 
 	double NodeWrapper::getTotalCost()
 	{
 		return totalCost;
-	}
-
-	bool NodeWrapper::operator<(const NodeWrapper& another)
-	{
-		double someBigNumber = 10000;//10000 is arbitrary, I need somehow to compare coordinates by < and > operators. I assume, that map is smaller than 10000 x 10000. 
-									 //If map gets bigger, feel free to change this number.
-		return  getX() * someBigNumber + getY() < another.getX() * someBigNumber + another.getY(); // keep the same order
-	}
-
-	bool NodeWrapper::operator>(const NodeWrapper& another)
-	{
-		double someBigNumber = 10000;
-		return  getX() * someBigNumber + getY() > ( another.getX() * someBigNumber + another.getY() ); // keep the same order
 	}
 
 	bool NodeWrapper::operator==(const NodeWrapper& another)

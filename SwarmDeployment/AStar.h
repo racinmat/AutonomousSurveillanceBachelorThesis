@@ -18,7 +18,7 @@ namespace AStar
 		OpenedSet opened;
 		ClosedSet closed;
 		NodeWrapper* examineNextNode(NodeWrapper* current, App::Node* end);
-		App::Path* getNodesFromWrappers(std::set<NodeWrapper*> wrappers);
+		App::Path* getNodesFromWrappers(std::vector<NodeWrapper*> wrappers);
 	};
 
 }

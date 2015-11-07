@@ -62,7 +62,7 @@ namespace AStar
 		return current;
 	}
 
-	App::Path* AStar::getNodesFromWrappers(std::set<NodeWrapper*> wrappers)
+	App::Path* AStar::getNodesFromWrappers(std::vector<NodeWrapper*> wrappers)
 	{
 		App::Path* path = new App::Path();
 		for (NodeWrapper* wrapper : wrappers) {
