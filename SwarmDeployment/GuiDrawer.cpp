@@ -24,10 +24,9 @@ namespace Ui
 	{
 		QTextStream cout(stdout);
 		cout << "logging selected map" << endl;
-		view->resize(worldWidth, worldHeight);
-
 		clear();
-		drawGrid();
+
+		view->resize(worldWidth, worldHeight);
 
 		for(App::Goal* goal : map->getGoals())
 		{
@@ -46,6 +45,8 @@ namespace Ui
 			App::Point* p = start->getLocation();
 			addCross(p->getX(), p->getY(), 3, getRandomColor());
 		}
+
+		drawGrid();
 	}
 
 	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
@@ -70,6 +71,28 @@ namespace Ui
 				y += 50;
 			}
 			x += 50;
+		}
+	}
+
+	void GuiDrawer::logGuidingPaths(std::vector<App::Path*> paths, App::Node* start, std::vector<App::Node*> ends)
+	{
+		scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::yellow), QBrush(Qt::yellow));
+		for(App::Node* end : ends)
+		{
+			scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
+		}
+
+		for (App::Path* path : paths)
+		{
+			App::Node* previous = nullptr;
+			for (App::Node* node : path->getNodes())
+			{
+				if (previous != nullptr)
+				{
+					scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
+				}
+				previous = node;
+			}
 		}
 	}
 

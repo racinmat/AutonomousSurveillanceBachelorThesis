@@ -1,9 +1,10 @@
 ﻿#include "GuidingPathFactory.h"
+#include "AStar.h"
 
 namespace App
 {
 
-	GuidingPathFactory::GuidingPathFactory(LoggerInterface* logger) : logger(logger)
+	GuidingPathFactory::GuidingPathFactory(LoggerInterface* logger) : logger(logger), algorithm(new AStar::AStar())
 	{
 	}
 
@@ -18,6 +19,7 @@ namespace App
 		{
 			paths[i] = algorithm->findPath(nodes, start, ends[i]);
 		}
+		logger->logGuidingPaths(paths, start, ends);
 		return paths;
 	}
 

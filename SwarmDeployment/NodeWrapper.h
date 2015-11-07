@@ -30,6 +30,7 @@ namespace AStar
 		bool operator!=(const NodeWrapper& another);
 
 	protected:
+		std::string coords;
 		NodeWrapper* parent;
 		App::Node* node;
 		double fromStart;

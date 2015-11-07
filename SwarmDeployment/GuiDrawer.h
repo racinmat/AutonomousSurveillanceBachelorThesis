@@ -14,6 +14,7 @@ namespace Ui
 		virtual ~GuiDrawer();
 		virtual void logSelectedMap(App::Map* map, int worldWidth, int worldHeight) override;
 		virtual void logMapGrid(std::vector<std::vector<App::Grid>> mapGrid) override;
+		virtual void logGuidingPaths(std::vector<App::Path*> paths, App::Node* start, std::vector<App::Node*> ends) override;
 
 	protected:
 		QGraphicsView* view;

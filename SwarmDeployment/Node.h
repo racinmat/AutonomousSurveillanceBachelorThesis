@@ -14,7 +14,7 @@ namespace App
 		virtual ~Node();
 		Point* getPoint() const;
 		double getCost() const;
-		std::array<Node*, 8> getNeighbors() const;
+		std::vector<Node*> getNeighbors() const;
 		void addNeighbor(Node* node, int position);
 		void increaseCost(double increase);
 		Grid getGridType() const;
@@ -25,7 +25,7 @@ namespace App
 	protected:
 		Point* point;
 		double cost;
-		std::array<Node*, 8> neighbors;	//better than std::vector because here I need only fixed amount of elements. The array is immutable in this case.
+		std::vector<Node*> neighbors;	//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
 		Grid gridType;
 	};
 

@@ -1,4 +1,5 @@
 #include "NodeWrapper.h"
+#include <string>
 
 
 namespace AStar
@@ -11,8 +12,16 @@ namespace AStar
 	NodeWrapper::NodeWrapper(NodeWrapper* parent, App::Node* node, App::Node* endNode):
 		parent(parent), node(node)
 	{
-		this->fromParent = getDistance(parent);
-		this->fromStart = this->parent->getFromStart() + this->fromParent;
+		if (parent == nullptr)
+		{
+			this->fromParent = 0;
+			this->fromStart = 0;
+		} else
+		{
+			this->fromParent = getDistance(parent);
+			this->fromStart = this->parent->getFromStart() + this->fromParent;
+		}
+		this->coords = std::string("x:") + std::to_string(node->getPoint()->getX()) + std::string(",y:") + std::to_string(node->getPoint()->getY());
 		this->heuristicToEnd = 0;
 		this->recalculateHeuristic(endNode);
 		this->totalCost = this->getFromStart() + this->getHeuristicToEnd();

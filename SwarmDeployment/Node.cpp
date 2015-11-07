@@ -26,7 +26,7 @@ namespace App
 		return cost;
 	}
 
-	std::array<Node*, 8> Node::getNeighbors() const
+	std::vector<Node*> Node::getNeighbors() const
 	{
 		return neighbors;
 	}
@@ -35,9 +35,11 @@ namespace App
 	{
 		if (position >= neighbors.size())
 		{
-			throw "Invalid position. Maximal position is " + (neighbors.size() - 1);
+			neighbors.push_back(node);
+		} else
+		{
+			neighbors[position] = node;
 		}
-		neighbors[position] = node;
 	}
 
 	void Node::increaseCost(double increase)
@@ -52,7 +54,7 @@ namespace App
 
 	bool Node::contains(int x, int y, int distance)
 	{
-		return x - point->getX() <= distance && y - point->getY() <= distance;
+		return std::abs(x - point->getX()) <= distance && std::abs(y - point->getY()) <= distance;
 	}
 
 	bool Node::operator<(const Node& another)

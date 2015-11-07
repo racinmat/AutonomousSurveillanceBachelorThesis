@@ -27,13 +27,21 @@ namespace App
 
 	void Core::run()
 	{
-		App::Map* map = maps.at(configuration->getMapNumber());
+		App::Map* map;
+		map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
+
+//
+//		map = new Map();
+//		map->addUavStart(new PointParticle(25, 25, 0, 0));
+//		map->addGoal(new Goal(150, 150, 50, 50));
+//		logger->logSelectedMap(map, 500, 500);
+
 
 		MapProcessor* mapProcessor = new MapProcessor(logger);
 		auto nodes = mapProcessor->mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory* pathFactory = new GuidingPathFactory(logger);
-//		std::vector<Path*> paths = pathFactory->createGuidingPaths(nodes, start, end);
+		std::vector<Path*> paths = pathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
 
 	}
 
@@ -47,5 +55,7 @@ namespace App
 		App::Map* map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 	}
+
+
 
 }

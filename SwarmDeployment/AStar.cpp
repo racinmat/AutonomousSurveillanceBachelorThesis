@@ -16,11 +16,25 @@ namespace AStar
 
 	App::Path* AStar::findPath(std::vector<App::Node*> nodes, App::Node* start, App::Node* end)
 	{
+		opened = OpenedSet();
+		closed = ClosedSet();
 		//here is A* algorithm
 		NodeWrapper* current = new NodeWrapper(nullptr, start, end);
 		NodeWrapper* endWrapper = new NodeWrapper(nullptr, end, end);
-		while (current != endWrapper) {
+		int counter = 0;
+		int limit = 4000;
+		while ((*current) != (*endWrapper)) {
 			current = examineNextNode(current, end);
+			counter++;
+			if (counter > limit)
+			{
+				break;
+			}
+			if (opened.size() == 0)
+			{
+				throw "No opened nodes";
+				break;
+			}
 		}
 
 		auto way = current->getWay();

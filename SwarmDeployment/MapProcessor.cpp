@@ -33,6 +33,7 @@ namespace App
 			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
 			{
 				startNode = node;
+				break;
 			}
 		}
 
@@ -50,6 +51,7 @@ namespace App
 				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
 				{
 					endNodes[i] = node;
+					break;
 				}
 			}
 		}
@@ -134,7 +136,7 @@ namespace App
 
 		double cost_neighbor = 10; // cena node, pokud je nìkde vedle ní pøekážka
 		double cost_diagonal = 5; // cena node, pokud je diagonálnì k ní pøekážka
-
+		index = 0;	//index dané node
 
 		//adding of neighbors, when all nodes are added
 		for (size_t i = 0; i < mapGrid.size(); i++)
@@ -142,34 +144,36 @@ namespace App
 			auto row = mapGrid[i];
 			for (size_t j = 0; j < row.size(); j++)
 			{
-				Grid gridType = row[j];
+				Node* node = nodes[index];
 				int n_index = 0;
 				for (int p = -1; p <= 1; p++)
 				{
 					for (int q = -1; q <= 1; q++)
 					{
+						bool isNeighbor = p != 0 || q != 0;
+						bool isOutOfMap = (i + p) < 0 || (j  + q) < 0 //kontrola 1. øádku a 1. sloupce
+							|| (i + p) >= mapGrid.size() || (j + q) >= row.size(); //kontrola posledního øádku a posledního sloupce
 						if (
-							(p != 0 || q != 0)
-							&& i > 0 && j > 0 //kontrola 1. øádku a 1. sloupce
-							&& i < mapGrid.size() - 1 && j < row.size() - 1 //kontrola posledního øádku a posledního sloupce
+							isNeighbor && !isOutOfMap
 						) {
-							if (gridType == Grid::Obstacle)	//zvýšení ceny, pokud je soused pøekážka
+							if (node->getGridType() == Grid::Obstacle)	//zvýšení ceny, pokud je soused pøekážka
 							{
 								if (p == 0 || q == 0)	//pøímý soused
 								{
-									nodes[i]->increaseCost(cost_neighbor);
+									node->increaseCost(cost_neighbor);
 								} else	//soused na diagonále
 								{
-									nodes[i]->increaseCost(cost_diagonal);
+									node->increaseCost(cost_diagonal);
 								}
 							} else // nechci mezi sousedy pøekážky
 							{
-								nodes[i]->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
+								node->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
 								n_index++;
 							}
 						}
 					}
 				}
+				index++;
 			}
 		}
 
