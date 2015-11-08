@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include "Map.h"
+#include <memory>
 
 namespace App
 {
@@ -8,7 +9,7 @@ namespace App
 	class MapFactory
 	{
 	public:
-		std::vector<App::Map*> createMaps(int uavCount);
+		std::vector<std::shared_ptr<App::Map>> createMaps(int uavCount);
 
 	};
 

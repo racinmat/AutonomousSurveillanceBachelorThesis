@@ -10,7 +10,7 @@ namespace AStar
 	public:
 		ClosedSet();
 		virtual ~ClosedSet();
-		virtual bool contains(NodeWrapper* nodeWrapper) override;
+		virtual bool contains(std::shared_ptr<NodeWrapper> nodeWrapper) override;
 	};
 
 }

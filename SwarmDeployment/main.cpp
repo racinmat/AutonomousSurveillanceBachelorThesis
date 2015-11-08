@@ -1,16 +1,15 @@
 #include "mainwindow.h"
 #include <QtWidgets/QApplication>
 #include "Core.h"
-#include "NodeWrapper.h"
 #include <iostream>
+#include <memory>
 
-
-int main(int argc, char *argv[])
+int run(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
-	App::Configuration* configuration = new App::Configuration();
-	App::Core* core = new App::Core(configuration);
+	auto configuration = std::make_shared<App::Configuration>();
+	auto core = std::make_shared<App::Core>(configuration.get());
 	core->setLogger(w.getLogger());
 
 	w.setConfiguration(configuration);
@@ -19,7 +18,14 @@ int main(int argc, char *argv[])
 
 	core->run();
 
-	return a.exec();
+	int returnValue = a.exec();
 
+	return returnValue;
+}
+
+int main(int argc, char *argv[])
+{
+	int returnValue = run(argc, argv);
+	return returnValue;
 }
 

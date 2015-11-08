@@ -3,10 +3,10 @@
 namespace AStar
 {
 
-	bool NodeSet::contains(NodeWrapper* node)
+	bool NodeSet::contains(std::shared_ptr<NodeWrapper> node)
 	{
 //		return count(node) > 0;	//nefunguje pro pointery, pokud chci vlastní porovnávání
-		for (NodeWrapper* another : (*this))
+		for (auto another : (*this))
 		{
 			if ((*another) == (*node))
 			{
@@ -16,9 +16,9 @@ namespace AStar
 		return false;
 	}
 
-	NodeWrapper* NodeSet::find(NodeWrapper* node)
+	std::shared_ptr<NodeWrapper> NodeSet::find(std::shared_ptr<NodeWrapper> node)
 	{
-		for (NodeWrapper* another : (*this))
+		for (auto another : (*this))
 		{
 			if ((*another) == (*node))
 			{

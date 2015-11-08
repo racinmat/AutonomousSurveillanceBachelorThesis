@@ -13,7 +13,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logSelectedMap(Map* map, int worldWidth, int worldHeight)
+	void LoggerInterface::logSelectedMap(std::shared_ptr<Map> map, int worldWidth, int worldHeight)
 	{
 	}
 
@@ -21,7 +21,11 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logGuidingPaths(std::vector<Path*> paths, Node* start, std::vector<Node*> ends)
+	void LoggerInterface::logGuidingPaths(std::vector<Path*> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
+	{
+	}
+
+	void LoggerInterface::logText(std::string string)
 	{
 	}
 }

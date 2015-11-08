@@ -8,7 +8,11 @@ namespace App
 	{
 		aStarCellSize = 50;
 		mapNumber = 1;
-		uavCount = 4;
+		uavCount = 3;
+		worldHeight = 1000;
+		worldWidth = 1000;
+		uavSize = 0.5;
+
 	}
 
 	int Configuration::getAStarCellSize() const

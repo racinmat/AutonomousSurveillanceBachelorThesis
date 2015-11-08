@@ -11,7 +11,7 @@ namespace AStar
 	{
 	}
 
-	bool ClosedSet::contains(NodeWrapper* node)
+	bool ClosedSet::contains(std::shared_ptr<NodeWrapper> node)
 	{
 		if (NodeSet::contains(node)) {// when some node is in closed list, but same node is later found in shorter path, I need to remove that node from closed list.
 			auto another = find(node); //získám stejnou node, do které jsem pøišel odjinud a porovnám délky

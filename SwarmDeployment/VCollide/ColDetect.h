@@ -6,8 +6,8 @@
 class ColDetect
 {
 public:
-	bool coldetect(Triangle3D* tri1, Triangle3D* tri2);
-	bool coldetect(Rectangle2D* tri1, Rectangle2D* tri2);
+	bool coldetect(Triangle3D tri1, Triangle3D tri2);
+	bool coldetect(Rectangle2D tri1, Rectangle2D tri2);
 	ColDetect();
 	virtual ~ColDetect();
 

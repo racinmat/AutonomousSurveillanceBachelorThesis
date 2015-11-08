@@ -1,15 +1,16 @@
 #pragma once
 #include <set>
 #include "NodeWrapper.h"
+#include <memory>
 
 namespace AStar
 {
 
-	class NodeSet : public std::set<NodeWrapper*>
+	class NodeSet : public std::set<std::shared_ptr<NodeWrapper>>
 	{
 	public:
-		virtual bool contains(NodeWrapper* node);
-		virtual NodeWrapper* find(NodeWrapper* node);
+		virtual bool contains(std::shared_ptr<NodeWrapper> node);
+		virtual std::shared_ptr<NodeWrapper> find(std::shared_ptr<NodeWrapper> node);
 	};
 
 

@@ -13,7 +13,7 @@ namespace AStar
 	{
 	}
 
-	bool OpenedSet::contains(NodeWrapper* node)
+	bool OpenedSet::contains(std::shared_ptr<NodeWrapper> node)
 	{
 		if (NodeSet::contains(node)) {// when some node is in opened list, but same node is later found in shorter path, I need to switch these nodes, so node with shorter path would be in opened list instead of node with longer path.
 			auto another = find(node); //získám stejnou node, do které jsem pøišel odjinud a porovnám délky
@@ -32,18 +32,18 @@ namespace AStar
 
 	}
 
-	NodeWrapper* OpenedSet::pollBest()
+	std::shared_ptr<NodeWrapper> OpenedSet::pollBest()
 	{
-		NodeWrapper* best = getBest();
+		auto best = getBest();
 		erase(best);
 		return best;
 	}
 
-	NodeWrapper* OpenedSet::getBest()
+	std::shared_ptr<NodeWrapper> OpenedSet::getBest()
 	{
 		double best = DBL_MAX;
-		NodeWrapper* bestNode = nullptr;
-		for (NodeWrapper* node : (*this))
+		std::shared_ptr<NodeWrapper> bestNode = nullptr;
+		for (auto node : (*this))
 		{
 			if (node->getTotalCost() < best)
 			{

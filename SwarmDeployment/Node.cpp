@@ -1,4 +1,5 @@
 ﻿#include "Node.h"
+#include <memory>
 
 namespace App
 {
@@ -14,6 +15,7 @@ namespace App
 
 	Node::~Node()
 	{
+		delete point;
 	}
 
 	Point* Node::getPoint() const
@@ -26,12 +28,12 @@ namespace App
 		return cost;
 	}
 
-	std::vector<Node*> Node::getNeighbors() const
+	std::vector<std::shared_ptr<App::Node>> Node::getNeighbors() const
 	{
 		return neighbors;
 	}
 
-	void Node::addNeighbor(Node* node, int position)
+	void Node::addNeighbor(std::shared_ptr<App::Node> node, int position)
 	{
 		if (position >= neighbors.size())
 		{

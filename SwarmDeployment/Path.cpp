@@ -5,20 +5,24 @@ namespace App
 
 	Path::Path()
 	{
-		nodes = std::list<Node*>();
+		nodes = std::list<std::shared_ptr<App::Node>>();
 	}
 
-	std::list<Node*> Path::getNodes() const
+	Path::~Path()
+	{
+	}
+
+	std::list<std::shared_ptr<App::Node>> Path::getNodes() const
 	{
 		return nodes;
 	}
 
-	void Path::addToStart(App::Node* node)
+	void Path::addToStart(std::shared_ptr<App::Node> node)
 	{
 		nodes.push_front(node);
 	}
 
-	void Path::addToEnd(Node* node)
+	void Path::addToEnd(std::shared_ptr<App::Node> node)
 	{
 		nodes.push_back(node);
 	}

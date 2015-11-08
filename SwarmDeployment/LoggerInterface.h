@@ -1,6 +1,7 @@
 #pragma once
 #include "Map.h"
 #include "Path.h"
+#include "memory"
 
 namespace App
 {
@@ -10,9 +11,10 @@ namespace App
 	public:
 		LoggerInterface();
 		virtual ~LoggerInterface();
-		virtual void logSelectedMap(Map* map, int worldWidth, int worldHeight);
+		virtual void logSelectedMap(std::shared_ptr<Map> map, int worldWidth, int worldHeight);
 		virtual void logMapGrid(std::vector<std::vector<Grid>> mapGrid);
-		virtual void logGuidingPaths(std::vector<Path*> paths, Node* start, std::vector<Node*> ends);
+		virtual void logGuidingPaths(std::vector<Path*> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends);
+		virtual void logText(std::string string);
 	};
 
 }

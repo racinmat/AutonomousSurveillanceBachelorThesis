@@ -5,6 +5,7 @@
 #include "GuiDrawer.h"
 #include "LoggerInterface.h"
 #include "Configuration.h"
+#include <memory>
 
 namespace Ui
 {
@@ -20,8 +21,8 @@ public:
 	virtual void paintEvent(QPaintEvent *e) override;
 	~MainWindow() override;
 	App::LoggerInterface* getLogger() const;
-	void setCore(App::Core* core);
-	void setConfiguration(App::Configuration* configuration);
+	void setCore(std::shared_ptr<App::Core>& core);
+	void setConfiguration(std::shared_ptr<App::Configuration>& configuration);
 
 private slots:
 	void on_map_currentIndexChanged(int index);
@@ -32,10 +33,10 @@ private slots:
 
 protected:
 	Ui::MainWindow* ui;
-	App::Configuration* configuration;
+	std::shared_ptr<App::Configuration>& configuration;
 	Ui::GuiDrawer* drawer;
 	bool painting;
-	App::Core* core;
+	std::shared_ptr<App::Core>& core;
 };
 
 #endif // MAINWINDOW_H

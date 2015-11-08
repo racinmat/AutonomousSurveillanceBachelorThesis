@@ -1,15 +1,16 @@
 ﻿#include "MapFactory.h"
+#include <memory>
 
 namespace App
 {
 
-	std::vector<App::Map*> MapFactory::createMaps(int uavCount)
+	std::vector<std::shared_ptr<Map>> MapFactory::createMaps(int uavCount)
 	{
 		int uavDistance = 30;
 
-		auto maps = std::vector<Map*>();
+		auto maps = std::vector<std::shared_ptr<Map>>();
 
-		Map* map0 = new Map();
+		std::shared_ptr<Map> map0 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map0->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
@@ -22,7 +23,7 @@ namespace App
 		map0->addObstacle(new Obstacle(650, 200, 50, 200));
 		maps.push_back(map0);
 
-		Map* map1 = new Map();
+		std::shared_ptr<Map> map1 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map1->addUavStart(new PointParticle(401 + i * uavDistance, 501, 0, 0));
@@ -35,7 +36,7 @@ namespace App
 		map1->addObstacle(new Obstacle(451, 0, 98, 398));
 		maps.push_back(map1);
 
-		Map* map2 = new Map();
+		std::shared_ptr<Map> map2 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map2->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
@@ -51,7 +52,7 @@ namespace App
 		map2->addObstacle(new Obstacle(700, 200, 200, 299));
 		maps.push_back(map2);
 
-		Map* map3 = new Map();
+		std::shared_ptr<Map> map3 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map3->addUavStart(new PointParticle(50 + i * uavDistance, 50, 0, 0));
@@ -60,7 +61,7 @@ namespace App
 		map3->addObstacle(new Obstacle(300, 300, 200, 400));
 		maps.push_back(map3);
 
-		Map* map4 = new Map();
+		std::shared_ptr<Map> map4 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map4->addUavStart(new PointParticle(380 + i * uavDistance, 50, 0, 0));
@@ -69,7 +70,7 @@ namespace App
 		map4->addObstacle(new Obstacle(300, 300, 400, 200));
 		maps.push_back(map4);
 
-		Map* map5 = new Map();
+		std::shared_ptr<Map> map5 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map5->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));
@@ -83,7 +84,7 @@ namespace App
 		map5->addObstacle(new Obstacle(199, 199, 601, 101));
 		maps.push_back(map5);
 
-		Map* map6 = new Map();
+		std::shared_ptr<Map> map6 = std::make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
 			map6->addUavStart(new PointParticle(400 + i * uavDistance, 50, 0, 0));

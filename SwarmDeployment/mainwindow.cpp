@@ -1,13 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qdebug.h"
-#include <QMessageBox>
+#include <memory>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
 	painting(false)
 {
+	this->configuration = nullptr;
+	this->core = nullptr;
 	ui->setupUi(this);
 	ui->countUav->setRange(1, 10);
 	ui->graphicsView->setScene(new QGraphicsScene());
@@ -22,7 +24,6 @@ MainWindow::~MainWindow()
 {
 	delete ui->graphicsView->scene();
 	delete ui;
-	delete configuration;
 }
 
 
@@ -47,7 +48,7 @@ void MainWindow::on_countUav_valueChanged(int arg1)
 	{
 		configuration->setUavCount(arg1);
 	}
-	qDebug() << "Index in setting uavCount:" << QString("%1").arg(arg1);
+//	qDebug() << "Index in setting uavCount:" << QString("%1").arg(arg1);
 	if (!painting)
 	{
 		repaint();
@@ -64,12 +65,12 @@ App::LoggerInterface* MainWindow::getLogger() const
 	return drawer;	//TODO: zjistit, jestli je opravdu v Core tøídì jako Logger GuiDrawer.
 }
 
-void MainWindow::setCore(App::Core* core)
+void MainWindow::setCore(std::shared_ptr<App::Core>& core)
 {
 	this->core = core;
 }
 
-void MainWindow::setConfiguration(App::Configuration* configuration)
+void MainWindow::setConfiguration(std::shared_ptr<App::Configuration>& configuration)
 {
 	this->configuration = configuration;
 }

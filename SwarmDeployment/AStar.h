@@ -3,6 +3,7 @@
 #include "NodeSet.h"
 #include "ClosedSet.h"
 #include "OpenedSet.h"
+#include "memory"
 
 namespace AStar
 {
@@ -12,13 +13,13 @@ namespace AStar
 	public:
 		AStar();
 		virtual ~AStar() override;
-		App::Path* findPath(std::vector<App::Node*> nodes, App::Node* start, App::Node* end) override;
+		App::Path* findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end) override;
 
 	protected:
 		OpenedSet opened;
 		ClosedSet closed;
-		NodeWrapper* examineNextNode(NodeWrapper* current, App::Node* end);
-		App::Path* getNodesFromWrappers(std::vector<NodeWrapper*> wrappers);
+		std::shared_ptr<NodeWrapper> examineNextNode(std::shared_ptr<NodeWrapper> current, std::shared_ptr<App::Node> end);
+		App::Path* getNodesFromWrappers(std::vector<std::shared_ptr<NodeWrapper>> wrappers);
 	};
 
 }

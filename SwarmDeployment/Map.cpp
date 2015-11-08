@@ -10,6 +10,22 @@ namespace App
 		uavsStart = std::vector<PointParticle*>();
 	}
 
+	Map::~Map()
+	{
+		for (auto obstacle : obstacles)
+		{
+			delete obstacle;
+		}
+		for (auto goal : goals)
+		{
+			delete goal;
+		}
+		for (auto uavStart : uavsStart)
+		{
+			delete uavStart;
+		}
+	}
+
 	void Map::addGoal(Goal *goal)
 	{
 		goals.push_back(goal);

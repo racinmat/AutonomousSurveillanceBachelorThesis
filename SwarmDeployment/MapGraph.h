@@ -8,16 +8,16 @@ namespace App
 	class MapGraph
 	{
 	public:
-		MapGraph(std::vector<Node*> nodes, Node* startNode, std::vector<Node*> endNodes);
+		MapGraph(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> startNode, std::vector<std::shared_ptr<App::Node>> endNodes);
 		virtual ~MapGraph();
-		std::vector<Node*> getAllNodes();
-		Node* getStartNode();
-		std::vector<Node*> getEndNodes();
+		std::vector<std::shared_ptr<App::Node>> getAllNodes();
+		std::shared_ptr<App::Node> getStartNode();
+		std::vector<std::shared_ptr<App::Node>> getEndNodes();
 
 	protected:
-		std::vector<Node*> nodes;
-		Node* startNode;
-		std::vector<Node*> endNodes;
+		std::vector<std::shared_ptr<App::Node>> nodes;
+		std::shared_ptr<App::Node> startNode;
+		std::vector<std::shared_ptr<App::Node>> endNodes;
 	};
 
 }

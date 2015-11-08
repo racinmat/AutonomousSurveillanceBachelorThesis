@@ -5,19 +5,22 @@
 #include "Path.h"
 #include "GuidingPathFactory.h"
 #include "MapProcessor.h"
+#include <iostream>
+#include <cstdio>
+#include <ctime>
+#include <memory>
 
 namespace App
 {
 
 	Core::Core(Configuration* configuration) :
-		configuration(configuration)
+		configuration(configuration), logger(nullptr)
 	{
 		setLogger(new App::LoggerInterface());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 		configuration->setCore(this);
 
-		App::MapFactory* mapFactory = new App::MapFactory();
-		maps = mapFactory->createMaps(configuration->getUavCount());
-		delete mapFactory;
+		App::MapFactory mapFactory;
+		maps = mapFactory.createMaps(configuration->getUavCount());
 	}
 
 
@@ -27,21 +30,29 @@ namespace App
 
 	void Core::run()
 	{
-		App::Map* map;
-		map = maps.at(configuration->getMapNumber());
+		std::clock_t start;
+		double duration;
+
+		start = std::clock();
+
+		std::shared_ptr<App::Map> map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
+		MapProcessor mapProcessor = MapProcessor(logger);
+		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
+		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
+		std::vector<Path*> paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		
+		delete nodes;
+		for(auto path : paths)
+		{
+			delete path;
+		}
 
-//
-//		map = new Map();
-//		map->addUavStart(new PointParticle(25, 25, 0, 0));
-//		map->addGoal(new Goal(150, 150, 50, 50));
-//		logger->logSelectedMap(map, 500, 500);
+		//here comes RRT-Path.
 
+		duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
 
-		MapProcessor* mapProcessor = new MapProcessor(logger);
-		auto nodes = mapProcessor->mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
-		GuidingPathFactory* pathFactory = new GuidingPathFactory(logger);
-		std::vector<Path*> paths = pathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		logger->logText(std::to_string(duration) + "sekund");
 
 	}
 
@@ -52,7 +63,7 @@ namespace App
 
 	void Core::logConfigurationChange()
 	{
-		App::Map* map = maps.at(configuration->getMapNumber());
+		auto map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 	}
 

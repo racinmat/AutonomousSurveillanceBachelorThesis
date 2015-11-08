@@ -11,7 +11,7 @@ namespace App
 	public:
 		PathFindingAlgorithm();
 		virtual ~PathFindingAlgorithm();
-		virtual App::Path* findPath(std::vector<Node*> nodes, Node* start, Node* end) = 0;
+		virtual App::Path* findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end) = 0;
 	};
 
 	inline PathFindingAlgorithm::PathFindingAlgorithm()

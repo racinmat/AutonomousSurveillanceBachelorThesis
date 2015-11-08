@@ -8,11 +8,11 @@ namespace AStar
 	public:
 		OpenedSet();
 		virtual ~OpenedSet();
-		virtual bool contains(NodeWrapper* nodeWrapper) override;
-		NodeWrapper* pollBest();
+		virtual bool contains(std::shared_ptr<NodeWrapper> nodeWrapper) override;
+		std::shared_ptr<NodeWrapper> pollBest();
 
 	protected:
-		NodeWrapper* getBest();
+		std::shared_ptr<NodeWrapper> getBest();
 	};
 
 }

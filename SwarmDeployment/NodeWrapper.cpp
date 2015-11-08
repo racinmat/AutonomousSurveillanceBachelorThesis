@@ -9,7 +9,7 @@ namespace AStar
 	{
 	}
 
-	NodeWrapper::NodeWrapper(NodeWrapper* parent, App::Node* node, App::Node* endNode):
+	NodeWrapper::NodeWrapper(NodeWrapper* parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
 		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
 	{
 		if (parent == nullptr)
@@ -37,7 +37,7 @@ namespace AStar
 		return std::sqrt(xDist + yDist);
 	}
 
-	double NodeWrapper::getDistance(App::Node* node)
+	double NodeWrapper::getDistance(std::shared_ptr<App::Node> node)
 	{
 		double xDist = this->getX() - node->getPoint()->getX();
 		xDist *= xDist;
@@ -46,27 +46,27 @@ namespace AStar
 		return std::sqrt(xDist + yDist);
 	}
 
-	std::set<NodeWrapper*> NodeWrapper::expand(App::Node* endNode)
+	std::set<std::shared_ptr<NodeWrapper>> NodeWrapper::expand(std::shared_ptr<App::Node> endNode)
 	{
 		auto expanded = this->node->getNeighbors();
-		std::set<NodeWrapper*> expandedWrapper = std::set<NodeWrapper*>();
-		for (App::Node* node : expanded) {
-			expandedWrapper.insert(new NodeWrapper(this, node, endNode));
+		auto expandedWrapper = std::set<std::shared_ptr<NodeWrapper>>();
+		for (auto node : expanded) {
+			expandedWrapper.insert(std::make_shared<NodeWrapper>(this, node, endNode));
 		}
 		return expandedWrapper;
 	}
 
-	void NodeWrapper::recalculateHeuristic(App::Node* endNode)
+	void NodeWrapper::recalculateHeuristic(std::shared_ptr<App::Node> endNode)
 	{
 		this->heuristicToEnd = getDistance(endNode);
 	}
 
-	NodeWrapper* NodeWrapper::getParent() const
+	std::shared_ptr<NodeWrapper> NodeWrapper::getParent() const
 	{
 		return parent;
 	}
 
-	App::Node* NodeWrapper::getNode() const
+	std::shared_ptr<App::Node> NodeWrapper::getNode() const
 	{
 		return node;
 	}
@@ -96,10 +96,10 @@ namespace AStar
 		return this->parent != nullptr;
 	}
 
-	std::vector<NodeWrapper*> NodeWrapper::getWay()
+	std::vector<std::shared_ptr<NodeWrapper>> NodeWrapper::getWay()
 	{
-		std::vector<NodeWrapper*> wayToTarget = std::vector<NodeWrapper*>(pathLength);
-		NodeWrapper* iter = this;
+		auto wayToTarget = std::vector<std::shared_ptr<NodeWrapper>>(pathLength);
+		auto iter = std::shared_ptr<NodeWrapper>(this);
 		int index = pathLength;
 		while (iter->hasParent()) {
 			index--;

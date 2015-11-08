@@ -1,6 +1,7 @@
 #pragma once
 #include "Node.h"
 #include <set>
+#include <memory>
 
 
 namespace AStar
@@ -10,27 +11,27 @@ namespace AStar
 	{
 	public:
 		virtual ~NodeWrapper();
-		NodeWrapper(NodeWrapper* parent, App::Node* node, App::Node* endNode);
+		NodeWrapper(NodeWrapper* parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode);
 		double getDistance(NodeWrapper* node);
-		double getDistance(App::Node* node);
-		std::set<NodeWrapper*> expand(App::Node* endNode);
-		void recalculateHeuristic(App::Node* endNode);
-		NodeWrapper* getParent() const;
-		App::Node* getNode() const;
+		double getDistance(std::shared_ptr<App::Node> node);
+		std::set<std::shared_ptr<NodeWrapper>> expand(std::shared_ptr<App::Node> endNode);
+		void recalculateHeuristic(std::shared_ptr<App::Node> endNode);
+		std::shared_ptr<NodeWrapper> getParent() const;
+		std::shared_ptr<App::Node> getNode() const;
 		double getX() const;
 		double getY() const;
 		double getFromStart() const;
 		double getHeuristicToEnd() const;
 		bool hasParent();
-		std::vector<NodeWrapper*> getWay();
+		std::vector<std::shared_ptr<NodeWrapper>> getWay();
 		double getTotalCost();
 		bool operator==(const NodeWrapper& another);
 		bool operator!=(const NodeWrapper& another);
 
 	protected:
 		std::string coords;
-		NodeWrapper* parent;
-		App::Node* node;
+		std::shared_ptr<NodeWrapper> parent;
+		std::shared_ptr<App::Node> node;
 		double fromStart;
 		double fromParent;
 		double heuristicToEnd;

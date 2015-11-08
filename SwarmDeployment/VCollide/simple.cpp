@@ -193,34 +193,34 @@ int not_main3(int argc, char *argv[])
 {
 	int collision;
 	ColDetect colDetect;
-	Triangle3D* triangle1 = new Triangle3D(new Point2D(0, 0), new Point2D(2, 3), new Point2D(2, 0));
-	Triangle3D* triangle2 = new Triangle3D(new Point2D(0, 1), new Point2D(1, 1), new Point2D(0, 3));
+	Triangle3D triangle1 = Triangle3D(Point2D(0, 0), Point2D(2, 3), Point2D(2, 0));
+	Triangle3D triangle2 = Triangle3D(Point2D(0, 1), Point2D(1, 1), Point2D(0, 3));
 	collision = colDetect.coldetect(triangle1, triangle2);	//má být kolize
 	std::cout << "Collision: " << collision << std::endl;
 
-	Triangle3D* triangle3 = new Triangle3D(new Point2D(0, 1), new Point2D(1, 2), new Point2D(0, 3));
+	Triangle3D triangle3 = Triangle3D(Point2D(0, 1), Point2D(1, 2), Point2D(0, 3));
 	collision = colDetect.coldetect(triangle1, triangle3);	//nemá být kolize
 	std::cout << "Collision: " << collision << std::endl;
 
-	Triangle3D* triangle4 = new Triangle3D(new Point2D(0, 0), new Point2D(2, 2), new Point2D(2, 0));
+	Triangle3D triangle4 = Triangle3D(Point2D(0, 0), Point2D(2, 2), Point2D(2, 0));
 	collision = colDetect.coldetect(triangle2, triangle4);	//mají se dotýkat, je kolize
 	std::cout << "Collision: " << collision << std::endl;
 
-	Triangle3D* triangle5 = new Triangle3D(new Point2D(0, 0), new Point2D(2, 1.9999), new Point2D(2, 0));
+	Triangle3D triangle5 = Triangle3D(Point2D(0, 0), Point2D(2, 1.9999), Point2D(2, 0));
 	collision = colDetect.coldetect(triangle2, triangle5);	//nemá být kolize
 	std::cout << "Collision: " << collision << std::endl;
 
 
-	Rectangle2D* rect1 = new Rectangle2D(0, 0, 2, 2);
-	Rectangle2D* rect2 = new Rectangle2D(1, 1, 2, 2);
+	Rectangle2D rect1 = Rectangle2D(0, 0, 2, 2);
+	Rectangle2D rect2 = Rectangle2D(1, 1, 2, 2);
 	collision = colDetect.coldetect(rect1, rect2);	//nemá být kolize
 	std::cout << "Collision: " << collision << std::endl;
 
-	Rectangle2D* rect3 = new Rectangle2D(2, 1, 2, 2);
+	Rectangle2D rect3 = Rectangle2D(2, 1, 2, 2);
 	collision = colDetect.coldetect(rect1, rect3);	//nemá být kolize
 	std::cout << "Collision: " << collision << std::endl;
 
-	Rectangle2D* rect4 = new Rectangle2D(3, 3, 3, 3);
+	Rectangle2D rect4 = Rectangle2D(3, 3, 3, 3);
 	collision = colDetect.coldetect(rect1, rect4);	//nemá být kolize
 	std::cout << "Collision: " << collision << std::endl;
 

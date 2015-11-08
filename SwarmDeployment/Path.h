@@ -10,12 +10,13 @@ namespace App
 	{
 	public:
 		Path();
-		std::list<App::Node*> getNodes() const;
-		void addToEnd(App::Node* node);
-		void addToStart(App::Node* node);
+		~Path();
+		std::list<std::shared_ptr<App::Node>> getNodes() const;
+		void addToEnd(std::shared_ptr<App::Node> node);
+		void addToStart(std::shared_ptr<App::Node> node);
 
 	protected:
-		std::list<App::Node*> nodes;
+		std::list<std::shared_ptr<App::Node>> nodes;
 	};
 
 }

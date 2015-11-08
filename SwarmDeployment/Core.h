@@ -1,5 +1,6 @@
 #pragma once
 #include "LoggerInterface.h"
+#include "memory"
 
 namespace App
 {
@@ -10,7 +11,7 @@ namespace App
 	{
 	
 	public:
-		Core(Configuration* configuration);
+		explicit Core(Configuration* configuration);
 		~Core();
 		void run();
 		void setLogger(LoggerInterface* logger);
@@ -18,7 +19,7 @@ namespace App
 
 	protected:
 		LoggerInterface* logger;
-		std::vector<Map*> maps;
+		std::vector<std::shared_ptr<App::Map>> maps;
 		Configuration* configuration;
 	};
 

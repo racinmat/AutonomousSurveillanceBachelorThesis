@@ -13,10 +13,10 @@ Rectangle2D::~Rectangle2D()
 {
 }
 
-std::vector<Triangle3D*> Rectangle2D::toTriangles()
+std::vector<Triangle3D> Rectangle2D::toTriangles()
 {
-	auto triangles = std::vector<Triangle3D*>(2);
-	triangles[0] = new Triangle3D(new Point2D(x, y), new Point2D(x + width, y), new Point2D(x, y + height));
-	triangles[1] = new Triangle3D(new Point2D(x + width, y), new Point2D(x, y + height), new Point2D(x + width, y + height));
+	auto triangles = std::vector<Triangle3D>(2);
+	triangles[0] = Triangle3D(Point2D(x, y), Point2D(x + width, y), Point2D(x, y + height));
+	triangles[1] = Triangle3D(Point2D(x + width, y), Point2D(x, y + height), Point2D(x + width, y + height));
 	return triangles;
 }

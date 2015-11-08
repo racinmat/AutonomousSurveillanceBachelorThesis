@@ -1,4 +1,5 @@
 #include "AStar.h"
+#include "../../../../../../../Program Files (x86)/Microsoft Visual Studio 14.0/VC/include/memory"
 
 
 namespace AStar
@@ -14,15 +15,15 @@ namespace AStar
 	{
 	}
 
-	App::Path* AStar::findPath(std::vector<App::Node*> nodes, App::Node* start, App::Node* end)
+	App::Path* AStar::findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end)
 	{
+		//here is A* algorithm
 		opened = OpenedSet();
 		closed = ClosedSet();
-		//here is A* algorithm
-		NodeWrapper* current = new NodeWrapper(nullptr, start, end);
-		NodeWrapper* endWrapper = new NodeWrapper(nullptr, end, end);
+		auto current = std::make_shared<NodeWrapper>(nullptr, start, end);
+		auto endWrapper = std::make_shared<NodeWrapper>(nullptr, end, end);
 		int counter = 0;
-		int limit = 4000;
+		int limit = 10000;
 		while ((*current) != (*endWrapper)) {
 			current = examineNextNode(current, end);
 			counter++;
@@ -38,21 +39,21 @@ namespace AStar
 		}
 
 		auto way = current->getWay();
-		return getNodesFromWrappers(way);
+
+		auto path = getNodesFromWrappers(way);
+
+		return path;
 	}
 
 	///Returns new current node, best neighbor of all opened nodes.
-	NodeWrapper* AStar::examineNextNode(NodeWrapper* current, App::Node* end)
+	std::shared_ptr<NodeWrapper> AStar::examineNextNode(std::shared_ptr<NodeWrapper> current, std::shared_ptr<App::Node> end)
 	{
 		auto neighbors = current->expand(end);
 		for (auto neighbor : neighbors)
 		{
-			if (!opened.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.
+			if (!opened.contains(neighbor) && !closed.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.
 			{
-				if (!closed.contains(neighbor))
-				{
-					opened.insert(neighbor);
-				}
+				opened.insert(neighbor);
 			}
 		}
 		closed.insert(current);
@@ -62,10 +63,10 @@ namespace AStar
 		return current;
 	}
 
-	App::Path* AStar::getNodesFromWrappers(std::vector<NodeWrapper*> wrappers)
+	App::Path* AStar::getNodesFromWrappers(std::vector<std::shared_ptr<NodeWrapper>> wrappers)
 	{
 		App::Path* path = new App::Path();
-		for (NodeWrapper* wrapper : wrappers) {
+		for (auto wrapper : wrappers) {
 			path->addToStart(wrapper->getNode());
 		}
 		return path;

@@ -12,9 +12,10 @@ namespace Ui
 	public:
 		GuiDrawer(QGraphicsView* view, QMainWindow* window);
 		virtual ~GuiDrawer();
-		virtual void logSelectedMap(App::Map* map, int worldWidth, int worldHeight) override;
+		virtual void logSelectedMap(std::shared_ptr<App::Map> map, int worldWidth, int worldHeight) override;
 		virtual void logMapGrid(std::vector<std::vector<App::Grid>> mapGrid) override;
-		virtual void logGuidingPaths(std::vector<App::Path*> paths, App::Node* start, std::vector<App::Node*> ends) override;
+		virtual void logGuidingPaths(std::vector<App::Path*> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends) override;
+		virtual void logText(std::string string) override;
 
 	protected:
 		QGraphicsView* view;

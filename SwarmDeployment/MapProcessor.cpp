@@ -12,7 +12,7 @@ namespace App
 	{
 	}
 
-	MapGraph* MapProcessor::mapToNodes(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	MapGraph* MapProcessor::mapToNodes(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		//firstly we have to get map as 2D matrix, grid
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
@@ -20,15 +20,16 @@ namespace App
 		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
 
+
 		//now we determine starting and ending node.
 		//Start node is node, where starts UAV in middle
 		//End node is node in middle of each goal recrangle
 		//Todo: vymyslet, zda zde natvrdo používat pro nalezení støedu obdélníky èi ne
-		Node* startNode;
+		std::shared_ptr<App::Node> startNode;
 
 		int uavCount = map->countUavs();
 		Point* middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
-		for (Node* node : nodes)
+		for (auto node : nodes)
 		{
 			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
 			{
@@ -38,7 +39,7 @@ namespace App
 		}
 
 
-		std::vector<Node*> endNodes = std::vector<Node*>(map->getGoals().size());
+		auto endNodes = std::vector<std::shared_ptr<App::Node>>(map->getGoals().size());
 		for (size_t i = 0; i < map->getGoals().size(); i++)
 		{
 			Rectangle* goal = map->getGoals()[i]->rectangle;
@@ -46,7 +47,7 @@ namespace App
 			int middleY = goal->getY() + goal->getHeight() / 2;
 
 
-			for(Node* node : nodes)
+			for(auto node : nodes)
 			{
 				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
 				{
@@ -60,7 +61,7 @@ namespace App
 		return graph;
 	}
 
-	std::vector<std::vector<Grid>> MapProcessor::getMapGrid(App::Map* map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	std::vector<std::vector<Grid>> MapProcessor::getMapGrid(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		int gridRow = 0;
 		int rows = ceil(double(worldWidth) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
@@ -72,7 +73,7 @@ namespace App
 			int gridColumn = 0;
 			for (int j = cellSize; j <= worldHeigh; j += cellSize)
 			{
-				grid[gridRow][gridColumn] = analyzeCell(map, new Point(i - cellSize, j - cellSize), new Point(i, j), uavSize);	//ternary operator checking borders of map
+				grid[gridRow][gridColumn] = analyzeCell(map, Point(i - cellSize, j - cellSize), Point(i, j), uavSize);	//ternary operator checking borders of map
 				gridColumn++;
 			}
 			gridRow++;
@@ -80,15 +81,15 @@ namespace App
 		return grid;
 	}
 
-	Grid MapProcessor::analyzeCell(Map* map, Point* leftBottom, Point* rightUpper, double uavSize)
+	Grid MapProcessor::analyzeCell(std::shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize)
 	{
 		ColDetect colDetect;
-		Rectangle2D* cell = new Rectangle2D(leftBottom->getX(), leftBottom->getY(), rightUpper->getX() - leftBottom->getX(), rightUpper->getY() - leftBottom->getY());
+		Rectangle2D cell = Rectangle2D(leftBottom.getX(), leftBottom.getY(), rightUpper.getX() - leftBottom.getX(), rightUpper.getY() - leftBottom.getY());
 
 		for (PointParticle* uavStart : map->getUavsStart())
 		{
 			if (colDetect.coldetect(
-				new Rectangle2D(uavStart->getLocation()->getX() - uavSize / 2, uavStart->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
+				Rectangle2D(uavStart->getLocation()->getX() - uavSize / 2, uavStart->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
 			{
 				return Grid::UAV;
 			}
@@ -97,7 +98,7 @@ namespace App
 		for (Obstacle* obstacle : map->getObstacles())
 		{
 			if (colDetect.coldetect(
-				new Rectangle2D(obstacle->rectangle->getX(), obstacle->rectangle->getY(), obstacle->rectangle->getWidth(), obstacle->rectangle->getHeight()), cell))
+				Rectangle2D(obstacle->rectangle->getX(), obstacle->rectangle->getY(), obstacle->rectangle->getWidth(), obstacle->rectangle->getHeight()), cell))
 			{
 				return Grid::Obstacle;
 			}
@@ -106,7 +107,7 @@ namespace App
 		for (Goal* goal : map->getGoals())
 		{
 			if (colDetect.coldetect(
-				new Rectangle2D(goal->rectangle->getX(), goal->rectangle->getY(), goal->rectangle->getWidth(), goal->rectangle->getHeight()), cell))
+				Rectangle2D(goal->rectangle->getX(), goal->rectangle->getY(), goal->rectangle->getWidth(), goal->rectangle->getHeight()), cell))
 			{
 				return Grid::Goal;
 			}
@@ -115,9 +116,9 @@ namespace App
 		return Grid::Free;
 	}
 
-	std::vector<Node*> MapProcessor::gridToNodes(std::vector<std::vector<Grid>> mapGrid, int cellSize)
+	std::vector<std::shared_ptr<App::Node>> MapProcessor::gridToNodes(std::vector<std::vector<Grid>> mapGrid, int cellSize)
 	{
-		std::vector<Node*> nodes = std::vector<Node*>(mapGrid.size() * mapGrid[0].size());
+		auto nodes = std::vector<std::shared_ptr<App::Node>>(mapGrid.size() * mapGrid[0].size());
 		int index = 0;
 
 		for (size_t i = 0; i < mapGrid.size(); i++)
@@ -128,7 +129,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[index] = new Node(new Point(x, y), grid);
+				nodes[index] = std::make_shared<App::Node>(new Node(new Point(x, y), grid));
 
 				index++;
 			}
@@ -144,7 +145,7 @@ namespace App
 			auto row = mapGrid[i];
 			for (size_t j = 0; j < row.size(); j++)
 			{
-				Node* node = nodes[index];
+				auto node = nodes[index];
 				int n_index = 0;
 				for (int p = -1; p <= 1; p++)
 				{

@@ -12,7 +12,7 @@ namespace App
 	{
 	}
 
-	std::vector<App::Path*> GuidingPathFactory::createGuidingPaths(std::vector<Node*> nodes, Node* start, std::vector<Node*> ends) //more ends for more AoI
+	std::vector<App::Path*> GuidingPathFactory::createGuidingPaths(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends) //more ends for more AoI
 	{
 		auto paths = std::vector<App::Path*>(ends.size());
 		for (size_t i = 0; i < ends.size(); i++)

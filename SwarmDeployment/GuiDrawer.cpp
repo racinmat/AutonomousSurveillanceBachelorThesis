@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include <iostream>
 #include <QtCore/qtextstream.h>
+#include <QtWidgets/QMessageBox>
 
 namespace Ui
 {
@@ -20,7 +21,7 @@ namespace Ui
 	{
 	}
 
-	void GuiDrawer::logSelectedMap(App::Map* map, int worldWidth, int worldHeight)
+	void GuiDrawer::logSelectedMap(std::shared_ptr<App::Map> map, int worldWidth, int worldHeight)
 	{
 		QTextStream cout(stdout);
 		cout << "logging selected map" << endl;
@@ -74,18 +75,18 @@ namespace Ui
 		}
 	}
 
-	void GuiDrawer::logGuidingPaths(std::vector<App::Path*> paths, App::Node* start, std::vector<App::Node*> ends)
+	void GuiDrawer::logGuidingPaths(std::vector<App::Path*> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
 	{
 		scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::yellow), QBrush(Qt::yellow));
-		for(App::Node* end : ends)
+		for(auto end : ends)
 		{
 			scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
 		}
 
-		for (App::Path* path : paths)
+		for (auto path : paths)
 		{
-			App::Node* previous = nullptr;
-			for (App::Node* node : path->getNodes())
+			std::shared_ptr<App::Node> previous = nullptr;
+			for (auto node : path->getNodes())
 			{
 				if (previous != nullptr)
 				{
@@ -94,6 +95,14 @@ namespace Ui
 				previous = node;
 			}
 		}
+	}
+
+	void GuiDrawer::logText(std::string string)
+	{
+		QMessageBox::information(
+			window,
+			"Logged text",
+			QString::fromStdString(string));
 	}
 
 	void GuiDrawer::clear()

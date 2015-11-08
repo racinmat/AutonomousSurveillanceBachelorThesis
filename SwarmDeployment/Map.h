@@ -12,6 +12,7 @@ namespace App
 	{
 	public:
 		Map();
+		~Map();
 		void addObstacle(Obstacle* obstacle);
 		void addGoal(Goal* goal);
 		size_t countGoals() const;
