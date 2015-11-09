@@ -12,7 +12,7 @@ namespace App
 	
 	public:
 		explicit Core(Configuration* configuration);
-		~Core();
+		virtual ~Core();
 		void run();
 		void setLogger(LoggerInterface* logger);
 		void logConfigurationChange();

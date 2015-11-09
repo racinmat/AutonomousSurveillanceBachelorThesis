@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Core.h"
-#include <QtCore/qdebug.h>
 
 namespace App
 {
@@ -14,7 +13,7 @@ namespace App
 		int getAStarCellSize() const;
 		int getMapNumber() const;
 		int getUavCount() const;
-		void setMapNumber(int mapNumber, QDebug debug);
+		void setMapNumber(int mapNumber);
 		void setUavCount(int uavCount);
 		void setCore(App::Core* core);
 		int getWorldHeight() const;

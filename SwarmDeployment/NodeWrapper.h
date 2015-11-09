@@ -12,22 +12,24 @@ namespace AStar
 	public:
 		virtual ~NodeWrapper();
 		NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode);
-		double getDistance(std::shared_ptr<NodeWrapper> node);
-		double getDistance(std::shared_ptr<App::Node> node);
-		std::set<std::shared_ptr<NodeWrapper>> expand(std::shared_ptr<App::Node> endNode);
-		void recalculateHeuristic(std::shared_ptr<App::Node> endNode);
-		std::shared_ptr<NodeWrapper> getParent() const;
-		std::shared_ptr<App::Node> getNode() const;
-		double getX() const;
-		double getY() const;
-		double getFromStart() const;
-		double getHeuristicToEnd() const;
-		bool hasParent();
-		std::vector<std::shared_ptr<NodeWrapper>> getWay();
-		double getTotalCost();
-		bool operator==(const NodeWrapper& another);
-		bool operator!=(const NodeWrapper& another);
-		std::shared_ptr<NodeWrapper> getPointer();
+		virtual double getDistance(std::shared_ptr<NodeWrapper> node);
+		virtual double getDistance(std::shared_ptr<App::Node> node);
+		virtual std::set<std::shared_ptr<NodeWrapper>> expand(std::shared_ptr<App::Node> endNode);
+		virtual void recalculateHeuristic(std::shared_ptr<App::Node> endNode);
+		virtual std::shared_ptr<NodeWrapper> getParent() const;
+		virtual std::shared_ptr<App::Node> getNode() const;
+		virtual double getX() const;
+		virtual double getY() const;
+		virtual double getFromStart() const;
+		virtual double getHeuristicToEnd() const;
+		virtual bool hasParent();
+		virtual std::vector<std::shared_ptr<NodeWrapper>> getWay();
+		virtual double getTotalCost();
+		virtual bool operator==(const NodeWrapper& another);
+		virtual bool operator==(const App::Node& another);
+		virtual bool operator!=(const NodeWrapper& another);
+		virtual bool operator!=(const App::Node& another);
+		virtual std::shared_ptr<NodeWrapper> getPointer();
 	protected:
 		std::string coords;
 		std::shared_ptr<NodeWrapper> parent;
@@ -37,6 +39,8 @@ namespace AStar
 		double heuristicToEnd;
 		double totalCost;
 		int pathLength; //použito pro urèení délky hledané cesty. Pro alokaci pole, kam se uloží nalezená cesta.
+		static int lastId;
+		int id;
 	};
 
 }

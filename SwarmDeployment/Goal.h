@@ -9,7 +9,7 @@ namespace App
 
 	public:
 		Goal(int x, int y, int width, int height);
-		~Goal();
+		virtual ~Goal();
 		Rectangle *rectangle;
 
 	};

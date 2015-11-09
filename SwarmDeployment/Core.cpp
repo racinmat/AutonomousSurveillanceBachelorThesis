@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <ctime>
 #include <memory>
+#include <string>
 
 namespace App
 {
@@ -40,7 +41,7 @@ namespace App
 		MapProcessor mapProcessor = MapProcessor(logger);
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
-		std::vector<std::shared_ptr<Path>> paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		auto paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
 		
 		delete nodes;
 

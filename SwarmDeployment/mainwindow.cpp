@@ -29,7 +29,7 @@ void MainWindow::on_map_currentIndexChanged(int index)
 {
 	if(configuration != nullptr)
 	{
-		configuration->setMapNumber(index, qDebug());
+		configuration->setMapNumber(index);
 		qDebug() << "succesfully set the map number!";
 	}
 	qDebug() << "Index in setting mapNumber:" << QString("%1").arg(index);

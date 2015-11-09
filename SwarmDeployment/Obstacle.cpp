@@ -8,4 +8,7 @@ namespace App
 		rectangle = new Rectangle(x, y, width, height);
 	}
 
+	Obstacle::~Obstacle()
+	{
+	}
 }

@@ -1,16 +1,19 @@
 #include "NodeWrapper.h"
 #include <string>
+#include <iostream>
 
 
 namespace AStar
 {
+	int NodeWrapper::lastId = 0;
 
 	NodeWrapper::~NodeWrapper()
 	{
+		std::cout << "Deleting node with coords: " << coords << ", and id: "<< id << std::endl ;
 	}
 
 	NodeWrapper::NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
-		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
+		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1), id(lastId++)
 	{
 		if (parent == nullptr)
 		{
@@ -121,7 +124,17 @@ namespace AStar
 		return  getX() == another.getX() && getY() == another.getY();
 	}
 
+	bool NodeWrapper::operator==(const App::Node& another)
+	{
+		return  getX() == another.getPoint()->getX() && getY() == another.getPoint()->getY();
+	}
+
 	bool NodeWrapper::operator!=(const NodeWrapper& another)
+	{
+		return !(*this == another);
+	}
+
+	bool NodeWrapper::operator!=(const App::Node& another)
 	{
 		return !(*this == another);
 	}

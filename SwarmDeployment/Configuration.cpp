@@ -30,12 +30,11 @@ namespace App
 		return uavCount;
 	}
 
-	void Configuration::setMapNumber(int mapNumber, QDebug debug)
+	void Configuration::setMapNumber(int mapNumber)
 	{
 		this->mapNumber = mapNumber;
 		if (core != nullptr)
 		{
-			debug << "logging configuration change";
 			core->logConfigurationChange();
 		}
 	}
