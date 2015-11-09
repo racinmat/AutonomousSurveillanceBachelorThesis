@@ -12,6 +12,7 @@ namespace App
 		Path();
 		virtual ~Path();
 		std::list<std::shared_ptr<Node>> getNodes() const;
+		int getSize() const;
 		void addToEnd(std::shared_ptr<Node> node);
 		void addToStart(std::shared_ptr<Node> node);
 

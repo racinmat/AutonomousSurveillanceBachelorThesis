@@ -18,6 +18,7 @@ namespace App
 		void run();
 		void setLogger(shared_ptr<LoggerInterface> logger);
 		void logConfigurationChange();
+		void rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration);
 
 	protected:
 		shared_ptr<LoggerInterface> logger;

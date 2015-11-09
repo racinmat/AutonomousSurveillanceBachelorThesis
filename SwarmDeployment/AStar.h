@@ -13,7 +13,7 @@ namespace AStar
 	public:
 		AStar();
 		virtual ~AStar() override;
-		std::vector<std::shared_ptr<App::Node>> findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end) override;
+		std::shared_ptr<App::Path> findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end) override;
 
 	protected:
 		OpenedSet opened;

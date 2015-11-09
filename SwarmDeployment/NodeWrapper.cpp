@@ -5,15 +5,13 @@
 
 namespace AStar
 {
-	int NodeWrapper::lastId = 0;
 
 	NodeWrapper::~NodeWrapper()
 	{
-		std::cout << "Deleting node with coords: " << coords << ", and id: "<< id << std::endl ;
 	}
 
 	NodeWrapper::NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
-		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1), id(lastId++)
+		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
 	{
 		if (parent == nullptr)
 		{

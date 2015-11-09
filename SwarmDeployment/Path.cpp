@@ -17,6 +17,11 @@ namespace App
 		return nodes;
 	}
 
+	int Path::getSize() const
+	{
+		return nodes.size();
+	}
+
 	void Path::addToStart(std::shared_ptr<Node> node)
 	{
 		nodes.push_front(node);

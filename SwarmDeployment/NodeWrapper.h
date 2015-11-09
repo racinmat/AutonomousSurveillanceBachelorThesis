@@ -38,8 +38,6 @@ namespace AStar
 		double heuristicToEnd;
 		double totalCost;
 		int pathLength; //použito pro urèení délky hledané cesty. Pro alokaci pole, kam se uloží nalezená cesta.
-		static int lastId;
-		int id;
 	};
 
 }
