@@ -1,5 +1,6 @@
 #include "MapProcessor.h"
 #include "VCollide/ColDetect.h"
+#include "memory"
 
 namespace App
 {
@@ -129,7 +130,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[index] = std::make_shared<App::Node>(new Node(new Point(x, y), grid));
+				nodes[index] = std::make_shared<App::Node>(new Point(x, y), grid);
 
 				index++;
 			}

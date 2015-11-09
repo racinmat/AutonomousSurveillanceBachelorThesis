@@ -2,6 +2,9 @@
 
 namespace AStar
 {
+	NodeSet::~NodeSet()
+	{
+	}
 
 	bool NodeSet::contains(std::shared_ptr<NodeWrapper> node)
 	{

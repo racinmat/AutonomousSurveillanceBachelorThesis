@@ -15,7 +15,7 @@ namespace AStar
 	{
 	}
 
-	App::Path* AStar::findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end)
+	std::shared_ptr<App::Path> AStar::findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end)
 	{
 		//here is A* algorithm
 		opened = OpenedSet();
@@ -24,8 +24,23 @@ namespace AStar
 		auto endWrapper = std::make_shared<NodeWrapper>(nullptr, end, end);
 		int counter = 0;
 		int limit = 10000;
-		while ((*current) != (*endWrapper)) {
-			current = examineNextNode(current, end);
+		std::set<std::shared_ptr<NodeWrapper>> neighbors;
+		while ((*current.get()) != (*endWrapper.get())) {
+			//expanding and picking best next node
+			neighbors = current->expand(end);
+			for (auto neighbor : neighbors)
+			{
+				if (!opened.contains(neighbor) && !closed.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.
+				{
+					opened.insert(neighbor);
+				}
+			}
+			closed.insert(current);
+			do {
+				current = opened.pollBest();
+			} while (closed.contains(current));
+			//end of expanding and picking best next node
+
 			counter++;
 			if (counter > limit)
 			{
@@ -40,35 +55,13 @@ namespace AStar
 
 		auto way = current->getWay();
 
-		auto path = getNodesFromWrappers(way);
-
-		return path;
-	}
-
-	///Returns new current node, best neighbor of all opened nodes.
-	std::shared_ptr<NodeWrapper> AStar::examineNextNode(std::shared_ptr<NodeWrapper> current, std::shared_ptr<App::Node> end)
-	{
-		auto neighbors = current->expand(end);
-		for (auto neighbor : neighbors)
-		{
-			if (!opened.contains(neighbor) && !closed.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.
-			{
-				opened.insert(neighbor);
-			}
-		}
-		closed.insert(current);
-		do {
-			current = opened.pollBest();
-		} while (closed.contains(current));
-		return current;
-	}
-
-	App::Path* AStar::getNodesFromWrappers(std::vector<std::shared_ptr<NodeWrapper>> wrappers)
-	{
-		App::Path* path = new App::Path();
-		for (auto wrapper : wrappers) {
+		//hydrating path from node wrappers
+		auto path = std::make_shared<App::Path>();
+		for (auto wrapper : way) {
 			path->addToStart(wrapper->getNode());
 		}
 		return path;
 	}
+
+
 }

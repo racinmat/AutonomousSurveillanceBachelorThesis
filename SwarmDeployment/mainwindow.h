@@ -33,10 +33,10 @@ private slots:
 
 protected:
 	Ui::MainWindow* ui;
-	std::shared_ptr<App::Configuration>& configuration;
+	std::shared_ptr<App::Configuration> configuration;
 	Ui::GuiDrawer* drawer;
 	bool painting;
-	std::shared_ptr<App::Core>& core;
+	std::shared_ptr<App::Core> core;
 };
 
 #endif // MAINWINDOW_H

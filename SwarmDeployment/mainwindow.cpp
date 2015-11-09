@@ -8,8 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow),
 	painting(false)
 {
-	this->configuration = nullptr;
-	this->core = nullptr;
 	ui->setupUi(this);
 	ui->countUav->setRange(1, 10);
 	ui->graphicsView->setScene(new QGraphicsScene());

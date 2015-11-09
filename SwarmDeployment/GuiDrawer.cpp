@@ -75,7 +75,7 @@ namespace Ui
 		}
 	}
 
-	void GuiDrawer::logGuidingPaths(std::vector<App::Path*> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
+	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
 	{
 		scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::yellow), QBrush(Qt::yellow));
 		for(auto end : ends)

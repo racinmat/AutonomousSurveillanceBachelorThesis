@@ -9,7 +9,7 @@ namespace AStar
 	{
 	}
 
-	NodeWrapper::NodeWrapper(NodeWrapper* parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
+	NodeWrapper::NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
 		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
 	{
 		if (parent == nullptr)
@@ -28,7 +28,7 @@ namespace AStar
 		this->totalCost = this->getFromStart() + this->getHeuristicToEnd();
 	}
 
-	double NodeWrapper::getDistance(NodeWrapper* node)
+	double NodeWrapper::getDistance(std::shared_ptr<NodeWrapper> node)
 	{
 		double xDist = this->getX() - node->getX();
 		xDist *= xDist;
@@ -51,7 +51,7 @@ namespace AStar
 		auto expanded = this->node->getNeighbors();
 		auto expandedWrapper = std::set<std::shared_ptr<NodeWrapper>>();
 		for (auto node : expanded) {
-			expandedWrapper.insert(std::make_shared<NodeWrapper>(this, node, endNode));
+			expandedWrapper.insert(std::make_shared<NodeWrapper>(this->getPointer(), node, endNode));
 		}
 		return expandedWrapper;
 	}
@@ -124,5 +124,10 @@ namespace AStar
 	bool NodeWrapper::operator!=(const NodeWrapper& another)
 	{
 		return !(*this == another);
+	}
+
+	std::shared_ptr<NodeWrapper> NodeWrapper::getPointer()
+	{
+		return shared_from_this();
 	}
 }

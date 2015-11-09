@@ -40,13 +40,9 @@ namespace App
 		MapProcessor mapProcessor = MapProcessor(logger);
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
-		std::vector<Path*> paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		std::vector<std::shared_ptr<Path>> paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
 		
 		delete nodes;
-		for(auto path : paths)
-		{
-			delete path;
-		}
 
 		//here comes RRT-Path.
 

@@ -7,12 +7,12 @@
 namespace AStar
 {
 
-	class NodeWrapper
+	class NodeWrapper : public std::enable_shared_from_this<NodeWrapper>
 	{
 	public:
 		virtual ~NodeWrapper();
-		NodeWrapper(NodeWrapper* parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode);
-		double getDistance(NodeWrapper* node);
+		NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode);
+		double getDistance(std::shared_ptr<NodeWrapper> node);
 		double getDistance(std::shared_ptr<App::Node> node);
 		std::set<std::shared_ptr<NodeWrapper>> expand(std::shared_ptr<App::Node> endNode);
 		void recalculateHeuristic(std::shared_ptr<App::Node> endNode);
@@ -27,7 +27,7 @@ namespace AStar
 		double getTotalCost();
 		bool operator==(const NodeWrapper& another);
 		bool operator!=(const NodeWrapper& another);
-
+		std::shared_ptr<NodeWrapper> getPointer();
 	protected:
 		std::string coords;
 		std::shared_ptr<NodeWrapper> parent;

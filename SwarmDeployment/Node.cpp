@@ -4,12 +4,12 @@
 namespace App
 {
 	Node::Node(Point* point, Grid gridType, double cost) :
-		point(point), gridType(gridType), cost(cost)
+		point(point), cost(cost), gridType(gridType)
 	{
 	}
 
 	Node::Node(Point* point, Grid gridType) :
-		point(point), gridType(gridType), cost(1)
+		point(point), cost(1), gridType(gridType)
 	{
 	}
 

@@ -6,20 +6,20 @@
 
 int run(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	MainWindow w;
+//	QApplication a(argc, argv);
+//	MainWindow w;
 	auto configuration = std::make_shared<App::Configuration>();
 	auto core = std::make_shared<App::Core>(configuration.get());
-	core->setLogger(w.getLogger());
+//	core->setLogger(w.getLogger());
 
-	w.setConfiguration(configuration);
-	w.setCore(core);
-	w.show();
+//	w.setConfiguration(configuration);
+//	w.setCore(core);
+//	w.show();
 
 	core->run();
 
-	int returnValue = a.exec();
-
+//	int returnValue = a.exec();
+	int returnValue = 0;
 	return returnValue;
 }
 
