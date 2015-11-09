@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Point.h"
+#include <memory>
 
 namespace App
 {
@@ -20,7 +21,7 @@ namespace App
 		void setWidth(int width);
 
 	protected:
-		Point* location;
+		std::shared_ptr<Point> location;
 		int m_height;
 		int m_width;
 

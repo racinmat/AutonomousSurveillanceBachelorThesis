@@ -19,7 +19,7 @@ namespace App
 	
 	protected:
 		shared_ptr<LoggerInterface> logger;
-		PathFindingAlgorithm* algorithm;
+		shared_ptr<PathFindingAlgorithm> algorithm;
 	};
 
 }

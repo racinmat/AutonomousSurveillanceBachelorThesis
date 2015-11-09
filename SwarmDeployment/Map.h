@@ -3,6 +3,7 @@
 #include "Obstacle.h"
 #include <vector>
 #include "PointParticle.h"
+#include <memory>
 
 using namespace std;
 
@@ -15,19 +16,19 @@ namespace App
 	public:
 		Map();
 		~Map();
-		void addObstacle(Obstacle* obstacle);
-		void addGoal(Goal* goal);
+		void addObstacle(shared_ptr<Obstacle> obstacle);
+		void addGoal(shared_ptr<Goal> goal);
 		size_t countGoals() const;
-		std::vector<Goal*> getGoals();
-		std::vector<Obstacle*> getObstacles();
-		void addUavStart(PointParticle* start);
-		std::vector<PointParticle*> getUavsStart();
+		std::vector<shared_ptr<Goal>> getGoals();
+		std::vector<shared_ptr<Obstacle>> getObstacles();
+		void addUavStart(shared_ptr<PointParticle> start);
+		std::vector<shared_ptr<PointParticle>> getUavsStart();
 		int countUavs() const;
 
 	protected:
-		std::vector<Goal*> goals;
-		std::vector<Obstacle*> obstacles;
-		std::vector<PointParticle*> uavsStart;
+		std::vector<shared_ptr<Goal>> goals;
+		std::vector<shared_ptr<Obstacle>> obstacles;
+		std::vector<shared_ptr<PointParticle>> uavsStart;
 	};
 
 }

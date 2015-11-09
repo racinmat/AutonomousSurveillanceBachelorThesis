@@ -5,7 +5,7 @@ namespace App
 
 	Rectangle::Rectangle(int x, int y, int width, int height)
 	{
-		location = new Point(x, y);
+		location = std::make_shared<Point>(x, y);
 		m_height = height;
 		m_width = width;
 	}

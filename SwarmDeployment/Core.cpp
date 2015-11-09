@@ -43,8 +43,6 @@ namespace App
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
 		auto paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-		
-		delete nodes;
 
 		//here comes RRT-Path.
 

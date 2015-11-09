@@ -13,7 +13,7 @@ namespace App
 	public:
 		MapProcessor(shared_ptr<LoggerInterface> logger);
 		virtual ~MapProcessor();
-		MapGraph* mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
+		shared_ptr<MapGraph> mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
 
 	protected:
 		vector<vector<Grid>> getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map

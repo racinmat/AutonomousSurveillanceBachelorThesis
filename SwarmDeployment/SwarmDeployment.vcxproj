@@ -150,7 +150,6 @@
     <ClCompile Include="MapFactory.cpp" />
     <ClCompile Include="MapGraph.cpp" />
     <ClCompile Include="MapProcessor.cpp" />
-    <ClCompile Include="mockmodel.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeWrapper.cpp" />
     <ClCompile Include="Obstacle.cpp" />
@@ -231,7 +230,6 @@
     <ClInclude Include="MapFactory.h" />
     <ClInclude Include="MapGraph.h" />
     <ClInclude Include="MapProcessor.h" />
-    <ClInclude Include="mockmodel.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeWrapper.h" />
     <ClInclude Include="Obstacle.h" />

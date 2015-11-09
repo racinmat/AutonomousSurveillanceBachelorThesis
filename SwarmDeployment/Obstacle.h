@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Rectangle.h"
+#include "memory"
+
+using namespace std;
 
 namespace App
 {
@@ -10,7 +13,7 @@ namespace App
 	public:
 		Obstacle(int x, int y, int width, int heigth);
 		virtual ~Obstacle();
-		Rectangle *rectangle;
+		shared_ptr<Rectangle> rectangle;
 	};
 
 }

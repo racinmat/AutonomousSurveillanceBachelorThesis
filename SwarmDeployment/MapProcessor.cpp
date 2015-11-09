@@ -2,6 +2,8 @@
 #include "VCollide/ColDetect.h"
 #include "memory"
 
+using namespace std;
+
 namespace App
 {
 
@@ -13,7 +15,7 @@ namespace App
 	{
 	}
 
-	MapGraph* MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	shared_ptr<MapGraph> MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		//firstly we have to get map as 2D matrix, grid
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
@@ -29,7 +31,7 @@ namespace App
 		shared_ptr<Node> startNode;
 
 		int uavCount = map->countUavs();
-		Point* middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
+		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
 		for (auto node : nodes)
 		{
 			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
@@ -43,7 +45,7 @@ namespace App
 		auto endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
 		for (size_t i = 0; i < map->getGoals().size(); i++)
 		{
-			Rectangle* goal = map->getGoals()[i]->rectangle;
+			auto goal = map->getGoals()[i]->rectangle;
 			int middleX = goal->getX() + goal->getWidth() / 2;
 			int middleY = goal->getY() + goal->getHeight() / 2;
 
@@ -58,7 +60,7 @@ namespace App
 			}
 		}
 
-		MapGraph* graph = new MapGraph(nodes, startNode, endNodes);
+		shared_ptr<MapGraph> graph = make_shared<MapGraph>(nodes, startNode, endNodes);
 		return graph;
 	}
 
@@ -87,7 +89,7 @@ namespace App
 		ColDetect colDetect;
 		Rectangle2D cell = Rectangle2D(leftBottom.getX(), leftBottom.getY(), rightUpper.getX() - leftBottom.getX(), rightUpper.getY() - leftBottom.getY());
 
-		for (PointParticle* uavStart : map->getUavsStart())
+		for (auto uavStart : map->getUavsStart())
 		{
 			if (colDetect.coldetect(
 				Rectangle2D(uavStart->getLocation()->getX() - uavSize / 2, uavStart->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
@@ -96,7 +98,7 @@ namespace App
 			}
 		}
 
-		for (Obstacle* obstacle : map->getObstacles())
+		for (auto obstacle : map->getObstacles())
 		{
 			if (colDetect.coldetect(
 				Rectangle2D(obstacle->rectangle->getX(), obstacle->rectangle->getY(), obstacle->rectangle->getWidth(), obstacle->rectangle->getHeight()), cell))
@@ -105,7 +107,7 @@ namespace App
 			}
 		}
 
-		for (Goal* goal : map->getGoals())
+		for (auto goal : map->getGoals())
 		{
 			if (colDetect.coldetect(
 				Rectangle2D(goal->rectangle->getX(), goal->rectangle->getY(), goal->rectangle->getWidth(), goal->rectangle->getHeight()), cell))
@@ -130,7 +132,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[index] = make_shared<Node>(new Point(x, y), grid);
+				nodes[index] = make_shared<Node>(make_shared<Point>(x, y), grid);
 
 				index++;
 			}

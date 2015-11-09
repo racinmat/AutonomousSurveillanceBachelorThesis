@@ -5,28 +5,16 @@ namespace App
 
 	Map::Map()
 	{
-		obstacles = std::vector<Obstacle*>();
-		goals = std::vector<Goal*>();
-		uavsStart = std::vector<PointParticle*>();
+		obstacles = std::vector<shared_ptr<Obstacle>>();
+		goals = std::vector<shared_ptr<Goal>>();
+		uavsStart = std::vector<shared_ptr<PointParticle>>();
 	}
 
 	Map::~Map()
 	{
-		for (auto obstacle : obstacles)
-		{
-			delete obstacle;
-		}
-		for (auto goal : goals)
-		{
-			delete goal;
-		}
-		for (auto uavStart : uavsStart)
-		{
-			delete uavStart;
-		}
 	}
 
-	void Map::addGoal(Goal *goal)
+	void Map::addGoal(shared_ptr<Goal> goal)
 	{
 		goals.push_back(goal);
 	}
@@ -36,22 +24,22 @@ namespace App
 		return goals.size();
 	}
 
-	std::vector<Goal*> Map::getGoals()
+	std::vector<shared_ptr<Goal>> Map::getGoals()
 	{
 		return goals;
 	}
 
-	std::vector<Obstacle*> Map::getObstacles()
+	std::vector<shared_ptr<Obstacle>> Map::getObstacles()
 	{
 		return obstacles;
 	}
 
-	void Map::addUavStart(PointParticle* start)
+	void Map::addUavStart(shared_ptr<PointParticle> start)
 	{
 		uavsStart.push_back(start);
 	}
 
-	std::vector<PointParticle*> Map::getUavsStart()
+	std::vector<shared_ptr<PointParticle>> Map::getUavsStart()
 	{
 		return uavsStart;
 	}
@@ -61,7 +49,7 @@ namespace App
 		return uavsStart.size();
 	}
 
-	void Map::addObstacle(Obstacle *obstacle)
+	void Map::addObstacle(shared_ptr<Obstacle> obstacle)
 	{
 		obstacles.push_back(obstacle);
 	}

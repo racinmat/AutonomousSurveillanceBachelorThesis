@@ -10,7 +10,7 @@ namespace App
 	public:
 		Goal(int x, int y, int width, int height);
 		virtual ~Goal();
-		Rectangle *rectangle;
+		std::shared_ptr<Rectangle> rectangle;
 
 	};
 
