@@ -65,6 +65,13 @@ namespace App
 	void Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration)
 	{
 		int uavCount = configuration->getUavCount();
+		int rrt_min_nodes = 1;
+		int rrt_max_nodes = 20000;
+		bool stop = false;
+		int number_of_solutions = 10000;
+		int near_count = 1000;
+		int number_of_inputs = 12;	//todo: spoèítat z dalších hodnot z konfigurace, je to v Node.h
+
 //		global params number_of_uavs empty_node nodes goals goal_map stop output
 
 		cout << "Starting RRT-path...";
@@ -76,7 +83,9 @@ namespace App
 		{
 			gp_length += guiding_paths[m]->getSize();
 		}
-//		nodes = tree_init();	//dodìlat vlastní inicializaci podle potøeby
+
+		vector<shared_ptr<Node>> nodes = vector<shared_ptr<Node>>(); //todo: zjistit, na jaké hodnoty to inicializovat
+
 		auto current_index = vector<vector<int>>(uavCount);		// matice s délkami cest pro jednotlivá UAV.sloupec je cesta, øádek je UAV
 
 		for (int i = 0; i < current_index.size(); i++)
@@ -88,63 +97,84 @@ namespace App
 			}
 		}
 
-//		final_nodes = repmat(empty_node, 1, params.max_nodes);
-//		goal_reached = NaN(1, number_of_uavs);
-//		part_covered = [];
-//
-//		nodes_count = params.max_nodes;
-//		tim = zeros(1, nodes_count - 1); %#ok % tahle promìnná se k nièemu nepoužívá
-//
-//			i = 1; % poèet expandovaných nodes
-//			m = 1; % poèet nalezených cest
-//			s = 2; % poèet prùchodù cyklem ? prostì se to jen zvìtší o 1 pøi každém prùchodu, nikde se nepoužívá
-//			tstart = tic; % tic je matlabovský timer http ://www.mathworks.com/help/matlab/ref/tic.html
-//
-//		while (m <= params.number_of_solutions || i < params.min_nodes) && i < params.max_nodes % numver_of_solutions je asi 10 000.
-//			if stop
-//				%        final_nodes(m) = new_node;
-//		break
-//			end
-//			tv = tic; % tic je matlabovský timer
-//			i = i + 1;
-//		if all(~isnan(goal_reached)) % pokud jsou všechna UAV uvnitø AoI a mají se v rámci AoI rozmístit optimálnì, rrt_path algoritmus už skonèil
-//			if params.pso_optimization  % pokud je vybrána PSO finální èást.jinak se použije RRT finální èást(myslím)
-//				[final_node_index, particles] = pso([goals{ 1 }.x goals{ 1 }.x + goals{ 1 }.width; ...
-//					goals{ 1 }.y goals{ 1 }.y + goals{ 1 }.height], ...
-//					new_node);
-//		final_nodes = particles(final_node_index(1), final_node_index(2));
-//		nodes = nodes(1:(find(isnan([nodes.index]), 1) - 1));
-//		nodes = [nodes particles(:, final_node_index(2))']; %#ok
-//			return
-//			else
-//			end
-//				end
-//
-//				%Random state
-//				s_rand = random_state_guided(guiding_paths, current_index, goal_reached); % vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
-//
-//				%Finding appropriate nearest neighbor
-//				k = 0;
-//		near_found = false;
-//		while ~near_found
-//			if k > params.near_count
-//				i = i - 1;
-//		disp('Not possible to find near node suitable for expansion');
-//		break
-//			end
-//			[near_node] = nearest_neighbor(s_rand, nodes, k); % near_node v sobì obsahuje souøadnice blízkých nodes pro všechna UAV(tedy 4 rùzné body, pokud mám 4 UAV)
-//			[near_node, new_node] = select_input(s_rand, near_node);    % zde je motion model, v new_node jsou opìt body pro všechna UAV dosažitelné podle motion modelu.
-//			% Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli
-//			% kontrole pøekážek
-//			nodes(near_node.index) = near_node; % promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path
-//			if all(near_node.used_inputs) || ...
-//				any(isnan(new_node.loc(1, :))) || any(isnan(near_node.loc(1, :)))
-//				k = k + 1;
-//		check_expandability();
-//		continue
-//			end
-//			near_found = true;
-//		end
+		auto final_nodes = vector<shared_ptr<Node>>(rrt_max_nodes);
+
+		auto goals_reached = vector<bool>(uavCount);
+		for (auto goal_reached : goals_reached)
+		{
+			goal_reached = false;
+		}
+
+
+		int nodes_count = rrt_max_nodes;
+
+
+		int i = 1; // poèet expandovaných nodes
+		int m = 1; // poèet nalezených cest
+		int s = 2; // poèet prùchodù cyklem ? prostì se to jen zvìtší o 1 pøi každém prùchodu, nikde se nepoužívá
+
+		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // numver_of_solutions je asi 10 000.
+		{
+			if (stop)
+			{
+				break;
+			}
+			i++;
+
+//			%Random state
+			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, current_index, goals_reached); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
+
+			//Finding appropriate nearest neighbor
+			int k = 0;	//poèítadlo uvíznutí
+			bool near_found = false;
+
+			while (!near_found)
+			{
+				if (k > near_count)
+				{
+					i--;
+					throw "Not possible to find near node suitable for expansion";
+				}
+				shared_ptr<Node> near_node = nearest_neighbor(s_rand, nodes, k);
+				vector<shared_ptr<Node>> returnedNodes = select_input(s_rand, near_node);
+				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
+				near_node = returnedNodes[0];
+				shared_ptr<Node> new_node = returnedNodes[1];
+				nodes[near_node->index] = near_node; // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path
+
+				bool allInputsUsed = true;
+				for (bool inputUsed : near_node->used_inputs)
+				{
+					allInputsUsed = allInputsUsed && inputUsed;
+				}
+
+				auto isNearUavPosition = false;
+				for (auto uavPosition : near_node->uavs)
+				{
+					allInputsUsed = isNearUavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
+				}
+
+				auto isNewUavPosition = false;
+				for (auto uavPosition : new_node->uavs)
+				{
+					allInputsUsed = isNewUavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
+				}
+
+				//poèítadlo uvíznutí. UAV uvízlo, pokud je tento if true
+				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)
+				{
+					k++;
+					check_expandability();
+				} else
+				{
+					near_found = true;
+				}
+			}
+
+
+
+
+
 //			if any(isnan(new_node.loc(1, :)))
 //				check_expandability();
 //		disp('NaN in new node');
@@ -195,6 +225,8 @@ namespace App
 //				visualize_growth(near_node.loc, new_node.loc, s_rand);
 //		end
 //
+		}
+		
 //			end
 //			final_nodes(m) = nodes(i);
 //		goal_reached = check_near_goal(new_node.loc);
@@ -205,5 +237,21 @@ namespace App
 //		end
 //			output.nodes = nodes;
 		cout << "RRT-Path finished";
+	}
+
+	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached)
+	{
+	}
+
+	shared_ptr<Node> Core::nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<Node>> nodes, int count)
+	{
+	}
+
+	vector<shared_ptr<Node>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<Node> near_node)
+	{
+	}
+
+	void Core::check_expandability()
+	{
 	}
 }
