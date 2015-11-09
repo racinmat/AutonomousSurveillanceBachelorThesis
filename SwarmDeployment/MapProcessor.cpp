@@ -5,7 +5,7 @@
 namespace App
 {
 
-	MapProcessor::MapProcessor(LoggerInterface* logger) : logger(logger)
+	MapProcessor::MapProcessor(shared_ptr<LoggerInterface> logger) : logger(logger)
 	{
 	}
 
@@ -13,7 +13,7 @@ namespace App
 	{
 	}
 
-	MapGraph* MapProcessor::mapToNodes(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	MapGraph* MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		//firstly we have to get map as 2D matrix, grid
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
@@ -26,7 +26,7 @@ namespace App
 		//Start node is node, where starts UAV in middle
 		//End node is node in middle of each goal recrangle
 		//Todo: vymyslet, zda zde natvrdo používat pro nalezení støedu obdélníky èi ne
-		std::shared_ptr<App::Node> startNode;
+		shared_ptr<Node> startNode;
 
 		int uavCount = map->countUavs();
 		Point* middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
@@ -40,7 +40,7 @@ namespace App
 		}
 
 
-		auto endNodes = std::vector<std::shared_ptr<App::Node>>(map->getGoals().size());
+		auto endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
 		for (size_t i = 0; i < map->getGoals().size(); i++)
 		{
 			Rectangle* goal = map->getGoals()[i]->rectangle;
@@ -62,15 +62,15 @@ namespace App
 		return graph;
 	}
 
-	std::vector<std::vector<Grid>> MapProcessor::getMapGrid(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	vector<vector<Grid>> MapProcessor::getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		int gridRow = 0;
 		int rows = ceil(double(worldWidth) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
 		int columns = ceil(double(worldHeigh) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
-		auto grid = std::vector<std::vector<Grid>>(rows);
+		auto grid = vector<vector<Grid>>(rows);
 		for (int i = cellSize; i <= worldWidth; i += cellSize)
 		{
-			grid[gridRow] = std::vector<Grid>(columns);
+			grid[gridRow] = vector<Grid>(columns);
 			int gridColumn = 0;
 			for (int j = cellSize; j <= worldHeigh; j += cellSize)
 			{
@@ -82,7 +82,7 @@ namespace App
 		return grid;
 	}
 
-	Grid MapProcessor::analyzeCell(std::shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize)
+	Grid MapProcessor::analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize)
 	{
 		ColDetect colDetect;
 		Rectangle2D cell = Rectangle2D(leftBottom.getX(), leftBottom.getY(), rightUpper.getX() - leftBottom.getX(), rightUpper.getY() - leftBottom.getY());
@@ -117,9 +117,9 @@ namespace App
 		return Grid::Free;
 	}
 
-	std::vector<std::shared_ptr<App::Node>> MapProcessor::gridToNodes(std::vector<std::vector<Grid>> mapGrid, int cellSize)
+	vector<shared_ptr<Node>> MapProcessor::gridToNodes(vector<vector<Grid>> mapGrid, int cellSize)
 	{
-		auto nodes = std::vector<std::shared_ptr<App::Node>>(mapGrid.size() * mapGrid[0].size());
+		auto nodes = vector<shared_ptr<Node>>(mapGrid.size() * mapGrid[0].size());
 		int index = 0;
 
 		for (size_t i = 0; i < mapGrid.size(); i++)
@@ -130,7 +130,7 @@ namespace App
 				Grid grid = row[j];
 				int x = i * cellSize + cellSize / 2;
 				int y = j * cellSize + cellSize / 2;
-				nodes[index] = std::make_shared<App::Node>(new Point(x, y), grid);
+				nodes[index] = make_shared<Node>(new Point(x, y), grid);
 
 				index++;
 			}

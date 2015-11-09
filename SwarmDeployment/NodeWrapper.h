@@ -29,7 +29,6 @@ namespace AStar
 		virtual bool operator==(const App::Node& another);
 		virtual bool operator!=(const NodeWrapper& another);
 		virtual bool operator!=(const App::Node& another);
-		virtual std::shared_ptr<NodeWrapper> getPointer();
 	protected:
 		std::string coords;
 		std::shared_ptr<NodeWrapper> parent;

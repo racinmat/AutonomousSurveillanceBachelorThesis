@@ -21,8 +21,8 @@ public:
 	virtual void paintEvent(QPaintEvent *e) override;
 	~MainWindow() override;
 	App::LoggerInterface* getLogger() const;
-	void setCore(std::shared_ptr<App::Core>& core);
-	void setConfiguration(std::shared_ptr<App::Configuration>& configuration);
+	void setCore(shared_ptr<App::Core>& core);
+	void setConfiguration(shared_ptr<App::Configuration>& configuration);
 
 private slots:
 	void on_map_currentIndexChanged(int index);
@@ -33,10 +33,10 @@ private slots:
 
 protected:
 	Ui::MainWindow* ui;
-	std::shared_ptr<App::Configuration> configuration;
+	shared_ptr<App::Configuration> configuration;
 	Ui::GuiDrawer* drawer;
 	bool painting;
-	std::shared_ptr<App::Core> core;
+	shared_ptr<App::Core> core;
 };
 
 #endif // MAINWINDOW_H

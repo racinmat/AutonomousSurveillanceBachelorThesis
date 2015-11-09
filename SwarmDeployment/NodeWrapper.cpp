@@ -37,7 +37,7 @@ namespace AStar
 		xDist *= xDist;
 		double yDist = this->getY() - node->getY();
 		yDist *= yDist;
-		return std::sqrt(xDist + yDist);
+		return sqrt(xDist + yDist);
 	}
 
 	double NodeWrapper::getDistance(std::shared_ptr<App::Node> node)
@@ -46,7 +46,7 @@ namespace AStar
 		xDist *= xDist;
 		double yDist = this->getY() - node->getPoint()->getY();
 		yDist *= yDist;
-		return std::sqrt(xDist + yDist);
+		return sqrt(xDist + yDist);
 	}
 
 	std::set<std::shared_ptr<NodeWrapper>> NodeWrapper::expand(std::shared_ptr<App::Node> endNode)
@@ -54,7 +54,7 @@ namespace AStar
 		auto expanded = this->node->getNeighbors();
 		auto expandedWrapper = std::set<std::shared_ptr<NodeWrapper>>();
 		for (auto node : expanded) {
-			expandedWrapper.insert(std::make_shared<NodeWrapper>(this->getPointer(), node, endNode));
+			expandedWrapper.insert(std::make_shared<NodeWrapper>(shared_from_this(), node, endNode));
 		}
 		return expandedWrapper;
 	}
@@ -102,7 +102,7 @@ namespace AStar
 	std::vector<std::shared_ptr<NodeWrapper>> NodeWrapper::getWay()
 	{
 		auto wayToTarget = std::vector<std::shared_ptr<NodeWrapper>>(pathLength);
-		auto iter = std::shared_ptr<NodeWrapper>(this);
+		auto iter = shared_from_this();
 		int index = pathLength;
 		while (iter->hasParent()) {
 			index--;
@@ -139,8 +139,4 @@ namespace AStar
 		return !(*this == another);
 	}
 
-	std::shared_ptr<NodeWrapper> NodeWrapper::getPointer()
-	{
-		return shared_from_this();
-	}
 }

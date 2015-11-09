@@ -2,22 +2,24 @@
 #include <vector>
 #include "Node.h"
 
+using namespace std;
+
 namespace App
 {
 
 	class MapGraph
 	{
 	public:
-		MapGraph(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> startNode, std::vector<std::shared_ptr<App::Node>> endNodes);
+		MapGraph(vector<shared_ptr<Node>> nodes, shared_ptr<Node> startNode, vector<shared_ptr<Node>> endNodes);
 		virtual ~MapGraph();
-		std::vector<std::shared_ptr<App::Node>> getAllNodes();
-		std::shared_ptr<App::Node> getStartNode();
-		std::vector<std::shared_ptr<App::Node>> getEndNodes();
+		vector<shared_ptr<Node>> getAllNodes();
+		shared_ptr<Node> getStartNode();
+		vector<shared_ptr<Node>> getEndNodes();
 
 	protected:
-		std::vector<std::shared_ptr<App::Node>> nodes;
-		std::shared_ptr<App::Node> startNode;
-		std::vector<std::shared_ptr<App::Node>> endNodes;
+		vector<shared_ptr<Node>> nodes;
+		shared_ptr<Node> startNode;
+		vector<shared_ptr<Node>> endNodes;
 	};
 
 }

@@ -10,7 +10,7 @@ namespace App
 	public:
 		Obstacle(int x, int y, int width, int heigth);
 		virtual ~Obstacle();
-		App::Rectangle *rectangle;
+		Rectangle *rectangle;
 	};
 
 }

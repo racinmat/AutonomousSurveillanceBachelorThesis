@@ -15,8 +15,8 @@ namespace App
 		virtual ~Node();
 		Point* getPoint() const;
 		double getCost() const;
-		std::vector<std::shared_ptr<App::Node>> getNeighbors() const;
-		void addNeighbor(std::shared_ptr<App::Node> node, int position);
+		std::vector<std::shared_ptr<Node>> getNeighbors() const;
+		void addNeighbor(std::shared_ptr<Node> node, int position);
 		void increaseCost(double increase);
 		Grid getGridType() const;
 		bool contains(int x, int y, int distance);
@@ -26,7 +26,7 @@ namespace App
 	protected:
 		Point* point;
 		double cost;
-		std::vector<std::shared_ptr<App::Node>> neighbors;	//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
+		std::vector<std::shared_ptr<Node>> neighbors;	//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
 		Grid gridType;
 	};
 

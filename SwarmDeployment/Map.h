@@ -4,6 +4,8 @@
 #include <vector>
 #include "PointParticle.h"
 
+using namespace std;
+
 namespace App
 {
 	enum class Grid { Free, Obstacle, UAV, Goal };

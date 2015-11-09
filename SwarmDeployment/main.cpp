@@ -11,6 +11,7 @@
 //	MainWindow w;
 //	auto configuration = std::make_shared<App::Configuration>();
 //	auto core = std::make_shared<App::Core>(configuration.get());
+//	configuration->setCore(core);
 //	core->setLogger(w.getLogger());
 //
 //	w.setConfiguration(configuration);
@@ -26,12 +27,13 @@
 
 int run(int argc, char *argv[])
 {
-	auto configuration = std::make_shared<App::Configuration>();
-	auto core = std::make_shared<App::Core>(configuration.get());
+	auto configuration = make_shared<App::Configuration>();
+	auto core = make_shared<App::Core>(configuration);
+	configuration->setCore(core);	//toto nemohu zavolat uvnitø konstruktoru
 	core->run();
 
 	int returnValue = 0;
-	std::cin.get();
+	cin.get();
 	return returnValue;
 }
 

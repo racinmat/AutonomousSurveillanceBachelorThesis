@@ -4,20 +4,22 @@
 #include "LoggerInterface.h"
 #include "MapGraph.h"
 
+using namespace std;
+
 namespace App
 {
 	class MapProcessor
 	{
 	public:
-		MapProcessor(LoggerInterface* logger);
+		MapProcessor(shared_ptr<LoggerInterface> logger);
 		virtual ~MapProcessor();
-		MapGraph* mapToNodes(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
+		MapGraph* mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
 
 	protected:
-		std::vector<std::vector<Grid>> getMapGrid(std::shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
-		Grid analyzeCell(std::shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize);
-		std::vector<std::shared_ptr<App::Node>> gridToNodes(std::vector<std::vector<Grid>> mapGrid, int cellSize);
-		LoggerInterface* logger;
+		vector<vector<Grid>> getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
+		Grid analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize);
+		vector<shared_ptr<Node>> gridToNodes(vector<vector<Grid>> mapGrid, int cellSize);
+		shared_ptr<LoggerInterface> logger;
 	};
 
 }

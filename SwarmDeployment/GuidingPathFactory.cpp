@@ -4,7 +4,7 @@
 namespace App
 {
 
-	GuidingPathFactory::GuidingPathFactory(LoggerInterface* logger) : logger(logger), algorithm(new AStar::AStar())
+	GuidingPathFactory::GuidingPathFactory(shared_ptr<LoggerInterface> logger) : logger(logger), algorithm(new AStar::AStar())
 	{
 	}
 
@@ -12,9 +12,9 @@ namespace App
 	{
 	}
 
-	std::vector<std::vector<std::shared_ptr<App::Node>>> GuidingPathFactory::createGuidingPaths(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends) //more ends for more AoI
+	std::vector<std::vector<std::shared_ptr<Node>>> GuidingPathFactory::createGuidingPaths(std::vector<std::shared_ptr<Node>> nodes, std::shared_ptr<Node> start, std::vector<std::shared_ptr<Node>> ends) //more ends for more AoI
 	{
-		auto paths = std::vector<std::vector<std::shared_ptr<App::Node>>>(ends.size());
+		auto paths = std::vector<std::vector<std::shared_ptr<Node>>>(ends.size());
 		for (size_t i = 0; i < ends.size(); i++)
 		{
 			paths[i] = algorithm->findPath(nodes, start, ends[i]);

@@ -63,12 +63,12 @@ App::LoggerInterface* MainWindow::getLogger() const
 	return drawer;	//TODO: zjistit, jestli je opravdu v Core tøídì jako Logger GuiDrawer.
 }
 
-void MainWindow::setCore(std::shared_ptr<App::Core>& core)
+void MainWindow::setCore(shared_ptr<App::Core>& core)
 {
 	this->core = core;
 }
 
-void MainWindow::setConfiguration(std::shared_ptr<App::Configuration>& configuration)
+void MainWindow::setConfiguration(shared_ptr<App::Configuration>& configuration)
 {
 	this->configuration = configuration;
 }

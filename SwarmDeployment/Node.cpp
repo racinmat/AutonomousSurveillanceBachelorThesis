@@ -28,12 +28,12 @@ namespace App
 		return cost;
 	}
 
-	std::vector<std::shared_ptr<App::Node>> Node::getNeighbors() const
+	std::vector<std::shared_ptr<Node>> Node::getNeighbors() const
 	{
 		return neighbors;
 	}
 
-	void Node::addNeighbor(std::shared_ptr<App::Node> node, int position)
+	void Node::addNeighbor(std::shared_ptr<Node> node, int position)
 	{
 		if (position >= neighbors.size())
 		{
@@ -56,7 +56,7 @@ namespace App
 
 	bool Node::contains(int x, int y, int distance)
 	{
-		return std::abs(x - point->getX()) <= distance && std::abs(y - point->getY()) <= distance;
+		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
 	}
 
 	bool Node::operator<(const Node& another)

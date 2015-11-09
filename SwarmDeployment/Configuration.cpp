@@ -44,7 +44,7 @@ namespace App
 		this->uavCount = uavCount;
 	}
 
-	void Configuration::setCore(App::Core* core)
+	void Configuration::setCore(shared_ptr<Core> core)
 	{
 		this->core = core;
 	}

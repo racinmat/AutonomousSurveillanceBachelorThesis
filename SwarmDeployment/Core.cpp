@@ -11,16 +11,17 @@
 #include <memory>
 #include <string>
 
+using namespace std;
+
 namespace App
 {
 
-	Core::Core(Configuration* configuration) :
-		configuration(configuration), logger(nullptr)
+	Core::Core(shared_ptr<Configuration> configuration) :
+		logger(make_shared<LoggerInterface>()), configuration(configuration)
 	{
-		setLogger(new App::LoggerInterface());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
-		configuration->setCore(this);
+		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
-		App::MapFactory mapFactory;
+		MapFactory mapFactory;
 		maps = mapFactory.createMaps(configuration->getUavCount());
 	}
 
@@ -31,12 +32,12 @@ namespace App
 
 	void Core::run()
 	{
-		std::clock_t start;
+		clock_t start;
 		double duration;
 
-		start = std::clock();
+		start = clock();
 
-		std::shared_ptr<App::Map> map = maps.at(configuration->getMapNumber());
+		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 		MapProcessor mapProcessor = MapProcessor(logger);
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
@@ -47,13 +48,13 @@ namespace App
 
 		//here comes RRT-Path.
 
-		duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+		duration = (clock() - start) / double(CLOCKS_PER_SEC);
 
-		logger->logText(std::to_string(duration) + "sekund");
+		logger->logText(to_string(duration) + "sekund");
 
 	}
 
-	void Core::setLogger(App::LoggerInterface* logger)
+	void Core::setLogger(shared_ptr<LoggerInterface> logger)
 	{
 		this->logger = logger;
 	}

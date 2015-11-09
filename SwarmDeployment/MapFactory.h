@@ -9,7 +9,7 @@ namespace App
 	class MapFactory
 	{
 	public:
-		std::vector<std::shared_ptr<App::Map>> createMaps(int uavCount);
+		std::vector<std::shared_ptr<Map>> createMaps(int uavCount);
 
 	};
 

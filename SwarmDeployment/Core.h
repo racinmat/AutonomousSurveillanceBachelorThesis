@@ -2,25 +2,27 @@
 #include "LoggerInterface.h"
 #include "memory"
 
+using namespace std;
+
 namespace App
 {
 
 	class Configuration;
 
-	class Core
+	class Core : public enable_shared_from_this<Core>
 	{
 	
 	public:
-		explicit Core(Configuration* configuration);
+		explicit Core(shared_ptr<Configuration> configuration);
 		virtual ~Core();
 		void run();
-		void setLogger(LoggerInterface* logger);
+		void setLogger(shared_ptr<LoggerInterface> logger);
 		void logConfigurationChange();
 
 	protected:
-		LoggerInterface* logger;
-		std::vector<std::shared_ptr<App::Map>> maps;
-		Configuration* configuration;
+		shared_ptr<LoggerInterface> logger;
+		vector<shared_ptr<Map>> maps;
+		shared_ptr<Configuration> configuration;
 	};
 
 }

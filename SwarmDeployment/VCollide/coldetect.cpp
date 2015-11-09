@@ -75,8 +75,8 @@ bool ColDetect::coldetect(Triangle3D tri1, Triangle3D tri2) {//wrapper, so I wou
 	std::vector<double> tri2vector = tri2.toVector();
 	double tri1array[9];
 	double tri2array[9];
-	std::copy(tri1vector.begin(), tri1vector.end(), tri1array);
-	std::copy(tri2vector.begin(), tri2vector.end(), tri2array);
+	copy(tri1vector.begin(), tri1vector.end(), tri1array);
+	copy(tri2vector.begin(), tri2vector.end(), tri2array);
 	return coldetect(ntri1, ntri2, ntrans1, ntrans2, tri1array, tri2array, zeroTrans, zeroTrans);
 }
 
