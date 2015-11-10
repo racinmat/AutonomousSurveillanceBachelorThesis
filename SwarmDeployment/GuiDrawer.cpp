@@ -29,21 +29,21 @@ namespace Ui
 
 		view->resize(worldWidth, worldHeight);
 
-		for(App::Goal* goal : map->getGoals())
+		for(auto goal : map->getGoals())
 		{
-			App::Rectangle* r = goal->rectangle;
+			auto r = goal->rectangle;
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::green), QBrush(Qt::green));
 		}
 
-		for (App::Obstacle* obstacle : map->getObstacles())
+		for (auto obstacle : map->getObstacles())
 		{
-			App::Rectangle* r = obstacle->rectangle;
+			auto r = obstacle->rectangle;
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::gray), QBrush(Qt::gray));
 		}
 
-		for (App::PointParticle* start : map->getUavsStart())
+		for (auto start : map->getUavsStart())
 		{
-			App::Point* p = start->getLocation();
+			auto p = start->getLocation();
 			addCross(p->getX(), p->getY(), 3, getRandomColor());
 		}
 

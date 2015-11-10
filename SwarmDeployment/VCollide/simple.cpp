@@ -134,7 +134,7 @@ int not_main2(int argc, char *argv[])
       v1[0] = 1.0; v1[1] = 0.0; v1[2] = 0.0;
       v2[0] = 1.0; v2[1] = 1.0; v2[2] = 0.0;
       v3[0] = 0.0; v3[1] = 1.0; v3[2] = 0.0;
-      vc.AddTri(v1, v2, v3, 10);
+      vc.AddTri(v1, v2, v3, 10);	//pøidám rojúhelník. má 3 vrcholy a identifikátor (èíslo 10)
 
       v1[0] = 1.0; v1[1] = 0.0; v1[2] = 0.0;
       v2[0] = 0.0; v2[1] = 0.0; v2[2] = 0.0;

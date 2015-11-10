@@ -48,7 +48,7 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-		rrtPath(paths, configuration);
+//		rrtPath(paths, configuration);
 	}
 
 	void Core::setLogger(shared_ptr<LoggerInterface> logger)
@@ -128,6 +128,7 @@ namespace App
 			int k = 0;	//poèítadlo uvíznutí
 			bool near_found = false;
 
+			//opakování, dokud nenajdu vyhovující øešení, poèítají se prùchody cyklem kvùli uvíznutí
 			while (!near_found)
 			{
 				if (k > near_count)
@@ -241,14 +242,17 @@ namespace App
 
 	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached)
 	{
+		return vector<shared_ptr<Point>>();
 	}
 
 	shared_ptr<Node> Core::nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<Node>> nodes, int count)
 	{
+		return make_shared<Node>(make_shared<Point>(0, 0), Grid::Free);
 	}
 
 	vector<shared_ptr<Node>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<Node> near_node)
 	{
+		return vector<shared_ptr<Node>>();
 	}
 
 	void Core::check_expandability()

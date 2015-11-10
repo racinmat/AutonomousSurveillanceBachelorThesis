@@ -20,9 +20,9 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	virtual void paintEvent(QPaintEvent *e) override;
 	~MainWindow() override;
-	App::LoggerInterface* getLogger() const;
-	void setCore(shared_ptr<App::Core>& core);
-	void setConfiguration(shared_ptr<App::Configuration>& configuration);
+	shared_ptr<App::LoggerInterface> getLogger() const;
+	void setCore(shared_ptr<App::Core> core);
+	void setConfiguration(shared_ptr<App::Configuration> configuration);
 
 private slots:
 	void on_map_currentIndexChanged(int index);
@@ -34,7 +34,7 @@ private slots:
 protected:
 	Ui::MainWindow* ui;
 	shared_ptr<App::Configuration> configuration;
-	Ui::GuiDrawer* drawer;
+	shared_ptr<Ui::GuiDrawer> drawer;
 	bool painting;
 	shared_ptr<App::Core> core;
 };

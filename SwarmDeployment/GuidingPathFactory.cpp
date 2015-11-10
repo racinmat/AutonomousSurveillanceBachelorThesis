@@ -19,7 +19,7 @@ namespace App
 		{
 			paths[i] = algorithm->findPath(nodes, start, ends[i]);
 		}
-//		logger->logGuidingPaths(paths, start, ends);
+		logger->logGuidingPaths(paths, start, ends);
 		return paths;
 	}
 
