@@ -12,4 +12,8 @@ namespace App
 	{
 	}
 
+	bool Goal::is_near(shared_ptr<Point> location)
+	{
+		return rectangle->contains(location);
+	}
 }

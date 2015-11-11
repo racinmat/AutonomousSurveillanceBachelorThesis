@@ -5,14 +5,14 @@ namespace App
 
 	Path::Path()
 	{
-		nodes = std::list<std::shared_ptr<Node>>();
+		nodes = std::vector<std::shared_ptr<Node>>();
 	}
 
 	Path::~Path()
 	{
 	}
 
-	std::list<std::shared_ptr<Node>> Path::getNodes() const
+	std::vector<std::shared_ptr<Node>> Path::getNodes() const
 	{
 		return nodes;
 	}
@@ -22,9 +22,9 @@ namespace App
 		return nodes.size();
 	}
 
-	void Path::addToStart(std::shared_ptr<Node> node)
+	shared_ptr<Node> Path::get(int i)
 	{
-		nodes.push_front(node);
+		return nodes[i];
 	}
 
 	void Path::addToEnd(std::shared_ptr<Node> node)

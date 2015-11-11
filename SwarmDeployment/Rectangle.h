@@ -19,6 +19,7 @@ namespace App
 		void setY(int y);
 		void setHeight(int height);
 		void setWidth(int width);
+		bool contains(std::shared_ptr<Point> point);
 
 	protected:
 		std::shared_ptr<Point> location;

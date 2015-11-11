@@ -30,6 +30,11 @@ namespace App
 		m_width = width;
 	}
 
+	bool Rectangle::contains(std::shared_ptr<Point> point)
+	{
+		return point->getX() >= getX() && point->getX() <= (getX() + getWidth()) && point->getY() >= getY() && point->getY() <= (getY() + getHeight());
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

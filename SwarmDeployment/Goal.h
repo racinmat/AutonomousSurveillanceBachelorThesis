@@ -1,5 +1,8 @@
 #pragma once
 #include "Rectangle.h"
+#include "vector"
+
+using namespace std;
 
 namespace App
 {
@@ -10,8 +13,8 @@ namespace App
 	public:
 		Goal(int x, int y, int width, int height);
 		virtual ~Goal();
-		std::shared_ptr<Rectangle> rectangle;
-
+		std::shared_ptr<Rectangle> rectangle; //todo: pøesunout do private
+		bool is_near(shared_ptr<Point> location);
 	};
 
 }

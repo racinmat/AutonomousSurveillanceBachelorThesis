@@ -11,13 +11,12 @@ namespace App
 	public:
 		Path();
 		virtual ~Path();
-		std::list<std::shared_ptr<Node>> getNodes() const;
+		std::vector<std::shared_ptr<Node>> getNodes() const;
 		int getSize() const;
 		void addToEnd(std::shared_ptr<Node> node);
-		void addToStart(std::shared_ptr<Node> node);
-
+		shared_ptr<Node> get(int i);
 	protected:
-		std::list<std::shared_ptr<Node>> nodes;
+		std::vector<std::shared_ptr<Node>> nodes;
 	};
 
 }
