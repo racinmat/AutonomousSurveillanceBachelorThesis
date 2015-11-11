@@ -51,7 +51,7 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-		rrtPath(paths, configuration, map);
+//		rrtPath(paths, configuration, map);
 	}
 
 	void Core::setLogger(shared_ptr<LoggerInterface> logger)
@@ -268,12 +268,12 @@ namespace App
 		{
 			for (size_t i = 0; i < number_of_uavs; i++)
 			{
-				if (goals_reached[i] > 0)
+				if (goals_reached[i])
 				{//todo: s tímhle nìco udìlat, a nepøistupovat k poli takhle teple pøes indexy
-					s_rand[i] = random_state_goal(map->getGoals()[goals_reached[i]]);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
+					s_rand[i] = random_state_goal(map->getGoals()[goals_reached[i]], map);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
 				} else
 				{
-					s_rand[i] = random_state(0, worldWidth, 0, worldHeight); // pokud n-té UAV není v cíli, vybere se náhodný bod z celé mapy
+					s_rand[i] = random_state(0, worldWidth, 0, worldHeight, map); // pokud n-té UAV není v cíli, vybere se náhodný bod z celé mapy
 				}
 			}
 		} else
@@ -306,11 +306,106 @@ namespace App
 //		        end
 			
 		}
+		return vector<shared_ptr<Point>>();
 	}
 
 	shared_ptr<State> Core::nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count)
 	{
-		return make_shared<State>();
+		int max_nodes = 20000;
+		int debug = true;
+		int nn_method = 1;
+
+		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
+		shared_ptr<State> near_node = nodes[0];
+
+		int s = 1;
+		int current_best = INT32_MAX;
+		
+		for (int j = 1; j < max_nodes; j++)
+		{
+		    // Distance of next node in the tree
+			shared_ptr<State> tmp_node = nodes[j];	//todo: refactorovat, aby se nesahalo do prázdných nodes
+			if (tmp_node.get() == nullptr)
+			{
+				if (debug)
+				{
+					printf("NaN in node %d\n", tmp_node->index);
+				}
+				break;
+			}
+
+			if (tmp_node->areAllInputsUsed())
+			{
+				printf("Node %d is unexpandable\n", tmp_node->index);
+				continue;
+			}
+		    
+		    double hamilt_dist = 0;
+			vector<double> distances = vector<double>(tmp_node->uavs.size());
+
+			for (size_t i = 0; i < tmp_node->uavs.size(); i++)
+			{
+				auto uav = tmp_node->uavs[i];
+				auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
+				distances[i] = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+			}
+
+			switch (nn_method)
+			{
+			case 1:
+				for(auto dist : distances)
+				{
+					hamilt_dist += dist;	//no function for sum
+				}
+				break;
+			case 2:
+				hamilt_dist = *std::max_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
+				break;
+			case 3:
+				hamilt_dist = *std::min_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
+				break;
+			}
+
+		    
+		    
+		    //Check if tested node is nearer than the current nearest
+		    if (hamilt_dist < current_best)
+		    {
+		        near_arr.push_back(near_node);
+		        current_best = hamilt_dist;
+		        near_node = nodes[j];
+				if (debug)
+				{
+					double distance;
+					for (size_t i = 0; i < tmp_node->uavs.size(); i++)
+					{
+						auto uav = tmp_node->uavs[i];
+						auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
+						distance = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+					}
+					printf("[debug] near node #%d found, distance to goal state: %f\n", s, distance);
+		        }
+				s++;
+		    }			
+		}
+		    
+		if (near_arr.size() > count)
+		{
+			near_node = near_arr[near_arr.size() - count];	//todo: zkontrolovat, jestli sedí pøesnì index a jestli to neubíhá o 1
+			double distance;
+			for (size_t i = 0; i < near_node->uavs.size(); i++)
+			{
+				auto uav = near_node->uavs[i];
+				auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
+				distance = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+			}
+			if (debug && count > 0)
+			{
+				printf("[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
+			}
+		}
+
+		return near_node;
 	}
 
 	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node)
@@ -407,17 +502,17 @@ namespace App
 
 	}
 
-	shared_ptr<Point> Core::random_state_goal(shared_ptr<Goal> goal)
+	shared_ptr<Point> Core::random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map)
 	{
-		return random_state(goal->rectangle);
+		return random_state(goal->rectangle, map);
 	}
 
-	shared_ptr<Point> Core::random_state(shared_ptr<Rectangle> rectangle)
+	shared_ptr<Point> Core::random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map)
 	{
-		return random_state(rectangle->getX(), rectangle->getX() + rectangle->getWidth(), rectangle->getY(), rectangle->getY() + rectangle->getHeight());
+		return random_state(rectangle->getX(), rectangle->getX() + rectangle->getWidth(), rectangle->getY(), rectangle->getY() + rectangle->getHeight(), map);
 	}
 
-	shared_ptr<Point> Core::random_state(int x1, int y1, int x2, int y2)
+	shared_ptr<Point> Core::random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map)
 	{
 		shared_ptr<Point> random_state;
 		do
@@ -425,13 +520,20 @@ namespace App
 			int x = Random::inRange(x1, x2);
 			int y = Random::inRange(y1, y2);
 			random_state = make_shared<Point>(x, y);
-		} while (check_inside_obstacle(random_state));
+		} while (check_inside_obstacle(random_state, map));
 		return random_state;
 	}
 
 	//returns true if point is inside of obstacle
-	bool Core::check_inside_obstacle(shared_ptr<Point> point)
+	bool Core::check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map)
 	{
+		bool collision = false;
+
+		for (auto obstacle : map->getObstacles())
+		{
+			collision = collision || obstacle->rectangle->contains(point);
+		}
+		return collision;
 	}
 }
 

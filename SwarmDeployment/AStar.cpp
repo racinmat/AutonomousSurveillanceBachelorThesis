@@ -31,7 +31,7 @@ namespace AStar
 			auto neighbors = current->expand(end);
 			for (auto neighbor : neighbors)
 			{
-				if (!opened.contains(neighbor) && !closed.contains(neighbor))	//set does not have "contains" method. Fuck you, C++.
+				if (!opened.contains(neighbor) && !closed.contains(neighbor))
 				{
 					opened.insert(neighbor);
 				}
