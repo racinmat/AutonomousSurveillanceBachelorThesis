@@ -105,6 +105,18 @@ namespace Ui
 			QString::fromStdString(string));
 	}
 
+	void GuiDrawer::logNearNode(shared_ptr<App::State> nearNode)
+	{
+	}
+
+	void GuiDrawer::logNewNode(shared_ptr<App::State> newNode)
+	{
+	}
+
+	void GuiDrawer::logRandomStates(vector<shared_ptr<App::Point>> randomStates)
+	{
+	}
+
 	void GuiDrawer::clear()
 	{
 		double height = view->height();

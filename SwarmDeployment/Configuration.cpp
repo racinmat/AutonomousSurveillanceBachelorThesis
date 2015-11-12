@@ -12,7 +12,8 @@ namespace App
 		worldHeight = 1000;
 		worldWidth = 1000;
 		uavSize = 0.5;
-
+		samplingRadius = 60;
+		drawPeriod = 1;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -77,5 +78,15 @@ namespace App
 	void Configuration::setUavSize(double uav_size)
 	{
 		uavSize = uav_size;
+	}
+
+	double Configuration::getSamplingRadius() const
+	{
+		return samplingRadius;
+	}
+
+	int Configuration::getDrawPeriod() const
+	{
+		return drawPeriod;
 	}
 }

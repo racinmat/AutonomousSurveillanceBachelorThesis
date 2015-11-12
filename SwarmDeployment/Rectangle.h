@@ -20,6 +20,7 @@ namespace App
 		void setHeight(int height);
 		void setWidth(int width);
 		bool contains(std::shared_ptr<Point> point);
+		double getVolume() const;
 
 	protected:
 		std::shared_ptr<Point> location;

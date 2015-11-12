@@ -11,7 +11,7 @@ Random::~Random()
 {
 }
 
-double Random::inRange(int from, int to)
+double Random::inRange(double from, double to)
 {
 	if (from > to)
 	{

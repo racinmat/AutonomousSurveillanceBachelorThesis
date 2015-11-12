@@ -12,18 +12,20 @@ namespace App
 	public:
 
 		Configuration();
-		int getAStarCellSize() const;
-		int getMapNumber() const;
-		int getUavCount() const;
-		void setMapNumber(int mapNumber);
-		void setUavCount(int uavCount);
-		void setCore(shared_ptr<Core> core);
-		int getWorldHeight() const;
-		void setWorldHeight(int worldHeight);
-		int getWorldWidth() const;
-		void setWorldWidth(int worldWidth);
-		double getUavSize() const;
-		void setUavSize(double uav_size);
+		virtual int getAStarCellSize() const;
+		virtual int getMapNumber() const;
+		virtual int getUavCount() const;
+		virtual void setMapNumber(int mapNumber);
+		virtual void setUavCount(int uavCount);
+		virtual void setCore(shared_ptr<Core> core);
+		virtual int getWorldHeight() const;
+		virtual void setWorldHeight(int worldHeight);
+		virtual int getWorldWidth() const;
+		virtual void setWorldWidth(int worldWidth);
+		virtual double getUavSize() const;
+		virtual void setUavSize(double uav_size);
+		virtual double getSamplingRadius() const;
+		virtual int getDrawPeriod() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -33,6 +35,8 @@ namespace App
 		int worldHeight;
 		int worldWidth;
 		double uavSize;
+		double samplingRadius;
+		int drawPeriod;
 	};
 
 }

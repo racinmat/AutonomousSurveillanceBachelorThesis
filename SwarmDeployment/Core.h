@@ -36,6 +36,8 @@ namespace App
 		shared_ptr<Point> random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map);
 		shared_ptr<Point> random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map);
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
+		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
+		bool check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
 	};
 
 }

@@ -35,6 +35,11 @@ namespace App
 		return point->getX() >= getX() && point->getX() <= (getX() + getWidth()) && point->getY() >= getY() && point->getY() <= (getY() + getHeight());
 	}
 
+	double Rectangle::getVolume() const
+	{
+		return getHeight() * getWidth();
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

@@ -162,6 +162,7 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="NodeSet.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="UavGroup.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
     <ClCompile Include="VCollide\coldetect.cpp" />
     <ClCompile Include="VCollide\collide.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="NodeSet.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="UavGroup.h" />
     <ClInclude Include="VCollide\AABB.H" />
     <ClInclude Include="VCollide\ColDetect.h" />
     <ClInclude Include="VCollide\EndPoint.H" />

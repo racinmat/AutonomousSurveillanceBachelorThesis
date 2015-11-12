@@ -28,4 +28,17 @@ namespace App
 	void LoggerInterface::logText(std::string string)
 	{
 	}
+
+	void LoggerInterface::logNearNode(shared_ptr<State> nearNode)
+	{
+	}
+
+	void LoggerInterface::logNewNode(shared_ptr<State> newNode)
+	{
+	}
+
+	void LoggerInterface::logRandomStates(vector<shared_ptr<Point>> randomStates)
+	{
+	}
+
 }

@@ -4,7 +4,7 @@ class Random
 public:
 	Random();
 	virtual ~Random();
-	static double inRange(int from, int to);
+	static double inRange(double from, double to);
 	static double fromZeroToOne();
 };
 

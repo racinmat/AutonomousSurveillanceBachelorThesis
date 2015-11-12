@@ -8,11 +8,14 @@
 #include <iostream>
 #include <cstdio>
 #include <ctime>
+#define PI 3.14159265358979323846
+#include <cmath>
 #include <memory>
 #include <string>
 #include "Output.h"
 #include "State.h"
 #include "Random.h"
+#include "UavGroup.h"
 
 using namespace std;
 
@@ -114,6 +117,7 @@ namespace App
 		int nodes_count = rrt_max_nodes;
 		vector<int> goal_reached_by_all_uavs;
 		shared_ptr<State> new_node;
+		shared_ptr<State> near_node;
 		auto output = make_shared<Output>();
 
 		int i = 1; // poèet expandovaných nodes
@@ -144,12 +148,12 @@ namespace App
 					i--;
 					throw "Not possible to find near node suitable for expansion";
 				}
-				shared_ptr<State> near_node = nearest_neighbor(s_rand, nodes, k);
+				near_node = nearest_neighbor(s_rand, nodes, k);
 				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
 				near_node = returnedNodes[0];
 				new_node = returnedNodes[1];
-				nodes[near_node->index] = near_node; // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path. Nemìlo by být potøeba tohle pøiøazovat, protože tam je reference, ne hodnota
+				nodes.push_back(near_node); // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path. Nemìlo by být potøeba tohle pøiøazovat, protože tam je reference, ne hodnota
 
 				bool allInputsUsed = true;
 				for (bool inputUsed : near_node->used_inputs)
@@ -221,16 +225,18 @@ namespace App
 			}
 			output->distance_of_new_nodes[i] = distance_of_new_nodes;
 		//todo: udìlat visualizaci rùstu
+			if (i % configuration->getDrawPeriod() == 0)
+			{
+				logger->logNearNode(near_node);
+				logger->logNewNode(new_node);
+				logger->logRandomStates(s_rand);
+			}
 		}
 		
 		final_nodes[m] = nodes[i];
 		goal_reached_by_all_uavs = check_near_goal(new_node->uavs, map);
 		output->goal_reached = goal_reached_by_all_uavs;
-//		final_nodes = final_nodes(1:(find(isnan([final_nodes->index]), 1) - 1)); //zjistit, co to dìlá a získat final nodes. a zjistit, co se má najít
-//		if (any(isnan([nodes.index])))
-//		{
-//			nodes = nodes(1:(find(isnan([nodes.index]), 1) - 1));
-//		}
+		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
 		cout << "RRT-Path finished";
 	}
@@ -241,6 +247,7 @@ namespace App
 		int worldWidth = 1000;
 		int worldHeight = 1000;
 		int number_of_uavs = map->getUavsStart().size();
+		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>();
 
 //		return vector<shared_ptr<Point>>();
 		vector<double> propabilities = vector<double>(guiding_paths.size());
@@ -249,6 +256,7 @@ namespace App
 
 		int sum = 0; // sum = celková délka všech vedoucích cest
 
+		// delší cesta má vìtší prpst.proto, aby algoritmus asymptiticky pokryl každou cestu stejnì hustì. na delší cestu tedy pøipadne více bodù.
 		for (size_t i = 0; i < guiding_paths.size(); i++)
 		{
 			int pathSize = guiding_paths[i]->getSize(); // èím delší cesta, tím vìtší pravdìpodobnost, že se tou cestou vydá, aspoò doufám
@@ -278,35 +286,63 @@ namespace App
 			}
 		} else
 		{
-			//implementovat, až zjistím, k èemu je ratio
+			//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
+			auto ratios = vector<double>(map->getGoals().size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+			double totalVolume = 0;
+			for (size_t i = 0; i < map->getGoals().size(); i++)
+			{
+				double volume = map->getGoals()[i]->rectangle->getVolume();
+				ratios[i] = volume;
+				totalVolume += volume;
+			}
+			for_each(ratios.begin(), ratios.end(), [totalVolume](double ratio) { return ratio /= totalVolume; });	//každý prvek je v rozsahu od 0 do 1
 
-//		        ratio = number_of_uavs/length(guiding_paths); % pomìr UAV k poètu vedoucích cest, dìlá bordel, když není integer. Zjistit, co je za èíslo.
-//		        for m=1:length(guiding_paths)
-//		            guiding_path = guiding_paths{m};
-//		            best_reached = min(index((m-1)*ratio+1:(m-1)*ratio+ratio,m));
-//		            
-//		%             assignin('base', 'index', index((m-1)*ratio+1:(m-1)*ratio+ratio,m));
-//		%             assignin('base', 'best_reached', best_reached);
-//		            
-//		            center = [guiding_path(best_reached).x; ...
-//		                guiding_path(best_reached).y];
-//		            for n=1:ratio
-//		                if goal_reached(1,(m-1)*ratio+n) == m
-//		                    s_rand(:,(m-1)*ratio+n) = random_state_goal(goal_reached(1,(m-1)*ratio+n));
-//		                else    % náhodná pozice z okruhu okolo nejbližšího bodu nejbližší vedoucí cesty
-//		                    while true
-//		                        s_rand(:,(m-1)*ratio+n) = random_state_polar(center, 0, params.sampling_radius);
-//		   %                     if ~check_inside_obstacle(s_rand(:,(m-1)*ratio+n))
-//		                            break
-//		    %s                    end
-//		                    end
-//		   %                 break
-//		                end
-//		            end
-//		        end
-			
+			vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(map->getGoals().size());
+
+			double uavsPerUnit = map->getUavsStart().size() / totalVolume;	// poèet UAV na jednotku celkové plochy. Po vynásobením plochou dané AoI získám poèet UAV na danou AoI.
+
+			//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
+
+			int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
+			for (size_t i = 0; i < uavGroups.size(); i++)
+			{
+				int uavsCountInGroup = floor(uavsPerUnit * ratios[i]);	//round down
+				auto uavs = vector<shared_ptr<PointParticle>>(uavsCountInGroup);
+				vector<int> indexes = vector<int>(uavsCountInGroup);
+				for (size_t j = 0; j < uavsCountInGroup; j++)
+				{
+					uavs[j] = map->getUavsStart()[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+					indexes[j] = uavsInGroups + j;
+				}
+				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i], indexes);
+				uavsInGroups += uavsCountInGroup;
+			}
+			//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
+			int remaining = map->getUavsStart().size() - uavsInGroups;
+			for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
+			{
+				uavGroups[i]->addUav(map->getUavsStart()[uavsInGroups + i], uavsInGroups + i);
+			}
+
+			for (size_t i = 0; i < uavGroups.size(); i++)
+			{
+				auto group = uavGroups[i];
+				for (size_t j = 0; j < group->getUavs().size(); j++)
+				{
+					int index = group->getUavIndexes()[j];
+					if (goals_reached[index] > 0)
+					{
+						randomStates.push_back(random_state_goal(map->getGoals()[goals_reached[index]], map));
+					}
+					else
+					{
+						auto center = group->getGuidingPath()->get(current_index[index][i]);
+						randomStates.push_back(random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius()));
+					}
+				}
+			}
 		}
-		return vector<shared_ptr<Point>>();
+		return randomStates;
 	}
 
 	shared_ptr<State> Core::nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count)
@@ -323,7 +359,7 @@ namespace App
 		
 		for (int j = 1; j < max_nodes; j++)
 		{
-		    // Distance of next node in the tree
+			// Distance of next node in the tree
 			shared_ptr<State> tmp_node = nodes[j];	//todo: refactorovat, aby se nesahalo do prázdných nodes
 			if (tmp_node.get() == nullptr)
 			{
@@ -339,8 +375,8 @@ namespace App
 				printf("Node %d is unexpandable\n", tmp_node->index);
 				continue;
 			}
-		    
-		    double hamilt_dist = 0;
+			
+			double hamilt_dist = 0;
 			vector<double> distances = vector<double>(tmp_node->uavs.size());
 
 			for (size_t i = 0; i < tmp_node->uavs.size(); i++)
@@ -366,14 +402,14 @@ namespace App
 				break;
 			}
 
-		    
-		    
-		    //Check if tested node is nearer than the current nearest
-		    if (hamilt_dist < current_best)
-		    {
-		        near_arr.push_back(near_node);
-		        current_best = hamilt_dist;
-		        near_node = nodes[j];
+			
+			
+			//Check if tested node is nearer than the current nearest
+			if (hamilt_dist < current_best)
+			{
+				near_arr.push_back(near_node);
+				current_best = hamilt_dist;
+				near_node = nodes[j];
 				if (debug)
 				{
 					double distance;
@@ -384,11 +420,11 @@ namespace App
 						distance = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
 					}
 					printf("[debug] near node #%d found, distance to goal state: %f\n", s, distance);
-		        }
+				}
 				s++;
-		    }			
+			}			
 		}
-		    
+			
 		if (near_arr.size() > count)
 		{
 			near_node = near_arr[near_arr.size() - count];	//todo: zkontrolovat, jestli sedí pøesnì index a jestli to neubíhá o 1
@@ -535,6 +571,29 @@ namespace App
 		}
 		return collision;
 	}
-}
 
-//todo: zjistit, jak funguje ratio u metody 3 u rrt_path sampling. U 4 UAV, mapy 6 a metody vzorkování 3 vyletí error kvùli doublu, necelému èíslu, v promìnné ratio
+	shared_ptr<Point> Core::random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max)
+	{
+		shared_ptr<Point> randomState;
+		do
+		{
+			double phi = Random::inRange(0, 2 * PI);
+			double r = radius_min + Random::inRange(radius_min, radius_max);
+			double x = center->getX() + r*cos(phi);
+			double y = center->getY() + r*sin(phi);
+			randomState = make_shared<Point>(x, y);
+		} while (check_inside_obstacle(randomState, map) && check_world_bounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
+	}
+
+	bool Core::check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight)
+	{
+		bool inBounds = false;
+
+		if (point->getX() < worldWidth && point->getX() > 0 && point->getY() < worldHeight && point->getY() > 0)
+		{
+			inBounds = true;
+		}
+		return inBounds;
+	}
+
+}
