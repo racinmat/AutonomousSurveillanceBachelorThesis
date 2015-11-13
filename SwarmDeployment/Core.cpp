@@ -772,12 +772,12 @@ namespace App
 				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
 
 				//calculate current state variables
-				node->uavs[j]->getLocation()->changeX(dx * time_step);
-				node->uavs[j]->getLocation()->changeY(dy * time_step);
-				node->uavs[j]->getRotation()->changeZ(dPhi * time_step);
+				newNode->uavs[j]->getLocation()->changeX(dx * time_step);
+				newNode->uavs[j]->getLocation()->changeY(dy * time_step);
+				newNode->uavs[j]->getRotation()->changeZ(dPhi * time_step);
 			}
-			node->prev_inputs = inputs;
-			trajectory.push_back(node);
+			newNode->prev_inputs = inputs;
+			trajectory.push_back(newNode);
 		}
 
 		return newNode;
@@ -785,7 +785,95 @@ namespace App
 
 	bool Core::check_localization_sep(shared_ptr<State> node)
 	{
-		//todo: implementovat
+		int number_of_uavs = node->uavs.size();
+		double relative_distance_min = 5;
+		double relative_distance_max = 80;
+		// Neighbor must be in certain angle on / off
+		bool check_fov = false;
+		double localization_angle = PI / 2;
+		int required_neighbors = 1;
+		bool allow_swarm_splitting = false;
+
+		// Initialize default values
+		vector<int> neighbors = vector<int>(number_of_uavs);
+		for(auto neighbor : neighbors)
+		{
+			neighbor = 0;
+		}
+
+		bool in_range = false;
+		
+		// Single UAV needs no localization
+		if (number_of_uavs == 1)
+		{
+			return true;
+		}
+		
+		// Check minimal distance between UAVs
+		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
+		{
+			for (size_t j = i + 1; j < number_of_uavs; j++)
+			{
+				double uavIx = node->uavs[i]->getLocation()->getX();
+				double uavIy = node->uavs[i]->getLocation()->getY();
+				double uavJx = node->uavs[j]->getLocation()->getX();
+				double uavJy = node->uavs[j]->getLocation()->getY();
+
+				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) <= relative_distance_min)
+				{
+					return false;
+				}
+			}
+		}
+
+		// Check maximal distance between UAVs
+		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
+		{
+			for (size_t j = i + 1; j < number_of_uavs; j++)
+			{
+				double uavIx = node->uavs[i]->getLocation()->getX();
+				double uavIy = node->uavs[i]->getLocation()->getY();
+				double uavIphi = node->uavs[i]->getRotation()->getZ();
+				double uavJx = node->uavs[j]->getLocation()->getX();
+				double uavJy = node->uavs[j]->getLocation()->getY();
+				double uavJphi = node->uavs[i]->getRotation()->getZ();
+
+				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
+				{
+					neighbors[i]++;
+					neighbors[j]++;					
+				}
+			}
+		}
+
+		bool allUavsHaveNeighbors = false;
+		bool oneOrMoreNeighbors = false;
+		for (auto neighbor : neighbors)
+		{
+			allUavsHaveNeighbors = allUavsHaveNeighbors || neighbor >= required_neighbors;
+			oneOrMoreNeighbors = oneOrMoreNeighbors || neighbor >= 1;
+		}
+
+		// Check whether each UAV has required number of neighbors
+		// Pair formations
+		if (allow_swarm_splitting)
+		{
+			return allUavsHaveNeighbors;
+		} else
+		// Whole swarm
+		{
+			int twoOrMoreNeighbors = 0;
+			if (oneOrMoreNeighbors)
+			{
+//				printf("Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
+				for (auto neighbor : neighbors)
+				{
+					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
+				}
+				return twoOrMoreNeighbors >= number_of_uavs - 2;
+			}
+
+		}
 		return false;
 	}
 
