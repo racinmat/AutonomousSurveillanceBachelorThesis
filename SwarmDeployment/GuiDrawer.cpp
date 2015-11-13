@@ -44,7 +44,9 @@ namespace Ui
 		for (auto start : map->getUavsStart())
 		{
 			auto p = start->getLocation();
-			addCross(p->getX(), p->getY(), 3, getRandomColor());
+			Qt::GlobalColor uavColor = getRandomColor();
+			uavColors.push_back(uavColor);
+			addCross(p->getX(), p->getY(), 3, uavColor);
 		}
 
 		drawGrid();
@@ -105,16 +107,21 @@ namespace Ui
 			QString::fromStdString(string));
 	}
 
-	void GuiDrawer::logNearNode(shared_ptr<App::State> nearNode)
+	void GuiDrawer::logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode)
 	{
-	}
-
-	void GuiDrawer::logNewNode(shared_ptr<App::State> newNode)
-	{
+		for (size_t i = 0; i < nearNode->uavs.size(); i++)
+		{
+			scene->addLine(nearNode->uavs[i]->getLocation()->getX(), nearNode->uavs[i]->getLocation()->getY(), 
+				newNode->uavs[i]->getLocation()->getX(), newNode->uavs[i]->getLocation()->getY(), QPen(uavColors[i]));
+		}
 	}
 
 	void GuiDrawer::logRandomStates(vector<shared_ptr<App::Point>> randomStates)
 	{
+		for (size_t i = 0; i < randomStates.size(); i++)
+		{
+			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
+		}
 	}
 
 	void GuiDrawer::clear()

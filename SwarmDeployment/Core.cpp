@@ -54,7 +54,7 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-//		rrtPath(paths, configuration, map);
+		rrtPath(paths, configuration, map);
 	}
 
 	void Core::setLogger(shared_ptr<LoggerInterface> logger)
@@ -93,6 +93,10 @@ namespace App
 		}
 
 		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>(); //todo: zjistit, na jaké hodnoty to inicializovat
+		auto initialState = make_shared<State>();
+		initialState->uavs = map->getUavsStart();
+		nodes.push_back(initialState);
+
 
 		auto current_index = vector<vector<int>>(uavCount);		// matice s délkami cest pro jednotlivá UAV.sloupec je cesta, øádek je UAV
 
@@ -101,7 +105,7 @@ namespace App
 			current_index[i] = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				current_index[i][j] = guiding_paths[i]->getSize();
+				current_index[i][j] = guiding_paths[j]->getSize() - 1;	//protože se indexuje od 0
 			}
 		}
 
@@ -227,8 +231,7 @@ namespace App
 		//todo: udìlat visualizaci rùstu
 			if (i % configuration->getDrawPeriod() == 0)
 			{
-				logger->logNearNode(near_node);
-				logger->logNewNode(new_node);
+				logger->logNewState(near_node, new_node);
 				logger->logRandomStates(s_rand);
 			}
 		}
@@ -330,13 +333,14 @@ namespace App
 				for (size_t j = 0; j < group->getUavs().size(); j++)
 				{
 					int index = group->getUavIndexes()[j];
-					if (goals_reached[index] > 0)
+					if (goals_reached[index])	//todo: zjistit, jestli tam nemá být index cíle
 					{
 						randomStates.push_back(random_state_goal(map->getGoals()[goals_reached[index]], map));
 					}
 					else
 					{
-						auto center = group->getGuidingPath()->get(current_index[index][i]);
+						int currentPathIndex = current_index[index][i];
+						auto center = group->getGuidingPath()->get(currentPathIndex);
 						randomStates.push_back(random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius()));
 					}
 				}
@@ -357,18 +361,19 @@ namespace App
 		int s = 1;
 		int current_best = INT32_MAX;
 		
-		for (int j = 1; j < max_nodes; j++)
+		for (int j = 0; j < max_nodes; j++)
 		{
 			// Distance of next node in the tree
-			shared_ptr<State> tmp_node = nodes[j];	//todo: refactorovat, aby se nesahalo do prázdných nodes
-			if (tmp_node.get() == nullptr)
+			bool isNull = j >= nodes.size();
+			if (isNull)
 			{
 				if (debug)
 				{
-					printf("NaN in node %d\n", tmp_node->index);
+					printf("NaN in node %d\n", j);
 				}
 				break;
 			}
+			shared_ptr<State> tmp_node = nodes[j];	//todo: refactorovat, aby se nesahalo do prázdných nodes
 
 			if (tmp_node->areAllInputsUsed())
 			{
@@ -583,6 +588,7 @@ namespace App
 			double y = center->getY() + r*sin(phi);
 			randomState = make_shared<Point>(x, y);
 		} while (check_inside_obstacle(randomState, map) && check_world_bounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
+		return randomState;
 	}
 
 	bool Core::check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight)

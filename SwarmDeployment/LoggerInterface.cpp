@@ -29,11 +29,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logNearNode(shared_ptr<State> nearNode)
-	{
-	}
-
-	void LoggerInterface::logNewNode(shared_ptr<State> newNode)
+	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
 	{
 	}
 

@@ -16,8 +16,7 @@ namespace App
 		virtual void logMapGrid(vector<vector<Grid>> mapGrid);
 		virtual void logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<shared_ptr<Node>> ends);
 		virtual void logText(string string);
-		virtual void logNearNode(shared_ptr<State> nearNode);
-		virtual void logNewNode(shared_ptr<State> newNode);
+		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode);
 		virtual void logRandomStates(vector<shared_ptr<Point>> randomStates);
 	};
 
