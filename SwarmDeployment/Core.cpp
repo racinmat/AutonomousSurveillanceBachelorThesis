@@ -455,10 +455,13 @@ namespace App
 		int input_samples_phi = 3;
 		int distance_of_new_nodes = 30;
 		double max_turn = PI / 200;
-		vector<shared_ptr<Point>> inputs = vector<shared_ptr<Point>>();
+		bool relative_localization = true;
+		int uavCount = near_node->uavs.size();
+		int inputCountPerUAV = input_samples_dist * input_samples_phi;
+		int inputCount = pow(inputCountPerUAV, uavCount);
+		vector<shared_ptr<Point>> oneUavInputs = vector<shared_ptr<Point>>();
+		shared_ptr<State> new_node;
 
-//		global number_of_uavs params empty_node
-		
 		for (size_t k = 0; k < input_samples_dist; k++)
 		{
 			for (size_t m = 0; m < input_samples_phi; m++)
@@ -466,151 +469,115 @@ namespace App
 				double x = distance_of_new_nodes / pow(1.5,k);
 				double y = max_turn + 2 * m * max_turn / (input_samples_phi - 1);
 				shared_ptr<Point> point = make_shared<Point>(x, y);
-				inputs.push_back(point);
+				oneUavInputs.push_back(point);
 			}
 		}
 
-		inputs = NaN(params.input_samples_phi*params.input_samples_dist,2);
-		d = zeros((params.input_samples_phi*params.input_samples_dist)^number_of_uavs,1);
-		new_node = empty_node;
-		translation = NaN(2,number_of_uavs,(params.input_samples_phi*params.input_samples_dist)^number_of_uavs);
-		%index = NaN(1,number_of_uavs);
+		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
+		//inputs jsou vstupy do modelu
+		vector<vector<shared_ptr<Point>>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, inputCountPerUAV);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		//translations jsou výstupy z modelu
+		vector<vector<shared_ptr<Point>>> translations = vector<vector<shared_ptr<Point>>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+
+		for (size_t i = 0; i < inputs.size(); i++)
+		{
+			auto input = inputs[i];
+			auto tempState = car_like_motion_model(near_node, input);
+			tempStates[i] = tempState;
+			translations[i] = vector<shared_ptr<Point>>();
+			for (size_t j = 0; j < tempState->uavs.size(); j++)
+			{
+				double x = tempState->uavs[j]->getLocation()->getX() - near_node->uavs[j]->getLocation()->getX();
+				double y = tempState->uavs[j]->getLocation()->getY() - near_node->uavs[j]->getLocation()->getX();
+				translations[i][j] = make_shared<Point>(x ,y);
+			}
+		}
+
+		vector<double> d = vector<double>(inputCount);
+		//todo: možná zrefactorovat a schovat do jednoho cyklu, který je výše
+		//todo: kde to pùjde, pužít range-based loop, iteraci místo klasického foru
+		//Distance to s_rand when using different inputs
+		for (size_t i = 0; i < d.size(); i++)
+		{
+			auto tempState = tempStates[i];
+			d[i] = 0;
+			for (size_t j = 0; j < tempState->uavs.size(); j++)
+			{
+				double x = s_rand[j]->getX() - tempState->uavs[j]->getLocation()->getX();
+				double y = s_rand[j]->getY() - tempState->uavs[j]->getLocation()->getY();
+				d[i] += sqrt(x*x + y*y);
+			}
+		}
+
 		
-		for k = 0:params.input_samples_dist-1
-		    for m = 0:params.input_samples_phi-1
-		        inputs(k*params.input_samples_phi+m+1,:) = ...
-		            [params.distance_of_new_nodes/1.5^k ...
-		            -params.max_turn+2*m*params.max_turn/(params.input_samples_phi-1)];
-		    end
-		end
+		// Find vector with minimal distance to s_rand and return it
+		if (relative_localization)
+		{
+			int m = 0;
+			while (m < inputCount)
+			{
+				m++;
+				if (near_node->areAllInputsUsed())
+				{
+					cout << "No valid input left";
+					break;
+				}
+				int index = 0;	//klíè nejmenší hodnoty vzdálenosti v poli d
+				double minValue = DBL_MAX;
+				for (size_t i = 0; i < d.size(); i++)
+				{
+					if (d[i] < minValue)
+					{
+						index = i;
+					}
+				}
+				auto tempState = tempStates[index];
+
+				if (!check_localization_sep(tempState) || trajectory_intersection(near_node, tempState) || near_node->used_inputs[index])
+				{
+					d[index] = NULL;
+					continue;
+				}
+
+				if (!check_world_bounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
+				{
+					d[index] = NULL;
+					continue;
+				}
+
+				near_node = check_obstacle_vcollide_single(near_node, translations, index);
+
+				if (near_node->used_inputs[index])
+				{
+					d[index] = NULL;
+					continue;
+				} else
+				{
+					new_node = make_shared<State>();
+					new_node->uavs = tempState->uavs;
+					new_node->prev = near_node;
+					new_node->prev_inputs = tempState->prev_inputs;
+					near_node->used_inputs[index] = true;
+					break;
+				}
+			}
+		} else
+		{
+			//todo: rozhodnout, zda to tady chci, nebo zda bude natvrdo zapnutá relativní lokalizace
+			//vùbec nechápu, co tady dìlá m. Je úplnì out odf scope, zùstává na poslední hodnotì for cyklu.
+//		    if ~near_node.used_inputs(m,1)
+//		        index = find(d(:) == min(d(:)),1);
+//		        tmp_node.loc = tmp_nodes(index(1,n)).loc;
+//		        tmp_node.rot = tmp_nodes(index(1,n)).rot;
+//		        new_node = tmp_node;
+//		        new_node.prev = near_node.index;
+//		        new_node.prev_inputs(:,:) = tmp_nodes(index(1,n).prev_inputs(:,:));
+//		        near_node.used_inputs(index,1) = true;
+//		    end
+		}		
 		
-		if params.zero_step
-		    inputs(1:end,1:end,end+1) = 0;
-		end
-		
-		for n=1:number_of_uavs
-		    first_input(:,n,1) = inputs(1,:);
-		end
-		current_input = first_input;
-		combinations(:,:,1) = current_input;
-		
-		n = 1;
-		m = 1;
-		last = number_of_uavs;
-		input_index(1,1:number_of_uavs) = 1;
-		index = 0;
-		while true
-		    
-		    
-		    %     current_input(1,:,m) = inputs(input_index(1,m),:);
-		    while input_index(1,m) > length(inputs)
-		        %index = index + 1;
-		        %          combinations(index,:,:) = current_input;
-		        input_index(1,m+1) = input_index(1,m+1) + 1;
-		        current_input(:,m,1) = first_input(:,m,1);
-		        
-		        input_index(1,m) = 1;
-		        m = m + 1;
-		        if m > number_of_uavs
-		            break
-		        end
-		        
-		    end
-		    current_input(:,m) = inputs(input_index(1,m),:);
-		    index = index + 1;
-		    combinations(:,:,index) = current_input;
-		    
-		    m = 1;
-		    input_index(1,m) = input_index(1,m) + 1;
-		    if all(input_index(1,:) >= length(inputs)) ...
-		            && input_index(1,1) > length(inputs)
-		        break
-		    end
-		    
-		end
-		
-		clear inputs
-		inputs = combinations;
-		
-		for m = 1:size(inputs,3);
-		    
-		    %Calling car like motion model
-		    [tmp_node, ~] = car_like_motion_model(near_node, inputs(:,:,m));
-		    tmp_nodes(m) = tmp_node; %#ok
-		    for n = 1:number_of_uavs
-		        translation(1:2,n,m) = [tmp_node.loc(1,n) - near_node.loc(1,n); ...
-		            tmp_node.loc(2,n) - near_node.loc(2,n)];
-		    end
-		end
-		
-		%near_node = check_obstacle_vcollide(near_node, translation);
-		
-		%Distance to s_rand when using different inputs
-		for m = 1:size(inputs,3);
-		    tmp_node = tmp_nodes(m);
-		    for n=1:number_of_uavs
-		        d(m) = d(m) + norm([s_rand(1,n) - tmp_node.loc(1,n) ...
-		            s_rand(2,n) - tmp_node.loc(2,n)]);
-		    end
-		end
-		
-		tmp_node = empty_node;
-		
-		%Find vector with minimal distance to s_rand and return it
-		if  params.relative_localization == true
-		    m = 0;
-		    while m < size(inputs,3)
-		        m = m + 1;
-		        if all(near_node.used_inputs)
-		            %disp('No valid input left');
-		            break
-		        end
-		        index = find(d(:) == min(d(:)),1);
-		        tmp_node = tmp_nodes(index);
-		        if length(tmp_node)<1
-		            break
-		        end
-		        
-		        if ~check_localization_sep(tmp_node) ...
-		                || trajectory_intersection(near_node, tmp_node) ...
-		                || near_node.used_inputs(index,1)
-		            d(index) = NaN;
-		            continue
-		        end
-		        
-		        if ~check_world_bounds(tmp_nodes(index).loc)
-		            d(index) = NaN;
-		            continue
-		        end
-		        
-		        near_node = check_obstacle_vcollide_single(near_node, translation, index);
-		        
-		        if near_node.used_inputs(index,1)
-		            d(index) = NaN;
-		            continue
-		        else
-		            new_node.loc = tmp_nodes(index).loc;
-		            new_node.rot = tmp_nodes(index).rot;
-		            new_node.prev = near_node.index;
-		            new_node.prev_inputs(:,:) = tmp_nodes(index).prev_inputs(:,:);
-		            near_node.used_inputs(index,1) = true;
-		            break
-		        end
-		    end
-		else
-		    if ~near_node.used_inputs(m,1)
-		        index = find(d(:) == min(d(:)),1);
-		        tmp_node.loc = tmp_nodes(index(1,n)).loc;
-		        tmp_node.rot = tmp_nodes(index(1,n)).rot;
-		        new_node = tmp_node;
-		        new_node.prev = near_node.index;
-		        new_node.prev_inputs(:,:) = tmp_nodes(index(1,n).prev_inputs(:,:));
-		        near_node.used_inputs(index,1) = true;
-		    end
-		end
-		
-		
-		return vector<shared_ptr<State>>();
+		return {near_node, new_node};
 	}
 
 	int Core::check_expandability(vector<shared_ptr<State>> nodes)
@@ -759,6 +726,64 @@ namespace App
 			inBounds = true;
 		}
 		return inBounds;
+
+	}
+
+	bool Core::check_world_bounds(vector<shared_ptr<PointParticle>> points, int worldWidth, int worldHeight)
+	{
+		bool inBounds = false;
+		for (auto point : points)
+		{
+			inBounds = inBounds || check_world_bounds(point->getLocation(), worldWidth, worldHeight);
+		}
+		return inBounds;
+	}
+
+	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs)
+	{
+		//todo: implementovat
+		return shared_ptr<State>();
+	}
+
+	bool Core::check_localization_sep(shared_ptr<State> node)
+	{
+		//todo: implementovat
+		return false;
+	}
+
+	bool Core::trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node)
+	{
+		//todo: implementovat
+		return false;
+	}
+
+	shared_ptr<State> Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index)
+	{
+		//todo: implementovat
+		return shared_ptr<State>();
+	}
+
+	// Zde je java implementace, ze které vycházím https ://cs.wikipedia.org/wiki/Variace_(algoritmus)
+	template<typename T> vector<vector<T>> Core::generateNTuplet(vector<T> usedChars, int tupletClass)
+	{
+		vector<vector<T>> list = vector<vector<T>>();	//todo: popøemýšlet, jak to refactorovat, aby se mohlo pracovat s fixní velikostí  pole
+//		vector<vector<T>> list = vector<vector<T>>(pow(usedChars.size(), tupletClass));
+
+		if(tupletClass == 0)
+		{
+			list.push_back(vector<T>());
+		} else
+		{
+			vector<vector<T>> tuplet = generateNTuplet(usedChars, tupletClass - 1);
+			for (T character : usedChars)
+			{
+				for (auto row : tuplet)
+				{
+					list.push_back(row.push_back(character));
+				}
+			}
+		}
+		return list;
 	}
 
 }

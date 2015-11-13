@@ -38,6 +38,12 @@ namespace App
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
 		bool check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
+		bool check_world_bounds(vector<shared_ptr<PointParticle>> points, int worldWidth, int worldHeight);
+		template<typename T> vector<vector<T>> generateNTuplet(vector<T> usedChars, int tupletClass);
+		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs);
+		bool check_localization_sep(shared_ptr<State> node);
+		bool trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node);
+		shared_ptr<State> check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index);
 	};
 
 }
