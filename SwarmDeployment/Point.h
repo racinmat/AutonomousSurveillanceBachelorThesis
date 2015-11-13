@@ -5,16 +5,23 @@ namespace App
 	class Point
 	{
 	public:
-		Point(int x, int y);
+		Point(double x, double y);
+		Point(double x, double y, double z);
 		~Point();
-		int getX() const;
-		void setX(int x);
-		int getY() const;
-		void setY(int y);
+		double getX() const;
+		void setX(double x);
+		double getY() const;
+		void setY(double y);
+		void changeX(double x);
+		void changeY(double y);
+		virtual double getZ() const;
+		virtual void setZ(const double z);
+		void changeZ(double z);
 
 	protected:
-		int x;
-		int y;
+		double x;
+		double y;
+		double z;
 	};
 
 }

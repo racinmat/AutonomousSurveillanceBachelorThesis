@@ -11,7 +11,8 @@ namespace App
 	{
 	public:
 		PointParticle(shared_ptr<Point> location, shared_ptr<Point> rotation);
-		PointParticle(int locationX, int locationY, int rotationX, int rotationY);
+		PointParticle(double locationX, double locationY, double rotationZ);
+		PointParticle(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ);
 		~PointParticle();
 		shared_ptr<Point> getLocation() const;
 		void setLocation(shared_ptr<Point> location);

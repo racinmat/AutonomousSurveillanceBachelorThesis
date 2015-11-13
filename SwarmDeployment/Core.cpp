@@ -8,7 +8,6 @@
 #include <iostream>
 #include <cstdio>
 #include <ctime>
-#define PI 3.14159265358979323846
 #include <cmath>
 #include <memory>
 #include <string>
@@ -16,6 +15,7 @@
 #include "State.h"
 #include "Random.h"
 #include "UavGroup.h"
+#define PI 3.14159265358979323846
 
 using namespace std;
 
@@ -483,7 +483,7 @@ namespace App
 		for (size_t i = 0; i < inputs.size(); i++)
 		{
 			auto input = inputs[i];
-			auto tempState = car_like_motion_model(near_node, input);
+			auto tempState = car_like_motion_model(near_node, input);	//this method changes near_node
 			tempStates[i] = tempState;
 			translations[i] = vector<shared_ptr<Point>>();
 			for (size_t j = 0; j < tempState->uavs.size(); j++)
@@ -739,10 +739,48 @@ namespace App
 		return inBounds;
 	}
 
+	//only modifies node by inputs
 	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs)
 	{
-		//todo: implementovat
-		return shared_ptr<State>();
+		auto newNode = node->clone();
+
+		double uav_size = 0.5;
+		// Simulation step length
+		double time_step = 0.05;
+		// Simulation length
+		double end_time = 0.5;
+		int number_of_uavs = node->uavs.size();
+		//		global number_of_uavs params empty_trajectory
+		
+		//model parameters
+		//front to rear axle distance
+		double L = uav_size;
+		
+		//prepare trajectory array
+		//repmat is time demanding
+		auto trajectory = vector<shared_ptr<State>>();
+		
+		//main simulation loop
+		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
+		for (size_t i = 0; i < end_time; i += time_step)
+		{
+			for (size_t j = 0; j < number_of_uavs; j++)
+			{
+				//calculate derivatives from inputs
+				double dx = inputs[j]->getX() * cos(node->uavs[j]->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
+				double dy = inputs[j]->getX() * sin(node->uavs[j]->getRotation()->getZ());
+				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
+
+				//calculate current state variables
+				node->uavs[j]->getLocation()->changeX(dx * time_step);
+				node->uavs[j]->getLocation()->changeY(dy * time_step);
+				node->uavs[j]->getRotation()->changeZ(dPhi * time_step);
+			}
+			node->prev_inputs = inputs;
+			trajectory.push_back(node);
+		}
+
+		return newNode;
 	}
 
 	bool Core::check_localization_sep(shared_ptr<State> node)

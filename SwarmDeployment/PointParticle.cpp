@@ -11,12 +11,17 @@ namespace App
 		this->rotation = rotation;
 	}
 
-	PointParticle::PointParticle(int locationX, int locationY, int rotationX, int rotationY)
+	PointParticle::PointParticle(double locationX, double locationY, double rotationZ)
 	{
 		this->location = make_shared<Point>(locationX, locationY);
-		this->rotation = make_shared<Point>(rotationX, rotationY);
+		this->rotation = make_shared<Point>(0, 0, rotationZ);
 	}
 
+	PointParticle::PointParticle(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ)
+	{
+		this->location = make_shared<Point>(locationX, locationY, locationZ);
+		this->rotation = make_shared<Point>(rotationX, rotationY, rotationZ);
+	}
 
 	PointParticle::~PointParticle()
 	{
