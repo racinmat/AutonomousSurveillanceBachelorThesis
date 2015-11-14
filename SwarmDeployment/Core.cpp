@@ -16,6 +16,7 @@
 #include "Random.h"
 #include "UavGroup.h"
 #define PI 3.14159265358979323846
+#include "VCollide/Triangle3D.h"
 
 using namespace std;
 
@@ -153,7 +154,7 @@ namespace App
 					throw "Not possible to find near node suitable for expansion";
 				}
 				near_node = nearest_neighbor(s_rand, nodes, k);
-				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node);
+				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
 				near_node = returnedNodes[0];
 				new_node = returnedNodes[1];
@@ -449,7 +450,7 @@ namespace App
 		return near_node;
 	}
 
-	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node)
+	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
 	{
 		int input_samples_dist = 1;
 		int input_samples_phi = 3;
@@ -546,7 +547,7 @@ namespace App
 					continue;
 				}
 
-				near_node = check_obstacle_vcollide_single(near_node, translations, index);
+				near_node = check_obstacle_vcollide_single(near_node, translations, index, map);
 
 				if (near_node->used_inputs[index])
 				{
@@ -796,10 +797,7 @@ namespace App
 
 		// Initialize default values
 		vector<int> neighbors = vector<int>(number_of_uavs);
-		for(auto neighbor : neighbors)
-		{
-			neighbor = 0;
-		}
+		fill(neighbors.begin(), neighbors.end(), 0);	//inicializace
 
 		bool in_range = false;
 		
@@ -879,14 +877,157 @@ namespace App
 
 	bool Core::trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node)
 	{
-		//todo: implementovat
+		
+		int number_of_uavs = near_node->uavs.size();
+		for (size_t i = 0; i < number_of_uavs; i++)
+		{
+			for (size_t j = 0; j < number_of_uavs; j++)
+			{
+				if (i != j && line_segments_intersection(
+					near_node->uavs[i]->getLocation(), 
+					tmp_node->uavs[i]->getLocation(), 
+					near_node->uavs[j]->getLocation(), 
+					tmp_node->uavs[j]->getLocation()))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
-	shared_ptr<State> Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index)
+	shared_ptr<State> Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map)
 	{
+		
+//		global params number_of_uavs obstacles
+		double uav_size = 0.5;
+		int number_of_uavs = near_node->uavs.size();
+		vector<bool> uavs_colliding = vector<bool>(number_of_uavs);
+		fill(uavs_colliding.begin(), uavs_colliding.end(), false);
+		double collision = false;
+		
+		vector<shared_ptr<Triangle3D>> tri_uav = vector<shared_ptr<Triangle3D>>(number_of_uavs);
+		vector<shared_ptr<Triangle3D>> tri1_obs = vector<shared_ptr<Triangle3D>>(number_of_uavs);
+		vector<shared_ptr<Triangle3D>> tri2_obs = vector<shared_ptr<Triangle3D>>(number_of_uavs);
+		
+		for (size_t i = 0; i < number_of_uavs; i++)
+		{
+			double x = near_node->uavs[i]->getLocation()->getX();
+			double y = near_node->uavs[i]->getLocation()->getY();
+			double x1 = x - uav_size / 2;
+			double y1 = y - uav_size / 2;
+			double z1 = 1;
+			double x2 = x + uav_size / 2;
+			double y2 = y - uav_size / 2;
+			double z2 = 1;
+			double x3 = x;
+			double y3 = y + uav_size / 2;
+			double z3 = 1;
+			tri_uav[i] = make_shared<Triangle3D>(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
+		}
+		
+		vector<double> zero_trans = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
+		
+		for (size_t i = 0; i < map->getObstacles().size(); i++)
+		{
+			auto obs = map->getObstacles()[i];
+			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
+			Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
+			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getX() + obs->rectangle->getHeight(), 1);
+
+			tri1_obs[i] = make_shared<Triangle3D>(p1, p2, p3);
+			tri2_obs[i] = make_shared<Triangle3D>(p1 ,p4, p3);
+		}
+		
+		int k = index;
+		for (size_t i = 0; i < number_of_uavs; i++)
+		{
+			for (size_t j = 0; j < map->getObstacles().size(); j++)
+			{
+				vector<double> trans = { translation[i][k]->getX(), translation[i][k]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
+				auto col = coldetect(tri_uav[i], tri1_obs[i], trans, zero_trans);
+				col += ;
+			}
+		}
+
+		for n = 1:number_of_uavs
+				for m = 1:length(obstacles)
+					trans = [inputs(1,n,k),inputs(2,n,k),0, 1,0,0, 0,1,0, 0,0,1];
+					col = coldetect(tri_uav(n,:), tri1_obs(m,:), trans, zero_trans);
+					col = col + coldetect(tri_uav(n,:), tri2_obs(m,:), trans, zero_trans);
+					if col > 0
+						for l=1:length(inputs)
+							if inputs(2,n,l) == inputs(2,n,k) ...
+									&& inputs(1,n,l) == inputs(1,n,k)
+							near_node.used_inputs(l,1) = true;
+							end
+						end
+						near_node.used_inputs(k,1) = true;
+						collision= true;
+						uavs_colliding(1,n) = true;
+					end
+				end
+		end
+		
+		%memory leak in mex file
+		end
+		clear mex
+
+
 		//todo: implementovat
 		return shared_ptr<State>();
+	}
+
+	bool Core::line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)
+	{
+		auto p = line_line_intersection(p1, p2, p3, p4);
+		
+		if (isfinite(p->getX()) && isfinite(p->getY()))
+		{
+			if (line_point_intersection(p, p1, p2) &&
+				line_point_intersection(p, p3, p4))
+			{
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	bool Core::line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2)
+	{
+		double tolerance = 1e-10;
+
+		double x = q->getX();
+		double y = q->getY();
+		double x1 = p1->getX();
+		double y1 = p1->getY();
+		double x2 = p2->getX();
+		double y2 = p2->getY();
+
+		double value = (pow(x - x1, 2) + pow(y - y1, 2)) + (pow(x - x2, 2) + pow(y - y2, 2)) - (pow(x1 - x2, 2) + pow(y1 - y2, 2));
+
+		return value <= tolerance;
+	}
+
+	shared_ptr<Point> Core::line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)
+	{
+		double x1 = p1->getX();
+		double y1 = p1->getY();
+		double x2 = p2->getX();
+		double y2 = p2->getY();
+		double x3 = p3->getX();
+		double y3 = p3->getY();
+		double x4 = p4->getX();
+		double y4 = p4->getY();
+
+		double px = ((x1*y2 - y1*x2)*(x3 - x4) - (x1 - x2)*(x3*y4 - y3*x4)) / 
+			((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
+		double py = ((x1*y2 - y1*x2)*(y3 - y4) - (y1 - y2)*(x3*y4 - y3*x4)) / 
+			((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
+
+		return make_shared<Point>(px, py);
 	}
 
 	// Zde je java implementace, ze které vycházím https ://cs.wikipedia.org/wiki/Variace_(algoritmus)
