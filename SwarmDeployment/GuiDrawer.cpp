@@ -4,11 +4,12 @@
 #include <iostream>
 #include <QtCore/qtextstream.h>
 #include <QtWidgets/QMessageBox>
+#include "mainwindow.h"
 
 namespace Ui
 {
 
-	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, MainWindow* mainWindow) :
+	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, ::MainWindow* mainWindow) :
 		view(view),
 		scene(view->scene()),
 		window(window),
@@ -104,7 +105,7 @@ namespace Ui
 		//		showPopup(string);
 		clear();
 		addText(QString::fromStdString(string), 20, 20);
-//		mainWindow->updateView();
+		//		mainWindow->updateView();
 		//		view->repaint();
 	}
 

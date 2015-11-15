@@ -2,6 +2,7 @@
 #include "LoggerInterface.h"
 #include "memory"
 #include "State.h"
+#include "GuiDrawer.h"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ namespace App
 		virtual ~Core();
 		void run();
 		void setLogger(shared_ptr<LoggerInterface> logger);
+		void setLogger(shared_ptr<Ui::GuiDrawer> logger);
 		void logConfigurationChange();
 		void rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map);
 

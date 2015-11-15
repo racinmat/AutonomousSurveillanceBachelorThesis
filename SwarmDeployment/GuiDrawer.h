@@ -11,7 +11,7 @@ namespace Ui
 	class GuiDrawer : public App::LoggerInterface
 	{
 	public:
-		GuiDrawer(QGraphicsView* view, QMainWindow* window, MainWindow* mainWindow);
+		GuiDrawer(QGraphicsView* view, QMainWindow* window, ::MainWindow* mainWindow);
 		virtual ~GuiDrawer();
 		virtual void logSelectedMap(shared_ptr<App::Map> map, int worldWidth, int worldHeight) override;
 		virtual void logMapGrid(vector<vector<App::Grid>> mapGrid) override;
@@ -23,7 +23,7 @@ namespace Ui
 		QGraphicsView* view;
 		QGraphicsScene* scene;
 		QMainWindow* window;
-		::MainWindow* mainWindow;
+		MainWindow* mainWindow;
 		void clear();
 		void drawGrid();
 		QGraphicsTextItem* addText(QString text, double x, double y);
