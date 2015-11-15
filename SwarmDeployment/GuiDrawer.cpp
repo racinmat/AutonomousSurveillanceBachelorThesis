@@ -9,13 +9,21 @@ namespace Ui
 {
 
 	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window) :
-		view(view), 
+		view(view),
 		scene(view->scene()),
 		window(window)
 	{
 		LoggerInterface();
 	}
 
+	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, MainWindow* mainWindow) :
+		view(view),
+		scene(view->scene()),
+		window(window),
+		mainWindow(mainWindow)
+	{
+		LoggerInterface();
+	}
 
 	GuiDrawer::~GuiDrawer()
 	{
@@ -29,7 +37,7 @@ namespace Ui
 
 		view->resize(worldWidth, worldHeight);
 
-		for(auto goal : map->getGoals())
+		for (auto goal : map->getGoals())
 		{
 			auto r = goal->rectangle;
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::green), QBrush(Qt::green));
@@ -65,10 +73,10 @@ namespace Ui
 				std::string gridText;
 				switch (grid)
 				{
-					case App::Grid::Obstacle: gridText = "obstacle"; break;
-					case App::Grid::Free: gridText = "free"; break;
-					case App::Grid::Goal: gridText = "goal"; break;
-					case App::Grid::UAV: gridText = "uav"; break;
+				case App::Grid::Obstacle: gridText = "obstacle"; break;
+				case App::Grid::Free: gridText = "free"; break;
+				case App::Grid::Goal: gridText = "goal"; break;
+				case App::Grid::UAV: gridText = "uav"; break;
 				}
 				addText(QString::fromStdString(gridText), x, y);
 				y += 50;
@@ -80,7 +88,7 @@ namespace Ui
 	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
 	{
 		scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::yellow), QBrush(Qt::yellow));
-		for(auto end : ends)
+		for (auto end : ends)
 		{
 			scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
 		}
@@ -101,10 +109,10 @@ namespace Ui
 
 	void GuiDrawer::logText(std::string string)
 	{
-//		showPopup(string);
+		//		showPopup(string);
 		clear();
 		addText(QString::fromStdString(string), 20, 20);
-//		window->updateView();
+		//		window->updateView();
 		//		view->repaint();
 	}
 
@@ -112,7 +120,7 @@ namespace Ui
 	{
 		for (size_t i = 0; i < nearNode->uavs.size(); i++)
 		{
-			scene->addLine(nearNode->uavs[i]->getLocation()->getX(), nearNode->uavs[i]->getLocation()->getY(), 
+			scene->addLine(nearNode->uavs[i]->getLocation()->getX(), nearNode->uavs[i]->getLocation()->getY(),
 				newNode->uavs[i]->getLocation()->getX(), newNode->uavs[i]->getLocation()->getY(), QPen(uavColors[i]));
 		}
 	}
@@ -138,7 +146,7 @@ namespace Ui
 		double height = view->height();
 		double width = view->width();
 
-		for (int i = 0; i <= height; i+= 50)
+		for (int i = 0; i <= height; i += 50)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
 			addText(QString("%1").arg(i), i, 0);
