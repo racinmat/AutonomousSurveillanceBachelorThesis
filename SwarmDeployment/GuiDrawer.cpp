@@ -105,7 +105,7 @@ namespace Ui
 		//		showPopup(string);
 		clear();
 		addText(QString::fromStdString(string), 20, 20);
-		//		mainWindow->updateView();
+		mainWindow->updateView();
 		//		view->repaint();
 	}
 
