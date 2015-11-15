@@ -21,7 +21,7 @@ int runGui(int argc, char *argv[])
 	core->run();
 
 	int returnValue = a.exec();
-//	int returnValue = 0;
+	//	int returnValue = 0;
 	return returnValue;
 }
 
@@ -29,7 +29,7 @@ int run(int argc, char *argv[])
 {
 	auto configuration = make_shared<App::Configuration>();
 	auto core = make_shared<App::Core>(configuration);
-	configuration->setCore(core);	//toto nemohu zavolat uvnitø konstruktoru
+	configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
 	core->run();
 
 	int returnValue = 0;
@@ -39,7 +39,7 @@ int run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-//	int returnValue = run(argc, argv);
+	//	int returnValue = run(argc, argv);
 	int returnValue = runGui(argc, argv);
 	return returnValue;
 }

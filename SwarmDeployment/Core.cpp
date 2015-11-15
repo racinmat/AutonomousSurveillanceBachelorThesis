@@ -15,8 +15,12 @@
 #include "State.h"
 #include "Random.h"
 #include "UavGroup.h"
-#define PI 3.14159265358979323846
 #include "VCollide/Triangle3D.h"
+#include "VCollide/ColDetect.h"
+#include <chrono>
+#include <thread>
+
+#define PI 3.14159265358979323846
 
 using namespace std;
 
@@ -55,7 +59,17 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-		rrtPath(paths, configuration, map);
+//		rrtPath(paths, configuration, map);
+		testGui();
+	}
+
+	void Core::testGui()
+	{
+		for (size_t i = 0; i < 200; i++)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			this->logger->logText(to_string(i));
+		}
 	}
 
 	void Core::setLogger(shared_ptr<LoggerInterface> logger)
@@ -906,9 +920,9 @@ namespace App
 		fill(uavs_colliding.begin(), uavs_colliding.end(), false);
 		double collision = false;
 		
-		vector<shared_ptr<Triangle3D>> tri_uav = vector<shared_ptr<Triangle3D>>(number_of_uavs);
-		vector<shared_ptr<Triangle3D>> tri1_obs = vector<shared_ptr<Triangle3D>>(number_of_uavs);
-		vector<shared_ptr<Triangle3D>> tri2_obs = vector<shared_ptr<Triangle3D>>(number_of_uavs);
+		vector<Triangle3D> tri_uav = vector<Triangle3D>(number_of_uavs);
+		vector<Triangle3D> tri1_obs = vector<Triangle3D>(number_of_uavs);
+		vector<Triangle3D> tri2_obs = vector<Triangle3D>(number_of_uavs);
 		
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
@@ -923,10 +937,10 @@ namespace App
 			double x3 = x;
 			double y3 = y + uav_size / 2;
 			double z3 = 1;
-			tri_uav[i] = make_shared<Triangle3D>(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
+			tri_uav[i] = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
 		}
 		
-		vector<double> zero_trans = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
+		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
 		
 		for (size_t i = 0; i < map->getObstacles().size(); i++)
 		{
@@ -936,8 +950,8 @@ namespace App
 			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
 			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getX() + obs->rectangle->getHeight(), 1);
 
-			tri1_obs[i] = make_shared<Triangle3D>(p1, p2, p3);
-			tri2_obs[i] = make_shared<Triangle3D>(p1 ,p4, p3);
+			tri1_obs[i] = Triangle3D(p1, p2, p3);
+			tri2_obs[i] = Triangle3D(p1 ,p4, p3);
 		}
 		
 		int k = index;
@@ -945,38 +959,27 @@ namespace App
 		{
 			for (size_t j = 0; j < map->getObstacles().size(); j++)
 			{
-				vector<double> trans = { translation[i][k]->getX(), translation[i][k]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
-				auto col = coldetect(tri_uav[i], tri1_obs[i], trans, zero_trans);
-				col += ;
+				double trans[] = { translation[i][k]->getX(), translation[i][k]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
+				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[i], trans, zero_trans);
+				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[i], trans, zero_trans);
+				if (col)
+				{
+					for (size_t l = 0; l < translation.size(); l++)
+					{
+						if (translation[i][l]->getY() == translation[i][k]->getY() && translation[i][l]->getX() == translation[i][k]->getX())
+						{
+							near_node->used_inputs[l] = true;
+						}
+					}
+					near_node->used_inputs[k] = true;
+					collision = true;
+					uavs_colliding[i] = true;
+				}
 			}
 		}
 
-		for n = 1:number_of_uavs
-				for m = 1:length(obstacles)
-					trans = [inputs(1,n,k),inputs(2,n,k),0, 1,0,0, 0,1,0, 0,0,1];
-					col = coldetect(tri_uav(n,:), tri1_obs(m,:), trans, zero_trans);
-					col = col + coldetect(tri_uav(n,:), tri2_obs(m,:), trans, zero_trans);
-					if col > 0
-						for l=1:length(inputs)
-							if inputs(2,n,l) == inputs(2,n,k) ...
-									&& inputs(1,n,l) == inputs(1,n,k)
-							near_node.used_inputs(l,1) = true;
-							end
-						end
-						near_node.used_inputs(k,1) = true;
-						collision= true;
-						uavs_colliding(1,n) = true;
-					end
-				end
-		end
-		
-		%memory leak in mex file
-		end
-		clear mex
-
-
-		//todo: implementovat
-		return shared_ptr<State>();
+		//todo: collision a uavs_colliding se mají vracet, ale nikde se nepouøívají, takže je smazat
+		return near_node;
 	}
 
 	bool Core::line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)
@@ -1046,7 +1049,8 @@ namespace App
 			{
 				for (auto row : tuplet)
 				{
-					list.push_back(row.push_back(character));
+					row.push_back(character);
+					list.push_back(row);
 				}
 			}
 		}

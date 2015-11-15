@@ -28,6 +28,7 @@ namespace Ui
 		void addCross(double x, double y, double size, Qt::GlobalColor color);
 		Qt::GlobalColor getRandomColor();
 		vector<Qt::GlobalColor> uavColors;
+		void showPopup(string text);
 	};
 
 }

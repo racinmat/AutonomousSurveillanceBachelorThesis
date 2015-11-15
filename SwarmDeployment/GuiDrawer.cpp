@@ -101,10 +101,11 @@ namespace Ui
 
 	void GuiDrawer::logText(std::string string)
 	{
-		QMessageBox::information(
-			window,
-			"Logged text",
-			QString::fromStdString(string));
+//		showPopup(string);
+		clear();
+		addText(QString::fromStdString(string), 20, 20);
+//		window->updateView();
+		//		view->repaint();
 	}
 
 	void GuiDrawer::logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode)
@@ -168,5 +169,13 @@ namespace Ui
 	Qt::GlobalColor GuiDrawer::getRandomColor()
 	{
 		return Qt::GlobalColor(rand() % Qt::transparent);	//tansparent is last color of enum
+	}
+
+	void GuiDrawer::showPopup(string text)
+	{
+		QMessageBox::information(
+			window,
+			"Logged text",
+			QString::fromStdString(text));
 	}
 }

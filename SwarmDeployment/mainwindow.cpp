@@ -3,6 +3,7 @@
 #include "qdebug.h"
 #include <memory>
 
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
@@ -71,6 +72,11 @@ void MainWindow::setCore(shared_ptr<App::Core> core)
 void MainWindow::setConfiguration(shared_ptr<App::Configuration> configuration)
 {
 	this->configuration = configuration;
+}
+
+void MainWindow::updateView()
+{
+	qApp->processEvents();
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
