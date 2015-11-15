@@ -59,13 +59,13 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-//		rrtPath(paths, configuration, map);
-		testGui();
+		rrtPath(paths, configuration, map);
+//		testGui();
 	}
 
 	void Core::testGui()
 	{
-		for (size_t i = 0; i < 2; i++)
+		for (size_t i = 0; i < 200; i++)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			this->logger->logText(to_string(i));
@@ -248,7 +248,7 @@ namespace App
 				m++;
 			}
 			output->distance_of_new_nodes[i] = distance_of_new_nodes;
-		//todo: udìlat visualizaci rùstu
+
 			if (i % configuration->getDrawPeriod() == 0)
 			{
 				logger->logNewState(near_node, new_node);
@@ -273,7 +273,8 @@ namespace App
 		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>();
 
 //		return vector<shared_ptr<Point>>();
-		vector<double> propabilities = vector<double>(guiding_paths.size());
+		vector<double> propabilities = vector<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
+		//todo: vyøešit problém s tím, že kratší cesta je prozkoumána døíve
 		
 //		global number_of_uavs params
 
@@ -782,7 +783,7 @@ namespace App
 		
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
-		for (size_t i = 0; i < end_time; i += time_step)
+		for (double i = 0; i < end_time; i += time_step)
 		{
 			for (size_t j = 0; j < number_of_uavs; j++)
 			{

@@ -51,6 +51,7 @@ namespace Ui
 		}
 
 		drawGrid();
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
@@ -76,6 +77,7 @@ namespace Ui
 			}
 			x += 50;
 		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
@@ -98,6 +100,7 @@ namespace Ui
 				previous = node;
 			}
 		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logText(std::string string)
@@ -116,6 +119,7 @@ namespace Ui
 			scene->addLine(nearNode->uavs[i]->getLocation()->getX(), nearNode->uavs[i]->getLocation()->getY(),
 				newNode->uavs[i]->getLocation()->getX(), newNode->uavs[i]->getLocation()->getY(), QPen(uavColors[i]));
 		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logRandomStates(vector<shared_ptr<App::Point>> randomStates)
@@ -124,6 +128,7 @@ namespace Ui
 		{
 			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
 		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::clear()
