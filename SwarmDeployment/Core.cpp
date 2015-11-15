@@ -65,7 +65,7 @@ namespace App
 
 	void Core::testGui()
 	{
-		for (size_t i = 0; i < 200; i++)
+		for (size_t i = 0; i < 2; i++)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			this->logger->logText(to_string(i));

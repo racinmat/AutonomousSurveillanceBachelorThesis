@@ -8,14 +8,6 @@
 namespace Ui
 {
 
-	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window) :
-		view(view),
-		scene(view->scene()),
-		window(window)
-	{
-		LoggerInterface();
-	}
-
 	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, MainWindow* mainWindow) :
 		view(view),
 		scene(view->scene()),
@@ -112,7 +104,7 @@ namespace Ui
 		//		showPopup(string);
 		clear();
 		addText(QString::fromStdString(string), 20, 20);
-		//		window->updateView();
+//		mainWindow->updateView();
 		//		view->repaint();
 	}
 

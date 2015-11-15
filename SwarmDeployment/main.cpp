@@ -18,7 +18,7 @@ int runGui(int argc, char *argv[])
 	w.setCore(core);
 	w.show();
 
-	core->run();
+//	core->run();
 
 	int returnValue = a.exec();
 	//	int returnValue = 0;
