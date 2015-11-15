@@ -147,13 +147,15 @@ namespace Ui
 		for (int i = 0; i <= height; i += 50)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
-			addText(QString("%1").arg(i), i, 0);
+			QString number = QString("%1").arg(i);
+			addText(number, i - 0 - 6 * number.size(), 0);
 		}
 
 		for (int i = 0; i <= width; i += 50)
 		{
 			scene->addLine(0, i, width, i, QPen(Qt::gray));
-			addText(QString("%1").arg(i), 0, i);
+			QString number = QString("%1").arg(i);
+			addText(number, 0 - 10 - 7 * number.size(), i + 12);
 		}
 
 	}
