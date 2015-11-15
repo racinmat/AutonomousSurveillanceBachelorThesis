@@ -59,6 +59,14 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
+
+		//protože Petrlík má guidingPath otoèenou, také si ji otoèím, abych to mìl pro kontrolu stejnì
+		//todo: potom vše zrefactorovat tak, aby mohla být cesta správnì, neotoèená
+		for (auto path : paths)
+		{
+			path->reverse();
+		}
+
 		rrtPath(paths, configuration, map);
 //		testGui();
 	}
@@ -144,11 +152,11 @@ namespace App
 		shared_ptr<State> near_node;
 		auto output = make_shared<Output>();
 
-		int i = 1; // poèet expandovaných nodes
+		int i = 0; // poèet expandovaných nodes, hned na zaèátku se zvýší o jedna
 		int m = 1; // poèet nalezených cest
 		int s = 2; // poèet prùchodù cyklem ? prostì se to jen zvìtší o 1 pøi každém prùchodu, nikde se nepoužívá
 
-		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // numver_of_solutions je asi 10 000.
+		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // number_of_solutions je asi 10 000.
 		{
 			if (stop)
 			{
@@ -160,7 +168,7 @@ namespace App
 			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, current_index, goals_reached, map); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
-			int k = 0;	//poèítadlo uvíznutí
+			int k = 1;	//poèítadlo uvíznutí, protože se používá v nearest_neighbor size() - k, zaèínám od 1
 			bool near_found = false;
 
 			auto isNewUavPosition = false;
@@ -227,7 +235,13 @@ namespace App
 				printf("RRT size: %d\n", i);
 			}
 
-			nodes[i] = new_node;
+			if (i < nodes.size())
+			{
+				nodes[i] = new_node;
+			} else
+			{
+				nodes.push_back(new_node);
+			}
 			s++;
 
 			current_index = guiding_point_reached(new_node, guiding_paths, current_index, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
@@ -451,9 +465,9 @@ namespace App
 			}			
 		}
 			
-		if (near_arr.size() > count)
+		if (near_arr.size() > count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
 		{
-			near_node = near_arr[near_arr.size() - count];	//todo: zkontrolovat, jestli sedí pøesnì index a jestli to neubíhá o 1
+			near_node = near_arr[near_arr.size() - count];	//indexuje se od 0, proto count musí zaèínat od 1
 			double distance;
 			for (size_t i = 0; i < near_node->uavs.size(); i++)
 			{
@@ -496,7 +510,7 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu
-		vector<vector<shared_ptr<Point>>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, inputCountPerUAV);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		vector<vector<shared_ptr<Point>>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		//translations jsou výstupy z modelu
 		vector<vector<shared_ptr<Point>>> translations = vector<vector<shared_ptr<Point>>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
@@ -506,7 +520,7 @@ namespace App
 			auto input = inputs[i];
 			auto tempState = car_like_motion_model(near_node, input);	//this method changes near_node
 			tempStates[i] = tempState;
-			translations[i] = vector<shared_ptr<Point>>();
+			translations[i] = vector<shared_ptr<Point>>(tempState->uavs.size());
 			for (size_t j = 0; j < tempState->uavs.size(); j++)
 			{
 				double x = tempState->uavs[j]->getLocation()->getX() - near_node->uavs[j]->getLocation()->getX();
@@ -527,7 +541,7 @@ namespace App
 			{
 				double x = s_rand[j]->getX() - tempState->uavs[j]->getLocation()->getX();
 				double y = s_rand[j]->getY() - tempState->uavs[j]->getLocation()->getY();
-				d[i] += sqrt(x*x + y*y);
+				d[i] += sqrt(pow(x, 2) + pow(y, 2));
 			}
 		}
 
@@ -541,8 +555,7 @@ namespace App
 				m++;
 				if (near_node->areAllInputsUsed())
 				{
-					cout << "No valid input left";
-					break;
+					throw "No valid input left";
 				}
 				int index = 0;	//klíè nejmenší hodnoty vzdálenosti v poli d
 				double minValue = DBL_MAX;
@@ -550,6 +563,7 @@ namespace App
 				{
 					if (d[i] < minValue)
 					{
+						minValue = d[i];
 						index = i;
 					}
 				}
@@ -598,6 +612,10 @@ namespace App
 //		    end
 		}		
 		
+		if (!new_node)	//operator== urèuje, zda je pointer null èi ne
+		{
+			throw "No valid input found.";
+		}
 		return {near_node, new_node};
 	}
 
@@ -818,8 +836,6 @@ namespace App
 		// Initialize default values
 		vector<int> neighbors = vector<int>(number_of_uavs);
 		fill(neighbors.begin(), neighbors.end(), 0);	//inicializace
-
-		bool in_range = false;
 		
 		// Single UAV needs no localization
 		if (number_of_uavs == 1)
@@ -922,13 +938,14 @@ namespace App
 //		global params number_of_uavs obstacles
 		double uav_size = 0.5;
 		int number_of_uavs = near_node->uavs.size();
+		int number_of_obstacles = map->getObstacles().size();
 		vector<bool> uavs_colliding = vector<bool>(number_of_uavs);
 		fill(uavs_colliding.begin(), uavs_colliding.end(), false);
 		double collision = false;
 		
 		vector<Triangle3D> tri_uav = vector<Triangle3D>(number_of_uavs);
-		vector<Triangle3D> tri1_obs = vector<Triangle3D>(number_of_uavs);
-		vector<Triangle3D> tri2_obs = vector<Triangle3D>(number_of_uavs);
+		vector<Triangle3D> tri1_obs = vector<Triangle3D>(number_of_obstacles);
+		vector<Triangle3D> tri2_obs = vector<Triangle3D>(number_of_obstacles);
 		
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
@@ -948,7 +965,7 @@ namespace App
 		
 		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
 		
-		for (size_t i = 0; i < map->getObstacles().size(); i++)
+		for (size_t i = 0; i < number_of_obstacles; i++)
 		{
 			auto obs = map->getObstacles()[i];
 			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
@@ -963,16 +980,16 @@ namespace App
 		int k = index;
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
-			for (size_t j = 0; j < map->getObstacles().size(); j++)
+			for (size_t j = 0; j < number_of_obstacles; j++)
 			{
-				double trans[] = { translation[i][k]->getX(), translation[i][k]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
+				double trans[] = { translation[k][i]->getX(), translation[k][i]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
 				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[i], trans, zero_trans);
 				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[i], trans, zero_trans);
 				if (col)
 				{
 					for (size_t l = 0; l < translation.size(); l++)
 					{
-						if (translation[i][l]->getY() == translation[i][k]->getY() && translation[i][l]->getX() == translation[i][k]->getX())
+						if (translation[l][i]->getY() == translation[k][i]->getY() && translation[l][i]->getX() == translation[k][i]->getX())
 						{
 							near_node->used_inputs[l] = true;
 						}

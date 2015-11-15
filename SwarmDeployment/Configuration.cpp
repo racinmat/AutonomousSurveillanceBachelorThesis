@@ -7,8 +7,8 @@ namespace App
 	Configuration::Configuration()
 	{
 		aStarCellSize = 50;
-		mapNumber = 1;
-		uavCount = 3;
+		mapNumber = 0;
+		uavCount = 4;
 		worldHeight = 1000;
 		worldWidth = 1000;
 		uavSize = 0.5;

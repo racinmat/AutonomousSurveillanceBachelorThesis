@@ -13,6 +13,8 @@ namespace App
 		virtual ~Path();
 		std::vector<std::shared_ptr<Node>> getNodes() const;
 		int getSize() const;
+		void reverse();	//kvůli kompatibilitě s Petrlíkem.
+		//todo: metodu reverse odstranit hned, jak to bude možné
 		void addToEnd(std::shared_ptr<Node> node);
 		shared_ptr<Node> get(int i);
 	protected:

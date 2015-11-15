@@ -6,6 +6,9 @@ namespace App
 
 	State::State()
 	{
+		//todo: refactorovat a vyrábìt nové stavy z factory, která jim bude pøedávat délku used_inputs pole podle konfigurace v konstruktoru.
+		used_inputs = vector<bool>(81);		//zatím je zde velikost natvrdo
+		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
 
