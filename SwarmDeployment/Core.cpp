@@ -502,7 +502,7 @@ namespace App
 			for (size_t m = 0; m < input_samples_phi; m++)
 			{
 				double x = distance_of_new_nodes / pow(1.5,k);
-				double y = max_turn + 2 * m * max_turn / (input_samples_phi - 1);
+				double y = -max_turn + 2 * m * max_turn / (input_samples_phi - 1);
 				shared_ptr<Point> point = make_shared<Point>(x, y);
 				oneUavInputs.push_back(point);
 			}
