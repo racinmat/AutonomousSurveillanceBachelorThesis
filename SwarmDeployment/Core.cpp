@@ -348,6 +348,7 @@ namespace App
 					indexes[j] = uavsInGroups + j;
 				}
 				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i], indexes);
+				uavGroups[i]->guidingPathIndex = i;
 				uavsInGroups += uavsCountInGroup;
 			}
 			//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
@@ -360,6 +361,27 @@ namespace App
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
 				auto group = uavGroups[i];
+
+				vector<int> groupCurrentIndexes;	//pole current indexù pro uav v dané group a pro cestu, kterou má daná group pøiøazenou.
+				//pøed samotným nalezením nejlepší dosažené node pro danou skupinu musím vytahat z matice current_index prvky, které potøebuji
+				for (size_t i = 0; i < current_index.size(); i++)	//iteruji pøes všechna UAV a if urèí, zda je dané UAV ve skupinì, kterou zkoumám, èi ne
+				{
+					auto indexes = group->getUavIndexes();
+					if (std::find(indexes.begin(), indexes.end(), i) != indexes.end()) {
+						/* group->getUavIndexes() contains i */
+						groupCurrentIndexes.push_back(current_index[i][group->guidingPathIndex]);
+					}
+					else {
+						/* group->getUavIndexes() does not contain i */
+
+					}
+				}
+
+				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
+				double bestReachedIndex = *std::min_element(groupCurrentIndexes.begin(), groupCurrentIndexes.end());
+
+
+				auto center = group->getGuidingPath()->get(bestReachedIndex);	//Petrlík má pro celou skupinu stejný objekt center
 				for (size_t j = 0; j < group->getUavs().size(); j++)
 				{
 					int index = group->getUavIndexes()[j];
@@ -369,8 +391,6 @@ namespace App
 					}
 					else
 					{
-						int currentPathIndex = current_index[index][i];
-						auto center = group->getGuidingPath()->get(currentPathIndex);
 						randomStates.push_back(random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius()));
 					}
 				}
