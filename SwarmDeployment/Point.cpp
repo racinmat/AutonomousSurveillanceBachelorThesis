@@ -59,4 +59,9 @@ namespace App
 	{
 		this->z += z;
 	}
+
+	std::shared_ptr<Point> Point::clone()
+	{
+		return std::make_shared<Point>(x, y, z);
+	}
 }

@@ -29,7 +29,10 @@ namespace App
 	shared_ptr<State> State::clone() const
 	{
 		auto newObject = make_shared<State>();
-		newObject->prev_inputs = prev_inputs;
+		for (auto prev_input : prev_inputs)
+		{
+			newObject->prev_inputs = prev_inputs;
+		}
 		newObject->uavs = uavs;
 		newObject->index = index;
 		newObject->prev = prev;

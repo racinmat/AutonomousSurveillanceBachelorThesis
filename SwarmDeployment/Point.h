@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 namespace App
 {
@@ -17,6 +18,7 @@ namespace App
 		virtual double getZ() const;
 		virtual void setZ(const double z);
 		void changeZ(double z);
+		std::shared_ptr<Point> clone();
 
 	protected:
 		double x;

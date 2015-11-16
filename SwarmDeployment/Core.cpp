@@ -85,11 +85,6 @@ namespace App
 		this->logger = logger;
 	}
 
-	void Core::setLogger(shared_ptr<Ui::GuiDrawer> logger)
-	{
-		this->logger = logger;
-	}
-
 	void Core::logConfigurationChange()
 	{
 		auto map = maps.at(configuration->getMapNumber());
