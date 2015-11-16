@@ -8,6 +8,7 @@ namespace App
 	public:
 		Point(double x, double y);
 		Point(double x, double y, double z);
+		Point(const Point& other);
 		~Point();
 		double getX() const;
 		void setX(double x);
@@ -27,4 +28,3 @@ namespace App
 	};
 
 }
-

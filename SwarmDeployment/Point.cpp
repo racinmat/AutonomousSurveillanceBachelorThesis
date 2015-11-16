@@ -11,6 +11,10 @@ namespace App
 	{
 	}
 
+	Point::Point(const Point& other) : x(other.x), y(other.y), z(other.z)
+	{
+	}
+
 	Point::~Point()
 	{
 	}

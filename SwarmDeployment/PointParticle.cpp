@@ -5,22 +5,26 @@ namespace App
 {
 
 
-	PointParticle::PointParticle(shared_ptr<Point> location, shared_ptr<Point> rotation)
+	PointParticle::PointParticle(shared_ptr<Point> location, shared_ptr<Point> rotation) : location(location), rotation(rotation)
 	{
-		this->location = location;
-		this->rotation = rotation;
 	}
 
-	PointParticle::PointParticle(double locationX, double locationY, double rotationZ)
+	PointParticle::PointParticle(double locationX, double locationY, double rotationZ) : 
+		location(make_shared<Point>(locationX, locationY)),
+		rotation(make_shared<Point>(0, 0, rotationZ))
 	{
-		this->location = make_shared<Point>(locationX, locationY);
-		this->rotation = make_shared<Point>(0, 0, rotationZ);
 	}
 
-	PointParticle::PointParticle(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ)
+	PointParticle::PointParticle(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ) : 
+		location(make_shared<Point>(locationX, locationY, locationZ)),
+		rotation(make_shared<Point>(rotationX, rotationY, rotationZ))
 	{
-		this->location = make_shared<Point>(locationX, locationY, locationZ);
-		this->rotation = make_shared<Point>(rotationX, rotationY, rotationZ);
+	}
+
+	PointParticle::PointParticle(const PointParticle& other) : 
+		location(make_shared<Point>(*other.location.get())), 
+		rotation(make_shared<Point>(*other.rotation.get()))
+	{
 	}
 
 	PointParticle::~PointParticle()

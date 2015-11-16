@@ -11,6 +11,21 @@ namespace App
 		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
+	State::State(const State& other) : index(index), used_inputs(used_inputs)
+	{
+		for (auto uav : other.uavs)
+		{
+			uavs.push_back(make_shared<PointParticle>(*uav.get()));
+		}
+		if (prev)	//kontrola, zda je shred_pointer prázdnı
+		{
+			prev = make_shared<State>(*other.prev.get());
+		}
+		for (auto prev_input : other.prev_inputs)
+		{
+			prev_inputs.push_back(make_shared<Point>(*prev_input.get()));
+		}
+	}
 
 	State::~State()
 	{

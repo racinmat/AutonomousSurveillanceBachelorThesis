@@ -519,7 +519,7 @@ namespace App
 			for (size_t j = 0; j < tempState->uavs.size(); j++)
 			{
 				double x = tempState->uavs[j]->getLocation()->getX() - near_node->uavs[j]->getLocation()->getX();
-				double y = tempState->uavs[j]->getLocation()->getY() - near_node->uavs[j]->getLocation()->getX();
+				double y = tempState->uavs[j]->getLocation()->getY() - near_node->uavs[j]->getLocation()->getY();
 				translations[i][j] = make_shared<Point>(x ,y);
 			}
 		}
@@ -776,7 +776,7 @@ namespace App
 	//only modifies node by inputs
 	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs)
 	{
-		auto newNode = node->clone();
+		auto newNode = make_shared<State>(*node.get());	//copy constructor, deep copy
 
 		double uav_size = 0.5;
 		// Simulation step length
@@ -796,13 +796,16 @@ namespace App
 		
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
-		for (double i = 0; i < end_time; i += time_step)
+
+		int count = 0;	//poèítadlo prùchodù
+		for (double i = time_step; i < end_time; i += time_step)
 		{
+			count++;
 			for (size_t j = 0; j < number_of_uavs; j++)
 			{
 				//calculate derivatives from inputs
-				double dx = inputs[j]->getX() * cos(node->uavs[j]->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-				double dy = inputs[j]->getX() * sin(node->uavs[j]->getRotation()->getZ());
+				double dx = inputs[j]->getX() * cos(newNode->uavs[j]->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
+				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getRotation()->getZ());
 				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
 
 				//calculate current state variables
