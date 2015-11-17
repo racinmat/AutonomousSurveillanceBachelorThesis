@@ -123,12 +123,12 @@ namespace App
 
 		auto current_index = vector<vector<int>>(uavCount);		// matice s dÈlkami cest pro jednotliv· UAV.sloupec je cesta, ¯·dek je UAV
 
-		for (int i = 0; i < current_index.size(); i++)
+		for (int ii = 0; ii < current_index.size(); ii++)	//promÏnn· ii, aby se p¯i debuggingu nepletla s promÏnnou i, kter· se pouûÌv· ve velkÈm while cyklu
 		{
-			current_index[i] = vector<int>(guiding_paths.size());
+			current_index[ii] = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				current_index[i][j] = guiding_paths[j]->getSize() - 1;	//protoûe se indexuje od 0
+				current_index[ii][j] = guiding_paths[j]->getSize() - 1;	//protoûe se indexuje od 0
 			}
 		}
 
@@ -572,6 +572,8 @@ namespace App
 				{
 					throw "No valid input left";
 				}
+
+				//todo: pokud moûno, refactorovat, aù nemusÌm minimum hledat ruËnÏ
 				int index = 0;	//klÌË nejmenöÌ hodnoty vzd·lenosti v poli d
 				double minValue = DBL_MAX;
 				for (size_t i = 0; i < d.size(); i++)
@@ -586,13 +588,13 @@ namespace App
 
 				if (!check_localization_sep(tempState) || trajectory_intersection(near_node, tempState) || near_node->used_inputs[index])
 				{
-					d[index] = NULL;
+					d[index] = DBL_MAX; //jde o to vy¯adit tuto hodnotu z hled·nÌ minima
 					continue;
 				}
 
 				if (!check_world_bounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
 				{
-					d[index] = NULL;
+					d[index] = DBL_MAX; //jde o to vy¯adit tuto hodnotu z hled·nÌ minima
 					continue;
 				}
 
@@ -600,7 +602,7 @@ namespace App
 
 				if (near_node->used_inputs[index])
 				{
-					d[index] = NULL;
+					d[index] = DBL_MAX; //jde o to vy¯adit tuto hodnotu z hled·nÌ minima
 					continue;
 				} else
 				{
@@ -825,7 +827,7 @@ namespace App
 			{
 				//calculate derivatives from inputs
 				double dx = inputs[j]->getX() * cos(newNode->uavs[j]->getRotation()->getZ());	//pokud jsme ve 2D, pak jedin· moûn· rotace je rotace okolo osy Z
-				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getRotation()->getZ());
+				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getRotation()->getZ());	//input nenÌ klasick˝ bod se sou¯adnicemi X, Y, ale objekt se dvÏma ËÌsly, odpovÌdajÌcÌmi dvÏma vstup˘m do car_like modelu
 				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
 
 				//calculate current state variables
@@ -1000,7 +1002,7 @@ namespace App
 		{
 			for (size_t j = 0; j < number_of_obstacles; j++)
 			{
-				double trans[] = { translation[k][i]->getX(), translation[k][i]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozenÈ, apod.
+				double trans[] = { translation[k][i]->getX(), translation[k][i]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[j], trans, zero_trans);
 				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[j], trans, zero_trans);
 				if (col)

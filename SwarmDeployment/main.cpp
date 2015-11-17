@@ -1,6 +1,6 @@
-//include "mainwindow.h"		//zakomentovat pro noGui
+#include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
+#include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -8,21 +8,19 @@
 
 int runGui(int argc, char *argv[])
 {
-//	QApplication a(argc, argv);
-//	MainWindow w;
-//	auto configuration = std::make_shared<App::Configuration>();
-//	auto core = std::make_shared<App::Core>(configuration);
-//	configuration->setCore(core);
-//	core->setLogger(w.getLogger());
-//
-//	w.setConfiguration(configuration);
-//	w.setCore(core);
-//	w.show();
+	QApplication a(argc, argv);
+	MainWindow w;
+	auto configuration = std::make_shared<App::Configuration>();
+	auto core = std::make_shared<App::Core>(configuration);
+	configuration->setCore(core);
+	core->setLogger(w.getLogger());
 
-//	core->run();
+	w.setConfiguration(configuration);
+	w.setCore(core);
+	w.show();
 
-//	int returnValue = a.exec();
-	int returnValue = 0;
+	int returnValue = a.exec();
+//	int returnValue = 0;
 	return returnValue;
 }
 
@@ -134,8 +132,8 @@ int main(int argc, char *argv[])
 {
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
-	testing();
+	returnValue = runGui(argc, argv);
+//	testing();
 	return returnValue;
 }
 
