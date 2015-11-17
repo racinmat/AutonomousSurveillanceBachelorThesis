@@ -989,7 +989,7 @@ namespace App
 			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
 			Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
 			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getX() + obs->rectangle->getHeight(), 1);
+			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
 
 			tri1_obs[i] = Triangle3D(p1, p2, p3);
 			tri2_obs[i] = Triangle3D(p1 ,p4, p3);

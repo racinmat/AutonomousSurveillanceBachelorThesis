@@ -4,6 +4,7 @@
 #include "Core.h"
 #include <iostream>
 #include <memory>
+#include "VCollide\ColDetect.h"
 
 int runGui(int argc, char *argv[])
 {
@@ -94,24 +95,47 @@ void testing()
 //	cout << "b->as[0]:" << b->as[0]->x << endl;		//5
 //	cout << "e->as[0]:" << e->as[0]->x << endl;		//3
 
-	vector<int> arr = {1,2,3,5,8,9};
-	int i;
-	bool found;
-	i= 2;
-	found = find(arr.begin(), arr.end(), i) != arr.end();
-	cout << found << endl;
-	i = 4;
-	found = find(arr.begin(), arr.end(), i) != arr.end();
-	cout << found << endl;
+//	vector<int> arr = {1,2,3,5,8,9};
+//	int i;
+//	bool found;
+//	i= 2;
+//	found = find(arr.begin(), arr.end(), i) != arr.end();
+//	cout << found << endl;
+//	i = 4;
+//	found = find(arr.begin(), arr.end(), i) != arr.end();
+//	cout << found << endl;
+
+
+	auto tri_uav = Triangle3D(
+		Point3D(72.811994693764177, 78.646404722814680, 1), 
+		Point3D(73.311994693764177, 78.646404722814680, 1), 
+		Point3D(73.061994693764177, 79.146404722814680, 1));
+	double trans[] = { 3.1284838758924138, 14.529960666841021, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+	double zero_trans[] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+
+	auto tri1_obs = vector<Triangle3D>(1);
+	auto tri2_obs = vector<Triangle3D>(1);
+	int j = 0;
+	tri1_obs[0] = Triangle3D(
+		Point3D(0, 400, 1),
+		Point3D(700, 400, 1),
+		Point3D(700, 450, 1));
+	tri2_obs[0] = Triangle3D(
+		Point3D(0, 400, 1),
+		Point3D(0, 50, 1),
+		Point3D(700, 450, 1));
+
+	cout << "tri1:" << ColDetect::coldetect(tri_uav, tri1_obs[j], trans, zero_trans) << endl;
+	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
 	cin.get();
 }
 
 int main(int argc, char *argv[])
 {
-	int returnValue = run(argc, argv);
-//	int returnValue = runGui(argc, argv);
+	int returnValue = 0;
+//	returnValue = run(argc, argv);
+//	returnValue = runGui(argc, argv);
+	testing();
 	return returnValue;
-//	testing();
-//	return 0;
 }
 
