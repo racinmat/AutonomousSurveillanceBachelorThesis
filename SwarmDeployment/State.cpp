@@ -4,10 +4,10 @@
 namespace App
 {
 
-	State::State()
+	State::State(int inputCount)
 	{
 		//todo: refactorovat a vyrábìt nové stavy z factory, která jim bude pøedávat délku used_inputs pole podle konfigurace v konstruktoru.
-		used_inputs = vector<bool>(81);		//zatím je zde velikost natvrdo
+		used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
 		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
@@ -43,7 +43,7 @@ namespace App
 
 	shared_ptr<State> State::clone() const
 	{
-		auto newObject = make_shared<State>();
+		auto newObject = make_shared<State>(used_inputs.size());
 		for (auto prev_input : prev_inputs)
 		{
 			newObject->prev_inputs = prev_inputs;

@@ -14,6 +14,8 @@ namespace App
 		uavSize = 0.5;
 		samplingRadius = 60;
 		drawPeriod = 1;
+		inputSamplesDist = 1;
+		inputSamplesPhi = 3;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -88,5 +90,20 @@ namespace App
 	int Configuration::getDrawPeriod() const
 	{
 		return drawPeriod;
+	}
+
+	int Configuration::getInputSamplesDist() const
+	{
+		return inputSamplesDist;
+	}
+
+	int Configuration::getInputSamplesPhi() const
+	{
+		return inputSamplesPhi;
+	}
+
+	int Configuration::getInputCount() const
+	{
+		return pow(getInputSamplesDist() * getInputSamplesPhi(), getUavCount());
 	}
 }

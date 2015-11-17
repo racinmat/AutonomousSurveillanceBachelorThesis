@@ -99,7 +99,6 @@ namespace App
 		bool stop = false;
 		int number_of_solutions = 10000;
 		int near_count = 1000;
-		int number_of_inputs = 12;	//todo: spoèítat z dalších hodnot z konfigurace, je to v Node.h
 		bool debug = true;
 		int distance_of_new_nodes = 30;
 		int guiding_near_dist = 40;
@@ -116,7 +115,7 @@ namespace App
 		}
 
 		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>(); //todo: zjistit, na jaké hodnoty to inicializovat
-		auto initialState = make_shared<State>();
+		auto initialState = make_shared<State>(configuration->getInputCount());
 		initialState->uavs = map->getUavsStart();
 		nodes.push_back(initialState);
 
@@ -501,14 +500,14 @@ namespace App
 
 	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
 	{
-		int input_samples_dist = 1;
-		int input_samples_phi = 3;
+		int input_samples_dist = configuration->getInputSamplesDist();
+		int input_samples_phi = configuration->getInputSamplesPhi();
 		int distance_of_new_nodes = 30;
 		double max_turn = PI / 200;
 		bool relative_localization = true;
 		int uavCount = near_node->uavs.size();
 		int inputCountPerUAV = input_samples_dist * input_samples_phi;
-		int inputCount = pow(inputCountPerUAV, uavCount);
+		int inputCount = configuration->getInputCount();
 		vector<shared_ptr<Point>> oneUavInputs = vector<shared_ptr<Point>>();
 		shared_ptr<State> new_node;
 
@@ -606,7 +605,7 @@ namespace App
 					continue;
 				} else
 				{
-					new_node = make_shared<State>();
+					new_node = make_shared<State>(configuration->getInputCount());
 					new_node->uavs = tempState->uavs;
 					new_node->prev = near_node;
 					new_node->prev_inputs = tempState->prev_inputs;

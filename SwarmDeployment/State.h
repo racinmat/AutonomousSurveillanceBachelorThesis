@@ -10,7 +10,7 @@ namespace App
 	class State
 	{
 	public:
-		State();
+		State(int inputCount);
 		State(const State& other);
 		virtual ~State();
 		int index;	//todo: zjistit, k èemu to má být, používá se to v rrt_path. je to jako id, používá se pro získání všech inicializovaných nodes, což já nepotøebuju

@@ -26,6 +26,9 @@ namespace App
 		virtual void setUavSize(double uav_size);
 		virtual double getSamplingRadius() const;
 		virtual int getDrawPeriod() const;
+		virtual int getInputSamplesDist() const;
+		virtual int getInputSamplesPhi() const;
+		virtual int getInputCount() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -37,6 +40,8 @@ namespace App
 		double uavSize;
 		double samplingRadius;
 		int drawPeriod;
+		int inputSamplesDist;
+		int inputSamplesPhi;
 	};
 
 }
