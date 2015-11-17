@@ -53,4 +53,11 @@ namespace App
 		ofstream file;	//todo: udìlat nìjaký poøádný logger, tohle je doèasné na rychlé logování
 	};
 
+	class rrtPathError : public std::runtime_error
+	{
+	public:
+		rrtPathError(const string& _Message) : std::runtime_error(_Message) { }
+		rrtPathError(const char* _Message) : std::runtime_error(_Message) { }
+	};
 }
+

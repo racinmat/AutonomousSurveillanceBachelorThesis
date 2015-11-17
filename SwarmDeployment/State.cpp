@@ -58,23 +58,30 @@ namespace App
 
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
-		os << "index: " << obj.index
-			<< " uavs: ";
+		os << "index: " << obj.index << endl;
+		os << " uavs: ";
 		for (auto a : obj.uavs)
 		{
-			os << a;
+			os << *a.get() << endl;
 		}
 		os << " used_inputs: ";
 		for (auto a : obj.used_inputs)
 		{
 			os << a;
 		}
-		os << " prev: " << obj.prev
-			<< " prev_inputs: ";
+		if (obj.prev)
+		{
+			os << " prev: " << *obj.prev.get() << endl;
+		} else
+		{
+			os << " prev: empty" << endl;
+		}
+		os << " prev_inputs: ";
 		for (auto a : obj.prev_inputs)
 		{
-			os << a;
+			os << *a.get() << endl;
 		}
 		return os;
 	}
+
 }

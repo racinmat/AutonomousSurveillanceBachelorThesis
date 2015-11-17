@@ -176,7 +176,16 @@ namespace Ui
 
 	Qt::GlobalColor GuiDrawer::getRandomColor()
 	{
-		return Qt::GlobalColor(rand() % Qt::transparent);	//tansparent is last color of enum
+		Qt::GlobalColor blackList[] = { Qt::white, Qt::transparent };
+		Qt::GlobalColor color = Qt::GlobalColor(rand() % Qt::transparent);	//tansparent is last color of enum
+		for (auto blacklisted : blackList)
+		{
+			if (color == blacklisted)
+			{
+				color = Qt::GlobalColor(rand() % Qt::transparent);
+			}
+		}
+		return color;
 	}
 
 	void GuiDrawer::showPopup(string text)

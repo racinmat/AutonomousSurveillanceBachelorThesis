@@ -69,10 +69,17 @@ namespace App
 			path->reverse();
 		}
 
-		rrtPath(paths, configuration, map);
+//		try
+//		{
+			rrtPath(paths, configuration, map);
+			file.close();
+//		} catch(const rrtPathError& error)
+//		{
+			file.close();
+//			throw error;
+//		}
 //		testGui();
 
-		file.close();
 	}
 
 	void Core::testGui()
@@ -97,6 +104,9 @@ namespace App
 
 	void Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map)
 	{
+//		throw 22;
+//		throw runtime_error("No valid input found.");
+
 		int uavCount = configuration->getUavCount();
 		int rrt_min_nodes = 1;
 		int rrt_max_nodes = 20000;
@@ -504,11 +514,11 @@ namespace App
 
 	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
 	{
-		file << "Near node: " << near_node << endl;
+		file << "Near node: " << *near_node.get() << endl;
 		file << "s_rand";
 		for (auto a : s_rand)
 		{
-			file << a << endl;
+			file << *a.get() << endl;
 		}
 
 		int input_samples_dist = configuration->getInputSamplesDist();
@@ -641,7 +651,8 @@ namespace App
 		
 		if (!new_node)	//operator== urèuje, zda je pointer null èi ne
 		{
-			throw "No valid input found.";
+			file.close();
+			throw rrtPathError("No valid input found.");
 		}
 		return {near_node, new_node};
 	}

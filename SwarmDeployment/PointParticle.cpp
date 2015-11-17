@@ -54,7 +54,7 @@ namespace App
 	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
 	{
 		return os
-			<< "location: " << obj.location
-			<< " rotation: " << obj.rotation;
+			<< "location: " << *obj.location.get() << endl
+			<< " rotation: " << *obj.rotation.get();
 	}
 }
