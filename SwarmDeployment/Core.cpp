@@ -176,7 +176,7 @@ namespace App
 					throw "Not possible to find near node suitable for expansion";
 				}
 				near_node = nearest_neighbor(s_rand, nodes, k);
-				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);
+				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);		//u i = 5 nefunguje
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
 				near_node = returnedNodes[0];
 				new_node = returnedNodes[1];
@@ -596,7 +596,7 @@ namespace App
 					continue;
 				}
 
-				near_node = check_obstacle_vcollide_single(near_node, translations, index, map);
+				near_node = check_obstacle_vcollide_single(near_node, translations, index, map);	//toto plní field used_inputs by true and thus new state looks like already used
 
 				if (near_node->used_inputs[index])
 				{
@@ -1001,8 +1001,8 @@ namespace App
 			for (size_t j = 0; j < number_of_obstacles; j++)
 			{
 				double trans[] = { translation[k][i]->getX(), translation[k][i]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };	//todo: zkontrolovat indexy, zda nejsou prohozené, apod.
-				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[i], trans, zero_trans);
-				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[i], trans, zero_trans);
+				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[j], trans, zero_trans);
+				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[j], trans, zero_trans);
 				if (col)
 				{
 					for (size_t l = 0; l < translation.size(); l++)
