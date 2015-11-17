@@ -50,4 +50,11 @@ namespace App
 	{
 		this->rotation = rotation;
 	}
+
+	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
+	{
+		return os
+			<< "location: " << obj.location
+			<< " rotation: " << obj.rotation;
+	}
 }

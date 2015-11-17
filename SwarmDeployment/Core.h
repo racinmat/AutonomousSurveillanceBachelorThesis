@@ -2,6 +2,7 @@
 #include "LoggerInterface.h"
 #include "memory"
 #include "State.h"
+#include <fstream>
 
 using namespace std;
 
@@ -48,6 +49,8 @@ namespace App
 		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		void testGui();
+
+		ofstream file;	//todo: udìlat nìjaký poøádný logger, tohle je doèasné na rychlé logování
 	};
 
 }

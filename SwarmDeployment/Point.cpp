@@ -64,8 +64,11 @@ namespace App
 		this->z += z;
 	}
 
-	std::shared_ptr<Point> Point::clone()
+	std::ostream& operator<<(std::ostream& os, const Point& obj)
 	{
-		return std::make_shared<Point>(x, y, z);
+		return os
+			<< "x: " << obj.x
+			<< " y: " << obj.y
+			<< " z: " << obj.z;
 	}
 }

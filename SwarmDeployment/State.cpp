@@ -54,4 +54,27 @@ namespace App
 		newObject->used_inputs = used_inputs;
 		return newObject;
 	}
+
+
+	std::ostream& operator<<(std::ostream& os, const State& obj)
+	{
+		os << "index: " << obj.index
+			<< " uavs: ";
+		for (auto a : obj.uavs)
+		{
+			os << a;
+		}
+		os << " used_inputs: ";
+		for (auto a : obj.used_inputs)
+		{
+			os << a;
+		}
+		os << " prev: " << obj.prev
+			<< " prev_inputs: ";
+		for (auto a : obj.prev_inputs)
+		{
+			os << a;
+		}
+		return os;
+	}
 }

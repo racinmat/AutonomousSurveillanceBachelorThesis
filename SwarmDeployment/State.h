@@ -1,6 +1,7 @@
 #pragma once
 #include "PointParticle.h"
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ namespace App
 		vector<shared_ptr<Point>> prev_inputs;	//vstupy, které vedly do této node
 		bool areAllInputsUsed();
 		shared_ptr<State> clone() const;
+		friend std::ostream& operator<<(std::ostream& os, const State& obj);
 	};
 
 }

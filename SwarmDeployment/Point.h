@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <string>
 
 namespace App
 {
@@ -19,7 +20,7 @@ namespace App
 		virtual double getZ() const;
 		virtual void setZ(const double z);
 		void changeZ(double z);
-		std::shared_ptr<Point> clone();
+		friend std::ostream& operator<<(std::ostream& os, const Point& obj);
 
 	protected:
 		double x;
