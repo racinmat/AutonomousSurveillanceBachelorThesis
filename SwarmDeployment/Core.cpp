@@ -870,11 +870,11 @@ namespace App
 		int number_of_uavs = node->uavs.size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
 		double relative_distance_max = configuration->getRelativeDistanceMax();
+		bool check_fov = configuration->getCheckFov();
 		// Neighbor must be in certain angle on / off
-		bool check_fov = false;
-		double localization_angle = PI / 2;
-		int required_neighbors = 1;
-		bool allow_swarm_splitting = false;
+		double localization_angle = configuration->getLocalizationAngle();
+		int required_neighbors = configuration->getRequiredNeighbors();
+		bool allow_swarm_splitting = configuration->getAllowSwarmSplitting();
 
 		// Initialize default values
 		vector<int> neighbors = vector<int>(number_of_uavs);
@@ -978,8 +978,7 @@ namespace App
 	shared_ptr<State> Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map)
 	{
 		
-//		global params number_of_uavs obstacles
-		double uav_size = 0.5;
+		double uav_size = configuration->getUavSize();
 		int number_of_uavs = near_node->uavs.size();
 		int number_of_obstacles = map->getObstacles().size();
 		vector<bool> uavs_colliding = vector<bool>(number_of_uavs);

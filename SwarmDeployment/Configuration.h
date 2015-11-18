@@ -44,6 +44,10 @@ namespace App
 		virtual double getEndTime() const;
 		virtual double getRelativeDistanceMin() const;
 		virtual double getRelativeDistanceMax() const;
+		virtual double getLocalizationAngle() const;
+		virtual int getRequiredNeighbors() const;
+		virtual bool getAllowSwarmSplitting() const;
+		virtual bool getCheckFov() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -71,6 +75,10 @@ namespace App
 		double endTime;
 		double relativeDistanceMin;
 		double relativeDistanceMax;
+		double localizationAngle;
+		int requiredNeighbors;
+		bool allowSwarmSplitting;
+		bool checkFov;
 	};
 
 }

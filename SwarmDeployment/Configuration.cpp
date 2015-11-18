@@ -32,6 +32,10 @@ namespace App
 		endTime = 0.5;
 		relativeDistanceMax = 80;
 		relativeDistanceMin = 5;
+		localizationAngle = PI / 2;
+		requiredNeighbors = 1;
+		checkFov = false;
+		allowSwarmSplitting = false;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -52,7 +56,7 @@ namespace App
 	void Configuration::setMapNumber(int mapNumber)
 	{
 		this->mapNumber = mapNumber;
-		if (core != nullptr)
+		if (core)	//kontrola prázdného pointeru
 		{
 			core->logConfigurationChange();
 		}
@@ -191,5 +195,25 @@ namespace App
 	double Configuration::getRelativeDistanceMax() const
 	{
 		return relativeDistanceMax;
+	}
+
+	double Configuration::getLocalizationAngle() const
+	{
+		return localizationAngle;
+	}
+
+	int Configuration::getRequiredNeighbors() const
+	{
+		return requiredNeighbors;
+	}
+
+	bool Configuration::getAllowSwarmSplitting() const
+	{
+		return allowSwarmSplitting;
+	}
+
+	bool Configuration::getCheckFov() const
+	{
+		return checkFov;
 	}
 }
