@@ -28,7 +28,8 @@ namespace App
 {
 
 	Core::Core(shared_ptr<Configuration> configuration) :
-		logger(make_shared<LoggerInterface>()), configuration(configuration)
+		logger(make_shared<LoggerInterface>()), configuration(configuration), 
+		stateFactory(make_shared<StateFactory>(configuration))
 	{
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
@@ -129,7 +130,7 @@ namespace App
 		}
 
 		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>(); //todo: zjistit, na jaké hodnoty to inicializovat
-		auto initialState = make_shared<State>(configuration->getInputCount());
+		auto initialState = stateFactory->createState();
 		initialState->uavs = map->getUavsStart();
 		nodes.push_back(initialState);
 
@@ -626,7 +627,7 @@ namespace App
 					continue;
 				} else
 				{
-					new_node = make_shared<State>(configuration->getInputCount());
+					new_node = stateFactory->createState();
 					new_node->uavs = tempState->uavs;
 					new_node->prev = near_node;
 					new_node->prev_inputs = tempState->prev_inputs;

@@ -3,6 +3,7 @@
 #include "memory"
 #include "State.h"
 #include <fstream>
+#include "StateFactory.h"
 
 using namespace std;
 
@@ -26,6 +27,7 @@ namespace App
 		shared_ptr<LoggerInterface> logger;
 		vector<shared_ptr<Map>> maps;
 		shared_ptr<Configuration> configuration;
+		shared_ptr<StateFactory> stateFactory;
 		vector<shared_ptr<Point>> random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached, shared_ptr<Map> map);
 		shared_ptr<State> nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count);
 		vector<shared_ptr<State>> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
