@@ -112,7 +112,6 @@ namespace App
 		int uavCount = configuration->getUavCount();
 		int rrt_min_nodes = configuration->getRrtMinNodes();
 		int rrt_max_nodes = configuration->getRrtMaxNodes();
-		bool stop = false;	//todo: udìlat naèítání stop z konfigurace. konfiguraci mìnit z gui.
 		int number_of_solutions = configuration->getNumberOfSolutions();
 		int near_count = configuration->getNearCount();
 		bool debug = configuration->getDebug();
@@ -168,7 +167,7 @@ namespace App
 
 		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // number_of_solutions je asi 10 000.
 		{
-			if (stop)
+			if (configuration->getStop())
 			{
 				break;
 			}
@@ -191,17 +190,11 @@ namespace App
 					throw "Not possible to find near node suitable for expansion";
 				}
 				near_node = nearest_neighbor(s_rand, nodes, k);
-				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);	
+				new_node = select_input(s_rand, near_node, map);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
-				near_node = returnedNodes[0];
-				new_node = returnedNodes[1];
 				nodes.push_back(near_node); // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path. Nemìlo by být potøeba tohle pøiøazovat, protože tam je reference, ne hodnota
 
-				bool allInputsUsed = true;
-				for (bool inputUsed : near_node->used_inputs)
-				{
-					allInputsUsed = allInputsUsed && inputUsed;
-				}
+				bool allInputsUsed = near_node->areAllInputsUsed();
 
 				auto isNearUavPosition = false;
 				for (auto uavPosition : near_node->uavs)
@@ -209,14 +202,10 @@ namespace App
 					isNearUavPosition = isNearUavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
 				}
 
-				isNewUavPosition = false;
-				for (auto uavPosition : new_node->uavs)
-				{
-					isNewUavPosition = isNewUavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
-				}
+				isNewUavPosition = new_node != false;//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
 
 				//poèítadlo uvíznutí. UAV uvízlo, pokud je tento if true
-				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)
+				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)	//kontrola empty new_node
 				{
 					k++;
 					check_expandability(nodes);
@@ -514,7 +503,7 @@ namespace App
 		return near_node;
 	}
 
-	vector<shared_ptr<State>> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
+	shared_ptr<State> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
 	{
 		file << "Near node: " << *near_node.get() << endl;
 		file << "s_rand";
@@ -651,12 +640,7 @@ namespace App
 //		    end
 		}		
 		
-		if (!new_node)	//operator== urèuje, zda je pointer null èi ne
-		{
-			file.close();
-			throw rrtPathError("No valid input found.");
-		}
-		return {near_node, new_node};
+		return new_node;
 	}
 
 	int Core::check_expandability(vector<shared_ptr<State>> nodes)

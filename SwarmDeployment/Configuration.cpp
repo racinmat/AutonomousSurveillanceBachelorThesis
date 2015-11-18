@@ -31,11 +31,12 @@ namespace App
 		timeStep = 0.05;
 		endTime = 0.5;
 		relativeDistanceMax = 80;
-		relativeDistanceMin = 5;
+		relativeDistanceMin = 10;
 		localizationAngle = PI / 2;
 		requiredNeighbors = 1;
 		checkFov = false;
 		allowSwarmSplitting = false;
+		stop = false;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -215,5 +216,15 @@ namespace App
 	bool Configuration::getCheckFov() const
 	{
 		return checkFov;
+	}
+
+	bool Configuration::getStop() const
+	{
+		return stop;
+	}
+
+	void Configuration::setStop(bool stop)
+	{
+		this->stop = stop;
 	}
 }

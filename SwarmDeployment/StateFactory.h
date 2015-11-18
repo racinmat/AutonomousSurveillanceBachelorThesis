@@ -1,10 +1,13 @@
 #pragma once
-#include "Configuration.h"
+#include <memory>
 
 using namespace std;
 
 namespace App
 {
+	class State;
+	class Configuration;
+
 	class StateFactory
 	{
 	public:

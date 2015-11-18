@@ -62,7 +62,7 @@ namespace App
 
 		//úprava, aby mapa odpovídala matlabovské pøedloze pro pøesné porovnávání
 		//nastaveno pro mapu 3
-		bool modifyByHand = true;
+		bool modifyByHand = false;
 		if (modifyByHand)
 		{
 			for (auto node : nodes)

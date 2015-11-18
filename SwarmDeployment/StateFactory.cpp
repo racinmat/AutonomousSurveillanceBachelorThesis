@@ -1,5 +1,6 @@
 #include "StateFactory.h"
-
+#include "Configuration.h"
+#include "State.h"
 
 namespace App
 {

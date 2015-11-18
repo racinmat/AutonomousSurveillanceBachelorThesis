@@ -30,7 +30,7 @@ namespace App
 		shared_ptr<StateFactory> stateFactory;
 		vector<shared_ptr<Point>> random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached, shared_ptr<Map> map);
 		shared_ptr<State> nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count);
-		vector<shared_ptr<State>> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
+		shared_ptr<State> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
 		int check_expandability(vector<shared_ptr<State>> nodes);
 		vector<vector<int>> guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, int guiding_near_dist);
 		vector<int> check_near_goal(vector<shared_ptr<PointParticle>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV

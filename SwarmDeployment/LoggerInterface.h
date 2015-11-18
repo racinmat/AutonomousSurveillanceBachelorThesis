@@ -3,6 +3,7 @@
 #include "Path.h"
 #include "memory"
 #include "State.h"
+#include "Enums.h"
 
 namespace App
 {

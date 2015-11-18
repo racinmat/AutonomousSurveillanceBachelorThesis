@@ -59,6 +59,11 @@ void MainWindow::on_start_clicked()
 	core->run();
 }
 
+void MainWindow::on_stop_clicked()
+{
+	configuration->setStop(true);
+}
+
 shared_ptr<App::LoggerInterface> MainWindow::getLogger() const
 {
 	return drawer;	//TODO: zjistit, jestli je opravdu v Core t?íd? jako Logger GuiDrawer.

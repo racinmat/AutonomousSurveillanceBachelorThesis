@@ -32,6 +32,8 @@ public:
 
 	void on_start_clicked();
 
+	void on_stop_clicked();
+
 protected:
 	Ui::MainWindow* ui;
 	shared_ptr<App::Configuration> configuration;

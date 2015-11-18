@@ -48,6 +48,8 @@ namespace App
 		virtual int getRequiredNeighbors() const;
 		virtual bool getAllowSwarmSplitting() const;
 		virtual bool getCheckFov() const;
+		virtual bool getStop() const;
+		virtual void setStop(bool stop);
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -79,6 +81,7 @@ namespace App
 		int requiredNeighbors;
 		bool allowSwarmSplitting;
 		bool checkFov;
+		bool stop;
 	};
 
 }

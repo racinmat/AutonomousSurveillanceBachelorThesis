@@ -3,7 +3,7 @@
 #include <array>
 #include "Map.h"
 #include <memory>
-#include <cmath>
+#include "Enums.h"
 
 using namespace std;
 
