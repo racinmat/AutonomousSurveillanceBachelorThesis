@@ -6,6 +6,7 @@ namespace App
 	Uav::Uav(const Uav& other) 
 	{
 		pointParticle = make_shared<PointParticle>(*other.pointParticle.get());
+		current_index = other.current_index;
 	}
 
 	Uav::Uav(shared_ptr<PointParticle> pointParticle) : 

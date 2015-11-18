@@ -1,5 +1,6 @@
 #pragma once
 #include "PointParticle.h"
+#include <vector>
 
 namespace App
 {
@@ -15,6 +16,7 @@ namespace App
 		virtual ~Uav();
 		virtual shared_ptr<PointParticle> getPointParticle() const;
 		friend ostream& operator<<(ostream& os, const Uav& obj);
+		vector<int> current_index;
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;

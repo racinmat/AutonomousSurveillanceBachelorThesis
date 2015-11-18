@@ -136,14 +136,12 @@ namespace App
 		nodes.push_back(initialState);
 
 
-		auto current_index = vector<vector<int>>(uavCount);		// matice s délkami cest pro jednotlivá UAV.sloupec je cesta, øádek je UAV
-
-		for (int ii = 0; ii < current_index.size(); ii++)	//promìnná ii, aby se pøi debuggingu nepletla s promìnnou i, která se používá ve velkém while cyklu
+		for (int ii = 0; ii < initialState->uavs.size(); ii++)	//promìnná ii, aby se pøi debuggingu nepletla s promìnnou i, která se používá ve velkém while cyklu
 		{
-			current_index[ii] = vector<int>(guiding_paths.size());
+			initialState->uavs[ii]->current_index = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				current_index[ii][j] = guiding_paths[j]->getSize() - 1;	//protože se indexuje od 0
+				initialState->uavs[ii]->current_index[j] = guiding_paths[j]->getSize() - 1;	//protože se indexuje od 0
 			}
 		}
 
@@ -158,8 +156,8 @@ namespace App
 
 		int nodes_count = rrt_max_nodes;
 		vector<int> goal_reached_by_all_uavs;
-		shared_ptr<State> new_node;
-		shared_ptr<State> near_node;
+		shared_ptr<State> newState;
+		shared_ptr<State> nearState = initialState;
 		auto output = make_shared<Output>();
 
 		int i = 0; // poèet expandovaných nodes, hned na zaèátku se zvýší o jedna
@@ -175,7 +173,7 @@ namespace App
 			i++;
 
 //			%Random state
-			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, current_index, goals_reached, map); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
+			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, goals_reached, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
 			int k = 1;	//poèítadlo uvíznutí, protože se používá v nearest_neighbor size() - k, zaèínám od 1
@@ -190,20 +188,20 @@ namespace App
 					i--;
 					throw "Not possible to find near node suitable for expansion";
 				}
-				near_node = nearest_neighbor(s_rand, nodes, k);
-				new_node = select_input(s_rand, near_node, map);
+				nearState = nearest_neighbor(s_rand, nodes, k);
+				newState = select_input(s_rand, nearState, map);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
-				nodes.push_back(near_node); // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path. Nemìlo by být potøeba tohle pøiøazovat, protože tam je reference, ne hodnota
+				nodes.push_back(nearState); // promìnná nodes je pole, kam se ukládá strom prohledávání u RRT - Path. Nemìlo by být potøeba tohle pøiøazovat, protože tam je reference, ne hodnota
 
-				bool allInputsUsed = near_node->areAllInputsUsed();
+				bool allInputsUsed = nearState->areAllInputsUsed();
 
 				auto isNearUavPosition = false;
-				for (auto uavPosition : near_node->uavs)
+				for (auto uavPosition : nearState->uavs)
 				{
 					isNearUavPosition = isNearUavPosition || !uavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
 				}
 
-				isNewUavPosition = new_node != false;//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
+				isNewUavPosition = newState != false;//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
 
 				//poèítadlo uvíznutí. UAV uvízlo, pokud je tento if true
 				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)	//kontrola empty new_node
@@ -224,10 +222,10 @@ namespace App
 				break;
 			}
 
-			new_node->index = i;
+			newState->index = i;
 			if (debug)
 			{
-				cout << "[debug] Added node index: " << new_node->index << endl;
+				cout << "[debug] Added node index: " << newState->index << endl;
 			}
 
 			if (i % 200 == 0)
@@ -237,15 +235,15 @@ namespace App
 
 			if (i < nodes.size())
 			{
-				nodes[i] = new_node;
+				nodes[i] = newState;
 			} else
 			{
-				nodes.push_back(new_node);
+				nodes.push_back(newState);
 			}
 			s++;
 
-			current_index = guiding_point_reached(new_node, guiding_paths, current_index, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
-			goal_reached_by_all_uavs = check_near_goal(new_node->uavs, map);
+			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
+			goal_reached_by_all_uavs = check_near_goal(newState->uavs, map);
 
 			bool isGoalReached = true;
 			for (int goal_reached : goal_reached_by_all_uavs)
@@ -257,7 +255,7 @@ namespace App
 			if (isGoalReached) // pokud je nalezen cíl
 			{
 				output->goal_reached = goal_reached_by_all_uavs;
-				final_nodes[m] = new_node;
+				final_nodes[m] = newState;
 				printf("%d viable paths found so far.\n", m);
 				m++;
 			}
@@ -265,20 +263,20 @@ namespace App
 
 			if (i % configuration->getDrawPeriod() == 0)
 			{
-				logger->logNewState(near_node, new_node);
+				logger->logNewState(nearState, newState);
 				logger->logRandomStates(s_rand);
 			}
 		}
 		
 		final_nodes[m] = nodes[i];
-		goal_reached_by_all_uavs = check_near_goal(new_node->uavs, map);
+		goal_reached_by_all_uavs = check_near_goal(newState->uavs, map);
 		output->goal_reached = goal_reached_by_all_uavs;
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
 		cout << "RRT-Path finished";
 	}
 
-	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached, shared_ptr<Map> map)
+	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<bool> goals_reached, shared_ptr<Map> map, shared_ptr<State> state)
 	{
 		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
 		int worldWidth = configuration->getWorldWidth();
@@ -369,12 +367,12 @@ namespace App
 
 				vector<int> groupCurrentIndexes;	//pole current indexù pro uav v dané group a pro cestu, kterou má daná group pøiøazenou.
 				//pøed samotným nalezením nejlepší dosažené node pro danou skupinu musím vytahat z matice current_index prvky, které potøebuji
-				for (size_t i = 0; i < current_index.size(); i++)	//iteruji pøes všechna UAV a if urèí, zda je dané UAV ve skupinì, kterou zkoumám, èi ne
-				{
+				for (size_t j = 0; j < state->uavs.size(); j++)	//iteruji pøes všechna UAV a if urèí, zda je dané UAV ve skupinì, kterou zkoumám, èi ne
+					{
 					auto indexes = group->getUavIndexes();
 					if (std::find(indexes.begin(), indexes.end(), i) != indexes.end()) {
 						/* group->getUavIndexes() contains i */
-						groupCurrentIndexes.push_back(current_index[i][group->guidingPathIndex]);
+						groupCurrentIndexes.push_back(state->uavs[j]->current_index[group->guidingPathIndex]);
 					}
 					else {
 						/* group->getUavIndexes() does not contain i */
@@ -661,30 +659,28 @@ namespace App
 		return unexpandable_count;
 	}
 
-	//todo: popøemýšlet na refactoringem current_index, abych tady nepracoval s maticí
 	//detects narrow passage
-	vector<vector<int>> Core::guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, int guiding_near_dist)
+	void Core::guiding_point_reached(shared_ptr<State> state, vector<shared_ptr<Path>> guiding_paths, int guiding_near_dist)
 	{
 		for (int k = 0; k < guiding_paths.size(); k++) {
 			auto guiding_path = guiding_paths[k];
 			for (int m = 0; m < guiding_path->getSize(); m++) {
-				for (int n = 0; n < current_index.size(); n++) {
+				for (int n = 0; n < state->uavs.size(); n++) {
 					bool reached = false;
-					if ((pow(node->uavs[n]->getPointParticle()->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2) + pow(node->uavs[n]->getPointParticle()->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
+					if ((pow(state->uavs[n]->getPointParticle()->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2) + pow(state->uavs[n]->getPointParticle()->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
 					{
 						reached = true;
 						//Narrow passage detection
 						detect_narrow_passage(guiding_path->get(m));
 					}
-					if (reached == true && m > 0 && m <= current_index[n][k]) 
+					if (reached == true && m > 0 && m <= state->uavs[n]->current_index[k]) 
 					{
-						current_index[n][k] = m - 1;	//todo: zjistit, jestlimám opravdu odeèítat jednièku
+						state->uavs[n]->current_index[k] = m - 1;	//todo: zjistit, jestlimám opravdu odeèítat jednièku
 						break;
 					}
 				}
 			}
 		}
-		return current_index;
 	}
 
 	vector<int> Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
