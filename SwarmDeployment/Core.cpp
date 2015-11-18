@@ -108,14 +108,14 @@ namespace App
 //		throw runtime_error("No valid input found.");
 
 		int uavCount = configuration->getUavCount();
-		int rrt_min_nodes = 1;
-		int rrt_max_nodes = 20000;
+		int rrt_min_nodes = configuration->getRrtMinNodes();
+		int rrt_max_nodes = configuration->getRrtMaxNodes();
 		bool stop = false;
-		int number_of_solutions = 10000;
-		int near_count = 1000;
-		bool debug = true;
-		int distance_of_new_nodes = 30;
-		int guiding_near_dist = 40;
+		int number_of_solutions = configuration->getNumberOfSolutions();
+		int near_count = configuration->getNearCount();
+		bool debug = configuration->getDebug();
+		int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
+		int guiding_near_dist = configuration->getGuidingNearDist();
 
 		cout << "Starting RRT-path...";
 
@@ -189,7 +189,7 @@ namespace App
 					throw "Not possible to find near node suitable for expansion";
 				}
 				near_node = nearest_neighbor(s_rand, nodes, k);
-				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);		//u i = 5 nefunguje
+				vector<shared_ptr<State>> returnedNodes = select_input(s_rand, near_node, map);	
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
 				near_node = returnedNodes[0];
 				new_node = returnedNodes[1];

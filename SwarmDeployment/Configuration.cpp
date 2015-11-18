@@ -7,7 +7,7 @@ namespace App
 	Configuration::Configuration()
 	{
 		aStarCellSize = 50;
-		mapNumber = 0;
+		mapNumber = 3;
 		uavCount = 4;
 		worldHeight = 1000;
 		worldWidth = 1000;
@@ -16,6 +16,13 @@ namespace App
 		drawPeriod = 1;
 		inputSamplesDist = 1;
 		inputSamplesPhi = 3;
+		rrtMinNodes = 1;
+		rrtMaxNodes = 20000;
+		nearCount = 1000;
+		debug = true;
+		distanceOfNewNodes = 30;
+		guidingNearDist = 40;
+		numberOfSolutions = 10000;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -105,5 +112,40 @@ namespace App
 	int Configuration::getInputCount() const
 	{
 		return pow(getInputSamplesDist() * getInputSamplesPhi(), getUavCount());
+	}
+
+	int Configuration::getRrtMinNodes() const
+	{
+		return rrtMinNodes;
+	}
+
+	int Configuration::getRrtMaxNodes() const
+	{
+		return rrtMaxNodes;
+	}
+
+	int Configuration::getNearCount() const
+	{
+		return nearCount;
+	}
+
+	bool Configuration::getDebug() const
+	{
+		return debug;
+	}
+
+	int Configuration::getDistanceOfNewNodes() const
+	{
+		return distanceOfNewNodes;
+	}
+
+	int Configuration::getGuidingNearDist() const
+	{
+		return guidingNearDist;
+	}
+
+	int Configuration::getNumberOfSolutions() const
+	{
+		return numberOfSolutions;
 	}
 }

@@ -61,32 +61,32 @@ namespace App
 		}
 
 		//úprava, aby mapa odpovídala matlabovské pøedloze pro pøesné porovnávání
-		//nastaveno pro mapu 0
-//		bool modifyByHand = true;
-//		if (modifyByHand)
-//		{
-//			for (auto node : nodes)
-//			{
-//				if (node->contains(75, 75, cellSize / 2))	//nalezení node, ve které je støed
-//				{
-//					startNode = node;
-//					break;
-//				}
-//			}
-//
-//			for (size_t i = 0; i < map->getGoals().size(); i++)
-//			{
-//
-//				for (auto node : nodes)
-//				{
-//					if (node->contains(675, 775, cellSize / 2))	//nalezení node, ve které je støed
-//					{
-//						endNodes[i] = node;
-//						break;
-//					}
-//				}
-//			}
-//		}
+		//nastaveno pro mapu 3
+		bool modifyByHand = true;
+		if (modifyByHand)
+		{
+			for (auto node : nodes)
+			{
+				if (node->contains(75, 75, cellSize / 2))	//nalezení node, ve které je støed
+				{
+					startNode = node;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < map->getGoals().size(); i++)
+			{
+
+				for (auto node : nodes)
+				{
+					if (node->contains(725, 775, cellSize / 2))	//nalezení node, ve které je støed
+					{
+						endNodes[i] = node;
+						break;
+					}
+				}
+			}
+		}
 
 
 		shared_ptr<MapGraph> graph = make_shared<MapGraph>(nodes, startNode, endNodes);

@@ -29,6 +29,13 @@ namespace App
 		virtual int getInputSamplesDist() const;
 		virtual int getInputSamplesPhi() const;
 		virtual int getInputCount() const;
+		virtual int getRrtMinNodes() const;
+		virtual int getRrtMaxNodes() const;
+		virtual int getNearCount() const;
+		virtual bool getDebug() const;
+		virtual int getDistanceOfNewNodes() const;
+		virtual int getGuidingNearDist() const;
+		virtual int getNumberOfSolutions() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -42,6 +49,13 @@ namespace App
 		int drawPeriod;
 		int inputSamplesDist;
 		int inputSamplesPhi;
+		int rrtMinNodes;
+		int rrtMaxNodes;
+		int nearCount;
+		bool debug;
+		int distanceOfNewNodes;
+		int guidingNearDist;
+		int numberOfSolutions;
 	};
 
 }
