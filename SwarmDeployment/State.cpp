@@ -15,7 +15,7 @@ namespace App
 	{
 		for (auto uav : other.uavs)
 		{
-			uavs.push_back(make_shared<PointParticle>(*uav.get()));
+			uavs.push_back(make_shared<Uav>(*uav.get()));
 		}
 		if (prev)	//kontrola, zda je shred_pointer prázdný
 		{

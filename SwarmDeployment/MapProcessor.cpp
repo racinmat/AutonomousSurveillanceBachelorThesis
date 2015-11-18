@@ -31,7 +31,7 @@ namespace App
 		shared_ptr<Node> startNode;
 
 		int uavCount = map->countUavs();
-		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getLocation();
+		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getPointParticle()->getLocation();
 		for (auto node : nodes)
 		{
 			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
@@ -121,7 +121,7 @@ namespace App
 		for (auto uavStart : map->getUavsStart())
 		{
 			if (colDetect.coldetect(
-				Rectangle2D(uavStart->getLocation()->getX() - uavSize / 2, uavStart->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
+				Rectangle2D(uavStart->getPointParticle()->getLocation()->getX() - uavSize / 2, uavStart->getPointParticle()->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
 			{
 				return Grid::UAV;
 			}

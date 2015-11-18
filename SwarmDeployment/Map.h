@@ -2,8 +2,8 @@
 #include "Goal.h"
 #include "Obstacle.h"
 #include <vector>
-#include "PointParticle.h"
 #include <memory>
+#include "Uav.h"
 
 using namespace std;
 
@@ -20,14 +20,14 @@ namespace App
 		size_t countGoals() const;
 		std::vector<shared_ptr<Goal>> getGoals();
 		std::vector<shared_ptr<Obstacle>> getObstacles();
-		void addUavStart(shared_ptr<PointParticle> start);
-		std::vector<shared_ptr<PointParticle>> getUavsStart();
+		void addUavStart(shared_ptr<Uav> start);
+		std::vector<shared_ptr<Uav>> getUavsStart();
 		int countUavs() const;
 
 	protected:
 		std::vector<shared_ptr<Goal>> goals;
 		std::vector<shared_ptr<Obstacle>> obstacles;
-		std::vector<shared_ptr<PointParticle>> uavsStart;
+		std::vector<shared_ptr<Uav>> uavsStart;
 	};
 
 }

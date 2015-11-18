@@ -44,7 +44,7 @@ namespace Ui
 
 		for (auto start : map->getUavsStart())
 		{
-			auto p = start->getLocation();
+			auto p = start->getPointParticle()->getLocation();
 			Qt::GlobalColor uavColor = getRandomColor();
 			uavColors.push_back(uavColor);
 			addCross(p->getX(), p->getY(), 3, uavColor);
@@ -116,8 +116,8 @@ namespace Ui
 	{
 		for (size_t i = 0; i < nearNode->uavs.size(); i++)
 		{
-			scene->addLine(nearNode->uavs[i]->getLocation()->getX(), nearNode->uavs[i]->getLocation()->getY(),
-				newNode->uavs[i]->getLocation()->getX(), newNode->uavs[i]->getLocation()->getY(), QPen(uavColors[i]));
+			scene->addLine(nearNode->uavs[i]->getPointParticle()->getLocation()->getX(), nearNode->uavs[i]->getPointParticle()->getLocation()->getY(),
+				newNode->uavs[i]->getPointParticle()->getLocation()->getX(), newNode->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[i]));
 		}
 		mainWindow->updateView();
 	}

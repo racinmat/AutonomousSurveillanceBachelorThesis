@@ -22,6 +22,7 @@
 #include "Enums.h"
 
 #define PI 3.14159265358979323846
+#include "Uav.h"
 
 using namespace std;
 
@@ -199,7 +200,7 @@ namespace App
 				auto isNearUavPosition = false;
 				for (auto uavPosition : near_node->uavs)
 				{
-					isNearUavPosition = isNearUavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
+					isNearUavPosition = isNearUavPosition || !uavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
 				}
 
 				isNewUavPosition = new_node != false;//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
@@ -344,7 +345,7 @@ namespace App
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
 				int uavsCountInGroup = floor(uavsPerUnit * ratios[i]);	//round down
-				auto uavs = vector<shared_ptr<PointParticle>>(uavsCountInGroup);
+				auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
 				vector<int> indexes = vector<int>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
 				{
@@ -442,7 +443,7 @@ namespace App
 			{
 				auto uav = tmp_node->uavs[i];
 				auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-				distances[i] = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+				distances[i] = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
 			}
 
 			switch (nn_method)
@@ -476,7 +477,7 @@ namespace App
 					{
 						auto uav = tmp_node->uavs[i];
 						auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-						distance = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+						distance = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
 					}
 					printf("[debug] near node #%d found, distance to goal state: %f\n", s, distance);
 				}
@@ -492,7 +493,7 @@ namespace App
 			{
 				auto uav = near_node->uavs[i];
 				auto randomState = s_rand[i];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-				distance = pow(uav->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getLocation()->getY() - randomState->getY(), 2);
+				distance = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
 			}
 			if (debug && count > 0)
 			{
@@ -505,12 +506,12 @@ namespace App
 
 	shared_ptr<State> Core::select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
 	{
-		file << "Near node: " << *near_node.get() << endl;
-		file << "s_rand";
-		for (auto a : s_rand)
-		{
-			file << *a.get() << endl;
-		}
+//		file << "Near node: " << *near_node.get() << endl;
+//		file << "s_rand";
+//		for (auto a : s_rand)
+//		{
+//			file << *a.get() << endl;
+//		}
 
 		int input_samples_dist = configuration->getInputSamplesDist();
 		int input_samples_phi = configuration->getInputSamplesPhi();
@@ -549,8 +550,8 @@ namespace App
 			translations[i] = vector<shared_ptr<Point>>(tempState->uavs.size());
 			for (size_t j = 0; j < tempState->uavs.size(); j++)
 			{
-				double x = tempState->uavs[j]->getLocation()->getX() - near_node->uavs[j]->getLocation()->getX();
-				double y = tempState->uavs[j]->getLocation()->getY() - near_node->uavs[j]->getLocation()->getY();
+				double x = tempState->uavs[j]->getPointParticle()->getLocation()->getX() - near_node->uavs[j]->getPointParticle()->getLocation()->getX();
+				double y = tempState->uavs[j]->getPointParticle()->getLocation()->getY() - near_node->uavs[j]->getPointParticle()->getLocation()->getY();
 				translations[i][j] = make_shared<Point>(x ,y);
 			}
 		}
@@ -565,8 +566,8 @@ namespace App
 			d[i] = 0;
 			for (size_t j = 0; j < tempState->uavs.size(); j++)
 			{
-				double x = s_rand[j]->getX() - tempState->uavs[j]->getLocation()->getX();
-				double y = s_rand[j]->getY() - tempState->uavs[j]->getLocation()->getY();
+				double x = s_rand[j]->getX() - tempState->uavs[j]->getPointParticle()->getLocation()->getX();
+				double y = s_rand[j]->getY() - tempState->uavs[j]->getPointParticle()->getLocation()->getY();
 				d[i] += sqrt(pow(x, 2) + pow(y, 2));
 			}
 		}
@@ -669,7 +670,7 @@ namespace App
 			for (int m = 0; m < guiding_path->getSize(); m++) {
 				for (int n = 0; n < current_index.size(); n++) {
 					bool reached = false;
-					if ((pow(node->uavs[n]->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2) + pow(node->uavs[n]->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
+					if ((pow(node->uavs[n]->getPointParticle()->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2) + pow(node->uavs[n]->getPointParticle()->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
 					{
 						reached = true;
 						//Narrow passage detection
@@ -686,7 +687,7 @@ namespace App
 		return current_index;
 	}
 
-	vector<int> Core::check_near_goal(vector<shared_ptr<PointParticle>> uavs, shared_ptr<Map> map)
+	vector<int> Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
 	{
 		auto goal_reached = vector<int>(uavs.size());//todo: místo pole intù pøedìlat na pole goal objektù a místo nuly bude null pointer nebo tak nìco
 
@@ -694,7 +695,7 @@ namespace App
 		{
 			for (int n = 0; n < uavs.size(); n++)
 			{
-				if (map->getGoals()[m]->is_near(uavs[n]->getLocation()))
+				if (map->getGoals()[m]->is_near(uavs[n]->getPointParticle()->getLocation()))
 				{
 					goal_reached[n] = m;
 				} else
@@ -792,12 +793,12 @@ namespace App
 
 	}
 
-	bool Core::check_world_bounds(vector<shared_ptr<PointParticle>> points, int worldWidth, int worldHeight)
+	bool Core::check_world_bounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight)
 	{
 		bool inBounds = false;
 		for (auto point : points)
 		{
-			inBounds = inBounds || check_world_bounds(point->getLocation(), worldWidth, worldHeight);
+			inBounds = inBounds || check_world_bounds(point->getPointParticle()->getLocation(), worldWidth, worldHeight);
 		}
 		return inBounds;
 	}
@@ -833,14 +834,14 @@ namespace App
 			for (size_t j = 0; j < number_of_uavs; j++)
 			{
 				//calculate derivatives from inputs
-				double dx = inputs[j]->getX() * cos(newNode->uavs[j]->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
+				double dx = inputs[j]->getX() * cos(newNode->uavs[j]->getPointParticle()->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
+				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getPointParticle()->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
 				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
 
 				//calculate current state variables
-				newNode->uavs[j]->getLocation()->changeX(dx * time_step);
-				newNode->uavs[j]->getLocation()->changeY(dy * time_step);
-				newNode->uavs[j]->getRotation()->changeZ(dPhi * time_step);
+				newNode->uavs[j]->getPointParticle()->getLocation()->changeX(dx * time_step);
+				newNode->uavs[j]->getPointParticle()->getLocation()->changeY(dy * time_step);
+				newNode->uavs[j]->getPointParticle()->getRotation()->changeZ(dPhi * time_step);
 			}
 			newNode->prev_inputs = inputs;
 			trajectory.push_back(newNode);
@@ -875,10 +876,10 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				double uavIx = node->uavs[i]->getLocation()->getX();
-				double uavIy = node->uavs[i]->getLocation()->getY();
-				double uavJx = node->uavs[j]->getLocation()->getX();
-				double uavJy = node->uavs[j]->getLocation()->getY();
+				double uavIx = node->uavs[i]->getPointParticle()->getLocation()->getX();
+				double uavIy = node->uavs[i]->getPointParticle()->getLocation()->getY();
+				double uavJx = node->uavs[j]->getPointParticle()->getLocation()->getX();
+				double uavJy = node->uavs[j]->getPointParticle()->getLocation()->getY();
 
 				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) <= relative_distance_min)
 				{
@@ -892,12 +893,12 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				double uavIx = node->uavs[i]->getLocation()->getX();
-				double uavIy = node->uavs[i]->getLocation()->getY();
-				double uavIphi = node->uavs[i]->getRotation()->getZ();
-				double uavJx = node->uavs[j]->getLocation()->getX();
-				double uavJy = node->uavs[j]->getLocation()->getY();
-				double uavJphi = node->uavs[i]->getRotation()->getZ();
+				double uavIx = node->uavs[i]->getPointParticle()->getLocation()->getX();
+				double uavIy = node->uavs[i]->getPointParticle()->getLocation()->getY();
+				double uavIphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
+				double uavJx = node->uavs[j]->getPointParticle()->getLocation()->getX();
+				double uavJy = node->uavs[j]->getPointParticle()->getLocation()->getY();
+				double uavJphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
 
 				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
 				{
@@ -947,10 +948,10 @@ namespace App
 			for (size_t j = 0; j < number_of_uavs; j++)
 			{
 				if (i != j && line_segments_intersection(
-					near_node->uavs[i]->getLocation(), 
-					tmp_node->uavs[i]->getLocation(), 
-					near_node->uavs[j]->getLocation(), 
-					tmp_node->uavs[j]->getLocation()))
+					near_node->uavs[i]->getPointParticle()->getLocation(),
+					tmp_node->uavs[i]->getPointParticle()->getLocation(),
+					near_node->uavs[j]->getPointParticle()->getLocation(),
+					tmp_node->uavs[j]->getPointParticle()->getLocation()))
 				{
 					return true;
 				}
@@ -975,8 +976,8 @@ namespace App
 		
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
-			double x = near_node->uavs[i]->getLocation()->getX();
-			double y = near_node->uavs[i]->getLocation()->getY();
+			double x = near_node->uavs[i]->getPointParticle()->getLocation()->getX();
+			double y = near_node->uavs[i]->getPointParticle()->getLocation()->getY();
 			double x1 = x - uav_size / 2;
 			double y1 = y - uav_size / 2;
 			double z1 = 1;

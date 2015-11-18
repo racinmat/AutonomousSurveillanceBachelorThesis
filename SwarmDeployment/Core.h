@@ -4,6 +4,7 @@
 #include "State.h"
 #include <fstream>
 #include "StateFactory.h"
+#include "Uav.h"
 
 using namespace std;
 
@@ -33,7 +34,7 @@ namespace App
 		shared_ptr<State> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
 		int check_expandability(vector<shared_ptr<State>> nodes);
 		vector<vector<int>> guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, int guiding_near_dist);
-		vector<int> check_near_goal(vector<shared_ptr<PointParticle>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV
+		vector<int> check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV
 		void detect_narrow_passage(shared_ptr<Node> node);
 		shared_ptr<Point> random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map);
 		shared_ptr<Point> random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map);
@@ -41,7 +42,7 @@ namespace App
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
 		bool check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
-		bool check_world_bounds(vector<shared_ptr<PointParticle>> points, int worldWidth, int worldHeight);
+		bool check_world_bounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
 		template<typename T> vector<vector<T>> generateNTuplet(vector<T> usedChars, int tupletClass);
 		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs);
 		bool check_localization_sep(shared_ptr<State> node);

@@ -12,17 +12,17 @@ namespace App
 	{
 	}
 
-	App::UavGroup::UavGroup(vector<shared_ptr<PointParticle>> uavs, shared_ptr<Path> guiding_path, vector<int> indexes) : uavs(uavs),
+	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path, vector<int> indexes) : uavs(uavs),
 		guidingPath(guiding_path), uavIndexes(indexes)
 	{
 	}
 
-	vector<shared_ptr<PointParticle>> UavGroup::getUavs() const
+	vector<shared_ptr<Uav>> UavGroup::getUavs() const
 	{
 		return uavs;
 	}
 
-	void UavGroup::setUavs(const vector<shared_ptr<PointParticle>> uavs)
+	void UavGroup::setUavs(const vector<shared_ptr<Uav>> uavs)
 	{
 		this->uavs = uavs;
 	}
@@ -37,7 +37,7 @@ namespace App
 		guidingPath = guiding_path;
 	}
 
-	void UavGroup::addUav(shared_ptr<PointParticle> uav, int index)
+	void UavGroup::addUav(shared_ptr<Uav> uav, int index)
 	{
 		uavs.push_back(uav);
 		uavIndexes.push_back(index);

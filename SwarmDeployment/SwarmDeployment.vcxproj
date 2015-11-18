@@ -166,6 +166,7 @@
     <ClCompile Include="NodeSet.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateFactory.cpp" />
+    <ClCompile Include="Uav.cpp" />
     <ClCompile Include="UavGroup.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
     <ClCompile Include="VCollide\coldetect.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="NodeSet.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateFactory.h" />
+    <ClInclude Include="Uav.h" />
     <ClInclude Include="UavGroup.h" />
     <ClInclude Include="VCollide\AABB.H" />
     <ClInclude Include="VCollide\ColDetect.h" />

@@ -7,7 +7,7 @@ namespace App
 	{
 		obstacles = std::vector<shared_ptr<Obstacle>>();
 		goals = std::vector<shared_ptr<Goal>>();
-		uavsStart = std::vector<shared_ptr<PointParticle>>();
+		uavsStart = std::vector<shared_ptr<Uav>>();
 	}
 
 	Map::~Map()
@@ -34,12 +34,12 @@ namespace App
 		return obstacles;
 	}
 
-	void Map::addUavStart(shared_ptr<PointParticle> start)
+	void Map::addUavStart(shared_ptr<Uav> start)
 	{
 		uavsStart.push_back(start);
 	}
 
-	std::vector<shared_ptr<PointParticle>> Map::getUavsStart()
+	std::vector<shared_ptr<Uav>> Map::getUavsStart()
 	{
 		return uavsStart;
 	}
