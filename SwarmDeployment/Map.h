@@ -9,7 +9,6 @@ using namespace std;
 
 namespace App
 {
-	enum class Grid { Free, Obstacle, UAV, Goal };
 
 	class Map
 	{

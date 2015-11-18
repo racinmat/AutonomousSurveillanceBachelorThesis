@@ -1,6 +1,8 @@
 ﻿#include "Configuration.h"
 #include <iostream>
 
+#define PI 3.14159265358979323846
+
 namespace App
 {
 
@@ -23,6 +25,13 @@ namespace App
 		distanceOfNewNodes = 30;
 		guidingNearDist = 40;
 		numberOfSolutions = 10000;
+		guidedSamplingPropability = 1;
+		nearestNeighborMethod = NNMethod::Total;
+		maxTurn = PI / 200;
+		timeStep = 0.05;
+		endTime = 0.5;
+		relativeDistanceMax = 80;
+		relativeDistanceMin = 5;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -147,5 +156,40 @@ namespace App
 	int Configuration::getNumberOfSolutions() const
 	{
 		return numberOfSolutions;
+	}
+
+	double Configuration::getGuidedSamplingPropability() const
+	{
+		return guidedSamplingPropability;
+	}
+
+	NNMethod Configuration::getNearestNeighborMethod() const
+	{
+		return nearestNeighborMethod;
+	}
+
+	double Configuration::getMaxTurn() const
+	{
+		return maxTurn;
+	}
+
+	double Configuration::getTimeStep() const
+	{
+		return timeStep;
+	}
+
+	double Configuration::getEndTime() const
+	{
+		return endTime;
+	}
+
+	double Configuration::getRelativeDistanceMin() const
+	{
+		return relativeDistanceMin;
+	}
+
+	double Configuration::getRelativeDistanceMax() const
+	{
+		return relativeDistanceMax;
 	}
 }

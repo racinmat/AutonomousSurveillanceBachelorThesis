@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Core.h"
+#include "Enums.h"
 
 using namespace std;
 
@@ -36,6 +37,13 @@ namespace App
 		virtual int getDistanceOfNewNodes() const;
 		virtual int getGuidingNearDist() const;
 		virtual int getNumberOfSolutions() const;
+		virtual double getGuidedSamplingPropability() const;
+		virtual NNMethod getNearestNeighborMethod() const;
+		virtual double getMaxTurn() const;
+		virtual double getTimeStep() const;
+		virtual double getEndTime() const;
+		virtual double getRelativeDistanceMin() const;
+		virtual double getRelativeDistanceMax() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -56,6 +64,13 @@ namespace App
 		int distanceOfNewNodes;
 		int guidingNearDist;
 		int numberOfSolutions;
+		double guidedSamplingPropability;
+		NNMethod nearestNeighborMethod;
+		double maxTurn;
+		double timeStep;
+		double endTime;
+		double relativeDistanceMin;
+		double relativeDistanceMax;
 	};
 
 }

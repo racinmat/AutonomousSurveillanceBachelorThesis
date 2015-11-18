@@ -224,6 +224,7 @@
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
     </ClInclude>

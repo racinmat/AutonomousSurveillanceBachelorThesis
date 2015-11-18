@@ -19,6 +19,7 @@
 #include "VCollide/ColDetect.h"
 #include <chrono>
 #include <thread>
+#include "Enums.h"
 
 #define PI 3.14159265358979323846
 
@@ -111,7 +112,7 @@ namespace App
 		int uavCount = configuration->getUavCount();
 		int rrt_min_nodes = configuration->getRrtMinNodes();
 		int rrt_max_nodes = configuration->getRrtMaxNodes();
-		bool stop = false;
+		bool stop = false;	//todo: udìlat naèítání stop z konfigurace. konfiguraci mìnit z gui.
 		int number_of_solutions = configuration->getNumberOfSolutions();
 		int near_count = configuration->getNearCount();
 		bool debug = configuration->getDebug();
@@ -289,9 +290,9 @@ namespace App
 
 	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<vector<int>> current_index, vector<bool> goals_reached, shared_ptr<Map> map)
 	{
-		double guided_sampling_prob = 1;
-		int worldWidth = 1000;
-		int worldHeight = 1000;
+		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
+		int worldWidth = configuration->getWorldWidth();
+		int worldHeight = configuration->getWorldHeight();
 		int number_of_uavs = map->getUavsStart().size();
 		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>();
 
@@ -415,9 +416,9 @@ namespace App
 
 	shared_ptr<State> Core::nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count)
 	{
-		int max_nodes = 20000;
-		int debug = true;
-		int nn_method = 1;
+		int max_nodes = configuration->getRrtMaxNodes();
+		int debug = configuration->getDebug();
+		NNMethod nn_method = NNMethod::Total;
 
 		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
 		shared_ptr<State> near_node = nodes[0];
@@ -457,16 +458,16 @@ namespace App
 
 			switch (nn_method)
 			{
-			case 1:
+			case NNMethod::Total:
 				for(auto dist : distances)
 				{
 					hamilt_dist += dist;	//no function for sum
 				}
 				break;
-			case 2:
+			case NNMethod::Max:
 				hamilt_dist = *std::max_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
 				break;
-			case 3:
+			case NNMethod::Min:
 				hamilt_dist = *std::min_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
 				break;
 			}
@@ -524,9 +525,9 @@ namespace App
 
 		int input_samples_dist = configuration->getInputSamplesDist();
 		int input_samples_phi = configuration->getInputSamplesPhi();
-		int distance_of_new_nodes = 30;
-		double max_turn = PI / 200;
-		bool relative_localization = true;
+		int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
+		double max_turn = configuration->getMaxTurn();
+		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = near_node->uavs.size();
 		int inputCountPerUAV = input_samples_dist * input_samples_phi;
 		int inputCount = configuration->getInputCount();
@@ -822,11 +823,11 @@ namespace App
 	{
 		auto newNode = make_shared<State>(*node.get());	//copy constructor, deep copy
 
-		double uav_size = 0.5;
+		double uav_size = configuration->getUavSize();
 		// Simulation step length
-		double time_step = 0.05;
+		double time_step = configuration->getTimeStep();
 		// Simulation length
-		double end_time = 0.5;
+		double end_time = configuration->getEndTime();
 		int number_of_uavs = node->uavs.size();
 		//		global number_of_uavs params empty_trajectory
 		
@@ -867,8 +868,8 @@ namespace App
 	bool Core::check_localization_sep(shared_ptr<State> node)
 	{
 		int number_of_uavs = node->uavs.size();
-		double relative_distance_min = 5;
-		double relative_distance_max = 80;
+		double relative_distance_min = configuration->getRelativeDistanceMin();
+		double relative_distance_max = configuration->getRelativeDistanceMax();
 		// Neighbor must be in certain angle on / off
 		bool check_fov = false;
 		double localization_angle = PI / 2;
