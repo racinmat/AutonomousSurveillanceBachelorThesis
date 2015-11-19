@@ -23,6 +23,7 @@
 
 #define PI 3.14159265358979323846
 #include "Uav.h"
+#include <valarray>
 
 using namespace std;
 
@@ -128,13 +129,12 @@ namespace App
 		initialState->uavs = map->getUavsStart();
 		nodes.push_back(initialState);
 
-
-		for (int ii = 0; ii < initialState->uavs.size(); ii++)	//promìnná ii, aby se pøi debuggingu nepletla s promìnnou i, která se používá ve velkém while cyklu
+		for (auto uav : initialState->uavs)
 		{
-			initialState->uavs[ii]->current_index = vector<int>(guiding_paths.size());
+			uav->current_index = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				initialState->uavs[ii]->current_index[j] = 0;
+				uav->current_index[j] = 0;
 			}
 		}
 
@@ -314,7 +314,7 @@ namespace App
 		} else
 		{
 			//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
-			auto ratios = vector<double>(map->getGoals().size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+			valarray<double> ratios = valarray<double>(map->getGoals().size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
 			double totalVolume = 0;
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
@@ -322,7 +322,8 @@ namespace App
 				ratios[i] = volume;
 				totalVolume += volume;
 			}
-			for_each(ratios.begin(), ratios.end(), [totalVolume](double ratio) { return ratio /= totalVolume; });	//každý prvek je v rozsahu od 0 do 1
+
+			ratios /= totalVolume;	//valarray umožòuje vektorové operace, každý prvek je v rozsahu od 0 do 1
 
 			vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(map->getGoals().size());
 
@@ -352,20 +353,19 @@ namespace App
 				uavGroups[i]->addUav(state->uavs[uavsInGroups + i], uavsInGroups + i);
 			}
 
-			for (size_t i = 0; i < uavGroups.size(); i++)
+			for (auto group : uavGroups)
 			{
-				auto group = uavGroups[i];
 
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
 				int bestReachedIndex = group->getBestIndex();
 
 
 				auto center = group->getGuidingPath()->get(bestReachedIndex);	//Petrlík má pro celou skupinu stejný objekt center
-				for (size_t j = 0; j < group->getUavs().size(); j++)
+				for (auto uav : group->getUavs())
 				{
-					if (group->getUavs()[j]->isGoalReached())	//todo: zjistit, jestli tam nemá být index cíle
+					if (uav->isGoalReached())	//todo: zjistit, jestli tam nemá být index cíle
 					{
-						randomStates.push_back(random_state_goal(group->getUavs()[j]->getReachedGoal(), map));
+						randomStates.push_back(random_state_goal(uav->getReachedGoal(), map));
 					}
 					else
 					{

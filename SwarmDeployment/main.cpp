@@ -6,6 +6,7 @@
 #include <memory>
 #include "VCollide\ColDetect.h"
 #include <locale>
+#include <valarray>
 
 int runGui(int argc, char *argv[])
 {
@@ -180,6 +181,35 @@ void testing()
 
 	cout << to_string(duration) << " miliseconds to calculate car like motion model" << endl;
 	*/
+
+// toto nemodifikuje pole
+//	auto ratios = vector<double>(5); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+//	double totalVolume = 0;
+//	for (size_t i = 0; i < 5; i++)
+//	{
+//		double volume = i;
+//		ratios[i] = volume;
+//		totalVolume += volume;
+//	}
+//	for_each(ratios.begin(), ratios.end(), [totalVolume](double ratio) { return ratio /= totalVolume; });	//každý prvek je v rozsahu od 0 do 1
+//	
+//	cout << ratios[0] << endl;		//0
+//	cout << ratios[1] << endl;		//1
+//	cout << ratios[2] << endl;		//2
+//	cout << ratios[3] << endl;		//3
+//	cout << ratios[4] << endl;		//4
+
+	int init[] = { 10,20,30,40 };//     foo:            bar:
+												 
+	valarray<int> foo(init, 4);  //		10 20 30  40
+	valarray<int> bar(25, 4);     //	10 20 30  40    25 25  25  25
+	bar += foo;                     //  10 20 30  40    35 45  55  65
+	foo = bar + 10;                 //  45 55 65  75    35 45  55  65
+	foo -= 10;                      //  35 45 55  65    35 45  55  65
+	valarray<bool> comp = (foo == bar);									//true true true true			 			   	   
+	foo += 35;						//  70 80 90 100    35 45  55  65
+	bar *= 2;						//  70 80 90 100    70 90 110 130
+	valarray<bool> comp1 = (foo == bar);								//true false false false false
 
 	cin.get();
 }
