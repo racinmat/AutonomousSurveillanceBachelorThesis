@@ -1,5 +1,4 @@
 #include "AStar.h"
-#include "memory"
 
 using namespace std;
 

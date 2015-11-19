@@ -517,7 +517,6 @@ namespace App
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = near_node->uavs.size();
-		int inputCountPerUAV = input_samples_dist * input_samples_phi;
 		int inputCount = configuration->getInputCount();
 		vector<shared_ptr<Point>> oneUavInputs = vector<shared_ptr<Point>>();
 		shared_ptr<State> new_node;
@@ -823,21 +822,21 @@ namespace App
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
 
-		int count = 0;	//poèítadlo prùchodù
-		for (double i = time_step; i < end_time; i += time_step)
+		for (size_t j = 0; j < number_of_uavs; j++)
 		{
-			count++;
-			for (size_t j = 0; j < number_of_uavs; j++)
+			auto uavPointParticle = newNode->uavs[j]->getPointParticle();
+			double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());	//dPhi se nemìní v rámci vnitøního cyklu, takže staèí spošítat jen jednou
+
+			for (double i = time_step; i < end_time; i += time_step)
 			{
 				//calculate derivatives from inputs
-				double dx = inputs[j]->getX() * cos(newNode->uavs[j]->getPointParticle()->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-				double dy = inputs[j]->getX() * sin(newNode->uavs[j]->getPointParticle()->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
-				double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());
+				double dx = inputs[j]->getX() * cos(uavPointParticle->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
+				double dy = inputs[j]->getX() * sin(uavPointParticle->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
 
 				//calculate current state variables
-				newNode->uavs[j]->getPointParticle()->getLocation()->changeX(dx * time_step);
-				newNode->uavs[j]->getPointParticle()->getLocation()->changeY(dy * time_step);
-				newNode->uavs[j]->getPointParticle()->getRotation()->changeZ(dPhi * time_step);
+				uavPointParticle->getLocation()->changeX(dx * time_step);
+				uavPointParticle->getLocation()->changeY(dy * time_step);
+				uavPointParticle->getRotation()->changeZ(dPhi * time_step);
 			}
 			newNode->prev_inputs = inputs;
 			trajectory.push_back(newNode);

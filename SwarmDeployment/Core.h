@@ -24,11 +24,7 @@ namespace App
 		void logConfigurationChange();
 		void rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map);
 
-	protected:
-		shared_ptr<LoggerInterface> logger;
-		vector<shared_ptr<Map>> maps;
-		shared_ptr<Configuration> configuration;
-		shared_ptr<StateFactory> stateFactory;
+
 		vector<shared_ptr<Point>> random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<bool> goals_reached, shared_ptr<Map> map, shared_ptr<State> state);
 		shared_ptr<State> nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count);
 		shared_ptr<State> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
@@ -51,6 +47,15 @@ namespace App
 		bool line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
+
+
+	protected:
+		shared_ptr<LoggerInterface> logger;
+		vector<shared_ptr<Map>> maps;
+		shared_ptr<Configuration> configuration;
+		shared_ptr<StateFactory> stateFactory;
+
+
 		void testGui();
 
 		ofstream file;	//todo: udìlat nìjaký poøádný logger, tohle je doèasné na rychlé logování

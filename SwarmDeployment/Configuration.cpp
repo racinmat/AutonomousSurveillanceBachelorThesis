@@ -16,7 +16,7 @@ namespace App
 		uavSize = 0.5;
 		samplingRadius = 60;
 		drawPeriod = 1;
-		inputSamplesDist = 1;
+		inputSamplesDist = 3;
 		inputSamplesPhi = 3;
 		rrtMinNodes = 1;
 		rrtMaxNodes = 20000;

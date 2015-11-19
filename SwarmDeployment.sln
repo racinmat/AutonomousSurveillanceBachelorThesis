@@ -6,10 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwarmDeployment", "SwarmDeployment\SwarmDeployment.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		DebugNoGui|x86 = DebugNoGui|x86
 		Release|x86 = Release|x86
+		ReleaseNoGui|x86 = ReleaseNoGui|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x86.ActiveCfg = Debug|Win32
@@ -18,6 +22,8 @@ Global
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.DebugNoGui|x86.Build.0 = DebugNoGui|Win32
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x86.ActiveCfg = Release|Win32
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x86.Build.0 = Release|Win32
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.ReleaseNoGui|x86.ActiveCfg = ReleaseNoGui|Win32
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.ReleaseNoGui|x86.Build.0 = ReleaseNoGui|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

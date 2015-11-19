@@ -1,6 +1,5 @@
 #pragma once
 #include "PathFindingAlgorithm.h"
-#include "NodeSet.h"
 #include "ClosedSet.h"
 #include "OpenedSet.h"
 #include "memory"
