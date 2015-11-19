@@ -18,6 +18,7 @@ namespace App
 		virtual void setGuidingPath(const shared_ptr<Path> guiding_path);
 		virtual void addUav(shared_ptr<Uav> uav, int index);
 		virtual vector<int> getUavIndexes() const;
+		virtual int getBestIndex() const;
 		int guidingPathIndex;	//todo: refactorovat
 
 	protected:

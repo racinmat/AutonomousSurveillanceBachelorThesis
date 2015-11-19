@@ -47,4 +47,17 @@ namespace App
 	{
 		return uavIndexes;
 	}
+
+	int UavGroup::getBestIndex() const
+	{
+		int bestIndex = 0;
+		for (auto uav : uavs)
+		{
+			if (uav->current_index[guidingPathIndex] > bestIndex)
+			{
+				bestIndex = uav->current_index[guidingPathIndex];
+			}
+		}
+		return bestIndex;
+	}
 }

@@ -16,7 +16,7 @@ namespace App
 		uavSize = 0.5;
 		samplingRadius = 60;
 		drawPeriod = 1;
-		inputSamplesDist = 3;
+		inputSamplesDist = 1;
 		inputSamplesPhi = 3;
 		rrtMinNodes = 1;
 		rrtMaxNodes = 20000;
@@ -27,7 +27,7 @@ namespace App
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
-		maxTurn = PI / 200;
+		maxTurn = PI / 150;
 		timeStep = 0.05;
 		endTime = 0.5;
 		relativeDistanceMax = 80;

@@ -1,6 +1,6 @@
-//include "mainwindow.h"					//zakomentovat pro noGui
+#include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
+#include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -9,19 +9,19 @@
 
 int runGui(int argc, char *argv[])
 {
-//	QApplication a(argc, argv);
-//	MainWindow w;
-//	auto configuration = std::make_shared<App::Configuration>();
-//	auto core = std::make_shared<App::Core>(configuration);
-//	configuration->setCore(core);
-//	core->setLogger(w.getLogger());
-//
-//	w.setConfiguration(configuration);
-//	w.setCore(core);
-//	w.show();
-//
-//	int returnValue = a.exec();
-	int returnValue = 0;
+	QApplication a(argc, argv);
+	MainWindow w;
+	auto configuration = std::make_shared<App::Configuration>();
+	auto core = std::make_shared<App::Core>(configuration);
+	configuration->setCore(core);
+	core->setLogger(w.getLogger());
+
+	w.setConfiguration(configuration);
+	w.setCore(core);
+	w.show();
+
+	int returnValue = a.exec();
+//	int returnValue = 0;
 	return returnValue;
 }
 
@@ -127,7 +127,7 @@ void testing()
 //	cout << "tri1:" << ColDetect::coldetect(tri_uav, tri1_obs[j], trans, zero_trans) << endl;
 //	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
 
-
+	/* testování rychlosti motion modelu kvùli optimalizaci
 	auto configuration = make_shared<App::Configuration>();
 	auto core = make_shared<App::Core>(configuration);
 
@@ -179,7 +179,7 @@ void testing()
 	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 
 	cout << to_string(duration) << " miliseconds to calculate car like motion model" << endl;
-
+	*/
 
 	cin.get();
 }
@@ -188,8 +188,8 @@ int main(int argc, char *argv[])
 {
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
-	testing();
+	returnValue = runGui(argc, argv);
+//	testing();
 	return returnValue;
 }
 

@@ -65,13 +65,6 @@ namespace App
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 
-		//protože Petrlík má guidingPath otoèenou, také si ji otoèím, abych to mìl pro kontrolu stejnì
-		//todo: potom vše zrefactorovat tak, aby mohla být cesta správnì, neotoèená
-		for (auto path : paths)
-		{
-			path->reverse();
-		}
-
 //		try
 //		{
 			rrtPath(paths, configuration, map);
@@ -141,7 +134,7 @@ namespace App
 			initialState->uavs[ii]->current_index = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				initialState->uavs[ii]->current_index[j] = guiding_paths[j]->getSize() - 1;	//protože se indexuje od 0
+				initialState->uavs[ii]->current_index[j] = 0;
 			}
 		}
 
@@ -201,7 +194,7 @@ namespace App
 					isNearUavPosition = isNearUavPosition || !uavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
 				}
 
-				isNewUavPosition = newState != false;//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
+				isNewUavPosition = newState != false;	//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
 
 				//poèítadlo uvíznutí. UAV uvízlo, pokud je tento if true
 				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)	//kontrola empty new_node
@@ -347,7 +340,7 @@ namespace App
 				vector<int> indexes = vector<int>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
 				{
-					uavs[j] = map->getUavsStart()[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+					uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
 					indexes[j] = uavsInGroups + j;
 				}
 				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i], indexes);
@@ -358,30 +351,15 @@ namespace App
 			int remaining = map->getUavsStart().size() - uavsInGroups;
 			for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
 			{
-				uavGroups[i]->addUav(map->getUavsStart()[uavsInGroups + i], uavsInGroups + i);
+				uavGroups[i]->addUav(state->uavs[uavsInGroups + i], uavsInGroups + i);
 			}
 
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
 				auto group = uavGroups[i];
 
-				vector<int> groupCurrentIndexes;	//pole current indexù pro uav v dané group a pro cestu, kterou má daná group pøiøazenou.
-				//pøed samotným nalezením nejlepší dosažené node pro danou skupinu musím vytahat z matice current_index prvky, které potøebuji
-				for (size_t j = 0; j < state->uavs.size(); j++)	//iteruji pøes všechna UAV a if urèí, zda je dané UAV ve skupinì, kterou zkoumám, èi ne
-					{
-					auto indexes = group->getUavIndexes();
-					if (std::find(indexes.begin(), indexes.end(), i) != indexes.end()) {
-						/* group->getUavIndexes() contains i */
-						groupCurrentIndexes.push_back(state->uavs[j]->current_index[group->guidingPathIndex]);
-					}
-					else {
-						/* group->getUavIndexes() does not contain i */
-
-					}
-				}
-
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
-				double bestReachedIndex = *std::min_element(groupCurrentIndexes.begin(), groupCurrentIndexes.end());
+				double bestReachedIndex = group->getBestIndex();
 
 
 				auto center = group->getGuidingPath()->get(bestReachedIndex);	//Petrlík má pro celou skupinu stejný objekt center
@@ -666,15 +644,16 @@ namespace App
 			for (int m = 0; m < guiding_path->getSize(); m++) {
 				for (int n = 0; n < state->uavs.size(); n++) {
 					bool reached = false;
-					if ((pow(state->uavs[n]->getPointParticle()->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2) + pow(state->uavs[n]->getPointParticle()->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
+					if ((pow(state->uavs[n]->getPointParticle()->getLocation()->getX() - guiding_path->get(m)->getPoint()->getX(), 2)
+						+ pow(state->uavs[n]->getPointParticle()->getLocation()->getY() - guiding_path->get(m)->getPoint()->getY(), 2)) < pow(guiding_near_dist, 2))
 					{
 						reached = true;
 						//Narrow passage detection
 						detect_narrow_passage(guiding_path->get(m));
 					}
-					if (reached == true && m > 0 && m <= state->uavs[n]->current_index[k]) 
+					if (reached && m < guiding_path->getSize() - 1 && m >= state->uavs[n]->current_index[k]) //ošetøení, aby se UAV nevracela, ale by nepøetekl index u guidingPath
 					{
-						state->uavs[n]->current_index[k] = m - 1;	//todo: zjistit, jestlimám opravdu odeèítat jednièku
+						state->uavs[n]->current_index[k] = m + 1;
 						break;
 					}
 				}
