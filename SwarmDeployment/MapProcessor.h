@@ -19,6 +19,8 @@ namespace App
 		vector<vector<Grid>> getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
 		Grid analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize);
 		vector<shared_ptr<Node>> gridToNodes(vector<vector<Grid>> mapGrid, int cellSize);
+		shared_ptr<Node> getStartNode(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
+		vector<shared_ptr<Node>> getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
 		shared_ptr<LoggerInterface> logger;
 	};
 

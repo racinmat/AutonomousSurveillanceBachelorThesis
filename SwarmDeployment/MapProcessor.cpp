@@ -28,37 +28,9 @@ namespace App
 		//Start node is node, where starts UAV in middle
 		//End node is node in middle of each goal recrangle
 		//Todo: vymyslet, zda zde natvrdo používat pro nalezení støedu obdélníky èi ne
-		shared_ptr<Node> startNode;
+		shared_ptr<Node> startNode = getStartNode(nodes, map, cellSize);
+		auto endNodes = getEndNodes(nodes, map, cellSize);
 
-		int uavCount = map->countUavs();
-		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getPointParticle()->getLocation();
-		for (auto node : nodes)
-		{
-			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
-			{
-				startNode = node;
-				break;
-			}
-		}
-
-
-		auto endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
-		for (size_t i = 0; i < map->getGoals().size(); i++)
-		{
-			auto goal = map->getGoals()[i]->rectangle;
-			int middleX = goal->getX() + goal->getWidth() / 2;
-			int middleY = goal->getY() + goal->getHeight() / 2;
-
-
-			for(auto node : nodes)
-			{
-				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
-				{
-					endNodes[i] = node;
-					break;
-				}
-			}
-		}
 
 		//úprava, aby mapa odpovídala matlabovské pøedloze pro pøesné porovnávání
 		//nastaveno pro mapu 3
@@ -213,5 +185,82 @@ namespace App
 		return nodes;
 	}
 
+	shared_ptr<Node> MapProcessor::getStartNode(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize)
+	{
+		shared_ptr<Node> startNode;
+		int uavCount = map->countUavs();
+//		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getPointParticle()->getLocation();
+//		for (auto node : nodes)
+//		{
+//			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
+//			{
+//				startNode = node;
+//				break;
+//			}
+//		}
 
+
+		//pokud zaèínají UAV na zaèátku jinak natoèená než je smìr vedocí cesty, musí se složitì otáèet, proto vyberu ze všech nodes, na kterých leží nìjaké uav, node, která leží ve smìru prùmìrného otoèení UAV
+		//smìr uèím podle úhlu, který daná node svírá s prùmìrným bodem mezi všemi UAV.
+		vector<shared_ptr<Node>> startingNodes = vector<shared_ptr<Node>>();
+		for (auto node : nodes)
+		{
+			for (auto uav : map->getUavsStart())
+			{
+				if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
+				{
+					startingNodes.push_back(node);
+					break;
+				}
+			}
+		}
+
+		double averageRotation = 0;
+		shared_ptr<Point> averageLocation = make_shared<Point>(0, 0);
+		for (auto uav : map->getUavsStart())
+		{
+			averageRotation += uav->getPointParticle()->getRotation()->getZ();	//u 2D je pouze rotace okolo osy Z
+			averageLocation->changeX(uav->getPointParticle()->getLocation()->getX());
+			averageLocation->changeY(uav->getPointParticle()->getLocation()->getY());
+		}
+
+		averageRotation /= uavCount;
+		averageLocation->setX(averageLocation->getX() / uavCount);
+		averageLocation->setY(averageLocation->getY() / uavCount);
+
+		double similarRotation = DBL_MAX;
+		for(auto possibleStartNode : startingNodes)
+		{
+			double angle = atan2(possibleStartNode->getPoint()->getY() - averageLocation->getY(), possibleStartNode->getPoint()->getX() - averageLocation->getX());
+			if (abs(angle - averageRotation) < similarRotation)
+			{
+				similarRotation = abs(angle - averageRotation);
+				startNode = possibleStartNode;
+			}
+		}
+
+		return startNode;
+	}
+
+	vector<shared_ptr<Node>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize)
+	{
+		auto endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
+		for (size_t i = 0; i < map->getGoals().size(); i++)
+		{
+			auto goal = map->getGoals()[i]->rectangle;
+			int middleX = goal->getX() + goal->getWidth() / 2;
+			int middleY = goal->getY() + goal->getHeight() / 2;
+
+
+			for (auto node : nodes)
+			{
+				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
+				{
+					endNodes[i] = node;
+					break;
+				}
+			}
+		}
+		return endNodes;
+	}
 }
