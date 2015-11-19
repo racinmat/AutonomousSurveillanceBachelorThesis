@@ -28,6 +28,7 @@ namespace App
 		//Start node is node, where starts UAV in middle
 		//End node is node in middle of each goal recrangle
 		//Todo: vymyslet, zda zde natvrdo používat pro nalezení støedu obdélníky èi ne
+		//todo: vymyslet, jak použít node s podobným náklonem, pokud nejsou uav pøesnì na hranách ètvercù. možná brát ještì okolní nodes, pokud na nich není pøekážka?
 		shared_ptr<Node> startNode = getStartNode(nodes, map, cellSize);
 		auto endNodes = getEndNodes(nodes, map, cellSize);
 

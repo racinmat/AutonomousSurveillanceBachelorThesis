@@ -17,7 +17,7 @@ namespace App
 		vector<int> distance_of_new_nodes;
 		int start_goal_distance_euclidean;
 		int start_goal_distance_a_star;
-		vector<int> goal_reached;
+		vector<shared_ptr<Goal>> goal_reached;
 	};
 
 }

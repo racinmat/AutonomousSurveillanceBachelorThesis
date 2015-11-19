@@ -140,15 +140,8 @@ namespace App
 
 		auto final_nodes = vector<shared_ptr<State>>(rrt_max_nodes);
 
-		auto goals_reached = vector<bool>(uavCount);
-		for (auto goal_reached : goals_reached)
-		{
-			goal_reached = false;
-		}
 
-
-		int nodes_count = rrt_max_nodes;
-		vector<int> goal_reached_by_all_uavs;
+		int nodes_count = rrt_max_nodes;	//todo: zjistit, co s tou promìnnou mám dìlat
 		shared_ptr<State> newState;
 		shared_ptr<State> nearState = initialState;
 		auto output = make_shared<Output>();
@@ -166,7 +159,7 @@ namespace App
 			i++;
 
 //			%Random state
-			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, goals_reached, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
+			vector<shared_ptr<Point>> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
 			int k = 1;	//poèítadlo uvíznutí, protože se používá v nearest_neighbor size() - k, zaèínám od 1
@@ -236,18 +229,22 @@ namespace App
 			s++;
 
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
-			goal_reached_by_all_uavs = check_near_goal(newState->uavs, map);
+			check_near_goal(newState->uavs, map);
 
 			bool isGoalReached = true;
-			for (int goal_reached : goal_reached_by_all_uavs)
+			for (auto uav : newState->uavs)
 			{
-				isGoalReached = isGoalReached && (goal_reached > 0);
+				isGoalReached = isGoalReached && uav->isGoalReached();
 			}
 
 			output->distance_of_new_nodes = vector<int>(nodes.size());
 			if (isGoalReached) // pokud je nalezen cíl
 			{
-				output->goal_reached = goal_reached_by_all_uavs;
+				output->goal_reached = vector<shared_ptr<Goal>>();
+				for(auto uav : newState->uavs)
+				{
+					output->goal_reached.push_back(uav->getReachedGoal());
+				}
 				final_nodes[m] = newState;
 				printf("%d viable paths found so far.\n", m);
 				m++;
@@ -262,14 +259,18 @@ namespace App
 		}
 		
 		final_nodes[m] = nodes[i];
-		goal_reached_by_all_uavs = check_near_goal(newState->uavs, map);
-		output->goal_reached = goal_reached_by_all_uavs;
+		check_near_goal(newState->uavs, map);
+		output->goal_reached = vector<shared_ptr<Goal>>();
+		for (auto uav : newState->uavs)
+		{
+			output->goal_reached.push_back(uav->getReachedGoal());
+		}
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
 		cout << "RRT-Path finished";
 	}
 
-	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, vector<bool> goals_reached, shared_ptr<Map> map, shared_ptr<State> state)
+	vector<shared_ptr<Point>> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state)
 	{
 		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
 		int worldWidth = configuration->getWorldWidth();
@@ -277,11 +278,8 @@ namespace App
 		int number_of_uavs = map->getUavsStart().size();
 		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>();
 
-//		return vector<shared_ptr<Point>>();
 		vector<double> propabilities = vector<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
 		//todo: vyøešit problém s tím, že kratší cesta je prozkoumána døíve
-		
-//		global number_of_uavs params
 
 		int sum = 0; // sum = celková délka všech vedoucích cest
 
@@ -305,9 +303,9 @@ namespace App
 		{
 			for (size_t i = 0; i < number_of_uavs; i++)
 			{
-				if (goals_reached[i])
+				if (state->uavs[i]->isGoalReached())
 				{//todo: s tímhle nìco udìlat, a nepøistupovat k poli takhle teple pøes indexy
-					s_rand[i] = random_state_goal(map->getGoals()[goals_reached[i]], map);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
+					s_rand[i] = random_state_goal(state->uavs[i]->getReachedGoal(), map);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
 				} else
 				{
 					s_rand[i] = random_state(0, worldWidth, 0, worldHeight, map); // pokud n-té UAV není v cíli, vybere se náhodný bod z celé mapy
@@ -359,16 +357,15 @@ namespace App
 				auto group = uavGroups[i];
 
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
-				double bestReachedIndex = group->getBestIndex();
+				int bestReachedIndex = group->getBestIndex();
 
 
 				auto center = group->getGuidingPath()->get(bestReachedIndex);	//Petrlík má pro celou skupinu stejný objekt center
 				for (size_t j = 0; j < group->getUavs().size(); j++)
 				{
-					int index = group->getUavIndexes()[j];
-					if (goals_reached[index])	//todo: zjistit, jestli tam nemá být index cíle
+					if (group->getUavs()[j]->isGoalReached())	//todo: zjistit, jestli tam nemá být index cíle
 					{
-						randomStates.push_back(random_state_goal(map->getGoals()[goals_reached[index]], map));
+						randomStates.push_back(random_state_goal(group->getUavs()[j]->getReachedGoal(), map));
 					}
 					else
 					{
@@ -661,24 +658,18 @@ namespace App
 		}
 	}
 
-	vector<int> Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
+	void Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
 	{
-		auto goal_reached = vector<int>(uavs.size());//todo: místo pole intù pøedìlat na pole goal objektù a místo nuly bude null pointer nebo tak nìco
-
 		for (int m = 0; m < map->getGoals().size(); m++)
 		{
 			for (int n = 0; n < uavs.size(); n++)
 			{
 				if (map->getGoals()[m]->is_near(uavs[n]->getPointParticle()->getLocation()))
 				{
-					goal_reached[n] = m;
-				} else
-				{
-					goal_reached[n] = 0;
+					uavs[n]->setReachedGoal(map->getGoals()[m]);
 				}
 			}
 		}
-		return goal_reached;
 	}
 
 	void Core::detect_narrow_passage(shared_ptr<Node> node)

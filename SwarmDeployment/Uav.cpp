@@ -7,6 +7,7 @@ namespace App
 	{
 		pointParticle = make_shared<PointParticle>(*other.pointParticle.get());
 		current_index = other.current_index;
+		reachedGoal = other.reachedGoal;
 	}
 
 	Uav::Uav(shared_ptr<PointParticle> pointParticle) : 
@@ -36,6 +37,21 @@ namespace App
 	shared_ptr<App::PointParticle> Uav::getPointParticle() const
 	{
 		return pointParticle;
+	}
+
+	bool Uav::isGoalReached() const
+	{
+		return reachedGoal != false;
+	}
+
+	shared_ptr<Goal> Uav::getReachedGoal() const
+	{
+		return reachedGoal;
+	}
+
+	void Uav::setReachedGoal(shared_ptr<Goal> reachedGoal)
+	{
+		this->reachedGoal = reachedGoal;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Uav& obj)
