@@ -184,6 +184,7 @@
     </ClCompile>
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GuidingPathFactory.cpp" />
+    <ClCompile Include="GuidingPathsCurrentPositions.cpp" />
     <ClCompile Include="GuiDrawer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
@@ -294,6 +295,7 @@
     </ClInclude>
     <ClInclude Include="Goal.h" />
     <ClInclude Include="GuidingPathFactory.h" />
+    <ClInclude Include="GuidingPathsCurrentPositions.h" />
     <ClInclude Include="GuiDrawer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>

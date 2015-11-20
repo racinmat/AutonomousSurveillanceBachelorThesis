@@ -13,6 +13,7 @@ INITIALIZE_EASYLOGGINGPP
 
 int runGui(int argc, char *argv[])
 {
+	int returnValue = 0;
 	QApplication a(argc, argv);
 	MainWindow w;
 	auto configuration = std::make_shared<App::Configuration>();
@@ -24,8 +25,7 @@ int runGui(int argc, char *argv[])
 	w.setCore(core);
 	w.show();
 
-	int returnValue = a.exec();
-//	int returnValue = 0;
+	returnValue = a.exec();
 	return returnValue;
 }
 
@@ -59,17 +59,19 @@ public:
 class B
 {
 public:
-	B()
+	B() : ints(vector<int>())
 	{
 	}
-	B(const B& other)
+	B(const B& other) : ints(vector<int>())
 	{
 		for (auto a : other.as)
 		{
 			as.push_back(make_shared<A>(*a.get()));
 		}
+		ints = other.ints;
 	}
 	vector<shared_ptr<A>> as;
+	vector<int>& ints;
 };
 
 void testing()
@@ -202,24 +204,42 @@ void testing()
 //	cout << ratios[3] << endl;		//3
 //	cout << ratios[4] << endl;		//4
 
-	int init[] = { 10,20,30,40 };//     foo:            bar:
-												 
-	valarray<int> foo(init, 4);  //		10 20 30  40
-	valarray<int> bar(25, 4);     //	10 20 30  40    25 25  25  25
-	bar += foo;                     //  10 20 30  40    35 45  55  65
-	foo = bar + 10;                 //  45 55 65  75    35 45  55  65
-	foo -= 10;                      //  35 45 55  65    35 45  55  65
-	valarray<bool> comp = (foo == bar);									//true true true true			 			   	   
-	foo += 35;						//  70 80 90 100    35 45  55  65
-	bar *= 2;						//  70 80 90 100    70 90 110 130
-	valarray<bool> comp1 = (foo == bar);								//true false false false false
+//	int init[] = { 10,20,30,40 };//     foo:            bar:
+//												 
+//	valarray<int> foo(init, 4);  //		10 20 30  40
+//	valarray<int> bar(25, 4);     //	10 20 30  40    25 25  25  25
+//	bar += foo;                     //  10 20 30  40    35 45  55  65
+//	foo = bar + 10;                 //  45 55 65  75    35 45  55  65
+//	foo -= 10;                      //  35 45 55  65    35 45  55  65
+//	valarray<bool> comp = (foo == bar);									//true true true true			 			   	   
+//	foo += 35;						//  70 80 90 100    35 45  55  65
+//	bar *= 2;						//  70 80 90 100    70 90 110 130
+//	valarray<bool> comp1 = (foo == bar);								//true false false false false
 
-	cin.get();
+//	vector<int> arr1 = { 1, 2, 3, 4, 5 };
+//	vector<int> arr2 = { 6, 7, 8, 9, 9 };
+//	arr2 = arr1;
+//	arr1[0] = 10;
+//	cout << arr1[0] << endl;	//10
+//	cout << arr2[0] << endl;	//1
+
+//	shared_ptr<B> a = make_shared<B>();
+//	a->ints.push_back(5);
+//	shared_ptr<B> b = make_shared<B>(*a.get());
+//	cout << a->ints[0] << endl;
+//	cout << b->ints[0] << endl;
+//
+//	a->ints[0] = 10;
+//
+//	cout << a->ints[0] << endl;
+//	cout << b->ints[0] << endl;
+//
+//	cin.get();
 }
 
 int main(int argc, char *argv[])
 {
-	LOG(DEBUG) << "start of app, testing log.";
+//	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
 	returnValue = runGui(argc, argv);

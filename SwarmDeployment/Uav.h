@@ -2,6 +2,7 @@
 #include "PointParticle.h"
 #include <vector>
 #include "Goal.h"
+#include "GuidingPathsCurrentPositions.h"
 
 namespace App
 {
@@ -17,13 +18,15 @@ namespace App
 		virtual ~Uav();
 		virtual shared_ptr<PointParticle> getPointParticle() const;
 		friend ostream& operator<<(ostream& os, const Uav& obj);
-		vector<int> current_index;
 		virtual bool isGoalReached() const;
 		virtual shared_ptr<Goal> getReachedGoal() const;
 		virtual void setReachedGoal(shared_ptr<Goal> reachedGoal);
+		shared_ptr<GuidingPathsCurrentPositions> current_indexes;
 	protected:
 		shared_ptr<PointParticle> pointParticle;
 		shared_ptr<Goal> reachedGoal;
+		int id;
+		static int lastId;
 	};
 
 }

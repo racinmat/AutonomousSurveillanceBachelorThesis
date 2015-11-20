@@ -43,7 +43,7 @@ namespace App
 		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs);
 		bool check_localization_sep(shared_ptr<State> node);
 		bool trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node);
-		shared_ptr<State> check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map);
+		void check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map);
 		bool line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);

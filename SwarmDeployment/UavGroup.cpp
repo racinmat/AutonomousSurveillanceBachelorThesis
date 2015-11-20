@@ -53,9 +53,9 @@ namespace App
 		int bestIndex = 0;
 		for (auto uav : uavs)
 		{
-			if (uav->current_index[guidingPathIndex] > bestIndex)
+			if (uav->current_indexes->get(guidingPathIndex) > bestIndex)
 			{
-				bestIndex = uav->current_index[guidingPathIndex];
+				bestIndex = uav->current_indexes->get(guidingPathIndex);
 			}
 		}
 		return bestIndex;

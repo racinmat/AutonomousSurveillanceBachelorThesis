@@ -37,4 +37,7 @@ namespace App
 	{
 	}
 
+	void LoggerInterface::logRandomStatesCenter(shared_ptr<Point> center)
+	{
+	}
 }

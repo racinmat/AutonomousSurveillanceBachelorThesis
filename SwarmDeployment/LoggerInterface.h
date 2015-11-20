@@ -19,6 +19,7 @@ namespace App
 		virtual void logText(string string);
 		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode);
 		virtual void logRandomStates(vector<shared_ptr<Point>> randomStates);
+		virtual void logRandomStatesCenter(shared_ptr<Point> center);
 	};
 
 }

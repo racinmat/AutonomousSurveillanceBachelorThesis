@@ -131,10 +131,9 @@ namespace App
 
 		for (auto uav : initialState->uavs)
 		{
-			uav->current_index = vector<int>(guiding_paths.size());
 			for (int j = 0; j < guiding_paths.size(); j++)
 			{
-				uav->current_index[j] = 0;
+				uav->current_indexes->set(j, 0);
 			}
 		}
 
@@ -276,9 +275,9 @@ namespace App
 		int worldWidth = configuration->getWorldWidth();
 		int worldHeight = configuration->getWorldHeight();
 		int number_of_uavs = map->getUavsStart().size();
-		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>();
+		vector<shared_ptr<Point>> randomStates = vector<shared_ptr<Point>>(number_of_uavs);
 
-		vector<double> propabilities = vector<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
+		valarray<double> propabilities = valarray<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
 		//todo: vyøešit problém s tím, že kratší cesta je prozkoumána døíve
 
 		int sum = 0; // sum = celková délka všech vedoucích cest
@@ -291,25 +290,26 @@ namespace App
 			sum += pathSize;
 		}
 		
-		for (size_t i = 0; i < guiding_paths.size(); i++)
-		{
-			propabilities[i] /= sum;
-		}
+		propabilities /= sum;
 
-		vector<shared_ptr<Point>> s_rand = vector<shared_ptr<Point>>(number_of_uavs);
-		
 		double random = Random::fromZeroToOne();
 		if (random > guided_sampling_prob) //vybírá se náhodný vzorek
 		{
-			for (size_t i = 0; i < number_of_uavs; i++)
+			int index = 0;
+			for (size_t i = 0; i < state->uavs.size(); i++)
 			{
-				if (state->uavs[i]->isGoalReached())
+				auto uav = state->uavs[i];
+				if (uav->isGoalReached())
 				{//todo: s tímhle nìco udìlat, a nepøistupovat k poli takhle teple pøes indexy
-					s_rand[i] = random_state_goal(state->uavs[i]->getReachedGoal(), map);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
-				} else
-				{
-					s_rand[i] = random_state(0, worldWidth, 0, worldHeight, map); // pokud n-té UAV není v cíli, vybere se náhodný bod z celé mapy
+					randomStates[i] = random_state_goal(uav->getReachedGoal(), map);	//pokud je n-té UAV v cíli, vybere se náhodný bod z cílové plochy, kam UAV dorazilo
 				}
+				else
+				{
+					randomStates[i] = random_state(0, 0, worldWidth, worldHeight, map); // pokud n-té UAV není v cíli, vybere se náhodný bod z celé mapy
+				}
+			}
+			for (auto uav : state->uavs)
+			{
 			}
 		} else
 		{
@@ -353,21 +353,23 @@ namespace App
 
 			for (auto group : uavGroups)
 			{
-
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
 				int bestReachedIndex = group->getBestIndex();
 
 
-				auto center = group->getGuidingPath()->get(bestReachedIndex);	//Petrlík má pro celou skupinu stejný objekt center
-				for (auto uav : group->getUavs())
+				auto center = group->getGuidingPath()->get(bestReachedIndex);	
+				logger->logRandomStatesCenter(center->getPoint());
+				for (size_t i = 0; i < group->getUavs().size(); i++)	//todo: vymyslet, jak nìjak inteligentnì indexovat randomStates, abch nemusel používat tenhle teplý for cyklus
 				{
-					if (uav->isGoalReached())	//todo: zjistit, jestli tam nemá být index cíle
+					auto uav = group->getUavs()[i];
+					int uavIndex = group->getUavIndexes()[i];
+					if (uav->isGoalReached())
 					{
-						randomStates.push_back(random_state_goal(uav->getReachedGoal(), map));
+						randomStates[uavIndex] = random_state_goal(uav->getReachedGoal(), map);
 					}
 					else
 					{
-						randomStates.push_back(random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius()));
+						randomStates[uavIndex] = random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius());
 					}
 				}
 			}
@@ -552,7 +554,8 @@ namespace App
 				m++;
 				if (near_node->areAllInputsUsed())
 				{
-					throw "No valid input left";
+//					throw "No valid input left";
+					break;	//výjimka se nemá vyhazovat
 				}
 
 				//todo: pokud možno, refactorovat, a nemusím minimum hledat ruènì
@@ -580,7 +583,7 @@ namespace App
 					continue;
 				}
 
-				near_node = check_obstacle_vcollide_single(near_node, translations, index, map);	//toto plní field used_inputs by true and thus new state looks like already used
+				check_obstacle_vcollide_single(near_node, translations, index, map);	//this fills field used_inputs by true and thus new state looks like already used
 
 				if (near_node->used_inputs[index])
 				{
@@ -646,9 +649,9 @@ namespace App
 						//Narrow passage detection
 						detect_narrow_passage(guiding_path->get(m));
 					}
-					if (reached && m < guiding_path->getSize() - 1 && m >= state->uavs[n]->current_index[k]) //ošetøení, aby se UAV nevracela, ale by nepøetekl index u guidingPath
+					if (reached && m < guiding_path->getSize() - 1 && m >= state->uavs[n]->current_indexes->get(k)) //ošetøení, aby se UAV nevracela, ale by nepøetekl index u guidingPath
 					{
-						state->uavs[n]->current_index[k] = m + 1;
+						state->uavs[n]->current_indexes->set(k, m + 1);
 						break;
 					}
 				}
@@ -658,13 +661,13 @@ namespace App
 
 	void Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
 	{
-		for (int m = 0; m < map->getGoals().size(); m++)
+		for (auto goal : map->getGoals())
 		{
-			for (int n = 0; n < uavs.size(); n++)
+			for (auto uav : uavs)
 			{
-				if (map->getGoals()[m]->is_near(uavs[n]->getPointParticle()->getLocation()))
+				if (goal->is_near(uav->getPointParticle()->getLocation()))
 				{
-					uavs[n]->setReachedGoal(map->getGoals()[m]);
+					uav->setReachedGoal(goal);
 				}
 			}
 		}
@@ -923,7 +926,7 @@ namespace App
 		return false;
 	}
 
-	shared_ptr<State> Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map)
+	void Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map)
 	{
 		
 		double uav_size = configuration->getUavSize();
@@ -990,9 +993,6 @@ namespace App
 				}
 			}
 		}
-
-		//todo: collision a uavs_colliding se mají vracet, ale nikde se nepouøívají, takže je smazat
-		return near_node;
 	}
 
 	bool Core::line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)

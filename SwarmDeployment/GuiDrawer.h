@@ -19,6 +19,7 @@ namespace Ui
 		virtual void logText(string string) override;
 		virtual void logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode) override;
 		virtual void logRandomStates(vector<shared_ptr<App::Point>> randomStates) override;
+		virtual void logRandomStatesCenter(shared_ptr<App::Point> center) override;
 	protected:
 		QGraphicsView* view;
 		QGraphicsScene* scene;

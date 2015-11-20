@@ -132,6 +132,12 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
+	void GuiDrawer::logRandomStatesCenter(shared_ptr<App::Point> center)
+	{
+		scene->addEllipse(center->getX(), center->getY(), 3, 3, QPen(Qt::black), QBrush(Qt::black));
+		mainWindow->updateView();
+	}
+
 	void GuiDrawer::clear()
 	{
 		double height = view->height();
