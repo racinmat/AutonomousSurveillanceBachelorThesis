@@ -124,11 +124,12 @@ namespace Ui
 
 	void GuiDrawer::logRandomStates(vector<shared_ptr<App::Point>> randomStates)
 	{
-//		for (size_t i = 0; i < randomStates.size(); i++)
-//		{
+		for (size_t i = 0; i < randomStates.size(); i++)
+		{
+			scene->addEllipse(randomStates[i]->getX(), randomStates[i]->getY(), 2, 2, QPen(uavColors[i]));
 //			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
-//		}
-//		mainWindow->updateView();
+		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::clear()

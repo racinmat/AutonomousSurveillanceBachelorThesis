@@ -7,6 +7,9 @@
 #include "VCollide\ColDetect.h"
 #include <locale>
 #include <valarray>
+#include "easyloggingpp-9.80\src\easylogging++.h"
+
+INITIALIZE_EASYLOGGINGPP
 
 int runGui(int argc, char *argv[])
 {
@@ -216,6 +219,7 @@ void testing()
 
 int main(int argc, char *argv[])
 {
+	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
 	returnValue = runGui(argc, argv);

@@ -64,6 +64,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\Logging">
+      <UniqueIdentifier>{074993db-65b7-4337-b53e-c763d68c2f91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -372,6 +375,9 @@
     </ClInclude>
     <ClInclude Include="Uav.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h">
+      <Filter>Header Files\Logging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

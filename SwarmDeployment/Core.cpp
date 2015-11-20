@@ -327,14 +327,12 @@ namespace App
 
 			vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(map->getGoals().size());
 
-			double uavsPerUnit = map->getUavsStart().size() / totalVolume;	// poèet UAV na jednotku celkové plochy. Po vynásobením plochou dané AoI získám poèet UAV na danou AoI.
-
 			//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
 
 			int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
-				int uavsCountInGroup = floor(uavsPerUnit * ratios[i]);	//round down
+				int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
 				auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
 				vector<int> indexes = vector<int>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
@@ -705,7 +703,7 @@ namespace App
 
 	shared_ptr<Point> Core::random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map)
 	{
-		return random_state(rectangle->getX(), rectangle->getX() + rectangle->getWidth(), rectangle->getY(), rectangle->getY() + rectangle->getHeight(), map);
+		return random_state(rectangle->getX(), rectangle->getY(), rectangle->getX() + rectangle->getWidth(), rectangle->getY() + rectangle->getHeight(), map);
 	}
 
 	shared_ptr<Point> Core::random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map)
