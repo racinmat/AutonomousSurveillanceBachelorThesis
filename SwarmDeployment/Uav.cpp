@@ -61,4 +61,24 @@ namespace App
 	{
 		return os << "pointParticle: " << obj.pointParticle;
 	}
+
+	bool operator<(const Uav& lhs, const Uav& rhs)
+	{
+		return lhs.id < rhs.id;
+	}
+
+	bool operator<=(const Uav& lhs, const Uav& rhs)
+	{
+		return !(rhs < lhs);
+	}
+
+	bool operator>(const Uav& lhs, const Uav& rhs)
+	{
+		return rhs < lhs;
+	}
+
+	bool operator>=(const Uav& lhs, const Uav& rhs)
+	{
+		return !(lhs < rhs);
+	}
 }

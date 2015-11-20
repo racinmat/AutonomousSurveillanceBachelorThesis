@@ -22,6 +22,11 @@ namespace App
 		virtual shared_ptr<Goal> getReachedGoal() const;
 		virtual void setReachedGoal(shared_ptr<Goal> reachedGoal);
 		shared_ptr<GuidingPathsCurrentPositions> current_indexes;
+		friend bool operator<(const Uav& lhs, const Uav& rhs);	//kvùli používání jako klíèe v std::map
+		friend bool operator<=(const Uav& lhs, const Uav& rhs);
+		friend bool operator>(const Uav& lhs, const Uav& rhs);
+		friend bool operator>=(const Uav& lhs, const Uav& rhs);
+
 	protected:
 		shared_ptr<PointParticle> pointParticle;
 		shared_ptr<Goal> reachedGoal;

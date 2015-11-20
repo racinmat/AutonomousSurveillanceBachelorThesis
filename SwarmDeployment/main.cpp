@@ -1,6 +1,6 @@
-#include "mainwindow.h"					//zakomentovat pro noGui
+//include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-#include <QtWidgets/QApplication> 		//zakomentovat pro noGui
+//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -8,24 +8,25 @@
 #include <locale>
 #include <valarray>
 #include "easyloggingpp-9.80\src\easylogging++.h"
+#include <unordered_map>
 
-INITIALIZE_EASYLOGGINGPP
+//INITIALIZE_EASYLOGGINGPP
 
 int runGui(int argc, char *argv[])
 {
 	int returnValue = 0;
-	QApplication a(argc, argv);
-	MainWindow w;
-	auto configuration = std::make_shared<App::Configuration>();
-	auto core = std::make_shared<App::Core>(configuration);
-	configuration->setCore(core);
-	core->setLogger(w.getLogger());
-
-	w.setConfiguration(configuration);
-	w.setCore(core);
-	w.show();
-
-	returnValue = a.exec();
+//	QApplication a(argc, argv);
+//	MainWindow w;
+//	auto configuration = std::make_shared<App::Configuration>();
+//	auto core = std::make_shared<App::Core>(configuration);
+//	configuration->setCore(core);
+//	core->setLogger(w.getLogger());
+//
+//	w.setConfiguration(configuration);
+//	w.setCore(core);
+//	w.show();
+//
+//	returnValue = a.exec();
 	return returnValue;
 }
 
@@ -56,10 +57,20 @@ public:
 	double x;
 	double y;
 };
+
+template <class T>
+inline void hash_combine(std::size_t& seed, const T& v)
+{
+	std::hash<T> hasher;
+	seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
+
+
 class B
 {
+
 public:
-	B() : ints(vector<int>())
+	B() : ints(vector<int>()), id(lastId++)
 	{
 	}
 	B(const B& other) : ints(vector<int>())
@@ -69,9 +80,57 @@ public:
 			as.push_back(make_shared<A>(*a.get()));
 		}
 		ints = other.ints;
+		id = other.id;
 	}
+
+	friend bool operator==(const B& lhs, const B& rhs)
+	{
+		return lhs.id == rhs.id;
+	}
+
+	friend bool operator!=(const B& lhs, const B& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	size_t hash_value() const
+	{
+		size_t seed = 0x2277B8A9;
+		hash_combine(seed, id);
+		return seed;
+	}
+
+	static size_t hash(const B& obj)
+	{
+		return obj.hash_value();
+	}
+
 	vector<shared_ptr<A>> as;
-	vector<int>& ints;
+	vector<int> ints;
+	int id;
+	static int lastId;
+
+};
+
+int B::lastId = 0;
+
+
+class BHasher
+{
+public:
+	size_t operator() (B const& key) const
+	{
+		return key.hash_value();
+	}
+};
+
+class EqualFn
+{
+public:
+	bool operator() (B const& t1, B const& t2) const
+	{
+		return t1 == t2;
+	}
 };
 
 void testing()
@@ -223,18 +282,41 @@ void testing()
 //	cout << arr1[0] << endl;	//10
 //	cout << arr2[0] << endl;	//1
 
-//	shared_ptr<B> a = make_shared<B>();
-//	a->ints.push_back(5);
-//	shared_ptr<B> b = make_shared<B>(*a.get());
-//	cout << a->ints[0] << endl;
+	shared_ptr<B> a = make_shared<B>();
+	shared_ptr<B> c = make_shared<B>();
+	//	a->ints.push_back(5);
+	shared_ptr<B> b = make_shared<B>(*a.get());
+	shared_ptr<B> d = c;
+	//	cout << a->ints[0] << endl;
 //	cout << b->ints[0] << endl;
 //
 //	a->ints[0] = 10;
 //
 //	cout << a->ints[0] << endl;
 //	cout << b->ints[0] << endl;
-//
-//	cin.get();
+
+	unordered_map<string, int> map1;
+	map1["Jedna"] = 1;
+	map1["Dva"] = 2;
+	map1["Tøi"] = 3;
+
+	unordered_map<B, int, BHasher> map;
+	map[*a.get()] = 1;
+	map[*b.get()] = 2;
+	map[*c.get()] = 3;
+	map[*d.get()] = 4;
+
+	cout << map[*a.get()] << endl; //2
+	cout << map[*b.get()] << endl; //2
+	cout << map[*c.get()] << endl; //4
+	cout << map[*d.get()] << endl; //4
+
+	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
+	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
+	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
+	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
+
+	cin.get();
 }
 
 int main(int argc, char *argv[])
@@ -242,8 +324,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 	return returnValue;
 }
 
