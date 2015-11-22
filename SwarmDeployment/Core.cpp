@@ -194,19 +194,21 @@ namespace App
 			if (!isNewUavPosition)	//spustí se v pøípadì, že se nedorazilo do cíle a nenašla se žádná cesta
 			{
 				check_expandability(nodes);
-				cout << "NaN in new node";
+				logger->logText("NaN in new node");
 				break;
 			}
 
 			newState->index = i;
 			if (debug)
 			{
-				cout << "[debug] Added node index: " << newState->index << endl;
+				logger->logText("[debug] Added node index: " + to_string(newState->index));
 			}
 
 			if (i % 200 == 0)
 			{
-				printf("RRT size: %d\n", i);
+				char buffer[20];
+				sprintf(buffer, "RRT size: %d\n", i);
+				logger->logText(buffer);
 			}
 
 			nodes.push_back(newState);
@@ -230,7 +232,9 @@ namespace App
 					output->goal_reached.push_back(uav->getReachedGoal());
 				}
 				final_nodes[m] = newState;	//rekurzí se ze stavu dá získat celá cesta
-				printf("%d viable paths found so far.\n", m);
+				char buffer[1024];
+				sprintf(buffer, "%d viable paths found so far.\n", m);
+				logger->logText(buffer);
 				m++;
 			}
 			output->distance_of_new_nodes[i] = distance_of_new_nodes;
@@ -251,7 +255,7 @@ namespace App
 		}
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
-		cout << "RRT-Path finished";
+		logger->logText("RRT-Path finished");
 	}
 
 	unordered_map<Uav, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state)
@@ -396,7 +400,9 @@ namespace App
 
 			if (tmp_node->areAllInputsUsed())
 			{
-				printf("Node %d is unexpandable\n", tmp_node->index);
+				char buffer[1024];
+				sprintf(buffer, "Node %d is unexpandable\n", tmp_node->index);
+				logger->logText(buffer);
 				continue;
 			}
 			
@@ -624,7 +630,9 @@ namespace App
 		}
 
 		if (unexpandable_count > 0) {
-			printf("Not expandable nodes: %d/%d\n", unexpandable_count, nodes.size());
+			char buffer[1024];
+			sprintf(buffer, "Not expandable nodes: %d/%d\n", unexpandable_count, nodes.size());
+			logger->logText(buffer);
 		}
 		return unexpandable_count;
 	}
@@ -890,7 +898,9 @@ namespace App
 			int twoOrMoreNeighbors = 0;
 			if (oneOrMoreNeighbors)
 			{
-				printf("Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
+				char buffer[1024];
+				sprintf(buffer, "Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
+				logger->logText(buffer);
 				for (auto neighbor : neighbors)
 				{
 					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
