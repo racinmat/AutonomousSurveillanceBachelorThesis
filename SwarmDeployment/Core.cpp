@@ -156,13 +156,13 @@ namespace App
 			{
 				break;
 			}
-			i++;
+			i++;	// initial node je 0. prvek, proto vkládám od 1
 
 //			%Random state
 			unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
-			int k = 1;	//poèítadlo uvíznutí, protože se používá v nearest_neighbor size() - k, zaèínám od 1
+			int k = 1;	//poèítadlo nepoužitelných nodes, protože se používá v nearest_neighbor size() - k, zaèínám od 1, znamená to, že se použije k-tá nejbližší node
 			bool near_found = false;
 
 			auto isNewUavPosition = false;
@@ -171,7 +171,7 @@ namespace App
 			{
 				if (k > near_count)
 				{
-					i--;	//todo: zjistit, proè se snižuje i o 1
+//					i--;	//todo: zjistit, proè se snižuje i o 1
 //					throw "Not possible to find near node suitable for expansion";
 					cout << "Not possible to find near node suitable for expansion";
 				}
@@ -204,7 +204,6 @@ namespace App
 			{
 				check_expandability(nodes);
 				cout << "NaN in new node";
-				final_nodes[m] = nodes[i];	//todo: to samé se zavolá pos konci velkého cyklu, takže nejspíš tenhle øádek smazat
 				break;
 			}
 
@@ -219,13 +218,7 @@ namespace App
 				printf("RRT size: %d\n", i);
 			}
 
-			if (i < nodes.size())
-			{
-				nodes[i] = newState;
-			} else
-			{
-				nodes.push_back(newState);
-			}
+			nodes.push_back(newState);
 			s++;
 
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
@@ -258,7 +251,7 @@ namespace App
 			}
 		}
 		
-		final_nodes[m] = nodes[i];
+		final_nodes[m] = nodes[nodes.size() - 1];	//poslední prvek
 		check_near_goal(newState->uavs, map);
 		output->goal_reached = vector<shared_ptr<Goal>>();
 		for (auto uav : newState->uavs)
@@ -371,27 +364,19 @@ namespace App
 	{
 		int max_nodes = configuration->getRrtMaxNodes();
 		int debug = configuration->getDebug();
-		NNMethod nn_method = NNMethod::Total;
+		NNMethod nn_method = configuration->getNearestNeighborMethod();
 
 		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
-		shared_ptr<State> near_node = nodes[0];
+		shared_ptr<State> near_node;
+		vector<double> stateDistances = vector<double>(nodes.size());	//celková vzdálenost pro daný State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepoužívá
 
 		int s = 1;
-		int current_best = INT32_MAX;
+		double current_best = DBL_MAX;
 		
-		for (int j = 0; j < max_nodes; j++)
+		for (int j = 0; j < nodes.size(); j++)
 		{
 			// Distance of next node in the tree
-			bool isNull = j >= nodes.size();
-			if (isNull)
-			{
-				if (debug)
-				{
-					printf("NaN in node %d\n", j);
-				}
-				break;
-			}
-			shared_ptr<State> tmp_node = nodes[j];	//todo: refactorovat, aby se nesahalo do prázdných nodes
+			shared_ptr<State> tmp_node = nodes[j];
 
 			if (tmp_node->areAllInputsUsed())
 			{
@@ -405,8 +390,8 @@ namespace App
 			for (size_t i = 0; i < tmp_node->uavs.size(); i++)
 			{
 				auto uav = tmp_node->uavs[i];
-				auto randomState = s_rand[*uav.get()];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-				distances[i] = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
+				auto randomState = s_rand[*uav.get()];
+				distances[i] = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
 			}
 
 			switch (nn_method)
@@ -414,7 +399,7 @@ namespace App
 			case NNMethod::Total:
 				for(auto dist : distances)
 				{
-					hamilt_dist += dist;	//no function for sum
+					hamilt_dist += dist;	//no function for sum, so I must do it by hand
 				}
 				break;
 			case NNMethod::Max:
@@ -425,21 +410,21 @@ namespace App
 				break;
 			}
 
-			
+			stateDistances[j] = hamilt_dist;
 			
 			//Check if tested node is nearer than the current nearest
 			if (hamilt_dist < current_best)
 			{
+				near_node = tmp_node;
 				near_arr.push_back(near_node);
 				current_best = hamilt_dist;
-				near_node = nodes[j];
 				if (debug)
 				{
 					double distance;
 					for (auto uav : tmp_node->uavs)
 					{
-						auto randomState = s_rand[*uav.get()];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-						distance = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
+						auto randomState = s_rand[*uav.get()];	
+						distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
 					}
 					printf("[debug] near node #%d found, distance to goal state: %f\n", s, distance);
 				}
@@ -447,19 +432,24 @@ namespace App
 			}			
 		}
 			
-		if (near_arr.size() > count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
+		if (near_arr.size() >= count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
 		{
 			near_node = near_arr[near_arr.size() - count];	//indexuje se od 0, proto count musí zaèínat od 1
 			double distance;
 			for (auto uav : near_node->uavs)
 			{
-				auto randomState = s_rand[*uav.get()];	//todo: refactoring: udìlat metodu na vzdálenosti bodù do nìjakého bodu, a to nemám všude rozprcané
-				distance = pow(uav->getPointParticle()->getLocation()->getX() - randomState->getX(), 2) + pow(uav->getPointParticle()->getLocation()->getY() - randomState->getY(), 2);
+				auto randomState = s_rand[*uav.get()];
+				distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
 			}
 			if (debug && count > 0)
 			{
 				printf("[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
 			}
+		}
+
+		if (!near_node)
+		{
+			throw "No suitable near node found";
 		}
 
 		return near_node;
@@ -499,7 +489,7 @@ namespace App
 		//inputs jsou vstupy do modelu
 		vector<vector<shared_ptr<Point>>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		//translations jsou výstupy z modelu
-		vector<vector<shared_ptr<Point>>> translations = vector<vector<shared_ptr<Point>>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 
 		for (size_t i = 0; i < inputs.size(); i++)
@@ -507,12 +497,11 @@ namespace App
 			auto input = inputs[i];
 			auto tempState = car_like_motion_model(near_node, input);	//this method changes near_node
 			tempStates[i] = tempState;
-			translations[i] = vector<shared_ptr<Point>>(tempState->uavs.size());
-			for (size_t j = 0; j < tempState->uavs.size(); j++)
+			for (auto uav : tempState->uavs)
 			{
-				double x = tempState->uavs[j]->getPointParticle()->getLocation()->getX() - near_node->uavs[j]->getPointParticle()->getLocation()->getX();
-				double y = tempState->uavs[j]->getPointParticle()->getLocation()->getY() - near_node->uavs[j]->getPointParticle()->getLocation()->getY();
-				translations[i][j] = make_shared<Point>(x ,y);
+				double x = uav->getPointParticle()->getLocation()->getX() - near_node->getUav(uav)->getPointParticle()->getLocation()->getX();
+				double y = uav->getPointParticle()->getLocation()->getY() - near_node->getUav(uav)->getPointParticle()->getLocation()->getY();
+				translations[i][*uav.get()] = make_shared<Point>(x ,y);
 			}
 		}
 
@@ -524,12 +513,9 @@ namespace App
 		{
 			auto tempState = tempStates[i];
 			d[i] = 0;
-			for (size_t j = 0; j < tempState->uavs.size(); j++)
+			for (auto uav : tempState->uavs)
 			{
-				auto uav = tempState->uavs[j];
-				double x = s_rand[*uav.get()]->getX() - tempState->uavs[j]->getPointParticle()->getLocation()->getX();
-				double y = s_rand[*uav.get()]->getY() - tempState->uavs[j]->getPointParticle()->getLocation()->getY();
-				d[i] += sqrt(pow(x, 2) + pow(y, 2));
+				d[i] += s_rand[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
 			}
 		}
 
@@ -917,7 +903,7 @@ namespace App
 		return false;
 	}
 
-	void Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<vector<shared_ptr<Point>>> translation, int index, shared_ptr<Map> map)
+	void Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map)
 	{
 		
 		double uav_size = configuration->getUavSize();
@@ -964,16 +950,17 @@ namespace App
 		int k = index;
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
+			auto uav = near_node->uavs[i];
 			for (size_t j = 0; j < number_of_obstacles; j++)
 			{
-				double trans[] = { translation[k][i]->getX(), translation[k][i]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+				double trans[] = { translation[k][*uav.get()]->getX(), translation[k][*uav.get()]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[j], trans, zero_trans);
 				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[j], trans, zero_trans);
 				if (col)
 				{
 					for (size_t l = 0; l < translation.size(); l++)
 					{
-						if (translation[l][i]->getY() == translation[k][i]->getY() && translation[l][i]->getX() == translation[k][i]->getX())
+						if (translation[l][*uav.get()]->getY() == translation[k][*uav.get()]->getY() && translation[l][*uav.get()]->getX() == translation[k][*uav.get()]->getX())
 						{
 							near_node->used_inputs[l] = true;
 						}

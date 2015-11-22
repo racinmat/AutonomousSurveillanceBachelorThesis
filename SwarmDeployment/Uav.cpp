@@ -98,4 +98,9 @@ namespace App
 		seed ^= (seed << 6) + (seed >> 2) + 0x1B543A89 + static_cast<size_t>(id);
 		return seed;
 	}
+
+	int Uav::getId() const
+	{
+		return id;
+	}
 }

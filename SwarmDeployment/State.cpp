@@ -41,6 +41,18 @@ namespace App
 		return areAllInputsUsed;
 	}
 
+	shared_ptr<Uav> State::getUav(shared_ptr<Uav> uav)
+	{
+		for(auto other : uavs)
+		{
+			if (other == uav)
+			{
+				return other;
+			}
+		}
+		throw "No equal node found for node " + to_string(uav->getId());
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;

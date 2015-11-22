@@ -22,6 +22,7 @@ namespace App
 		vector<shared_ptr<Point>> prev_inputs;	//vstupy, které vedly do této node
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const State& obj);
+		shared_ptr<Uav> getUav(shared_ptr<Uav> uav);	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
 	};
 
 }
