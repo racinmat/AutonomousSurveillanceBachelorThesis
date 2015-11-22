@@ -98,10 +98,20 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>300</x>
       <y>10</y>
       <width>1000</width>
       <height>1000</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="text">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>281</width>
+      <height>901</height>
      </rect>
     </property>
    </widget>

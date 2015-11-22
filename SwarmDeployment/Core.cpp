@@ -116,16 +116,7 @@ namespace App
 
 		cout << "Starting RRT-path...";
 
-		//todo: implementovat init_goals
-		// celková dráha všech cest dohromady, poèet nodes ve všech cestách
-		// dohromady, evidentnì se ta promìnná nikde nepoužívá
-		int gp_length = 0;
-		for (int m = 0; m < guiding_paths.size(); m++)
-		{
-			gp_length += guiding_paths[m]->getSize();
-		}
-
-		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>(); //todo: zjistit, na jaké hodnoty to inicializovat
+		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>();
 		auto initialState = stateFactory->createState();
 		initialState->uavs = map->getUavsStart();
 		nodes.push_back(initialState);
@@ -184,7 +175,7 @@ namespace App
 				auto isNearUavPosition = false;
 				for (auto uavPosition : nearState->uavs)
 				{
-					isNearUavPosition = isNearUavPosition || !uavPosition || (uavPosition.get() != nullptr);	//pozice je null, pokud se pro UAV nenašla vhodná další pozice
+					isNearUavPosition = isNearUavPosition || uavPosition != false;
 				}
 
 				isNewUavPosition = newState != false;	//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
@@ -343,9 +334,8 @@ namespace App
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
 				auto center = group->getBestNode();
 				logger->logRandomStatesCenter(center->getPoint());
-				for (size_t i = 0; i < group->getUavs().size(); i++)	//todo: vymyslet, jak nìjak inteligentnì indexovat randomStates, abch nemusel používat tenhle teplý for cyklus
+				for (auto uav : group->getUavs())
 				{
-					auto uav = group->getUavs()[i];
 					if (uav->isGoalReached())
 					{
 						randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);
@@ -357,7 +347,33 @@ namespace App
 				}
 			}
 		}
-		return randomStates;
+
+		//pøeskládání randomStates podle ID UAV.
+		vector<int> uavIds = vector<int>(randomStates.size());
+		unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStatesSorted;
+		int index = 0;
+		for (auto pair : randomStates)
+		{
+			auto uav = pair.first;
+			uavIds[index] = uav.getId();
+			index++;
+		}
+		sort(uavIds.begin(), uavIds.end());
+		for(int uavId : uavIds)
+		{
+			//nalezení uav s daným id
+			for (auto pair : randomStates)
+			{
+				auto uav = pair.first;
+				if (uav.getId() == uavId)
+				{
+					randomStatesSorted[uav] = randomStates[uav];
+					break;
+				}
+			}
+		}
+
+		return randomStatesSorted;
 	}
 
 	shared_ptr<State> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, vector<shared_ptr<State>> nodes, int count)
@@ -426,7 +442,9 @@ namespace App
 						auto randomState = s_rand[*uav.get()];	
 						distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
 					}
-					printf("[debug] near node #%d found, distance to goal state: %f\n", s, distance);
+					char buffer[1024];
+					sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f\n", s, distance);
+					logger->logText(buffer);
 				}
 				s++;
 			}			
@@ -443,7 +461,9 @@ namespace App
 			}
 			if (debug && count > 0)
 			{
-				printf("[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
+				char buffer[1024];
+				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
+				logger->logText(buffer);
 			}
 		}
 
@@ -487,8 +507,8 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu
-		vector<vector<shared_ptr<Point>>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-		//translations jsou výstupy z modelu
+		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+																												//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 
@@ -747,7 +767,7 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs)
+	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs)
 	{
 		auto newNode = make_shared<State>(*node.get());	//copy constructor, deep copy
 
@@ -770,16 +790,16 @@ namespace App
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
 
-		for (size_t j = 0; j < number_of_uavs; j++)
+		for (auto uav : newNode->uavs)
 		{
-			auto uavPointParticle = newNode->uavs[j]->getPointParticle();
-			double dPhi = (inputs[j]->getX() / L) * tan(inputs[j]->getY());	//dPhi se nemìní v rámci vnitøního cyklu, takže staèí spošítat jen jednou
+			auto uavPointParticle = uav->getPointParticle();
+			double dPhi = (inputs[*uav.get()]->getX() / L) * tan(inputs[*uav.get()]->getY());	//dPhi se nemìní v rámci vnitøního cyklu, takže staèí spošítat jen jednou
 
 			for (double i = time_step; i < end_time; i += time_step)
 			{
 				//calculate derivatives from inputs
-				double dx = inputs[j]->getX() * cos(uavPointParticle->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-				double dy = inputs[j]->getX() * sin(uavPointParticle->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
+				double dx = inputs[*uav.get()]->getX() * cos(uavPointParticle->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
+				double dy = inputs[*uav.get()]->getX() * sin(uavPointParticle->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
 
 				//calculate current state variables
 				uavPointParticle->getLocation()->changeX(dx * time_step);
@@ -870,7 +890,7 @@ namespace App
 			int twoOrMoreNeighbors = 0;
 			if (oneOrMoreNeighbors)
 			{
-//				printf("Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
+				printf("Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
 				for (auto neighbor : neighbors)
 				{
 					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
@@ -905,22 +925,15 @@ namespace App
 
 	void Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map)
 	{
-		
 		double uav_size = configuration->getUavSize();
-		int number_of_uavs = near_node->uavs.size();
-		int number_of_obstacles = map->getObstacles().size();
-		vector<bool> uavs_colliding = vector<bool>(number_of_uavs);
-		fill(uavs_colliding.begin(), uavs_colliding.end(), false);
-		double collision = false;
-		
-		vector<Triangle3D> tri_uav = vector<Triangle3D>(number_of_uavs);
-		vector<Triangle3D> tri1_obs = vector<Triangle3D>(number_of_obstacles);
-		vector<Triangle3D> tri2_obs = vector<Triangle3D>(number_of_obstacles);
-		
-		for (size_t i = 0; i < number_of_uavs; i++)
+				
+		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
+				
+		int k = index;
+		for (auto uav : near_node->uavs)
 		{
-			double x = near_node->uavs[i]->getPointParticle()->getLocation()->getX();
-			double y = near_node->uavs[i]->getPointParticle()->getLocation()->getY();
+			double x = uav->getPointParticle()->getLocation()->getX();
+			double y = uav->getPointParticle()->getLocation()->getY();
 			double x1 = x - uav_size / 2;
 			double y1 = y - uav_size / 2;
 			double z1 = 1;
@@ -930,32 +943,22 @@ namespace App
 			double x3 = x;
 			double y3 = y + uav_size / 2;
 			double z3 = 1;
-			tri_uav[i] = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
-		}
-		
-		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
-		
-		for (size_t i = 0; i < number_of_obstacles; i++)
-		{
-			auto obs = map->getObstacles()[i];
-			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
-			Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
-			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
 
-			tri1_obs[i] = Triangle3D(p1, p2, p3);
-			tri2_obs[i] = Triangle3D(p1 ,p4, p3);
-		}
-		
-		int k = index;
-		for (size_t i = 0; i < number_of_uavs; i++)
-		{
-			auto uav = near_node->uavs[i];
-			for (size_t j = 0; j < number_of_obstacles; j++)
+			for (auto obs : map->getObstacles())
 			{
+				Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
+				Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
+				Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+				Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+
+				Triangle3D tri1_obs = Triangle3D(p1, p2, p3);
+				Triangle3D tri2_obs = Triangle3D(p1, p4, p3);
+
+
 				double trans[] = { translation[k][*uav.get()]->getX(), translation[k][*uav.get()]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
-				bool col = ColDetect::coldetect(tri_uav[i], tri1_obs[j], trans, zero_trans);
-				col = col || ColDetect::coldetect(tri_uav[i], tri2_obs[j], trans, zero_trans);
+				bool col = ColDetect::coldetect(tri_uav, tri1_obs, trans, zero_trans);
+				col = col || ColDetect::coldetect(tri_uav, tri2_obs, trans, zero_trans);
 				if (col)
 				{
 					for (size_t l = 0; l < translation.size(); l++)
@@ -966,8 +969,6 @@ namespace App
 						}
 					}
 					near_node->used_inputs[k] = true;
-					collision = true;
-					uavs_colliding[i] = true;
 				}
 			}
 		}
@@ -1041,6 +1042,30 @@ namespace App
 				for (auto row : tuplet)
 				{
 					row.push_back(character);
+					list.push_back(row);
+				}
+			}
+		}
+		return list;
+	}
+
+	template <typename T>
+	vector<unordered_map<Uav, T, UavHasher>> Core::generateNTuplet(vector<T> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index)
+	{
+		vector<unordered_map<Uav, T, UavHasher>> list = vector<unordered_map<Uav, T, UavHasher>>();	//todo: popøemýšlet, jak to refactorovat, aby se mohlo pracovat s fixní velikostí  pole
+														//		vector<vector<T>> list = vector<vector<T>>(pow(usedChars.size(), tupletClass));
+		if (index < 0)
+		{
+			list.push_back(unordered_map<Uav, T, UavHasher>());
+		}
+		else
+		{
+			vector<unordered_map<Uav, T, UavHasher>> tuplet = generateNTuplet(usedChars, tupletKeys, index - 1);
+			for (T character : usedChars)
+			{
+				for (auto row : tuplet)
+				{
+					row[*tupletKeys[index].get()] = character;
 					list.push_back(row);
 				}
 			}

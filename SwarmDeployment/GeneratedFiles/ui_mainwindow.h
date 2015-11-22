@@ -20,6 +20,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -34,6 +35,7 @@ public:
     QComboBox *map;
     QPushButton *stop;
     QGraphicsView *graphicsView;
+    QTextBrowser *text;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -58,7 +60,10 @@ public:
         stop->setGeometry(QRect(100, 60, 75, 23));
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setGeometry(QRect(220, 10, 1000, 1000));
+        graphicsView->setGeometry(QRect(300, 10, 1000, 1000));
+        text = new QTextBrowser(centralWidget);
+        text->setObjectName(QStringLiteral("text"));
+        text->setGeometry(QRect(10, 90, 281, 901));
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));

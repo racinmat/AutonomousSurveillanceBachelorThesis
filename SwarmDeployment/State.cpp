@@ -23,7 +23,7 @@ namespace App
 		}
 		for (auto prev_input : other.prev_inputs)
 		{
-			prev_inputs.push_back(make_shared<Point>(*prev_input.get()));
+			prev_inputs[prev_input.first] = make_shared<Point>(*prev_input.second.get());
 		}
 	}
 
@@ -45,7 +45,7 @@ namespace App
 	{
 		for(auto other : uavs)
 		{
-			if (other == uav)
+			if (*other.get() == *uav.get())
 			{
 				return other;
 			}
@@ -76,7 +76,7 @@ namespace App
 		os << " prev_inputs: ";
 		for (auto a : obj.prev_inputs)
 		{
-			os << *a.get() << endl;
+			os << "id " << a.first << ": " << *a.second.get() << endl;
 		}
 		return os;
 	}

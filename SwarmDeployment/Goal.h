@@ -15,6 +15,18 @@ namespace App
 		virtual ~Goal();
 		std::shared_ptr<Rectangle> rectangle; //todo: pøesunout do private
 		bool is_near(shared_ptr<Point> location);
+		friend bool operator==(const Goal& lhs, const Goal& rhs);
+		friend bool operator!=(const Goal& lhs, const Goal& rhs);
+		friend std::size_t hash_value(const Goal& obj);
+	};
+
+	class GoalHasher
+	{
+	public:
+		size_t operator() (Goal const& key) const
+		{
+			return hash_value(key);
+		}
 	};
 
 }

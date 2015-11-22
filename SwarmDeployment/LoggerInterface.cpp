@@ -29,6 +29,10 @@ namespace App
 	{
 	}
 
+	void LoggerInterface::logText(char const string[])
+	{
+	}
+
 	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
 	{
 	}

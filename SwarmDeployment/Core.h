@@ -41,7 +41,8 @@ namespace App
 		bool check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
 		bool check_world_bounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
 		template<typename T> vector<vector<T>> generateNTuplet(vector<T> usedChars, int tupletClass);
-		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, vector<shared_ptr<Point>> inputs);
+		template<typename T> vector<unordered_map<Uav, T, UavHasher>> generateNTuplet(vector<T> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
+		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs);
 		bool check_localization_sep(shared_ptr<State> node);
 		bool trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node);
 		void check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map);

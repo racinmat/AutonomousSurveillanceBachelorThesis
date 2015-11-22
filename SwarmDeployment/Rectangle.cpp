@@ -60,4 +60,24 @@ namespace App
 		return m_width;
 	}
 
+	bool operator==(const Rectangle& lhs, const Rectangle& rhs)
+	{
+		return lhs.location == rhs.location
+			&& lhs.m_height == rhs.m_height
+			&& lhs.m_width == rhs.m_width;
+	}
+
+	bool operator!=(const Rectangle& lhs, const Rectangle& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	std::size_t hash_value(const Rectangle& obj)
+	{
+		std::size_t seed = 0x686FF752;
+		seed ^= (seed << 6) + (seed >> 2) + 0x6F4193A6 + hash_value(*obj.location.get());
+		seed ^= (seed << 6) + (seed >> 2) + 0x528663F5 + static_cast<std::size_t>(obj.m_height);
+		seed ^= (seed << 6) + (seed >> 2) + 0x4AC2A83C + static_cast<std::size_t>(obj.m_width);
+		return seed;
+	}
 }

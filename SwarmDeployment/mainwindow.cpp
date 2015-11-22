@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->countUav->setRange(1, 10);
 	ui->graphicsView->setScene(new QGraphicsScene());
-	drawer = make_shared<Ui::GuiDrawer>(ui->graphicsView, this, this);
+	drawer = make_shared<Ui::GuiDrawer>(ui->graphicsView, this, this, ui->text);
 	//	ui->graphicsView->setTransform();
 	ui->graphicsView->scale(0.9, -0.9);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
 										//Negative number in scale is switching direction of axis.

@@ -9,11 +9,12 @@
 namespace Ui
 {
 
-	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, ::MainWindow* mainWindow) :
+	GuiDrawer::GuiDrawer(QGraphicsView* view, QMainWindow* window, ::MainWindow* mainWindow, QTextBrowser* text) :
 		view(view),
 		scene(view->scene()),
 		window(window),
-		mainWindow(mainWindow)
+		mainWindow(mainWindow),
+		text(text)
 	{
 		LoggerInterface();
 	}
@@ -106,10 +107,16 @@ namespace Ui
 	void GuiDrawer::logText(std::string string)
 	{
 		//		showPopup(string);
-		clear();
-		addText(QString::fromStdString(string), 20, 20);
+		text->append(QString::fromStdString(string));
+//		clear();
+//		addText(QString::fromStdString(string), 20, 20);
 		mainWindow->updateView();
 		//		view->repaint();
+	}
+
+	void GuiDrawer::logText(char const arr[])
+	{
+		logText(string(arr));
 	}
 
 	void GuiDrawer::logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode)
