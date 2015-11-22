@@ -3,12 +3,12 @@
 #include "Obstacle.h"
 #include <vector>
 #include <memory>
-#include "Uav.h"
 
 using namespace std;
 
 namespace App
 {
+	class Uav;
 
 	class Map
 	{

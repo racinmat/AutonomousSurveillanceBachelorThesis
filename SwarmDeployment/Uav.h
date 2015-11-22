@@ -26,12 +26,25 @@ namespace App
 		friend bool operator<=(const Uav& lhs, const Uav& rhs);
 		friend bool operator>(const Uav& lhs, const Uav& rhs);
 		friend bool operator>=(const Uav& lhs, const Uav& rhs);
+		friend bool operator==(const Uav& lhs, const Uav& rhs);
+		friend bool operator!=(const Uav& lhs, const Uav& rhs);
+		size_t hash_value() const;
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;
 		shared_ptr<Goal> reachedGoal;
 		int id;
 		static int lastId;
+	};
+
+
+	class UavHasher
+	{
+	public:
+		size_t operator() (Uav const& key) const
+		{
+			return key.hash_value();
+		}
 	};
 
 }

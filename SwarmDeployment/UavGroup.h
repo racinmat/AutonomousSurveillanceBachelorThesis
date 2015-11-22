@@ -11,20 +11,17 @@ namespace App
 	public:
 		UavGroup();
 		virtual ~UavGroup();
-		UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path, vector<int> indexes);
+		UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path);
 		virtual vector<shared_ptr<Uav>> getUavs() const;
 		virtual void setUavs(const vector<shared_ptr<Uav>> uavs);
 		virtual shared_ptr<Path> getGuidingPath() const;
 		virtual void setGuidingPath(const shared_ptr<Path> guiding_path);
-		virtual void addUav(shared_ptr<Uav> uav, int index);
-		virtual vector<int> getUavIndexes() const;
-		virtual int getBestIndex() const;
-		int guidingPathIndex;	//todo: refactorovat
+		virtual void addUav(shared_ptr<Uav> uav);
+		virtual shared_ptr<Node> getBestNode();
 
 	protected:
 		vector<shared_ptr<Uav>> uavs;
 		shared_ptr<Path> guidingPath;
-		vector<int> uavIndexes;	//todo: tohle zrefactorovat spoleènì s current_index
 	};
 
 }

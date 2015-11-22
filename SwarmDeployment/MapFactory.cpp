@@ -1,5 +1,7 @@
 ﻿#include "MapFactory.h"
 #include <memory>
+#include "Uav.h"
+
 #define PI 3.14159265358979323846
 
 namespace App

@@ -1,5 +1,5 @@
 #include "Uav.h"
-
+#include <string>
 
 namespace App
 {
@@ -37,7 +37,7 @@ namespace App
 	{
 	}
 
-	shared_ptr<App::PointParticle> Uav::getPointParticle() const
+	shared_ptr<PointParticle> Uav::getPointParticle() const
 	{
 		return pointParticle;
 	}
@@ -57,7 +57,7 @@ namespace App
 		this->reachedGoal = reachedGoal;
 	}
 
-	std::ostream& operator<<(std::ostream& os, const Uav& obj)
+	ostream& operator<<(ostream& os, const Uav& obj)
 	{
 		return os << "pointParticle: " << obj.pointParticle;
 	}
@@ -80,5 +80,22 @@ namespace App
 	bool operator>=(const Uav& lhs, const Uav& rhs)
 	{
 		return !(lhs < rhs);
+	}
+
+	bool operator==(const Uav& lhs, const Uav& rhs)
+	{
+		return lhs.id == rhs.id;
+	}
+
+	bool operator!=(const Uav& lhs, const Uav& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	size_t Uav::hash_value() const
+	{
+		size_t seed = 0x28003F72;
+		seed ^= (seed << 6) + (seed >> 2) + 0x1B543A89 + static_cast<size_t>(id);
+		return seed;
 	}
 }

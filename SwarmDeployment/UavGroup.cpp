@@ -12,8 +12,8 @@ namespace App
 	{
 	}
 
-	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path, vector<int> indexes) : uavs(uavs),
-		guidingPath(guiding_path), uavIndexes(indexes)
+	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path) : uavs(uavs),
+		guidingPath(guiding_path)
 	{
 	}
 
@@ -37,27 +37,22 @@ namespace App
 		guidingPath = guiding_path;
 	}
 
-	void UavGroup::addUav(shared_ptr<Uav> uav, int index)
+	void UavGroup::addUav(shared_ptr<Uav> uav)
 	{
 		uavs.push_back(uav);
-		uavIndexes.push_back(index);
 	}
 
-	vector<int> UavGroup::getUavIndexes() const
-	{
-		return uavIndexes;
-	}
-
-	int UavGroup::getBestIndex() const
+	shared_ptr<Node> UavGroup::getBestNode()
 	{
 		int bestIndex = 0;
 		for (auto uav : uavs)
 		{
-			if (uav->current_indexes->get(guidingPathIndex) > bestIndex)
+			if (guidingPath->getIndex(uav->current_indexes->get(guidingPath)) > bestIndex)		//todo: možná zrefactorovat, aby guidingPath dokázala øíct, jaká node je best
 			{
-				bestIndex = uav->current_indexes->get(guidingPathIndex);
+				bestIndex = guidingPath->getIndex(uav->current_indexes->get(guidingPath));
 			}
 		}
-		return bestIndex;
+		return guidingPath->get(bestIndex);
 	}
+
 }

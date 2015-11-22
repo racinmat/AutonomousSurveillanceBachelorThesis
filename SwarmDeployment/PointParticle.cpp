@@ -1,4 +1,5 @@
 #include "PointParticle.h"
+#include <ostream>
 
 
 namespace App

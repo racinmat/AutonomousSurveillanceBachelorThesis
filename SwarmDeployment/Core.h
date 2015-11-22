@@ -5,6 +5,7 @@
 #include <fstream>
 #include "StateFactory.h"
 #include "Uav.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -25,9 +26,9 @@ namespace App
 		void rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map);
 
 
-		vector<shared_ptr<Point>> random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state);
-		shared_ptr<State> nearest_neighbor(vector<shared_ptr<Point>> s_rand, vector<shared_ptr<State>> nodes, int count);
-		shared_ptr<State> select_input(vector<shared_ptr<Point>> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
+		unordered_map<Uav, shared_ptr<Point>, UavHasher> random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state);
+		shared_ptr<State> nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, vector<shared_ptr<State>> nodes, int count);
+		shared_ptr<State> select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
 		int check_expandability(vector<shared_ptr<State>> nodes);
 		void guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, int guiding_near_dist);
 		void check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV

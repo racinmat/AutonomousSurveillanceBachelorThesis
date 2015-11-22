@@ -1,5 +1,8 @@
 #pragma once
-#include <vector>
+#include <memory>
+#include "Path.h"
+#include <unordered_map>
+#include "Node.h"
 
 namespace App
 {
@@ -9,10 +12,10 @@ namespace App
 	public:
 		GuidingPathsCurrentPositions();
 		virtual ~GuidingPathsCurrentPositions();
-		virtual int get(int index);
-		virtual void set(int index, int value);
+		virtual shared_ptr<Node> get(shared_ptr<Path> path);
+		virtual void set(shared_ptr<Path> path, shared_ptr<Node> point);
 	protected:
-		std::vector<int> current_index;
+		unordered_map<Path, shared_ptr<Node>, PathHasher> currentPoint;	//todo: udìlat equals a hasher pro Path
 	};
 
 }

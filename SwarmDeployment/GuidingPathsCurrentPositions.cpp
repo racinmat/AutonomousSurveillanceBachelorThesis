@@ -11,20 +11,13 @@ namespace App {
 	{
 	}
 	
-	int GuidingPathsCurrentPositions::get(int index)
+	shared_ptr<Node> GuidingPathsCurrentPositions::get(shared_ptr<Path> path)
 	{
-		return current_index[index];
+		return currentPoint[*path.get()];
 	}
-	
-	void GuidingPathsCurrentPositions::set(int index, int value)
+
+	void GuidingPathsCurrentPositions::set(shared_ptr<Path> path, shared_ptr<Node> point)
 	{
-		if (index >= current_index.size())
-		{
-			current_index.push_back(value);
-		} else
-		{
-			current_index[index] = value;
-		}
+		currentPoint[*path.get()] = point;
 	}
-	
 }

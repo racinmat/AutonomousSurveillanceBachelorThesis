@@ -1,6 +1,6 @@
-//include "mainwindow.h"					//zakomentovat pro noGui
+#include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
+#include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -15,18 +15,18 @@
 int runGui(int argc, char *argv[])
 {
 	int returnValue = 0;
-//	QApplication a(argc, argv);
-//	MainWindow w;
-//	auto configuration = std::make_shared<App::Configuration>();
-//	auto core = std::make_shared<App::Core>(configuration);
-//	configuration->setCore(core);
-//	core->setLogger(w.getLogger());
-//
-//	w.setConfiguration(configuration);
-//	w.setCore(core);
-//	w.show();
-//
-//	returnValue = a.exec();
+	QApplication a(argc, argv);
+	MainWindow w;
+	auto configuration = std::make_shared<App::Configuration>();
+	auto core = std::make_shared<App::Core>(configuration);
+	configuration->setCore(core);
+	core->setLogger(w.getLogger());
+
+	w.setConfiguration(configuration);
+	w.setCore(core);
+	w.show();
+
+	returnValue = a.exec();
 	return returnValue;
 }
 
@@ -121,6 +121,15 @@ public:
 	size_t operator() (B const& key) const
 	{
 		return key.hash_value();
+	}
+};
+
+class BPtrHasher
+{
+public:
+	size_t operator() (shared_ptr<B> const& key) const
+	{
+		return key->hash_value();
 	}
 };
 
@@ -306,6 +315,7 @@ void testing()
 	map[*c.get()] = 3;
 	map[*d.get()] = 4;
 
+	//heureka, koneènì pro mapu a == b
 	cout << map[*a.get()] << endl; //2
 	cout << map[*b.get()] << endl; //2
 	cout << map[*c.get()] << endl; //4
@@ -316,6 +326,25 @@ void testing()
 	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
 	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
 
+	unordered_map<shared_ptr<B>, int, BPtrHasher> map2;
+	map2[a] = 1;
+	map2[b] = 2;
+	map2[c] = 3;
+	map2[d] = 4;
+
+	//heureka, koneènì pro mapu a == b
+	cout << map2[a] << endl; //2
+	cout << map2[b] << endl; //2
+	cout << map2[c] << endl; //4
+	cout << map2[d] << endl; //4
+
+	cout << "shared pointers:" << endl;
+	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
+	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
+	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
+	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
+
+
 	cin.get();
 }
 
@@ -324,8 +353,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
-	testing();
+	returnValue = runGui(argc, argv);
+//	testing();
 	return returnValue;
 }
 

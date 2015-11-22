@@ -33,7 +33,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logRandomStates(vector<shared_ptr<Point>> randomStates)
+	void LoggerInterface::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
 	{
 	}
 

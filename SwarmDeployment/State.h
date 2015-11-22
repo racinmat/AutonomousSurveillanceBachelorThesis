@@ -21,7 +21,6 @@ namespace App
 		shared_ptr<State> prev;
 		vector<shared_ptr<Point>> prev_inputs;	//vstupy, které vedly do této node
 		bool areAllInputsUsed();
-		shared_ptr<State> clone() const;
 		friend std::ostream& operator<<(std::ostream& os, const State& obj);
 	};
 

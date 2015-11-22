@@ -58,4 +58,24 @@ namespace App
 		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
 	}
 
+	bool operator==(const Node& lhs, const Node& rhs)
+	{
+		return (*lhs.point.get()) == (*rhs.point.get())
+			&& lhs.cost == rhs.cost
+			&& lhs.gridType == rhs.gridType;
+	}
+
+	bool operator!=(const Node& lhs, const Node& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	std::size_t hash_value(const Node& obj)
+	{
+		std::size_t seed = 0x79A3FD8E;
+		seed ^= (seed << 6) + (seed >> 2) + 0x0FB09D6C + hash_value(*obj.point.get());
+		seed ^= (seed << 6) + (seed >> 2) + 0x1D579C4C + static_cast<std::size_t>(obj.cost);
+		seed ^= (seed << 6) + (seed >> 2) + 0x0E0AFB73 + static_cast<std::size_t>(obj.gridType);
+		return seed;
+	}
 }

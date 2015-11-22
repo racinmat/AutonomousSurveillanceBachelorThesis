@@ -46,7 +46,7 @@ namespace Ui
 		{
 			auto p = start->getPointParticle()->getLocation();
 			Qt::GlobalColor uavColor = getRandomColor();
-			uavColors.push_back(uavColor);
+			uavColors[*start.get()] = uavColor;
 			addCross(p->getX(), p->getY(), 3, uavColor);
 		}
 
@@ -116,17 +116,20 @@ namespace Ui
 	{
 		for (size_t i = 0; i < nearNode->uavs.size(); i++)
 		{
+			auto uav = nearNode->uavs[i];
 			scene->addLine(nearNode->uavs[i]->getPointParticle()->getLocation()->getX(), nearNode->uavs[i]->getPointParticle()->getLocation()->getY(),
-				newNode->uavs[i]->getPointParticle()->getLocation()->getX(), newNode->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[i]));
+				newNode->uavs[i]->getPointParticle()->getLocation()->getX(), newNode->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()]));
 		}
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logRandomStates(vector<shared_ptr<App::Point>> randomStates)
+	void GuiDrawer::logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates)
 	{
-		for (size_t i = 0; i < randomStates.size(); i++)
+		for (auto pair : randomStates)
 		{
-			scene->addEllipse(randomStates[i]->getX(), randomStates[i]->getY(), 2, 2, QPen(uavColors[i]));
+			auto uav = pair.first;
+			auto point = pair.second;
+			scene->addEllipse(point->getX(), point->getY(), 2, 2, QPen(uavColors[uav]));	//todo? zjistit, jak se iteruje pøes unordered_map
 //			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
 		}
 		mainWindow->updateView();
@@ -191,6 +194,15 @@ namespace Ui
 			{
 				color = Qt::GlobalColor(rand() % Qt::transparent);
 			}
+		}
+		for (auto pair : uavColors)
+		{
+			auto another = pair.second;
+			if (color == another)
+			{
+				color = Qt::GlobalColor(rand() % Qt::transparent);
+			}
+
 		}
 		return color;
 	}
