@@ -50,6 +50,7 @@ namespace App
 		virtual bool getCheckFov() const;
 		virtual bool getStop() const;
 		virtual void setStop(bool stop);
+		virtual bool isTextOutputEnabled() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -82,6 +83,7 @@ namespace App
 		bool allowSwarmSplitting;
 		bool checkFov;
 		bool stop;
+		bool textOutputEnabled;
 	};
 
 }

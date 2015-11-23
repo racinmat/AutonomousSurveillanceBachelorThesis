@@ -23,6 +23,7 @@ namespace App
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const State& obj);
 		shared_ptr<Uav> getUav(shared_ptr<Uav> uav);	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
+		static int lastIndex;
 	};
 
 }

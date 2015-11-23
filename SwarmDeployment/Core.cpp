@@ -153,7 +153,7 @@ namespace App
 			unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
-			int k = 1;	//poèítadlo nepoužitelných nodes, protože se používá v nearest_neighbor size() - k, zaèínám od 1, znamená to, že se použije k-tá nejbližší node
+			int k = 0;	//poèítadlo nepoužitelných nodes
 			bool near_found = false;
 
 			auto isNewUavPosition = false;
@@ -164,7 +164,7 @@ namespace App
 				{
 //					i--;	//todo: zjistit, proè se snižuje i o 1
 //					throw "Not possible to find near node suitable for expansion";
-					cout << "Not possible to find near node suitable for expansion";
+					logger->logText("Not possible to find near node suitable for expansion");
 				}
 				nearState = nearest_neighbor(s_rand, nodes, k);
 				newState = select_input(s_rand, nearState, map);
@@ -184,6 +184,9 @@ namespace App
 				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)	//kontrola empty new_node
 				{
 					k++;
+					char buffer[1024];
+					sprintf(buffer, "Skipping node, k++. allInputsUsed: %d , isNewUavPosition: %d, isNearUavPosition: %d", allInputsUsed, isNewUavPosition, isNearUavPosition);
+					logger->logText(buffer);
 					check_expandability(nodes);
 				} else
 				{
@@ -207,7 +210,7 @@ namespace App
 			if (i % 200 == 0)
 			{
 				char buffer[20];
-				sprintf(buffer, "RRT size: %d\n", i);
+				sprintf(buffer, "RRT size: %d", i);
 				logger->logText(buffer);
 			}
 
@@ -233,7 +236,7 @@ namespace App
 				}
 				final_nodes[m] = newState;	//rekurzí se ze stavu dá získat celá cesta
 				char buffer[1024];
-				sprintf(buffer, "%d viable paths found so far.\n", m);
+				sprintf(buffer, "%d viable paths found so far.", m);
 				logger->logText(buffer);
 				m++;
 			}
@@ -388,8 +391,7 @@ namespace App
 
 		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
 		shared_ptr<State> near_node;
-		vector<double> stateDistances = vector<double>(nodes.size());	//celková vzdálenost pro daný State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepoužívá
-
+		vector<tuple<double, shared_ptr<State>>> stateDistances;	//celková vzdálenost pro daný State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepoužívá
 		int s = 1;
 		double current_best = DBL_MAX;
 		
@@ -401,7 +403,7 @@ namespace App
 			if (tmp_node->areAllInputsUsed())
 			{
 				char buffer[1024];
-				sprintf(buffer, "Node %d is unexpandable\n", tmp_node->index);
+				sprintf(buffer, "Node %d is unexpandable", tmp_node->index);
 				logger->logText(buffer);
 				continue;
 			}
@@ -432,43 +434,64 @@ namespace App
 				break;
 			}
 
-			stateDistances[j] = hamilt_dist;
-			
-			//Check if tested node is nearer than the current nearest
-			if (hamilt_dist < current_best)
+			stateDistances.push_back(std::make_tuple(hamilt_dist, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váže
+			char buffer[1024];
+			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->index, hamilt_dist);
+			logger->logText(buffer);
+
+			sort(stateDistances.begin(), stateDistances.end(),
+				[](const tuple<double, shared_ptr<State>>& a,
+					const tuple<double, shared_ptr<State>>& b) -> bool
 			{
-				near_node = tmp_node;
-				near_arr.push_back(near_node);
-				current_best = hamilt_dist;
-				if (debug)
-				{
-					double distance;
-					for (auto uav : tmp_node->uavs)
-					{
-						auto randomState = s_rand[*uav.get()];	
-						distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
-					}
-					char buffer[1024];
-					sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f\n", s, distance);
-					logger->logText(buffer);
-				}
-				s++;
-			}			
+				return std::get<0>(a) < std::get<0>(b);
+			});
+	
+			//tato sekce by se mìla nahradit setøídìným tuplem
+//			//Check if tested node is nearer than the current nearest
+//			if (hamilt_dist < current_best)
+//			{
+//				near_node = tmp_node;
+//				near_arr.push_back(near_node);
+//				current_best = hamilt_dist;
+//				if (debug)
+//				{
+//					double distance;
+//					for (auto uav : tmp_node->uavs)
+//					{
+//						auto randomPoint = s_rand[*uav.get()];	
+//						distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomPoint);
+//					}
+//				}
+//				s++;
+//			}			
 		}
 			
-		if (near_arr.size() >= count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
+//		if (near_arr.size() >= count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
+//		{
+//			near_node = near_arr[near_arr.size() - count];	//indexuje se od 0, proto count musí zaèínat od 1
+//			double distance;
+//			for (auto uav : near_node->uavs)
+//			{
+//				auto randomState = s_rand[*uav.get()];
+//				distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
+//			}
+//			if (debug && count > 0)
+//			{
+//				char buffer[1024];
+//				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
+//				logger->logText(buffer);
+//			}
+//		}
+
+		if (stateDistances.size() > count)
 		{
-			near_node = near_arr[near_arr.size() - count];	//indexuje se od 0, proto count musí zaèínat od 1
-			double distance;
-			for (auto uav : near_node->uavs)
-			{
-				auto randomState = s_rand[*uav.get()];
-				distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
-			}
+			auto tuple = stateDistances[count];
+			near_node = get<1>(tuple);
+			double distance = get<0>(tuple);
 			if (debug && count > 0)
 			{
 				char buffer[1024];
-				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
+				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f", count, count, near_node->index, distance);
 				logger->logText(buffer);
 			}
 		}
@@ -556,6 +579,7 @@ namespace App
 				if (near_node->areAllInputsUsed())
 				{
 //					throw "No valid input left";
+					logger->logText("all inputs are used");
 					break;	//výjimka se nemá vyhazovat
 				}
 
@@ -572,15 +596,31 @@ namespace App
 				}
 				auto tempState = tempStates[index];
 
-				if (!check_localization_sep(tempState) || trajectory_intersection(near_node, tempState) || near_node->used_inputs[index])
+				if (!check_localization_sep(tempState))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					logger->logText("check localization sep returned false");
+					continue;
+				}
+
+				if (trajectory_intersection(near_node, tempState))
+				{
+					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					logger->logText("trajectories intersect");
+					continue;
+				}
+
+				if (near_node->used_inputs[index])
+				{
+					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					logger->logText("input with index" + to_string(index) + "is used");
 					continue;
 				}
 
 				if (!check_world_bounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					logger->logText("out of world bounds");
 					continue;
 				}
 
@@ -589,6 +629,7 @@ namespace App
 				if (near_node->used_inputs[index])
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					logger->logText("input with index" + to_string(index) + "is used after vcollide check");
 					continue;
 				} else
 				{
@@ -596,6 +637,7 @@ namespace App
 					new_node->uavs = tempState->uavs;
 					new_node->prev = near_node;
 					new_node->prev_inputs = tempState->prev_inputs;
+					new_node->index = tempState->index;
 					near_node->used_inputs[index] = true;
 					break;
 				}
@@ -821,7 +863,7 @@ namespace App
 		return newNode;
 	}
 
-	bool Core::check_localization_sep(shared_ptr<State> node)
+	bool Core::check_localization_sep(shared_ptr<State> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
 	{
 		int number_of_uavs = node->uavs.size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
@@ -847,12 +889,10 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				double uavIx = node->uavs[i]->getPointParticle()->getLocation()->getX();
-				double uavIy = node->uavs[i]->getPointParticle()->getLocation()->getY();
-				double uavJx = node->uavs[j]->getPointParticle()->getLocation()->getX();
-				double uavJy = node->uavs[j]->getPointParticle()->getLocation()->getY();
+				auto uavI = node->uavs[i]->getPointParticle()->getLocation();
+				auto uavJ = node->uavs[j]->getPointParticle()->getLocation();
 
-				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) <= relative_distance_min)
+				if (uavI->getDistance(uavJ) <= relative_distance_min)
 				{
 					return false;
 				}
@@ -864,14 +904,12 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				double uavIx = node->uavs[i]->getPointParticle()->getLocation()->getX();
-				double uavIy = node->uavs[i]->getPointParticle()->getLocation()->getY();
+				auto uavI = node->uavs[i]->getPointParticle()->getLocation();
 				double uavIphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
-				double uavJx = node->uavs[j]->getPointParticle()->getLocation()->getX();
-				double uavJy = node->uavs[j]->getPointParticle()->getLocation()->getY();
+				auto uavJ = node->uavs[j]->getPointParticle()->getLocation();
 				double uavJphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
 
-				if (sqrt(pow(uavIx - uavJx, 2) + pow(uavIy - uavJy, 2)) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
+				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
 				{
 					neighbors[i]++;
 					neighbors[j]++;					
@@ -898,9 +936,9 @@ namespace App
 			int twoOrMoreNeighbors = 0;
 			if (oneOrMoreNeighbors)
 			{
-				char buffer[1024];
-				sprintf(buffer, "Neigbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
-				logger->logText(buffer);
+//				char buffer[1024];
+//				sprintf(buffer, "Neighbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
+//				logger->logText(buffer);
 				for (auto neighbor : neighbors)
 				{
 					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;

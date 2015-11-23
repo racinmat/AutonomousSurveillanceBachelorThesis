@@ -43,7 +43,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1314, 1024);
+        MainWindow->resize(1514, 1024);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         start = new QPushButton(centralWidget);
@@ -60,10 +60,10 @@ public:
         stop->setGeometry(QRect(100, 60, 75, 23));
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setGeometry(QRect(300, 10, 1000, 1000));
+        graphicsView->setGeometry(QRect(500, 10, 1000, 1000));
         text = new QTextBrowser(centralWidget);
         text->setObjectName(QStringLiteral("text"));
-        text->setGeometry(QRect(10, 90, 281, 901));
+        text->setGeometry(QRect(10, 90, 461, 901));
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));

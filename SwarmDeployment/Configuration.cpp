@@ -35,8 +35,9 @@ namespace App
 		localizationAngle = PI / 2;
 		requiredNeighbors = 1;
 		checkFov = false;
-		allowSwarmSplitting = false;
+		allowSwarmSplitting = true;
 		stop = false;
+		textOutputEnabled = false;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -226,5 +227,10 @@ namespace App
 	void Configuration::setStop(bool stop)
 	{
 		this->stop = stop;
+	}
+
+	bool Configuration::isTextOutputEnabled() const
+	{
+		return textOutputEnabled;
 	}
 }

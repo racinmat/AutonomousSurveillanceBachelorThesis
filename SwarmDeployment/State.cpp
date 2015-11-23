@@ -3,8 +3,9 @@
 
 namespace App
 {
+	int State::lastIndex = 0;
 
-	State::State(int inputCount)
+	State::State(int inputCount) : index(lastIndex++)
 	{
 		//todo: refactorovat a vyrábìt nové stavy z factory, která jim bude pøedávat délku used_inputs pole podle konfigurace v konstruktoru.
 		used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo

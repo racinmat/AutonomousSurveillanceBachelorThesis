@@ -3,6 +3,10 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QTextBrowser>
 
+namespace App{
+	class Configuration;
+}
+
 class QMainWindow;
 class MainWindow;
 
@@ -22,12 +26,15 @@ namespace Ui
 		virtual void logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode) override;
 		virtual void logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates) override;
 		virtual void logRandomStatesCenter(shared_ptr<App::Point> center) override;
+		virtual void setConfiguration(shared_ptr<App::Configuration> configuration);
+
 	protected:
 		QGraphicsView* view;
 		QGraphicsScene* scene;
 		QMainWindow* window;
 		::MainWindow* mainWindow;
 		QTextBrowser* text;
+		shared_ptr<App::Configuration> configuration;
 		void clear();
 		void drawGrid();
 		QGraphicsTextItem* addText(QString text, double x, double y);

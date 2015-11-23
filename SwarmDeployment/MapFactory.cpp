@@ -79,7 +79,7 @@ namespace App
 			map5->addUavStart(make_shared<Uav>(430 + i * uavDistance, 50, PI / 2));
 		}
 		map5->addGoal(make_shared<Goal>(385, 801, 230, 100));
-//		map5->addGoal(make_shared<Goal>(301, 521, 150, 180));
+		map5->addGoal(make_shared<Goal>(301, 521, 150, 180));
 		map5->addGoal(make_shared<Goal>(551, 521, 150, 180));
 		map5->addObstacle(make_shared<Obstacle>(199, 699, 601, 101));
 		map5->addObstacle(make_shared<Obstacle>(199, 519, 101, 201));

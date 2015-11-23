@@ -5,6 +5,7 @@
 #include <QtCore/qtextstream.h>
 #include <QtWidgets/QMessageBox>
 #include "mainwindow.h"
+#include "Configuration.h"
 
 namespace Ui
 {
@@ -106,12 +107,15 @@ namespace Ui
 
 	void GuiDrawer::logText(std::string string)
 	{
-		//		showPopup(string);
-		text->append(QString::fromStdString(string));
-//		clear();
-//		addText(QString::fromStdString(string), 20, 20);
-		mainWindow->updateView();
-		//		view->repaint();
+		if (configuration->isTextOutputEnabled())
+		{
+			//		showPopup(string);
+			text->append(QString::fromStdString(string));
+			//		clear();
+			//		addText(QString::fromStdString(string), 20, 20);
+			mainWindow->updateView();
+			//		view->repaint();
+		}
 	}
 
 	void GuiDrawer::logText(char const arr[])
@@ -146,6 +150,11 @@ namespace Ui
 	{
 		scene->addEllipse(center->getX(), center->getY(), 3, 3, QPen(Qt::black), QBrush(Qt::black));
 		mainWindow->updateView();
+	}
+
+	void GuiDrawer::setConfiguration(shared_ptr<App::Configuration> configuration)
+	{
+		this->configuration = configuration;
 	}
 
 	void GuiDrawer::clear()

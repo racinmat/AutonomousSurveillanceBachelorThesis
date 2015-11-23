@@ -77,6 +77,7 @@ void MainWindow::setCore(shared_ptr<App::Core> core)
 void MainWindow::setConfiguration(shared_ptr<App::Configuration> configuration)
 {
 	this->configuration = configuration;
+	this->drawer->setConfiguration(configuration);
 }
 
 void MainWindow::updateView()
