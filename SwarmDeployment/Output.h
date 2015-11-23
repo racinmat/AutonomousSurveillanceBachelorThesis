@@ -14,7 +14,7 @@ namespace App
 		Output();
 		virtual ~Output();
 		vector<shared_ptr<State>> nodes;
-		vector<int> distance_of_new_nodes;
+		vector<double> distance_of_new_nodes;
 		int start_goal_distance_euclidean;
 		int start_goal_distance_a_star;
 		vector<shared_ptr<Goal>> goal_reached;

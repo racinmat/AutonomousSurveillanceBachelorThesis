@@ -111,8 +111,8 @@ namespace App
 		int number_of_solutions = configuration->getNumberOfSolutions();
 		int near_count = configuration->getNearCount();
 		bool debug = configuration->getDebug();
-		int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
-		int guiding_near_dist = configuration->getGuidingNearDist();
+		double distance_of_new_nodes = configuration->getDistanceOfNewNodes();
+		double guiding_near_dist = configuration->getGuidingNearDist();
 
 		cout << "Starting RRT-path...";
 
@@ -226,7 +226,7 @@ namespace App
 				isGoalReached = isGoalReached && uav->isGoalReached();
 			}
 
-			output->distance_of_new_nodes = vector<int>(nodes.size());
+			output->distance_of_new_nodes = vector<double>(nodes.size());
 			if (isGoalReached) // pokud je nalezen cíl
 			{
 				output->goal_reached = vector<shared_ptr<Goal>>();
@@ -446,42 +446,7 @@ namespace App
 				return std::get<0>(a) < std::get<0>(b);
 			});
 	
-			//tato sekce by se mìla nahradit setøídìným tuplem
-//			//Check if tested node is nearer than the current nearest
-//			if (hamilt_dist < current_best)
-//			{
-//				near_node = tmp_node;
-//				near_arr.push_back(near_node);
-//				current_best = hamilt_dist;
-//				if (debug)
-//				{
-//					double distance;
-//					for (auto uav : tmp_node->uavs)
-//					{
-//						auto randomPoint = s_rand[*uav.get()];	
-//						distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomPoint);
-//					}
-//				}
-//				s++;
-//			}			
 		}
-			
-//		if (near_arr.size() >= count)	//todo: zjistit, zda je správnì nerovnost a zda nemá být >=
-//		{
-//			near_node = near_arr[near_arr.size() - count];	//indexuje se od 0, proto count musí zaèínat od 1
-//			double distance;
-//			for (auto uav : near_node->uavs)
-//			{
-//				auto randomState = s_rand[*uav.get()];
-//				distance = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
-//			}
-//			if (debug && count > 0)
-//			{
-//				char buffer[1024];
-//				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f\n", near_arr.size() - count, count, near_node->index, distance);
-//				logger->logText(buffer);
-//			}
-//		}
 
 		if (stateDistances.size() > count)
 		{
@@ -515,7 +480,7 @@ namespace App
 
 		int input_samples_dist = configuration->getInputSamplesDist();
 		int input_samples_phi = configuration->getInputSamplesPhi();
-		int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
+		double distance_of_new_nodes = configuration->getDistanceOfNewNodes();
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = near_node->uavs.size();
@@ -617,7 +582,7 @@ namespace App
 					continue;
 				}
 
-				if (!check_world_bounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
+				if (!insideWorldBounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
 					logger->logText("out of world bounds");
@@ -680,7 +645,7 @@ namespace App
 	}
 
 	//detects narrow passage
-	void Core::guiding_point_reached(shared_ptr<State> state, vector<shared_ptr<Path>> guiding_paths, int guiding_near_dist)
+	void Core::guiding_point_reached(shared_ptr<State> state, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist)
 	{
 		for (auto guiding_path : guiding_paths) {
 			for (auto node : guiding_path->getNodes())	//todo: možná to pøedìlat a iterovat obrácenì, abych jel odzadu a udìlal break, když narazím na currentPoint u uav, abych nemusel kontrolovat isFirstCloserToEnd
@@ -725,25 +690,11 @@ namespace App
 		//todo: vymyslet, jak to udìlat, abych odsud nastavil parametry, ale nesahal na celou konfiguraci. udìlat asi nìjaký command na dìlení np_divisorem
 
 //		global params defaults count
-		if (node->getCost() > 1) {
-//			params.distance_of_new_nodes = defaults.distance_of_new_nodes / params.np_divisor;
-//			params.max_turn = defaults.max_turn * params.np_divisor;
-//			params.guiding_near_dist = defaults.guiding_near_dist / params.np_divisor;
-//			count = 0;
-//			// params.sampling_radius = defaults.sampling_radius / 3;
+		if (node->getCost() > 1) {	//cost > 1 mají pøekážky a nody sousedící s pøekážkami
+			configuration->inNarrowPassage();
 		} else {
-//			count = count + 1;
-//		
-//			//Far from obstacle
-//				if count > params.exit_np_threshold
-//					params.distance_of_new_nodes = defaults.distance_of_new_nodes;
-//					params.max_turn = defaults.max_turn;
-//					params.guiding_near_dist = defaults.guiding_near_dist;
-//				count = 0;
-//				end
-//		// params.sampling_radius = defaults.sampling_radius;
+			configuration->outsideNarrowPassage();
 		}
-
 	}
 
 	shared_ptr<Point> Core::random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map)
@@ -790,11 +741,11 @@ namespace App
 			double x = center->getX() + r*cos(phi);
 			double y = center->getY() + r*sin(phi);
 			randomState = make_shared<Point>(x, y);
-		} while (check_inside_obstacle(randomState, map) && check_world_bounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
+		} while (check_inside_obstacle(randomState, map) && insideWorldBounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
 		return randomState;
 	}
 
-	bool Core::check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight)
+	bool Core::insideWorldBounds(shared_ptr<Point> point, int worldWidth, int worldHeight)
 	{
 		bool inBounds = false;
 
@@ -803,15 +754,14 @@ namespace App
 			inBounds = true;
 		}
 		return inBounds;
-
 	}
 
-	bool Core::check_world_bounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight)
+	bool Core::insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight)
 	{
-		bool inBounds = false;
+		bool inBounds = true;
 		for (auto point : points)
 		{
-			inBounds = inBounds || check_world_bounds(point->getPointParticle()->getLocation(), worldWidth, worldHeight);
+			inBounds = inBounds && insideWorldBounds(point->getPointParticle()->getLocation(), worldWidth, worldHeight);
 		}
 		return inBounds;
 	}

@@ -8,7 +8,7 @@ namespace App
 
 	Configuration::Configuration()
 	{
-		aStarCellSize = 9;
+		aStarCellSize = 20;
 		mapNumber = 5;
 		uavCount = 4;
 		worldHeight = 1000;
@@ -22,8 +22,10 @@ namespace App
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
 		debug = true;
-		distanceOfNewNodes = 30;
-		guidingNearDist = 40;
+//		distanceOfNewNodes = 30;
+//		guidingNearDist = 40;
+		distanceOfNewNodes = 60;
+		guidingNearDist = 80;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
@@ -37,7 +39,11 @@ namespace App
 		checkFov = false;
 		allowSwarmSplitting = true;
 		stop = false;
-		textOutputEnabled = false;
+		textOutputEnabled = true;
+		narrowPassageDivisor = 2;
+		exitNarrowPassageTreshold = 5;
+		narrowPassageCount = 0;
+		divisionCount = 0;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -149,12 +155,12 @@ namespace App
 		return debug;
 	}
 
-	int Configuration::getDistanceOfNewNodes() const
+	double Configuration::getDistanceOfNewNodes() const
 	{
 		return distanceOfNewNodes;
 	}
 
-	int Configuration::getGuidingNearDist() const
+	double Configuration::getGuidingNearDist() const
 	{
 		return guidingNearDist;
 	}
@@ -232,5 +238,28 @@ namespace App
 	bool Configuration::isTextOutputEnabled() const
 	{
 		return textOutputEnabled;
+	}
+
+	void Configuration::inNarrowPassage()
+	{
+		distanceOfNewNodes /= narrowPassageDivisor;
+		maxTurn *= narrowPassageDivisor;
+		guidingNearDist /= narrowPassageDivisor;
+		narrowPassageCount = 0;
+		divisionCount++;
+	}
+
+	void Configuration::outsideNarrowPassage()
+	{
+		narrowPassageCount++;
+		//Far from obstacle
+		if (narrowPassageCount > exitNarrowPassageTreshold)	//usv jsou daleko od překážek, navrácení původních hodnot
+		{
+			distanceOfNewNodes *= pow(narrowPassageDivisor, divisionCount);
+			maxTurn /= pow(narrowPassageDivisor, divisionCount);
+			guidingNearDist *= pow(narrowPassageDivisor, divisionCount);
+			narrowPassageCount = 0;
+			divisionCount = 0;
+		}
 	}
 }

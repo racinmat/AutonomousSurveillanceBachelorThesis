@@ -59,8 +59,6 @@ namespace Ui
 	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
 	{
 //		int cellSize = configuration->getAStarCellSize();
-//		QTextStream cout(stdout);
-//		cout << "logging map grid" << endl;
 //		int x = 5;
 //		for (auto row : mapGrid)
 //		{
@@ -79,6 +77,18 @@ namespace Ui
 //				y += cellSize;
 //			}
 //			x += cellSize;
+//		}
+//		mainWindow->updateView();
+	}
+
+	void GuiDrawer::logMapNodes(vector<shared_ptr<App::Node>> nodes)
+	{
+//		int cellSize = configuration->getAStarCellSize();
+//		int x = - 12;
+//		int y = 12;
+//		for (auto node : nodes)
+//		{
+//			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
 //		}
 //		mainWindow->updateView();
 	}
@@ -138,14 +148,14 @@ namespace Ui
 
 	void GuiDrawer::logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates)
 	{
-		for (auto pair : randomStates)
-		{
-			auto uav = pair.first;
-			auto point = pair.second;
-			scene->addEllipse(point->getX(), point->getY(), 2, 2, QPen(uavColors[uav]));	//todo? zjistit, jak se iteruje pøes unordered_map
-//			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
-		}
-		mainWindow->updateView();
+//		for (auto pair : randomStates)
+//		{
+//			auto uav = pair.first;
+//			auto point = pair.second;
+//			scene->addEllipse(point->getX(), point->getY(), 2, 2, QPen(uavColors[uav]));	//todo? zjistit, jak se iteruje pøes unordered_map
+////			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
+//		}
+//		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logRandomStatesCenter(shared_ptr<App::Point> center)

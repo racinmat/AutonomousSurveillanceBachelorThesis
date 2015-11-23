@@ -21,6 +21,10 @@ namespace App
 	{
 	}
 
+	void LoggerInterface::logMapNodes(vector<shared_ptr<Node>> nodes)
+	{
+	}
+
 	void LoggerInterface::logGuidingPaths(std::vector<std::shared_ptr<Path>> paths, std::shared_ptr<Node> start, std::vector<std::shared_ptr<Node>> ends)
 	{
 	}

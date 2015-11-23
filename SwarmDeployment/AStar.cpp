@@ -27,6 +27,8 @@ namespace AStar
 		int limit = 10000;
 		while ((*current.get()) != (*end.get())) {
 			//expanding and picking best next node
+			int x = current->getX();
+			int y = current->getY();
 			auto neighbors = current->expand(end);
 			for (auto neighbor : neighbors)
 			{
@@ -36,6 +38,13 @@ namespace AStar
 				}
 			}
 			closed.insert(current);
+
+			if (opened.size() == 0)	//kontrola je pøed pollBest, protože po pollBest, pokud je v opened pouze 1 prvek, je 0 prvkù a vyhodí se výjimka i když je v current zatím neexpandovaná node vedoucí k cíli
+			{
+				throw "No opened nodes";
+				break;
+			}
+
 			do {
 				current = opened.pollBest();
 			} while (closed.contains(current));
@@ -44,11 +53,6 @@ namespace AStar
 			counter++;
 			if (counter > limit)
 			{
-				break;
-			}
-			if (opened.size() == 0)
-			{
-				throw "No opened nodes";
 				break;
 			}
 		}

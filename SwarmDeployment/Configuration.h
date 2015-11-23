@@ -34,8 +34,8 @@ namespace App
 		virtual int getRrtMaxNodes() const;
 		virtual int getNearCount() const;
 		virtual bool getDebug() const;
-		virtual int getDistanceOfNewNodes() const;
-		virtual int getGuidingNearDist() const;
+		virtual double getDistanceOfNewNodes() const;
+		virtual double getGuidingNearDist() const;
 		virtual int getNumberOfSolutions() const;
 		virtual double getGuidedSamplingPropability() const;
 		virtual NNMethod getNearestNeighborMethod() const;
@@ -51,6 +51,8 @@ namespace App
 		virtual bool getStop() const;
 		virtual void setStop(bool stop);
 		virtual bool isTextOutputEnabled() const;
+		virtual void inNarrowPassage();
+		virtual void outsideNarrowPassage();
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -68,12 +70,9 @@ namespace App
 		int rrtMaxNodes;
 		int nearCount;
 		bool debug;
-		int distanceOfNewNodes;
-		int guidingNearDist;
 		int numberOfSolutions;
 		double guidedSamplingPropability;
 		NNMethod nearestNeighborMethod;
-		double maxTurn;
 		double timeStep;
 		double endTime;
 		double relativeDistanceMin;
@@ -84,6 +83,13 @@ namespace App
 		bool checkFov;
 		bool stop;
 		bool textOutputEnabled;
+		int narrowPassageDivisor;
+		int exitNarrowPassageTreshold;
+		int narrowPassageCount;
+		double distanceOfNewNodes;
+		double guidingNearDist;
+		double maxTurn;
+		int divisionCount;
 	};
 
 }

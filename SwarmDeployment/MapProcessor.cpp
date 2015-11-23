@@ -22,6 +22,7 @@ namespace App
 		logger->logMapGrid(mapGrid);
 		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
+		logger->logMapNodes(nodes);
 
 
 		//now we determine starting and ending node.
@@ -162,19 +163,28 @@ namespace App
 						if (
 							isNeighbor && !isOutOfMap
 						) {
-							if (node->getGridType() == Grid::Obstacle)	//zvýšení ceny, pokud je soused pøekážka
-							{
-								if (p == 0 || q == 0)	//pøímý soused
+							if (node->getGridType() != Grid::Obstacle)	//nechci vùbec pracovat s pøekážkami, protože se s nimi v grafu nepracuje
+							{//zvýšení ceny, pokud je soused pøekážka
+								auto neighbor = nodes[(i + p) * mapGrid.size() + (j + q)];
+								if (neighbor)	//kontrola empty pointeru
 								{
-									node->increaseCost(cost_neighbor);
-								} else	//soused na diagonále
-								{
-									node->increaseCost(cost_diagonal);
+									if (neighbor->getGridType() == Grid::Obstacle)
+									{
+										if (p == 0 || q == 0)	//pøímý soused
+										{
+											node->increaseCost(cost_neighbor);
+										}
+										else	//soused na diagonále
+										{
+											node->increaseCost(cost_diagonal);
+										}
+									}
+									else		//pokud není soused pøekážka, pøidám jej mezi sousedy
+									{
+										node->addNeighbor(neighbor, n_index);
+										n_index++;
+									}
 								}
-							} else // nechci mezi sousedy pøekážky
-							{
-								node->addNeighbor(nodes[(i + p) * mapGrid.size() + (j + q)], n_index);
-								n_index++;
 							}
 						}
 					}

@@ -30,7 +30,7 @@ namespace App
 		shared_ptr<State> nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, vector<shared_ptr<State>> nodes, int count);
 		shared_ptr<State> select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
 		int check_expandability(vector<shared_ptr<State>> nodes);
-		void guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, int guiding_near_dist);
+		void guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist);
 		void check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV
 		void detect_narrow_passage(shared_ptr<Node> node);
 		shared_ptr<Point> random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map);
@@ -38,8 +38,8 @@ namespace App
 		shared_ptr<Point> random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map);
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
-		bool check_world_bounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
-		bool check_world_bounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
+		bool insideWorldBounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
+		bool insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
 		template<typename T> vector<vector<T>> generateNTuplet(vector<T> usedChars, int tupletClass);
 		template<typename T> vector<unordered_map<Uav, T, UavHasher>> generateNTuplet(vector<T> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
 		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs);

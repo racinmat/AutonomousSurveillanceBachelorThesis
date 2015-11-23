@@ -11,7 +11,7 @@ namespace AStar
 //		return count(node) > 0;	//nefunguje pro pointery, pokud chci vlastní porovnávání
 		for (auto another : (*this))
 		{
-			if ((*another) == (*node))
+			if ((*another.get()) == (*node.get()))
 			{
 				return true;
 			}
@@ -23,7 +23,7 @@ namespace AStar
 	{
 		for (auto another : (*this))
 		{
-			if ((*another) == (*node))
+			if ((*another.get()) == (*node.get()))
 			{
 				return another;
 			}
