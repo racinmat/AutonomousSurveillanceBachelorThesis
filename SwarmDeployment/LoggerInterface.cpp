@@ -25,6 +25,10 @@ namespace App
 	{
 	}
 
+	void LoggerInterface::logAStarNode(shared_ptr<AStar::NodeWrapper> node)
+	{
+	}
+
 	void LoggerInterface::logGuidingPaths(std::vector<std::shared_ptr<Path>> paths, std::shared_ptr<Node> start, std::vector<std::shared_ptr<Node>> ends)
 	{
 	}

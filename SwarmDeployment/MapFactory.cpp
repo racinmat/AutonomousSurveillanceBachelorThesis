@@ -95,7 +95,7 @@ namespace App
 		map6->addGoal(make_shared<Goal>(701, 701, 150, 150));
 //		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 470));
 //		map6->addObstacle(make_shared<Obstacle>(400, 480, 200, 520));
-		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 79));
+		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 49));
 		map6->addObstacle(make_shared<Obstacle>(400, 101, 200, 919));
 		maps.push_back(map6);
 

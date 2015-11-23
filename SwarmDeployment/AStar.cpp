@@ -5,11 +5,9 @@ using namespace std;
 namespace AStar
 {
 
-
-	AStar::AStar()
+	AStar::AStar(shared_ptr<App::LoggerInterface> logger) : logger(logger)
 	{
 	}
-
 
 	AStar::~AStar()
 	{
@@ -48,6 +46,7 @@ namespace AStar
 			do {
 				current = opened.pollBest();
 			} while (closed.contains(current));
+			logger->logAStarNode(current);
 			//end of expanding and picking best next node
 
 			counter++;

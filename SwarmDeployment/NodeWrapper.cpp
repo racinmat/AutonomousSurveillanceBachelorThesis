@@ -21,7 +21,7 @@ namespace AStar
 		{
 			this->fromParent = getDistance(parent);
 			this->fromStart = this->parent->getFromStart() + this->fromParent;
-			this->fromStart *= this->parent->node->getCost();//zde zahrnu do výpoètù cenu podle vzdálenosti od pøekážek. Petrlík cenou hodnotu fromStart násobil, ale pøijde mi logiètìjší pøièítání. Vytkouším pøièítání pozdìji
+			this->fromStart += this->parent->node->getCost();//zde zahrnu do výpoètù cenu podle vzdálenosti od pøekážek. Petrlík cenou hodnotu fromStart násobil, ale pøijde mi logiètìjší pøièítání. Vytkouším pøièítání pozdìji
 		}
 		this->coords = std::string("x:") + std::to_string(node->getPoint()->getX()) + std::string(",y:") + std::to_string(node->getPoint()->getY());
 		this->heuristicToEnd = 0;

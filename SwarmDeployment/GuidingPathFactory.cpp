@@ -4,7 +4,7 @@
 namespace App
 {
 
-	GuidingPathFactory::GuidingPathFactory(shared_ptr<LoggerInterface> logger) : logger(logger), algorithm(make_shared<AStar::AStar>())
+	GuidingPathFactory::GuidingPathFactory(shared_ptr<LoggerInterface> logger) : logger(logger), algorithm(make_shared<AStar::AStar>(logger))
 	{
 	}
 

@@ -67,17 +67,8 @@ namespace App
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 
-//		try
-//		{
-			rrtPath(paths, configuration, map);
-			file.close();
-//		} catch(const rrtPathError& error)
-//		{
-			file.close();
-//			throw error;
-//		}
-//		testGui();
-
+//		rrtPath(paths, configuration, map);
+//		file.close();
 	}
 
 	void Core::testGui()
