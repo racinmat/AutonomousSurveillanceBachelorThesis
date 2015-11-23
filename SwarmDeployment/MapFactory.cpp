@@ -93,7 +93,9 @@ namespace App
 			map6->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map6->addGoal(make_shared<Goal>(701, 701, 150, 150));
-		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 470));
+//		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 470));
+//		map6->addObstacle(make_shared<Obstacle>(400, 480, 200, 520));
+		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 460));
 		map6->addObstacle(make_shared<Obstacle>(400, 480, 200, 520));
 		maps.push_back(map6);
 

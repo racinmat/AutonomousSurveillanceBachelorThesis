@@ -206,12 +206,16 @@ namespace App
 		vector<shared_ptr<Node>> startingNodes = vector<shared_ptr<Node>>();
 		for (auto node : nodes)
 		{
-			for (auto uav : map->getUavsStart())
+			//todo: zjistit, proè pøi mapì 6 a aStarCellSize = 9 se objevují empty prvky
+			if(node)
 			{
-				if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
+				for (auto uav : map->getUavsStart())
 				{
-					startingNodes.push_back(node);
-					break;
+					if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
+					{
+						startingNodes.push_back(node);
+						break;
+					}
 				}
 			}
 		}

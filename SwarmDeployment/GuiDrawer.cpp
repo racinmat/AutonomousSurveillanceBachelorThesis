@@ -58,36 +58,38 @@ namespace Ui
 
 	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
 	{
-		QTextStream cout(stdout);
-		cout << "logging map grid" << endl;
-		int x = 5;
-		for (auto row : mapGrid)
-		{
-			int y = 35;
-			for (auto grid : row)
-			{
-				std::string gridText;
-				switch (grid)
-				{
-				case App::Grid::Obstacle: gridText = "obstacle"; break;
-				case App::Grid::Free: gridText = "free"; break;
-				case App::Grid::Goal: gridText = "goal"; break;
-				case App::Grid::UAV: gridText = "uav"; break;
-				}
-				addText(QString::fromStdString(gridText), x, y);
-				y += 50;
-			}
-			x += 50;
-		}
-		mainWindow->updateView();
+//		int cellSize = configuration->getAStarCellSize();
+//		QTextStream cout(stdout);
+//		cout << "logging map grid" << endl;
+//		int x = 5;
+//		for (auto row : mapGrid)
+//		{
+//			int y = 35;
+//			for (auto grid : row)
+//			{
+//				std::string gridText;
+//				switch (grid)
+//				{
+//				case App::Grid::Obstacle: gridText = "obstacle"; break;
+//				case App::Grid::Free: gridText = "free"; break;
+//				case App::Grid::Goal: gridText = "goal"; break;
+//				case App::Grid::UAV: gridText = "uav"; break;
+//				}
+//				addText(QString::fromStdString(gridText), x, y);
+//				y += cellSize;
+//			}
+//			x += cellSize;
+//		}
+//		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
 	{
-		scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::yellow), QBrush(Qt::yellow));
+		int cellSize = configuration->getAStarCellSize();
+		scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::yellow), QBrush(Qt::yellow));
 		for (auto end : ends)
 		{
-			scene->addRect(start->getPoint()->getX() - 25, start->getPoint()->getY() - 25, 50, 50, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
+			scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
 		}
 
 		for (auto path : paths)
@@ -170,14 +172,15 @@ namespace Ui
 		double height = view->height();
 		double width = view->width();
 
-		for (int i = 0; i <= height; i += 50)
+		int cellSize = configuration->getAStarCellSize();
+		for (int i = 0; i <= height; i += cellSize)
 		{
 			scene->addLine(i, 0, i, height, QPen(Qt::gray));
 			QString number = QString("%1").arg(i);
 			addText(number, i - 0 - 6 * number.size(), 0);
 		}
 
-		for (int i = 0; i <= width; i += 50)
+		for (int i = 0; i <= width; i += cellSize)
 		{
 			scene->addLine(0, i, width, i, QPen(Qt::gray));
 			QString number = QString("%1").arg(i);
