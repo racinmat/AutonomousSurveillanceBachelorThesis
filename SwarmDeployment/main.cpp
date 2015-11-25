@@ -240,9 +240,9 @@ void testing()
 
 	//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 	//inputs jsou vstupy do modelu
-	for (size_t i = 0; i < 10000; i++)
+	for (size_t i = 0; i < 1000; i++)
 	{
-		auto inputs = core->generator.generateNTuplet(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = core->generator.generateNTuplet(oneUavInputs, near_node->uavs);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 	}
 	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 

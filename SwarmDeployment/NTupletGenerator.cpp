@@ -13,13 +13,21 @@ namespace App
 	{
 	}
 
+	vector<unordered_map<App::Uav, shared_ptr<Point>, UavHasher>> NTupletGenerator::generateNTuplet(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys)
+	{
+		string stringRepresentation = argumentsToString(usedChars, tupletKeys);
+		if (isInCache(stringRepresentation))
+		{
+			return cache[stringRepresentation];
+		}
+
+		auto list = generateNTuplet(usedChars, tupletKeys, tupletKeys.size() - 1);	//index posledního prvku
+		cache[stringRepresentation] = list;
+		return list;
+	}
+
 	vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> NTupletGenerator::generateNTuplet(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index)
 	{
-//		string stringRepresentation = argumentsToString(usedChars, tupletKeys, index);
-//		if (isInCache(stringRepresentation))
-//		{
-//			return cache[stringRepresentation];
-//		}
 
 		auto list = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>();	//todo: popøemýšlet, jak to refactorovat, aby se mohlo pracovat s fixní velikostí  pole
 																									//		vector<vector<T>> list = vector<vector<T>>(pow(usedChars.size(), tupletClass));
@@ -40,7 +48,6 @@ namespace App
 			}
 		}
 
-//		cache[stringRepresentation] = list;
 		return list;
 	}
 
@@ -57,7 +64,7 @@ namespace App
 		return false;
 	}
 
-	string NTupletGenerator::argumentsToString(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index)
+	string NTupletGenerator::argumentsToString(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys)
 	{
 		string string = "";
 		for (auto point : usedChars)
@@ -68,7 +75,6 @@ namespace App
 		{
 			string += "id:" + to_string(uav->getId());
 		}
-		string += to_string(index);
 		return string;
 	}
 }
