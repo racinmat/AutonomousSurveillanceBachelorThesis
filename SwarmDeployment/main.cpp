@@ -1,6 +1,6 @@
-#include "mainwindow.h"					//zakomentovat pro noGui
+//include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-#include <QtWidgets/QApplication> 		//zakomentovat pro noGui
+//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -15,18 +15,18 @@
 int runGui(int argc, char *argv[])
 {
 	int returnValue = 0;
-	QApplication a(argc, argv);
-	MainWindow w;
-	auto configuration = std::make_shared<App::Configuration>();
-	auto core = std::make_shared<App::Core>(configuration);
-	configuration->setCore(core);
-	core->setLogger(w.getLogger());
-
-	w.setConfiguration(configuration);
-	w.setCore(core);
-	w.show();
-
-	returnValue = a.exec();
+//	QApplication a(argc, argv);
+//	MainWindow w;
+//	auto configuration = std::make_shared<App::Configuration>();
+//	auto core = std::make_shared<App::Core>(configuration);
+//	configuration->setCore(core);
+//	core->setLogger(w.getLogger());
+//
+//	w.setConfiguration(configuration);
+//	w.setCore(core);
+//	w.show();
+//
+//	returnValue = a.exec();
 	return returnValue;
 }
 
@@ -242,7 +242,7 @@ void testing()
 	//inputs jsou vstupy do modelu
 	for (size_t i = 0; i < 10000; i++)
 	{
-		vector<vector<shared_ptr<App::Point>>> inputs = core->generator.generateNTuplet<shared_ptr<App::Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = core->generator.generateNTuplet(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 	}
 	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 
@@ -296,11 +296,11 @@ void testing()
 //	cout << arr1[0] << endl;	//10
 //	cout << arr2[0] << endl;	//1
 
-	shared_ptr<B> a = make_shared<B>();
-	shared_ptr<B> c = make_shared<B>();
-	//	a->ints.push_back(5);
-	shared_ptr<B> b = make_shared<B>(*a.get());
-	shared_ptr<B> d = c;
+//	shared_ptr<B> a = make_shared<B>();
+//	shared_ptr<B> c = make_shared<B>();
+//	//	a->ints.push_back(5);
+//	shared_ptr<B> b = make_shared<B>(*a.get());
+//	shared_ptr<B> d = c;
 	//	cout << a->ints[0] << endl;
 //	cout << b->ints[0] << endl;
 //
@@ -309,45 +309,45 @@ void testing()
 //	cout << a->ints[0] << endl;
 //	cout << b->ints[0] << endl;
 
-	unordered_map<string, int> map1;
-	map1["Jedna"] = 1;
-	map1["Dva"] = 2;
-	map1["Tøi"] = 3;
-
-	unordered_map<B, int, BHasher> map;
-	map[*a.get()] = 1;
-	map[*b.get()] = 2;
-	map[*c.get()] = 3;
-	map[*d.get()] = 4;
-
-	//heureka, koneènì pro mapu a == b
-	cout << map[*a.get()] << endl; //2
-	cout << map[*b.get()] << endl; //2
-	cout << map[*c.get()] << endl; //4
-	cout << map[*d.get()] << endl; //4
-
-	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
-	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
-	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
-	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
-
-	unordered_map<shared_ptr<B>, int, BPtrHasher> map2;
-	map2[a] = 1;
-	map2[b] = 2;
-	map2[c] = 3;
-	map2[d] = 4;
-
-	//heureka, koneènì pro mapu a == b
-	cout << map2[a] << endl; //2
-	cout << map2[b] << endl; //2
-	cout << map2[c] << endl; //4
-	cout << map2[d] << endl; //4
-
-	cout << "shared pointers:" << endl;
-	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
-	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
-	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
-	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
+//	unordered_map<string, int> map1;
+//	map1["Jedna"] = 1;
+//	map1["Dva"] = 2;
+//	map1["Tøi"] = 3;
+//
+//	unordered_map<B, int, BHasher> map;
+//	map[*a.get()] = 1;
+//	map[*b.get()] = 2;
+//	map[*c.get()] = 3;
+//	map[*d.get()] = 4;
+//
+//	//heureka, koneènì pro mapu a == b
+//	cout << map[*a.get()] << endl; //2
+//	cout << map[*b.get()] << endl; //2
+//	cout << map[*c.get()] << endl; //4
+//	cout << map[*d.get()] << endl; //4
+//
+//	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
+//	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
+//	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
+//	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
+//
+//	unordered_map<shared_ptr<B>, int, BPtrHasher> map2;
+//	map2[a] = 1;
+//	map2[b] = 2;
+//	map2[c] = 3;
+//	map2[d] = 4;
+//
+//	//heureka, koneènì pro mapu a == b
+//	cout << map2[a] << endl; //2
+//	cout << map2[b] << endl; //2
+//	cout << map2[c] << endl; //4
+//	cout << map2[d] << endl; //4
+//
+//	cout << "shared pointers:" << endl;
+//	cout << "a == b: " << (*a.get() == *b.get()) << endl;	//true
+//	cout << "c == d: " << (*c.get() == *d.get()) << endl;	//true
+//	cout << "a == c: " << (*a.get() == *c.get()) << endl;	//false
+//	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
 
 
 	cin.get();
@@ -358,8 +358,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 	return returnValue;
 }
 

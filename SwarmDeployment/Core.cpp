@@ -497,7 +497,7 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
-		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> inputs = generator.generateNTuplet<shared_ptr<Point>>(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = generator.generateNTuplet(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 																												//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
