@@ -2,6 +2,7 @@
 #include "Point.h"
 #include "Uav.h"
 #include "NTupletGenerator.h"
+#include <map>
 
 namespace App
 {

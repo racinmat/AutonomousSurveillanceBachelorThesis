@@ -1,6 +1,4 @@
-//include "mainwindow.h"					//zakomentovat pro noGui
 #include "Configuration.h"
-//include <QtWidgets/QApplication> 		//zakomentovat pro noGui
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -9,26 +7,10 @@
 #include <valarray>
 #include "easyloggingpp-9.80\src\easylogging++.h"
 #include <unordered_map>
+#include "Gui.h"					//zakomentovat pro noGui
 
 //INITIALIZE_EASYLOGGINGPP
 
-int runGui(int argc, char *argv[])
-{
-	int returnValue = 0;
-//	QApplication a(argc, argv);
-//	MainWindow w;
-//	auto configuration = std::make_shared<App::Configuration>();
-//	auto core = std::make_shared<App::Core>(configuration);
-//	configuration->setCore(core);
-//	core->setLogger(w.getLogger());
-//
-//	w.setConfiguration(configuration);
-//	w.setCore(core);
-//	w.show();
-//
-//	returnValue = a.exec();
-	return returnValue;
-}
 
 int run(int argc, char *argv[])
 {
@@ -231,7 +213,7 @@ void testing()
 
 	//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 	//inputs jsou vstupy do modelu
-	for (size_t i = 0; i < 1000; i++)
+	for (size_t i = 0; i < 10000; i++)
 	{
 		distance_of_new_nodes = 20 * (i % 10);	//10 rùzných vstupù do generátoru, abych zjistil rychlost s cache
 		auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->uavs);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
@@ -354,8 +336,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
-	testing();
+	returnValue = runGui(argc, argv);
+//	testing();
 	return returnValue;
 }
 
