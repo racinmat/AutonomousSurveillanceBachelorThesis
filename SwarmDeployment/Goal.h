@@ -14,7 +14,7 @@ namespace App
 		Goal(int x, int y, int width, int height);
 		virtual ~Goal();
 		std::shared_ptr<Rectangle> rectangle; //todo: pøesunout do private
-		bool is_near(shared_ptr<Point> location);
+		bool contains(shared_ptr<Point> location);
 		friend bool operator==(const Goal& lhs, const Goal& rhs);
 		friend bool operator!=(const Goal& lhs, const Goal& rhs);
 		friend std::size_t hash_value(const Goal& obj);

@@ -6,9 +6,11 @@ namespace App
 
 	Map::Map()
 	{
-		obstacles = std::vector<shared_ptr<Obstacle>>();
-		goals = std::vector<shared_ptr<Goal>>();
-		uavsStart = std::vector<shared_ptr<Uav>>();
+		obstacles = vector<shared_ptr<Obstacle>>();
+		goals = vector<shared_ptr<Goal>>();
+		goals = vector<shared_ptr<Goal>>();
+		uavsStart = vector<shared_ptr<Uav>>();
+		goalGroup = make_shared<GoalGroup>();
 	}
 
 	Map::~Map()
@@ -18,6 +20,7 @@ namespace App
 	void Map::addGoal(shared_ptr<Goal> goal)
 	{
 		goals.push_back(goal);
+		goalGroup->addGoal(goal);
 	}
 
 	size_t Map::countGoals() const
@@ -25,12 +28,12 @@ namespace App
 		return goals.size();
 	}
 
-	std::vector<shared_ptr<Goal>> Map::getGoals()
+	vector<shared_ptr<Goal>> Map::getGoals()
 	{
 		return goals;
 	}
 
-	std::vector<shared_ptr<Obstacle>> Map::getObstacles()
+	vector<shared_ptr<Obstacle>> Map::getObstacles()
 	{
 		return obstacles;
 	}
@@ -40,7 +43,7 @@ namespace App
 		uavsStart.push_back(start);
 	}
 
-	std::vector<shared_ptr<Uav>> Map::getUavsStart()
+	vector<shared_ptr<Uav>> Map::getUavsStart()
 	{
 		return uavsStart;
 	}

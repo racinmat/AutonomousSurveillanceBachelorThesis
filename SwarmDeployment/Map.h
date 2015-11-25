@@ -3,6 +3,7 @@
 #include "Obstacle.h"
 #include <vector>
 #include <memory>
+#include "GoalGroup.h"
 
 using namespace std;
 
@@ -18,16 +19,17 @@ namespace App
 		void addObstacle(shared_ptr<Obstacle> obstacle);
 		void addGoal(shared_ptr<Goal> goal);
 		size_t countGoals() const;
-		std::vector<shared_ptr<Goal>> getGoals();
-		std::vector<shared_ptr<Obstacle>> getObstacles();
+		vector<shared_ptr<Goal>> getGoals();
+		vector<shared_ptr<Obstacle>> getObstacles();
 		void addUavStart(shared_ptr<Uav> start);
-		std::vector<shared_ptr<Uav>> getUavsStart();
+		vector<shared_ptr<Uav>> getUavsStart();
 		int countUavs() const;
 
 	protected:
-		std::vector<shared_ptr<Goal>> goals;
-		std::vector<shared_ptr<Obstacle>> obstacles;
-		std::vector<shared_ptr<Uav>> uavsStart;
+		vector<shared_ptr<Goal>> goals;
+		vector<shared_ptr<Obstacle>> obstacles;
+		vector<shared_ptr<Uav>> uavsStart;
+		shared_ptr<GoalGroup> goalGroup;
 	};
 
 }

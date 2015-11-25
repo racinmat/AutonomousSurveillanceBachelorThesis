@@ -5,7 +5,7 @@ namespace App
 
 	Rectangle::Rectangle(int x, int y, int width, int height)
 	{
-		location = std::make_shared<Point>(x, y);
+		location = make_shared<Point>(x, y);
 		m_height = height;
 		m_width = width;
 	}
@@ -30,7 +30,7 @@ namespace App
 		m_width = width;
 	}
 
-	bool Rectangle::contains(std::shared_ptr<Point> point)
+	bool Rectangle::contains(shared_ptr<Point> point)
 	{
 		return point->getX() >= getX() && point->getX() <= (getX() + getWidth()) && point->getY() >= getY() && point->getY() <= (getY() + getHeight());
 	}
@@ -38,6 +38,11 @@ namespace App
 	double Rectangle::getVolume() const
 	{
 		return getHeight() * getWidth();
+	}
+
+	shared_ptr<Point> Rectangle::getMiddle()
+	{
+		return make_shared<Point>(getX() + getWidth()/2, getY() + getHeight()/2);
 	}
 
 	int Rectangle::getX() const
@@ -72,12 +77,12 @@ namespace App
 		return !(lhs == rhs);
 	}
 
-	std::size_t hash_value(const Rectangle& obj)
+	size_t hash_value(const Rectangle& obj)
 	{
-		std::size_t seed = 0x686FF752;
+		size_t seed = 0x686FF752;
 		seed ^= (seed << 6) + (seed >> 2) + 0x6F4193A6 + hash_value(*obj.location.get());
-		seed ^= (seed << 6) + (seed >> 2) + 0x528663F5 + static_cast<std::size_t>(obj.m_height);
-		seed ^= (seed << 6) + (seed >> 2) + 0x4AC2A83C + static_cast<std::size_t>(obj.m_width);
+		seed ^= (seed << 6) + (seed >> 2) + 0x528663F5 + static_cast<size_t>(obj.m_height);
+		seed ^= (seed << 6) + (seed >> 2) + 0x4AC2A83C + static_cast<size_t>(obj.m_width);
 		return seed;
 	}
 }

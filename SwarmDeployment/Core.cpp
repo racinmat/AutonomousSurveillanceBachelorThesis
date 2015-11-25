@@ -64,7 +64,9 @@ namespace App
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
-		MapProcessor mapProcessor = MapProcessor(logger);
+		MapProcessor mapProcessor = MapProcessor(logger);	
+		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
+		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
 		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
 		auto paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
@@ -664,7 +666,7 @@ namespace App
 		{
 			for (auto uav : uavs)
 			{
-				if (goal->is_near(uav->getPointParticle()->getLocation()))
+				if (goal->contains(uav->getPointParticle()->getLocation()))
 				{
 					uav->setReachedGoal(goal);
 				}

@@ -2,6 +2,8 @@
 #include "Point.h"
 #include <memory>
 
+using namespace std;
+
 namespace App
 {
 
@@ -18,14 +20,15 @@ namespace App
 		void setY(int y);
 		void setHeight(int height);
 		void setWidth(int width);
-		bool contains(std::shared_ptr<Point> point);
+		bool contains(shared_ptr<Point> point);
 		double getVolume() const;
 		friend bool operator==(const Rectangle& lhs, const Rectangle& rhs);
 		friend bool operator!=(const Rectangle& lhs, const Rectangle& rhs);
-		friend std::size_t hash_value(const Rectangle& obj);
+		friend size_t hash_value(const Rectangle& obj);
+		shared_ptr<Point> getMiddle();
 
 	protected:
-		std::shared_ptr<Point> location;
+		shared_ptr<Point> location;
 		int m_height;
 		int m_width;
 

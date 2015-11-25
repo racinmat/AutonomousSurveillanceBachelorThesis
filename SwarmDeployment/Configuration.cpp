@@ -37,7 +37,7 @@ namespace App
 		localizationAngle = PI / 2;
 		requiredNeighbors = 1;
 		checkFov = false;
-		allowSwarmSplitting = true;
+		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
 		stop = false;
 		textOutputEnabled = false;
 		narrowPassageDivisor = 1;
