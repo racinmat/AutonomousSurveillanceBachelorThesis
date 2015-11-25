@@ -192,6 +192,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="InputGenerator.cpp" />
     <ClCompile Include="LoggerInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp">
@@ -304,6 +305,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="InputGenerator.h" />
     <ClInclude Include="LoggerInterface.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapFactory.h" />

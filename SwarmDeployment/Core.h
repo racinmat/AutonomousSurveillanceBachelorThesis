@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include "Output.h"
 #include "NTupletGenerator.h"
+#include "InputGenerator.h"
 
 using namespace std;
 
@@ -50,14 +51,12 @@ namespace App
 		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 
-		NTupletGenerator generator;
-
 	protected:
 		shared_ptr<LoggerInterface> logger;
 		vector<shared_ptr<Map>> maps;
 		shared_ptr<Configuration> configuration;
 		shared_ptr<StateFactory> stateFactory;
-
+		shared_ptr<InputGenerator> inputGenerator;
 
 		void testGui();
 

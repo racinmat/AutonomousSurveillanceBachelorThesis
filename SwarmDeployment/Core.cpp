@@ -33,12 +33,15 @@ namespace App
 
 	Core::Core(shared_ptr<Configuration> configuration) :
 		logger(make_shared<LoggerInterface>()), configuration(configuration), 
-		stateFactory(make_shared<StateFactory>(configuration))
+		stateFactory(make_shared<StateFactory>(configuration)),
+		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi()))
 	{
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
 		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
 		maps = mapFactory.createMaps(configuration->getUavCount());	
+
+		//todo: udìlat nìjakou inicializaci, která bude mimo kontruktor, abych i mohl zavolat vždy na zaèátku runu, aby se proèistily cache, apod.
 	}
 
 
@@ -481,23 +484,11 @@ namespace App
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = near_node->uavs.size();
 		int inputCount = configuration->getInputCount();
-		vector<shared_ptr<Point>> oneUavInputs = vector<shared_ptr<Point>>();
 		shared_ptr<State> new_node;
-
-		for (size_t k = 0; k < input_samples_dist; k++)
-		{
-			for (size_t m = 0; m < input_samples_phi; m++)
-			{
-				double x = distance_of_new_nodes / pow(1.5,k);
-				double y = -max_turn + 2 * m * max_turn / (input_samples_phi - 1);
-				shared_ptr<Point> point = make_shared<Point>(x, y);
-				oneUavInputs.push_back(point);
-			}
-		}
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
-		auto inputs = generator.generateNTuplet(oneUavInputs, near_node->uavs);		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, near_node->uavs);		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 																												//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV

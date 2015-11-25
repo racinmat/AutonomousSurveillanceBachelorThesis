@@ -225,6 +225,9 @@
     <ClCompile Include="NTupletGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -389,6 +392,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NTupletGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

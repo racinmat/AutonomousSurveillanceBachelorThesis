@@ -220,17 +220,8 @@ void testing()
 	int inputCount = configuration->getInputCount();
 	vector<shared_ptr<App::Point>> oneUavInputs = vector<shared_ptr<App::Point>>();
 	shared_ptr<App::State> new_node;
+	App::InputGenerator generator(input_samples_dist, input_samples_phi);
 
-	for (size_t k = 0; k < input_samples_dist; k++)
-	{
-		for (size_t m = 0; m < input_samples_phi; m++)
-		{
-			double x = distance_of_new_nodes / pow(1.5, k);
-			double y = -max_turn + 2 * m * max_turn / (input_samples_phi - 1);
-			shared_ptr<App::Point> point = make_shared<App::Point>(x, y);
-			oneUavInputs.push_back(point);
-		}
-	}
 
 	clock_t start;
 	double duration;
@@ -242,11 +233,16 @@ void testing()
 	//inputs jsou vstupy do modelu
 	for (size_t i = 0; i < 1000; i++)
 	{
-		auto inputs = core->generator.generateNTuplet(oneUavInputs, near_node->uavs);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		distance_of_new_nodes = 20 * (i % 10);	//10 rùzných vstupù do generátoru, abych zjistil rychlost s cache
+		auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->uavs);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		//pokud mám 10 vstupù v cache u samotného NTupleGeneratoru, je to asi 2x pomalejší než bez cache. Takže pro samotný NTupleGenerator cache nepoužívat
+		//místo toho použiju cache pro celé generování vstupù
+		//asi 800 ms na 1000 bìhù a 10 vstupù
+		//s cache asi 300 ms na 1000 bìhù a 10 vstupù
 	}
 	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 
-	cout << to_string(duration) << " miliseconds to make 4tuple 10000 times" << endl;
+	cout << to_string(duration) << " miliseconds to make inputs 1000 times" << endl;
 
 	/*
 	for (size_t i = 0; i < inputs.size(); i++)
