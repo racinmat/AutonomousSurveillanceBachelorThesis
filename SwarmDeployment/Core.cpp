@@ -37,8 +37,8 @@ namespace App
 	{
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
-		MapFactory mapFactory;
-		maps = mapFactory.createMaps(configuration->getUavCount());
+		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
+		maps = mapFactory.createMaps(configuration->getUavCount());	
 	}
 
 
@@ -55,6 +55,10 @@ namespace App
 
 		start = clock();
 
+		MapFactory mapFactory;
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+
+
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 		MapProcessor mapProcessor = MapProcessor(logger);
@@ -67,8 +71,8 @@ namespace App
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 
-//		rrtPath(paths, configuration, map);
-//		file.close();
+		rrtPath(paths, configuration, map);
+		file.close();
 	}
 
 	void Core::testGui()
@@ -91,7 +95,7 @@ namespace App
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 	}
 
-	void Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map)
+	shared_ptr<Output> Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map)
 	{
 //		throw 22;
 //		throw runtime_error("No valid input found.");
@@ -217,7 +221,7 @@ namespace App
 				isGoalReached = isGoalReached && uav->isGoalReached();
 			}
 
-			output->distance_of_new_nodes = vector<double>(nodes.size());
+			output->distancesToGoal = vector<double>(nodes.size());
 			if (isGoalReached) // pokud je nalezen cíl
 			{
 				output->goal_reached = vector<shared_ptr<Goal>>();
@@ -231,7 +235,7 @@ namespace App
 				logger->logText(buffer);
 				m++;
 			}
-			output->distance_of_new_nodes[i] = distance_of_new_nodes;
+			output->distancesToGoal[i] = distance_of_new_nodes;
 
 			if (i % configuration->getDrawPeriod() == 0)
 			{
@@ -250,6 +254,7 @@ namespace App
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
 		logger->logText("RRT-Path finished");
+		return output;
 	}
 
 	unordered_map<Uav, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state)
@@ -491,8 +496,8 @@ namespace App
 		}
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
-		//inputs jsou vstupy do modelu
-		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> inputs = generateNTuplet<shared_ptr<Point>>(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
+		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> inputs = generator.generateNTuplet<shared_ptr<Point>>(oneUavInputs, near_node->uavs, uavCount - 1);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 																												//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
@@ -1014,52 +1019,5 @@ namespace App
 		return make_shared<Point>(px, py);
 	}
 
-	// Zde je java implementace, ze které vycházím https ://cs.wikipedia.org/wiki/Variace_(algoritmus)
-	template<typename T> vector<vector<T>> Core::generateNTuplet(vector<T> usedChars, int tupletClass)
-	{
-		vector<vector<T>> list = vector<vector<T>>();	//todo: popøemýšlet, jak to refactorovat, aby se mohlo pracovat s fixní velikostí  pole
-//		vector<vector<T>> list = vector<vector<T>>(pow(usedChars.size(), tupletClass));
-
-		if(tupletClass == 0)
-		{
-			list.push_back(vector<T>());
-		} else
-		{
-			vector<vector<T>> tuplet = generateNTuplet(usedChars, tupletClass - 1);
-			for (T character : usedChars)
-			{
-				for (auto row : tuplet)
-				{
-					row.push_back(character);
-					list.push_back(row);
-				}
-			}
-		}
-		return list;
-	}
-
-	template <typename T>
-	vector<unordered_map<Uav, T, UavHasher>> Core::generateNTuplet(vector<T> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index)
-	{
-		vector<unordered_map<Uav, T, UavHasher>> list = vector<unordered_map<Uav, T, UavHasher>>();	//todo: popøemýšlet, jak to refactorovat, aby se mohlo pracovat s fixní velikostí  pole
-														//		vector<vector<T>> list = vector<vector<T>>(pow(usedChars.size(), tupletClass));
-		if (index < 0)
-		{
-			list.push_back(unordered_map<Uav, T, UavHasher>());
-		}
-		else
-		{
-			vector<unordered_map<Uav, T, UavHasher>> tuplet = generateNTuplet(usedChars, tupletKeys, index - 1);
-			for (T character : usedChars)
-			{
-				for (auto row : tuplet)
-				{
-					row[*tupletKeys[index].get()] = character;
-					list.push_back(row);
-				}
-			}
-		}
-		return list;
-	}
 
 }

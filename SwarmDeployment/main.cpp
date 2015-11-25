@@ -201,7 +201,7 @@ void testing()
 //	cout << "tri1:" << ColDetect::coldetect(tri_uav, tri1_obs[j], trans, zero_trans) << endl;
 //	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
 
-	/* testování rychlosti motion modelu kvùli optimalizaci
+	// testování rychlosti motion modelu kvùli optimalizaci
 	auto configuration = make_shared<App::Configuration>();
 	auto core = make_shared<App::Core>(configuration);
 
@@ -238,12 +238,17 @@ void testing()
 	start = clock();
 
 
-
-
 	//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 	//inputs jsou vstupy do modelu
-	vector<vector<shared_ptr<App::Point>>> inputs = core->generateNTuplet<shared_ptr<App::Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+	for (size_t i = 0; i < 10000; i++)
+	{
+		vector<vector<shared_ptr<App::Point>>> inputs = core->generator.generateNTuplet<shared_ptr<App::Point>>(oneUavInputs, uavCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+	}
+	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 
+	cout << to_string(duration) << " miliseconds to make 4tuple 10000 times" << endl;
+
+	/*
 	for (size_t i = 0; i < inputs.size(); i++)
 	{
 		auto input = inputs[i];
@@ -253,7 +258,7 @@ void testing()
 	duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 
 	cout << to_string(duration) << " miliseconds to calculate car like motion model" << endl;
-	*/
+*/	
 
 // toto nemodifikuje pole
 //	auto ratios = vector<double>(5); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths

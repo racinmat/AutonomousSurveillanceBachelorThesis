@@ -222,6 +222,9 @@
     <ClCompile Include="GuidingPathsCurrentPositions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NTupletGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -383,6 +386,9 @@
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="GuidingPathsCurrentPositions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NTupletGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

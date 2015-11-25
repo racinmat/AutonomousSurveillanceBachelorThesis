@@ -83,21 +83,21 @@ namespace Ui
 
 	void GuiDrawer::logMapNodes(vector<shared_ptr<App::Node>> nodes)
 	{
-		int cellSize = configuration->getAStarCellSize();
-		int x = - 12;
-		int y = 12;
-		for (auto node : nodes)
-		{
-			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
-		}
-		mainWindow->updateView();
+//		int cellSize = configuration->getAStarCellSize();
+//		int x = - 12;
+//		int y = 12;
+//		for (auto node : nodes)
+//		{
+//			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
+//		}
+//		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logAStarNode(shared_ptr<AStar::NodeWrapper> node)
 	{
-		auto previous = node->getParent();
-		scene->addLine(previous->getX(), previous->getY(), node->getX(), node->getY(), QPen(Qt::green));
-		mainWindow->updateView();
+//		auto previous = node->getParent();
+//		scene->addLine(previous->getX(), previous->getY(), node->getX(), node->getY(), QPen(Qt::green));
+//		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)

@@ -8,7 +8,7 @@ namespace App
 
 	Configuration::Configuration()
 	{
-		aStarCellSize = 25;
+		aStarCellSize = 50;
 		mapNumber = 5;
 		uavCount = 4;
 		worldHeight = 1000;
@@ -22,10 +22,10 @@ namespace App
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
 		debug = true;
-//		distanceOfNewNodes = 30;
-//		guidingNearDist = 40;
-		distanceOfNewNodes = 60;
-		guidingNearDist = 80;
+		distanceOfNewNodes = 30;
+		guidingNearDist = 40;
+//		distanceOfNewNodes = 60;
+//		guidingNearDist = 80;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
@@ -39,8 +39,8 @@ namespace App
 		checkFov = false;
 		allowSwarmSplitting = true;
 		stop = false;
-		textOutputEnabled = true;
-		narrowPassageDivisor = 2;
+		textOutputEnabled = false;
+		narrowPassageDivisor = 1;
 		exitNarrowPassageTreshold = 5;
 		narrowPassageCount = 0;
 		divisionCount = 0;

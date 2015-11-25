@@ -207,6 +207,7 @@
     <ClCompile Include="MapProcessor.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeWrapper.cpp" />
+    <ClCompile Include="NTupletGenerator.cpp" />
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="OpenedSet.cpp" />
     <ClCompile Include="Output.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="MapProcessor.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeWrapper.h" />
+    <ClInclude Include="NTupletGenerator.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="OpenedSet.h" />
     <ClInclude Include="Output.h" />
