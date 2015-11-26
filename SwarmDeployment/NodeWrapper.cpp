@@ -49,7 +49,7 @@ namespace AStar
 
 	std::set<std::shared_ptr<NodeWrapper>> NodeWrapper::expand(std::shared_ptr<App::Node> endNode)
 	{
-		auto expanded = this->node->getNeighbors();
+		auto expanded = this->node->getNeighborsWithoutObstacles();
 		auto expandedWrapper = std::set<std::shared_ptr<NodeWrapper>>();
 		for (auto node : expanded) {
 			expandedWrapper.insert(std::make_shared<NodeWrapper>(shared_from_this(), node, endNode));

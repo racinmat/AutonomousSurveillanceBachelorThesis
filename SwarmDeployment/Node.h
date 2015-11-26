@@ -19,6 +19,7 @@ namespace App
 		shared_ptr<Point> getPoint() const;
 		double getCost() const;
 		vector<shared_ptr<Node>> getNeighbors() const;
+		vector<shared_ptr<Node>> getNeighborsWithoutObstacles() const;
 		vector<shared_ptr<Node>> getDirectNeighbors() const;
 		void addNeighbor(shared_ptr<Node> node, bool isDiagonal);
 		void increaseCost(double increase);

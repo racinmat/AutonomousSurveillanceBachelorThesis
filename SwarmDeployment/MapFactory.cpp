@@ -19,11 +19,11 @@ namespace App
 			map0->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI/2));
 		}
 		map0->addGoal(make_shared<Goal>(651, 701, 348, 148));
-		map0->addObstacle(make_shared<Obstacle>(0, 400, 700, 50));
-		map0->addObstacle(make_shared<Obstacle>(250, 600, 750, 50));
-		map0->addObstacle(make_shared<Obstacle>(400, 0, 50, 200));
-		map0->addObstacle(make_shared<Obstacle>(200, 600, 50, 200));
-		map0->addObstacle(make_shared<Obstacle>(650, 200, 50, 200));
+		map0->addObstacle(make_shared<Obstacle>(0, 401, 698, 48));
+		map0->addObstacle(make_shared<Obstacle>(251, 601, 748, 48));
+		map0->addObstacle(make_shared<Obstacle>(401, 0, 48, 198));
+		map0->addObstacle(make_shared<Obstacle>(201, 601, 48, 198));
+		map0->addObstacle(make_shared<Obstacle>(651, 201, 48, 198));
 		maps.push_back(map0);
 
 		std::shared_ptr<Map> map1 = std::make_shared<Map>();
@@ -46,13 +46,13 @@ namespace App
 		}
 		map2->addGoal(make_shared<Goal>(651, 850, 230, 100));
 		map2->addGoal(make_shared<Goal>(651, 550, 230, 100));
-		map2->addObstacle(make_shared<Obstacle>(600, 650, 350, 200));
-		map2->addObstacle(make_shared<Obstacle>(49, 600, 400, 200));
-		map2->addObstacle(make_shared<Obstacle>(200, 100, 200, 400));
-		map2->addObstacle(make_shared<Obstacle>(100, 400, 100, 100));
-		map2->addObstacle(make_shared<Obstacle>(400, 400, 100, 100));
-		map2->addObstacle(make_shared<Obstacle>(600, 100, 300, 100));
-		map2->addObstacle(make_shared<Obstacle>(700, 200, 200, 299));
+		map2->addObstacle(make_shared<Obstacle>(601, 651, 348, 198));
+		map2->addObstacle(make_shared<Obstacle>(51, 601, 398, 198));
+		map2->addObstacle(make_shared<Obstacle>(201, 101, 198, 398));
+		map2->addObstacle(make_shared<Obstacle>(101, 401, 98, 98));
+		map2->addObstacle(make_shared<Obstacle>(401, 401, 98, 98));
+		map2->addObstacle(make_shared<Obstacle>(601, 101, 298, 98));
+		map2->addObstacle(make_shared<Obstacle>(701, 201, 198, 298));
 		maps.push_back(map2);
 
 		std::shared_ptr<Map> map3 = std::make_shared<Map>();
@@ -61,7 +61,7 @@ namespace App
 			map3->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map3->addGoal(make_shared<Goal>(701, 701, 150, 150));
-		map3->addObstacle(make_shared<Obstacle>(300, 300, 200, 400));
+		map3->addObstacle(make_shared<Obstacle>(301, 301, 198, 398));
 		maps.push_back(map3);
 
 		std::shared_ptr<Map> map4 = std::make_shared<Map>();

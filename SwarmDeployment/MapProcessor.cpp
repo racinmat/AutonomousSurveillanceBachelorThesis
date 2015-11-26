@@ -166,28 +166,23 @@ namespace App
 						if (
 							isNeighbor && !isOutOfMap
 						) {
-							if (node->getGridType() != Grid::Obstacle)	//nechci vùbec pracovat s pøekákami, protoe se s nimi v grafu nepracuje
-							{//zvıšení ceny, pokud je soused pøekáka
-								auto neighbor = nodes[(i + p) * mapGrid.size() + (j + q)];
-								if (neighbor)	//kontrola empty pointeru
+							auto neighbor = nodes[(i + p) * mapGrid.size() + (j + q)];
+							if (neighbor)	//kontrola empty pointeru
+							{
+								if (neighbor->getGridType() == Grid::Obstacle)
 								{
-									if (neighbor->getGridType() == Grid::Obstacle)
+									if (p == 0 || q == 0)	//pøímı soused
 									{
-										if (p == 0 || q == 0)	//pøímı soused
-										{
-											node->increaseCost(cost_neighbor);
-										}
-										else	//soused na diagonále
-										{
-											node->increaseCost(cost_diagonal);
-										}
+										node->increaseCost(cost_neighbor);
 									}
-									else		//pokud není soused pøekáka, pøidám jej mezi sousedy
+									else	//soused na diagonále
 									{
-										bool isDiagonal = p != 0 && q != 0;
-										node->addNeighbor(neighbor, isDiagonal);
+										node->increaseCost(cost_diagonal);
 									}
 								}
+								//sousedy pøidávám vdy, kvùli urèování vzdále nosti od pøekáek. u a staru si sousedy filtruju a expanduji jen do sousedù bez pøekáek
+								bool isDiagonal = p != 0 && q != 0;
+								node->addNeighbor(neighbor, isDiagonal);
 							}
 						}
 					}
@@ -291,11 +286,28 @@ namespace App
 		//nevím, jestli expandovat zvláš kadou pøekáku nebo najednou
 
 		//todo: vyzkoušet, jak je to s push_back a plnì neobsazenım vektorem		
-		vector<shared_ptr<Node>> openedNodes = vector<shared_ptr<Node>>(nodes.size());	//zezaèátku tam nasypu všechny nodes s pøekákami, ale budou všechny u sebe
-		copy_if(nodes.begin(), nodes.end(), openedNodes.begin(), [](shared_ptr<Node> node) {return node->getGridType() == Grid::Obstacle; });	//zkopírují se prvky, které nemají true, filtrovací funkce
+		vector<shared_ptr<Node>> openedNodes = vector<shared_ptr<Node>>();
+		for (auto node : nodes)
+		{
+			if (node->getGridType() == Grid::Obstacle)
+			{
+				openedNodes.push_back(node);
+			}
+		}
+
 		while (!openedNodes.empty())
 		{
-			auto node = openedNodes[0];
+			shared_ptr<Node> node;
+			do
+			{
+				node = openedNodes[0];
+				openedNodes.erase(remove(openedNodes.begin(), openedNodes.end(), node));	//erase remove idiom. for removing. really, c++? really?
+			} while (!node && !openedNodes.empty());	//kontrola null pointeru a neprázdného pole
+			if (!node)	//pole se vyprázdnilo a tak je node null
+			{
+				break;
+			}
+
 			if (node->getGridType() == Grid::Obstacle)
 			{
 				node->setDistanceToObstacle(0);
@@ -311,7 +323,6 @@ namespace App
 					openedNodes.push_back(neighbor);
 				}
 			}
-			openedNodes.erase(remove(openedNodes.begin(), openedNodes.end(), node));	//erase remove idiom. for removing. really, c++? really?
 		}
 	}
 }

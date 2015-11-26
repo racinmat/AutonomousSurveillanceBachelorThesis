@@ -31,17 +31,37 @@ namespace App
 	vector<shared_ptr<Node>> Node::getNeighbors() const
 	{
 		auto neighborNodes = vector<shared_ptr<Node>>(neighbors.size());
-		transform(neighbors.begin(), neighbors.end(), neighborNodes, [](tuple<shared_ptr<Node>, bool> i) {return get<0>(i); } );	//mapování pomocí lambda funkce, vytáhne z tuplu jen nody
+		transform(neighbors.begin(), neighbors.end(), neighborNodes.begin(), [](tuple<shared_ptr<Node>, bool> i) {return get<0>(i); } );	//mapování pomocí lambda funkce, vytáhne z tuplu jen nody
 		return neighborNodes;
+	}
+
+	vector<shared_ptr<Node>> Node::getNeighborsWithoutObstacles() const
+	{
+		auto neighborsWithoutObstacles = vector<shared_ptr<Node>>();	//copy_if nechává v poli prázdné prvky a já nevím, jak se jich zbavit
+		for (auto tuple : neighbors)
+		{
+			auto node = get<0>(tuple);
+			if (node->getGridType() != Grid::Obstacle)
+			{
+				neighborsWithoutObstacles.push_back(node);
+			}
+		}
+		return neighborsWithoutObstacles;
 	}
 
 	vector<shared_ptr<Node>> Node::getDirectNeighbors() const
 	{
-		auto directNeighbors = vector<shared_ptr<Node>>(neighbors.size());
-		copy_if(neighbors.begin(), neighbors.end(), directNeighbors.begin(), [](tuple<shared_ptr<Node>, bool> i) {return !get<1>(i); });	//zkopírují se prvky, které nemají true, filtrovací funkce
-		auto neighborNodes = vector<shared_ptr<Node>>(neighbors.size());
-		transform(directNeighbors.begin(), directNeighbors.end(), neighborNodes, [](tuple<shared_ptr<Node>, bool> i) {return get<0>(i); });	//mapování pomocí lambda funkce, vytáhne z tuplu jen nody
-		return neighborNodes;	//todo: vyzkoušet, jak funguje, když je v poli méně prvků než je alokováno (typické při filtraci)
+		auto directNeighbors = vector<shared_ptr<Node>>();	//copy_if nechává v poli prázdné prvky a já nevím, jak se jich zbavit
+		for (auto tuple : neighbors)
+		{
+			bool isDiagonal = get<1>(tuple);
+			auto node = get<0>(tuple);
+			if (!isDiagonal)	
+			{
+				directNeighbors.push_back(node);
+			}
+		}
+		return directNeighbors;
 	}
 
 	void Node::addNeighbor(shared_ptr<Node> node, bool isDiagonal)
