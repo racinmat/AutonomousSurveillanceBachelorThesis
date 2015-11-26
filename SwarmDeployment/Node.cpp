@@ -1,15 +1,16 @@
 ﻿#include "Node.h"
 #include <memory>
+#include <algorithm>
 
 namespace App
 {
 	Node::Node(shared_ptr<Point> point, Grid gridType, double cost) :
-		point(point), cost(cost), gridType(gridType)
+		point(point), cost(cost), gridType(gridType), distanceToObstacle(INT32_MAX)
 	{
 	}
 
 	Node::Node(shared_ptr<Point> point, Grid gridType) :
-		point(point), cost(1), gridType(gridType)
+		point(point), cost(1), gridType(gridType), distanceToObstacle(INT32_MAX)
 	{
 	}
 
@@ -27,20 +28,26 @@ namespace App
 		return cost;
 	}
 
-	std::vector<std::shared_ptr<Node>> Node::getNeighbors() const
+	vector<shared_ptr<Node>> Node::getNeighbors() const
 	{
-		return neighbors;
+		auto neighborNodes = vector<shared_ptr<Node>>(neighbors.size());
+		transform(neighbors.begin(), neighbors.end(), neighborNodes, [](tuple<shared_ptr<Node>, bool> i) {return get<0>(i); } );	//mapování pomocí lambda funkce, vytáhne z tuplu jen nody
+		return neighborNodes;
 	}
 
-	void Node::addNeighbor(std::shared_ptr<Node> node, int position)
+	vector<shared_ptr<Node>> Node::getDirectNeighbors() const
 	{
-		if (position >= neighbors.size())
-		{
-			neighbors.push_back(node);
-		} else
-		{
-			neighbors[position] = node;
-		}
+		auto directNeighbors = vector<shared_ptr<Node>>(neighbors.size());
+		copy_if(neighbors.begin(), neighbors.end(), directNeighbors.begin(), [](tuple<shared_ptr<Node>, bool> i) {return !get<1>(i); });	//zkopírují se prvky, které nemají true, filtrovací funkce
+		auto neighborNodes = vector<shared_ptr<Node>>(neighbors.size());
+		transform(directNeighbors.begin(), directNeighbors.end(), neighborNodes, [](tuple<shared_ptr<Node>, bool> i) {return get<0>(i); });	//mapování pomocí lambda funkce, vytáhne z tuplu jen nody
+		return neighborNodes;	//todo: vyzkoušet, jak funguje, když je v poli méně prvků než je alokováno (typické při filtraci)
+	}
+
+	void Node::addNeighbor(shared_ptr<Node> node, bool isDiagonal)
+	{
+		auto tuple = make_tuple(node, isDiagonal);
+		neighbors.push_back(tuple);
 	}
 
 	void Node::increaseCost(double increase)
@@ -58,6 +65,16 @@ namespace App
 		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
 	}
 
+	int Node::getDistanceToObstacle() const
+	{
+		return distanceToObstacle;
+	}
+
+	void Node::setDistanceToObstacle(const int distance_to_obstacle)
+	{
+		distanceToObstacle = distance_to_obstacle;
+	}
+
 	bool operator==(const Node& lhs, const Node& rhs)
 	{
 		return (*lhs.point.get()) == (*rhs.point.get())
@@ -70,12 +87,12 @@ namespace App
 		return !(lhs == rhs);
 	}
 
-	std::size_t hash_value(const Node& obj)
+	size_t hash_value(const Node& obj)
 	{
-		std::size_t seed = 0x79A3FD8E;
+		size_t seed = 0x79A3FD8E;
 		seed ^= (seed << 6) + (seed >> 2) + 0x0FB09D6C + hash_value(*obj.point.get());
-		seed ^= (seed << 6) + (seed >> 2) + 0x1D579C4C + static_cast<std::size_t>(obj.cost);
-		seed ^= (seed << 6) + (seed >> 2) + 0x0E0AFB73 + static_cast<std::size_t>(obj.gridType);
+		seed ^= (seed << 6) + (seed >> 2) + 0x1D579C4C + static_cast<size_t>(obj.cost);
+		seed ^= (seed << 6) + (seed >> 2) + 0x0E0AFB73 + static_cast<size_t>(obj.gridType);
 		return seed;
 	}
 }

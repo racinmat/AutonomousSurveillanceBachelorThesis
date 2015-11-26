@@ -21,6 +21,7 @@ namespace App
 		vector<shared_ptr<Node>> gridToNodes(vector<vector<Grid>> mapGrid, int cellSize);
 		shared_ptr<Node> getStartNode(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
 		vector<shared_ptr<Node>> getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
+		void countDistancesToObstacles(vector<shared_ptr<Node>> nodes);
 		shared_ptr<LoggerInterface> logger;
 	};
 

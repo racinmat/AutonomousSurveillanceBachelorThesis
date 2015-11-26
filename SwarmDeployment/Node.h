@@ -3,6 +3,7 @@
 #include "Map.h"
 #include <memory>
 #include "Enums.h"
+#include <tuple>
 
 using namespace std;
 
@@ -17,20 +18,25 @@ namespace App
 		virtual ~Node();
 		shared_ptr<Point> getPoint() const;
 		double getCost() const;
-		std::vector<std::shared_ptr<Node>> getNeighbors() const;
-		void addNeighbor(std::shared_ptr<Node> node, int position);
+		vector<shared_ptr<Node>> getNeighbors() const;
+		vector<shared_ptr<Node>> getDirectNeighbors() const;
+		void addNeighbor(shared_ptr<Node> node, bool isDiagonal);
 		void increaseCost(double increase);
 		Grid getGridType() const;
 		bool contains(int x, int y, int distance);
 		friend bool operator==(const Node& lhs, const Node& rhs);
 		friend bool operator!=(const Node& lhs, const Node& rhs);
-		friend std::size_t hash_value(const Node& obj);
+		friend size_t hash_value(const Node& obj);
+		virtual int getDistanceToObstacle() const;
+		virtual void setDistanceToObstacle(const int distance_to_obstacle);
 
 	protected:
 		shared_ptr<Point> point;
 		double cost;
 		Grid gridType;
-		std::vector<std::shared_ptr<Node>> neighbors;	//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
+		//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
+		vector<tuple<shared_ptr<Node>, bool>> neighbors;	//bool is diagonal. true idf neighbor is direct (only x XOR y changes, not both), true, if x AND y changes (is diagonal)
+		int distanceToObstacle;	//distance to nearest obstacle
 	};
 
 }

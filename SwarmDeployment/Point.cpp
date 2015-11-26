@@ -96,12 +96,12 @@ namespace App
 		return !(lhs == rhs);
 	}
 
-	std::size_t hash_value(const Point& obj)
+	size_t hash_value(const Point& obj)
 	{
-		std::size_t seed = 0x0F09109E;
-		seed ^= (seed << 6) + (seed >> 2) + 0x25D877D8 + static_cast<std::size_t>(obj.x);
-		seed ^= (seed << 6) + (seed >> 2) + 0x3E8AE664 + static_cast<std::size_t>(obj.y);
-		seed ^= (seed << 6) + (seed >> 2) + 0x169EA197 + static_cast<std::size_t>(obj.z);
+		size_t seed = 0x0F09109E;
+		seed ^= (seed << 6) + (seed >> 2) + 0x25D877D8 + static_cast<size_t>(obj.x);
+		seed ^= (seed << 6) + (seed >> 2) + 0x3E8AE664 + static_cast<size_t>(obj.y);
+		seed ^= (seed << 6) + (seed >> 2) + 0x169EA197 + static_cast<size_t>(obj.z);
 		return seed;
 	}
 }

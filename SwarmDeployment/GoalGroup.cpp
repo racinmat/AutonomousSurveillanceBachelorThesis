@@ -12,7 +12,7 @@ namespace App
 	{
 	}
 
-	void GoalGroup::addGoal(std::shared_ptr<App::Goal> goal)
+	void GoalGroup::addGoal(shared_ptr<Goal> goal)
 	{
 		goals.push_back(goal);
 	}

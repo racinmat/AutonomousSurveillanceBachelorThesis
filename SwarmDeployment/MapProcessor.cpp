@@ -1,6 +1,7 @@
 #include "MapProcessor.h"
 #include "VCollide/ColDetect.h"
 #include "memory"
+#include <algorithm>
 
 using namespace std;
 
@@ -22,6 +23,9 @@ namespace App
 		logger->logMapGrid(mapGrid);
 		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
+
+		countDistancesToObstacles(nodes);
+
 		logger->logMapNodes(nodes);
 
 
@@ -152,7 +156,6 @@ namespace App
 			for (size_t j = 0; j < row.size(); j++)
 			{
 				auto node = nodes[index];
-				int n_index = 0;
 				for (int p = -1; p <= 1; p++)
 				{
 					for (int q = -1; q <= 1; q++)
@@ -181,8 +184,8 @@ namespace App
 									}
 									else		//pokud není soused pøekáka, pøidám jej mezi sousedy
 									{
-										node->addNeighbor(neighbor, n_index);
-										n_index++;
+										bool isDiagonal = p != 0 && q != 0;
+										node->addNeighbor(neighbor, isDiagonal);
 									}
 								}
 							}
@@ -277,5 +280,38 @@ namespace App
 			}
 		}
 		return endNodes;
+	}
+
+	void MapProcessor::countDistancesToObstacles(vector<shared_ptr<Node>> nodes)
+	{
+		//nejdøíve zaènu od nodes s pøekákami. ty expanduji (pouze direct neighbors) a expandovanım nodám uloím vzdálenost 1 a uloím sousedy do seznamu. Pùvodní nody ze seznamu odebírám.
+		//pak opakuji, zvyšuji vzdálenost. neohodnocenou node poznám podle nìjaké defaultní hodnoty.
+		//pokud je ji node ohodnocená, ale našel jsem ji s vìtší vzdáleností od jiné pøekáky, pøepíšu vìtší vzdálenost menší vzdáleností.
+		//max. tolik expanzí, kolik je šíøka mapy. více není potøeba. 
+		//nevím, jestli expandovat zvláš kadou pøekáku nebo najednou
+
+		//todo: vyzkoušet, jak je to s push_back a plnì neobsazenım vektorem		
+		vector<shared_ptr<Node>> openedNodes = vector<shared_ptr<Node>>(nodes.size());	//zezaèátku tam nasypu všechny nodes s pøekákami, ale budou všechny u sebe
+		copy_if(nodes.begin(), nodes.end(), openedNodes.begin(), [](shared_ptr<Node> node) {return node->getGridType() == Grid::Obstacle; });	//zkopírují se prvky, které nemají true, filtrovací funkce
+		while (!openedNodes.empty())
+		{
+			auto node = openedNodes[0];
+			if (node->getGridType() == Grid::Obstacle)
+			{
+				node->setDistanceToObstacle(0);
+			}
+			int neighborsDistance = node->getDistanceToObstacle() + 1;	//distance incremented by one, because neighbors have n+1 distance from nearest obstacle, when node has distance n.
+			auto neighbors = node->getDirectNeighbors();
+			for (auto neighbor : neighbors)
+			{
+
+				if (neighbor->getDistanceToObstacle() > neighborsDistance)
+				{
+					neighbor->setDistanceToObstacle(neighborsDistance);
+					openedNodes.push_back(neighbor);
+				}
+			}
+			openedNodes.erase(remove(openedNodes.begin(), openedNodes.end(), node));	//erase remove idiom. for removing. really, c++? really?
+		}
 	}
 }

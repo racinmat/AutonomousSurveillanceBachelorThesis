@@ -83,14 +83,15 @@ namespace Ui
 
 	void GuiDrawer::logMapNodes(vector<shared_ptr<App::Node>> nodes)
 	{
-//		int cellSize = configuration->getAStarCellSize();
-//		int x = - 12;
-//		int y = 12;
-//		for (auto node : nodes)
-//		{
+		int cellSize = configuration->getAStarCellSize();
+		int x = - 12;
+		int y = 12;
+		for (auto node : nodes)
+		{
 //			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
-//		}
-//		mainWindow->updateView();
+			addText(QString::fromStdString(to_string(int(node->getDistanceToObstacle()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
+		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logAStarNode(shared_ptr<AStar::NodeWrapper> node)
