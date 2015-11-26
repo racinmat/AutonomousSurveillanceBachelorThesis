@@ -85,12 +85,12 @@ namespace App
 		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
 	}
 
-	int Node::getDistanceToObstacle() const
+	double Node::getDistanceToObstacle() const
 	{
 		return distanceToObstacle;
 	}
 
-	void Node::setDistanceToObstacle(const int distance_to_obstacle)
+	void Node::setDistanceToObstacle(const double distance_to_obstacle)
 	{
 		distanceToObstacle = distance_to_obstacle;
 	}

@@ -28,8 +28,8 @@ namespace App
 		friend bool operator==(const Node& lhs, const Node& rhs);
 		friend bool operator!=(const Node& lhs, const Node& rhs);
 		friend size_t hash_value(const Node& obj);
-		virtual int getDistanceToObstacle() const;
-		virtual void setDistanceToObstacle(const int distance_to_obstacle);
+		virtual double getDistanceToObstacle() const;
+		virtual void setDistanceToObstacle(const double distance_to_obstacle);
 
 	protected:
 		shared_ptr<Point> point;
@@ -37,7 +37,7 @@ namespace App
 		Grid gridType;
 		//vector, because each node has different amount of neighbors and array with size 8 returns some null values, when node has less neighbors than 8
 		vector<tuple<shared_ptr<Node>, bool>> neighbors;	//bool is diagonal. true idf neighbor is direct (only x XOR y changes, not both), true, if x AND y changes (is diagonal)
-		int distanceToObstacle;	//distance to nearest obstacle
+		double distanceToObstacle;	//distance to nearest obstacle
 	};
 
 }

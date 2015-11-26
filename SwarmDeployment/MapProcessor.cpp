@@ -198,16 +198,6 @@ namespace App
 	{
 		shared_ptr<Node> startNode;
 		int uavCount = map->countUavs();
-//		shared_ptr<Point> middleUav = map->getUavsStart()[uavCount / 2]->getPointParticle()->getLocation();
-//		for (auto node : nodes)
-//		{
-//			if (node->contains(middleUav->getX(), middleUav->getY(), cellSize / 2))	//nalezení node, ve které je støed
-//			{
-//				startNode = node;
-//				break;
-//			}
-//		}
-
 
 		//pokud zaèínají UAV na zaèátku jinak natoèená než je smìr vedocí cesty, musí se složitì otáèet, proto vyberu ze všech nodes, na kterých leží nìjaké uav, node, která leží ve smìru prùmìrného otoèení UAV
 		//smìr uèím podle úhlu, který daná node svírá s prùmìrným bodem mezi všemi UAV.
@@ -277,7 +267,7 @@ namespace App
 		return endNodes;
 	}
 
-	void MapProcessor::countDistancesToObstacles(vector<shared_ptr<Node>> nodes)
+	void MapProcessor::countDistancesToObstacles(vector<shared_ptr<Node>> nodes, int cellSize)
 	{
 		//nejdøíve zaènu od nodes s pøekážkami. ty expanduji (pouze direct neighbors) a expandovaným nodám uložím vzdálenost 1 a uložím sousedy do seznamu. Pùvodní nody ze seznamu odebírám.
 		//pak opakuji, zvyšuji vzdálenost. neohodnocenou node poznám podle nìjaké defaultní hodnoty.
@@ -312,7 +302,8 @@ namespace App
 			{
 				node->setDistanceToObstacle(0);
 			}
-			int neighborsDistance = node->getDistanceToObstacle() + 1;	//distance incremented by one, because neighbors have n+1 distance from nearest obstacle, when node has distance n.
+			//distance incremented, because neighbors have n+unitDistance distance from nearest obstacle, when node has distance n.
+			double neighborsDistance = node->getDistanceToObstacle() + getDistanceBetweenNodes(cellSize);	
 			auto neighbors = node->getDirectNeighbors();
 			for (auto neighbor : neighbors)
 			{
@@ -324,5 +315,12 @@ namespace App
 				}
 			}
 		}
+	}
+
+	//aby se vzdálenost node od pøekážky nemìnila podle hustoty diskretizace (pøi 2x hustších ètvercích se bude vzdálenost jevit jako 2x vìtší), pøepoèítá se vzdálenost podle cellSize
+	double MapProcessor::getDistanceBetweenNodes(int cellSize)
+	{
+		double reference = 20;
+		return double(cellSize) / reference;
 	}
 }
