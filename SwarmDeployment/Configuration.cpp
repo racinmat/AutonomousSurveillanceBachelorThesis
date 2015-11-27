@@ -24,8 +24,6 @@ namespace App
 		debug = true;
 		distanceOfNewNodes = 30;
 		guidingNearDist = 40;
-//		distanceOfNewNodes = 60;
-//		guidingNearDist = 80;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
@@ -41,7 +39,7 @@ namespace App
 		stop = false;
 		textOutputEnabled = false;
 		narrowPassageDivisor = 1;
-		exitNarrowPassageTreshold = 5;
+		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
 	}

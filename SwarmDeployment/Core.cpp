@@ -76,7 +76,7 @@ namespace App
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 
-		rrtPath(paths, configuration, map);
+		rrtPath(paths, configuration, map, nodes->getAllNodes());
 		file.close();
 	}
 
@@ -100,18 +100,14 @@ namespace App
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 	}
 
-	shared_ptr<Output> Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map)
+	shared_ptr<Output> Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map, vector<shared_ptr<Node>> mapNodes)
 	{
-//		throw 22;
-//		throw runtime_error("No valid input found.");
-
 		int uavCount = configuration->getUavCount();
 		int rrt_min_nodes = configuration->getRrtMinNodes();
 		int rrt_max_nodes = configuration->getRrtMaxNodes();
 		int number_of_solutions = configuration->getNumberOfSolutions();
 		int near_count = configuration->getNearCount();
 		bool debug = configuration->getDebug();
-		double distance_of_new_nodes = configuration->getDistanceOfNewNodes();
 		double guiding_near_dist = configuration->getGuidingNearDist();
 
 		cout << "Starting RRT-path...";
@@ -131,6 +127,12 @@ namespace App
 
 		auto final_nodes = vector<shared_ptr<State>>(rrt_max_nodes);
 
+		//pøíprava mapy <stringová reprezentace bodu, node> pro rychlé urèování souèasné node
+		auto nodesMap = std::map<string, shared_ptr<Node>>();	//todo: naplnit na zaèátku
+		for (auto node : mapNodes)
+		{
+			nodesMap[node->getPoint()->toString()] = node;
+		}
 
 		int nodes_count = rrt_max_nodes;	//todo: zjistit, co s tou promìnnou mám dìlat
 		shared_ptr<State> newState;
@@ -167,7 +169,8 @@ namespace App
 					logger->logText("Not possible to find near node suitable for expansion");
 				}
 				nearState = nearest_neighbor(s_rand, nodes, k);
-				newState = select_input(s_rand, nearState, map);
+
+				newState = select_input(s_rand, nearState, map, nodesMap);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
 
 				bool allInputsUsed = nearState->areAllInputsUsed();
@@ -240,7 +243,7 @@ namespace App
 				logger->logText(buffer);
 				m++;
 			}
-			output->distancesToGoal[i] = distance_of_new_nodes;
+			output->distancesToGoal[i] = newState->distanceOfNewNodes;	//tohle dát do promìnné State, nastavit v select_input a pak to ze State tahat
 
 			if (i % configuration->getDrawPeriod() == 0)
 			{
@@ -470,7 +473,7 @@ namespace App
 		return near_node;
 	}
 
-	shared_ptr<State> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map)
+	shared_ptr<State> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<State> near_node, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
 //		file << "Near node: " << *near_node.get() << endl;
 //		file << "s_rand";
@@ -481,12 +484,25 @@ namespace App
 
 		int input_samples_dist = configuration->getInputSamplesDist();
 		int input_samples_phi = configuration->getInputSamplesPhi();
-		double distance_of_new_nodes = configuration->getDistanceOfNewNodes();
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = near_node->uavs.size();
 		int inputCount = configuration->getInputCount();
-		shared_ptr<State> new_node;
+		shared_ptr<State> newState;
+
+		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
+		
+		Point uavMiddle(0, 0);
+		for (auto uav : near_node->uavs)
+		{
+			uavMiddle.moveBy(uav->getPointParticle()->getLocation());
+		}
+		uavMiddle.setX(uavMiddle.getX() / uavCount);
+		uavMiddle.setY(uavMiddle.getY() / uavCount);
+
+		uavMiddle = roundToNodeCoords(uavMiddle);
+		shared_ptr<Node> uavMiddleNode = mapNodes[uavMiddle.toString()];	//node, na které se nachází støed všech UAV
+		double distance_of_new_nodes = getDistanceOfNewNodes(uavMiddleNode);
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
@@ -518,7 +534,7 @@ namespace App
 			d[i] = 0;
 			for (auto uav : tempState->uavs)
 			{
-				d[i] += s_rand[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
+				d[i] += randomState[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
 			}
 		}
 
@@ -587,11 +603,12 @@ namespace App
 					continue;
 				} else
 				{
-					new_node = stateFactory->createState();
-					new_node->uavs = tempState->uavs;
-					new_node->prev = near_node;
-					new_node->prev_inputs = tempState->prev_inputs;
-					new_node->index = tempState->index;
+					newState = stateFactory->createState();
+					newState->uavs = tempState->uavs;
+					newState->prev = near_node;
+					newState->prev_inputs = tempState->prev_inputs;
+					newState->index = tempState->index;
+					newState->distanceOfNewNodes = distance_of_new_nodes;
 					near_node->used_inputs[index] = true;
 					break;
 				}
@@ -611,7 +628,7 @@ namespace App
 //		    end
 		}		
 		
-		return new_node;
+		return newState;
 	}
 
 	int Core::check_expandability(vector<shared_ptr<State>> nodes)
@@ -1012,5 +1029,21 @@ namespace App
 		return make_shared<Point>(px, py);
 	}
 
+	double Core::getDistanceOfNewNodes(shared_ptr<Node> node)
+	{
+		double base = configuration->getDistanceOfNewNodes();
+		return base * log(node->getDistanceToObstacle());	//èistì heuristicky vymyšlená funkce, aby to nezrychlovalo moc, když to bude dál
+	}
 
+	Point Core::roundToNodeCoords(Point point)
+	{
+		//"zaokrouhlí" bod na støed node
+		int x = point.getX();
+		int y = point.getY();
+		x -= x % configuration->getAStarCellSize();
+		x += (configuration->getAStarCellSize() / 2);
+		y -= y % configuration->getAStarCellSize();
+		y += (configuration->getAStarCellSize() / 2);
+		return Point(x, y);
+	}
 }

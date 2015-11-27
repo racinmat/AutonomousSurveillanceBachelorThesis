@@ -24,7 +24,7 @@ namespace App
 		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
 
-		countDistancesToObstacles(nodes);
+		countDistancesToObstacles(nodes, cellSize);
 
 		logger->logMapNodes(nodes);
 
@@ -74,16 +74,16 @@ namespace App
 	vector<vector<Grid>> MapProcessor::getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
 	{
 		int gridRow = 0;
-		int rows = ceil(double(worldWidth) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
-		int columns = ceil(double(worldHeigh) / double(cellSize));	//todo: zkontrolovat, zda nemusím pøièíst 1, podle zaokrouhlování
-		auto grid = vector<vector<Grid>>(rows);
+		int rows = floor(double(worldWidth) / double(cellSize));	//zaokrouhluji dolù, abych nevzorkoval nedefinovanou èást mapy
+		int columns = floor(double(worldHeigh) / double(cellSize));	//radši oøíznu kus mapy, než z mapy vyjet
+		auto grid = vector<vector<Grid>>(rows);						
 		for (int i = cellSize; i <= worldWidth; i += cellSize)
 		{
 			grid[gridRow] = vector<Grid>(columns);
 			int gridColumn = 0;
 			for (int j = cellSize; j <= worldHeigh; j += cellSize)
 			{
-				grid[gridRow][gridColumn] = analyzeCell(map, Point(i - cellSize, j - cellSize), Point(i, j), uavSize);	//ternary operator checking borders of map
+				grid[gridRow][gridColumn] = analyzeCell(map, Point(i - cellSize, j - cellSize), Point(i, j), uavSize);
 				gridColumn++;
 			}
 			gridRow++;
@@ -204,16 +204,12 @@ namespace App
 		vector<shared_ptr<Node>> startingNodes = vector<shared_ptr<Node>>();
 		for (auto node : nodes)
 		{
-			//todo: zjistit, proè pøi mapì 6 a aStarCellSize = 9 se objevují empty prvky
-			if(node)
+			for (auto uav : map->getUavsStart())
 			{
-				for (auto uav : map->getUavsStart())
+				if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
 				{
-					if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
-					{
-						startingNodes.push_back(node);
-						break;
-					}
+					startingNodes.push_back(node);
+					break;
 				}
 			}
 		}
@@ -279,7 +275,7 @@ namespace App
 		vector<shared_ptr<Node>> openedNodes = vector<shared_ptr<Node>>();
 		for (auto node : nodes)
 		{
-			if (node->getGridType() == Grid::Obstacle)
+			if (node->getGridType() == Grid::Obstacle)	//kontrola non empty node.
 			{
 				openedNodes.push_back(node);
 			}

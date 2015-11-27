@@ -7,6 +7,8 @@
 #include <valarray>
 #include "easyloggingpp-9.80\src\easylogging++.h"
 #include <unordered_map>
+#include "MapFactory.h"
+#include "MapProcessor.h"
 #include "Gui.h"					//zakomentovat pro noGui
 
 //INITIALIZE_EASYLOGGINGPP
@@ -14,8 +16,8 @@
 
 int run(int argc, char *argv[])
 {
-	auto configuration = make_shared<App::Configuration>();
-	auto core = make_shared<App::Core>(configuration);
+	auto configuration = make_shared<Configuration>();
+	auto core = make_shared<Core>(configuration);
 	configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
 	core->run();
 
@@ -41,9 +43,9 @@ public:
 };
 
 template <class T>
-inline void hash_combine(std::size_t& seed, const T& v)
+inline void hash_combine(size_t& seed, const T& v)
 {
-	std::hash<T> hasher;
+	hash<T> hasher;
 	seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
 
@@ -183,12 +185,23 @@ void testing()
 //	cout << "tri1:" << ColDetect::coldetect(tri_uav, tri1_obs[j], trans, zero_trans) << endl;
 //	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
 
-	/*
+	
 	// testování rychlosti motion modelu kvùli optimalizaci
-	auto configuration = make_shared<App::Configuration>();
-	auto core = make_shared<App::Core>(configuration);
+	auto configuration = make_shared<Configuration>();
+	auto core = make_shared<Core>(configuration);
+	MapFactory factory;
+	auto map = factory.createMaps(configuration->getUavCount())[0];
+	MapProcessor processor(make_shared<LoggerInterface>());
+	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
+	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+	a -= a % configuration->getAStarCellSize();
+	a += (configuration->getAStarCellSize() / 2);
+	for(auto b : a)
+	{
+		cout << b << endl;
+	}
 
-
+	/*
 	auto near_node = make_shared<App::State>(configuration->getInputCount());
 	near_node->uavs.push_back(make_shared<App::Uav>(2, 20, 0));
 	near_node->uavs.push_back(make_shared<App::Uav>(2, 30, 0));
@@ -329,28 +342,28 @@ void testing()
 //	cout << "a == d: " << (*a.get() == *d.get()) << endl;	//false
 
 
-	vector<int> vec = {1,2,3,4,5,6,7,8,9};
-	vector<int> vec2 = vector<int>(vec.size());
-	vector<int> vec3 = vector<int>(vec.size());
-	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return i % 2 == 0; });	//po zkopírování jsou ve zbytku nového pole nuly
-	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return false; });	//po zkopírování jsou všude nuly
-
-	vector<int> vec4 = vector<int>(vec.size());
-	vector<int> vec5 = vector<int>(vec.size());
-	copy(vec.begin(), vec.end(), vec4.begin());
-	copy(vec.begin(), vec.end(), vec5.begin());
-
-	for(int i : vec4)
-	{
-		cout << (i % 2 != 0) << endl;
-	}
-	vec4.erase(remove_if(vec4.begin(), vec4.end(), [](int i) {return (i % 2) != 0; }));
-	vec5.erase(remove_if(vec5.begin(), vec5.end(), [](int i) {return true; }));
-
-
-	cout << vec.size() << endl;
-	cout << vec2.size() << endl;
-	cout << vec3.size() << endl;
+//	vector<int> vec = {1,2,3,4,5,6,7,8,9};
+//	vector<int> vec2 = vector<int>(vec.size());
+//	vector<int> vec3 = vector<int>(vec.size());
+//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return i % 2 == 0; });	//po zkopírování jsou ve zbytku nového pole nuly
+//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return false; });	//po zkopírování jsou všude nuly
+//
+//	vector<int> vec4 = vector<int>(vec.size());
+//	vector<int> vec5 = vector<int>(vec.size());
+//	copy(vec.begin(), vec.end(), vec4.begin());
+//	copy(vec.begin(), vec.end(), vec5.begin());
+//
+//	for(int i : vec4)
+//	{
+//		cout << (i % 2 != 0) << endl;
+//	}
+//	vec4.erase(remove_if(vec4.begin(), vec4.end(), [](int i) {return (i % 2) != 0; }));
+//	vec5.erase(remove_if(vec5.begin(), vec5.end(), [](int i) {return true; }));
+//
+//
+//	cout << vec.size() << endl;
+//	cout << vec2.size() << endl;
+//	cout << vec3.size() << endl;
 
 	cin.get();
 }

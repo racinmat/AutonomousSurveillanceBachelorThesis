@@ -65,6 +65,15 @@ namespace App
 		this->z += z;
 	}
 
+	string Point::toString()
+	{
+		return 
+			  " x: " + to_string(x)
+			+ " y: " + to_string(y)
+			+ " z: " + to_string(z);
+
+	}
+
 	double Point::getDistance(std::shared_ptr<Point> point)
 	{
 		return sqrt(getDistanceSquared(point));
@@ -74,6 +83,23 @@ namespace App
 	{
 		return pow(abs(getX() - point->getX()), 2)
 			+ pow(abs(getY() - point->getY()), 2);
+	}
+
+	void Point::moveBy(shared_ptr<Point> point)
+	{
+		moveBy(*point.get());
+	}
+
+	void Point::moveBy(Point point)
+	{
+		moveBy(point.getX(), point.getY(), point.getZ());
+	}
+
+	void Point::moveBy(double x, double y, double z)
+	{
+		changeX(x);
+		changeY(y);
+		changeZ(z);
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Point& obj)

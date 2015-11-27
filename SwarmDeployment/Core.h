@@ -9,6 +9,7 @@
 #include "Output.h"
 #include "NTupletGenerator.h"
 #include "InputGenerator.h"
+#include <map>
 
 using namespace std;
 
@@ -26,12 +27,12 @@ namespace App
 		void run();
 		void setLogger(shared_ptr<LoggerInterface> logger);
 		void logConfigurationChange();
-		shared_ptr<Output> rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map);
+		shared_ptr<Output> rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map, vector<shared_ptr<Node>> mapNodes);
 
 
 		unordered_map<Uav, shared_ptr<Point>, UavHasher> random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state);
 		shared_ptr<State> nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, vector<shared_ptr<State>> nodes, int count);
-		shared_ptr<State> select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map); // returns [near_node, new_node]
+		shared_ptr<State> select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, shared_ptr<State> near_node, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes);
 		int check_expandability(vector<shared_ptr<State>> nodes);
 		void guiding_point_reached(shared_ptr<State> node, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist);
 		void check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV
@@ -50,6 +51,8 @@ namespace App
 		bool line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
+		double getDistanceOfNewNodes(shared_ptr<Node> node);
+		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 
 	protected:
 		shared_ptr<LoggerInterface> logger;
