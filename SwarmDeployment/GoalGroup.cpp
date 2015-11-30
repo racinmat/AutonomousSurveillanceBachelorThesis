@@ -1,12 +1,13 @@
 #include "GoalGroup.h"
+#include "Random.h"
 
 namespace App
 {
 		
-	GoalGroup::GoalGroup()
+	GoalGroup::GoalGroup() : Goal(0, 0, 0, 0)	//inicializuji až lazy. Todo: možná pøedìlat, aby se goalGroup vytvoøil builderPaternem, pak budu moct eager loadovat
 	{
+		rectangle.reset();
 	}
-	
 	
 	GoalGroup::~GoalGroup()
 	{
@@ -35,6 +36,21 @@ namespace App
 		return rectangle->contains(location);
 	}
 
+	shared_ptr<Rectangle> GoalGroup::getRectangle()
+	{
+		if (!rectangle)
+		{
+			initializeRectangle();
+		}
+		return rectangle;
+	}
+
+	shared_ptr<Point> GoalGroup::getRandomPointInside()
+	{
+		auto randomGoal = Random::element(goals);
+		return randomGoal->getRandomPointInside();
+	}
+
 	void GoalGroup::initializeRectangle()
 	{
 		//nejdøíve najdu 2 krají body ze všech obdélníkù (cílù) (levý dolní a pravý horní), abych z nìj pak vytvoøil velký, všepokrývající obdélník.
@@ -45,21 +61,22 @@ namespace App
 
 		for (auto goal : goals)
 		{
-			if (goal->rectangle->getX() < leftLowerX)
+			auto rectangle = goal->getRectangle();
+			if (rectangle->getX() < leftLowerX)
 			{
-				leftLowerX = goal->rectangle->getX();
+				leftLowerX = rectangle->getX();
 			}
-			if (goal->rectangle->getY() < leftLowerY)
+			if (rectangle->getY() < leftLowerY)
 			{
-				leftLowerY = goal->rectangle->getY();
+				leftLowerY = rectangle->getY();
 			}
-			if (goal->rectangle->getX() + goal->rectangle->getWidth() > rightUpperX)
+			if (rectangle->getX() + rectangle->getWidth() > rightUpperX)
 			{
-				rightUpperX = goal->rectangle->getX() + goal->rectangle->getWidth();
+				rightUpperX = rectangle->getX() + rectangle->getWidth();
 			}
-			if (goal->rectangle->getY() + goal->rectangle->getHeight() > rightUpperY)
+			if (rectangle->getY() + rectangle->getHeight() > rightUpperY)
 			{
-				rightUpperY = goal->rectangle->getY() + goal->rectangle->getHeight();
+				rightUpperY = rectangle->getY() + rectangle->getHeight();
 			}
 		}
 

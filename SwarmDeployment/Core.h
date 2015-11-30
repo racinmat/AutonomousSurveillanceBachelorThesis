@@ -10,6 +10,7 @@
 #include "NTupletGenerator.h"
 #include "InputGenerator.h"
 #include <map>
+#include "UavGroup.h"
 
 using namespace std;
 
@@ -38,7 +39,6 @@ namespace App
 		void check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map); // vrací pole dlouhé tak, jako je poèet UAV. pro každé UAv se tak uloží do tohoto pole èíslo podle toho, v kolikátém cíli UAV je. Parametr je pole, kde jsou polohy UAV
 		void detect_narrow_passage(shared_ptr<Node> node);
 		shared_ptr<Point> random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map);
-		shared_ptr<Point> random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map);
 		shared_ptr<Point> random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map);
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
@@ -53,7 +53,8 @@ namespace App
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
-
+		void splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, vector<shared_ptr<UavGroup>> uavGroups, shared_ptr<State> state);
+			
 	protected:
 		shared_ptr<LoggerInterface> logger;
 		vector<shared_ptr<Map>> maps;

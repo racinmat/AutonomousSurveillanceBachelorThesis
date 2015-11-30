@@ -29,7 +29,8 @@ namespace App
 	}
 
 	Uav::Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ) :
-		current_indexes(make_shared<GuidingPathsCurrentPositions>()), pointParticle(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ)), id(lastId++)
+		current_indexes(make_shared<GuidingPathsCurrentPositions>()), 
+		pointParticle(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ)), id(lastId++)
 	{
 	}
 
@@ -103,4 +104,5 @@ namespace App
 	{
 		return id;
 	}
+
 }

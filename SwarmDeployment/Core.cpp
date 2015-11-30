@@ -273,20 +273,20 @@ namespace App
 		int number_of_uavs = map->getUavsStart().size();
 		unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates;
 
-		valarray<double> propabilities = valarray<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
+//		valarray<double> propabilities = valarray<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
 		//todo: vyøešit problém s tím, že kratší cesta je prozkoumána døíve
 
-		int sum = 0; // sum = celková délka všech vedoucích cest
-
-		// delší cesta má vìtší prpst.proto, aby algoritmus asymptiticky pokryl každou cestu stejnì hustì. na delší cestu tedy pøipadne více bodù.
-		for (size_t i = 0; i < guiding_paths.size(); i++)
-		{
-			int pathSize = guiding_paths[i]->getSize(); // èím delší cesta, tím vìtší pravdìpodobnost, že se tou cestou vydá, aspoò doufám
-			propabilities[i] = pathSize;		// propabilities je normální, 1D pole. nechápu, proè tady používá notaci pro 2D pole
-			sum += pathSize;
-		}
-
-		propabilities /= sum;
+//		int sum = 0; // sum = celková délka všech vedoucích cest
+//
+//		// delší cesta má vìtší prpst.proto, aby algoritmus asymptiticky pokryl každou cestu stejnì hustì. na delší cestu tedy pøipadne více bodù.
+//		for (size_t i = 0; i < guiding_paths.size(); i++)
+//		{
+//			int pathSize = guiding_paths[i]->getSize(); // èím delší cesta, tím vìtší pravdìpodobnost, že se tou cestou vydá, aspoò doufám
+//			propabilities[i] = pathSize;		// propabilities je normální, 1D pole. nechápu, proè tady používá notaci pro 2D pole
+//			sum += pathSize;
+//		}
+//
+//		propabilities /= sum;
 
 		double random = Random::fromZeroToOne();
 		if (random > guided_sampling_prob) //vybírá se náhodný vzorek
@@ -310,59 +310,7 @@ namespace App
 			vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
 			if (configuration->getAllowSwarmSplitting())
 			{
-				//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
-				//tohle je pro groups. 
-				valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
-				double totalVolume = 0;
-				for (size_t i = 0; i < map->getGoals().size(); i++)
-				{
-					double volume = map->getGoals()[i]->rectangle->getVolume();
-					ratios[i] = volume;
-					totalVolume += volume;
-				}
-
-				ratios /= totalVolume;	//valarray umožòuje vektorové operace, každý prvek je v rozsahu od 0 do 1
-
-
-				//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
-
-				int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
-				for (size_t i = 0; i < uavGroups.size(); i++)
-				{
-					int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
-					auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
-					for (size_t j = 0; j < uavsCountInGroup; j++)
-					{
-						uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
-					}
-					uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
-					uavsInGroups += uavsCountInGroup;
-				}
-				//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
-				int remaining = map->getUavsStart().size() - uavsInGroups;
-				for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
-				{
-					uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
-				}
-
-				for (auto group : uavGroups)
-				{
-					//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
-					auto center = group->getBestNode();
-					logger->logRandomStatesCenter(center->getPoint());
-					for (auto uav : group->getUavs())
-					{
-						if (uav->isGoalReached())
-						{
-							randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);
-						}
-						else
-						{
-							randomStates[*uav.get()] = random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius());
-						}
-					}
-				}
-
+				splitUavsToGroups(guiding_paths, map, uavGroups, state);
 			}
 			else
 			{
@@ -706,13 +654,25 @@ namespace App
 
 	void Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
 	{
-		for (auto goal : map->getGoals())
+		if (configuration->getAllowSwarmSplitting())
 		{
-			for (auto uav : uavs)
+			for (auto goal : map->getGoals())
 			{
-				if (goal->contains(uav->getPointParticle()->getLocation()))
+				for (auto uav : uavs)
 				{
-					uav->setReachedGoal(goal);
+					if (goal->contains(uav->getPointParticle()->getLocation()))
+					{
+						uav->setReachedGoal(goal);
+					}
+				}
+			}
+		} else
+		{
+			for (auto uav : uavs)	//aby se pak uav rozmisovala v rámci celé plochy, která pokrývá cíle
+			{
+				if (map->getGoalGroup()->contains(uav->getPointParticle()->getLocation()))
+				{
+					uav->setReachedGoal(map->getGoalGroup());
 				}
 			}
 		}
@@ -732,12 +692,12 @@ namespace App
 
 	shared_ptr<Point> Core::random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map)
 	{
-		return random_state(goal->rectangle, map);
-	}
-
-	shared_ptr<Point> Core::random_state(shared_ptr<Rectangle> rectangle, shared_ptr<Map> map)
-	{
-		return random_state(rectangle->getX(), rectangle->getY(), rectangle->getX() + rectangle->getWidth(), rectangle->getY() + rectangle->getHeight(), map);
+		shared_ptr<Point> random_state;
+		do
+		{
+			random_state = goal->getRandomPointInside();
+		} while (check_inside_obstacle(random_state, map));
+		return random_state;
 	}
 
 	shared_ptr<Point> Core::random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map)
@@ -1072,5 +1032,45 @@ namespace App
 		y -= y % configuration->getAStarCellSize();
 		y += (configuration->getAStarCellSize() / 2);
 		return Point(x, y);
+	}
+
+	void Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, vector<shared_ptr<UavGroup>> uavGroups, shared_ptr<State> state)
+	{
+		int number_of_uavs = map->getUavsStart().size();
+
+		//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
+		//tohle je pro groups. 
+		valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+		double totalVolume = 0;
+		for (size_t i = 0; i < map->getGoals().size(); i++)
+		{
+			double volume = map->getGoals()[i]->getRectangle()->getVolume();
+			ratios[i] = volume;
+			totalVolume += volume;
+		}
+
+		ratios /= totalVolume;	//valarray umožòuje vektorové operace, každý prvek je v rozsahu od 0 do 1
+
+
+		//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
+
+		int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
+		for (size_t i = 0; i < uavGroups.size(); i++)
+		{
+			int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
+			auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
+			for (size_t j = 0; j < uavsCountInGroup; j++)
+			{
+				uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+			}
+			uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
+			uavsInGroups += uavsCountInGroup;
+		}
+		//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
+		int remaining = map->getUavsStart().size() - uavsInGroups;
+		for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
+		{
+			uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
+		}
 	}
 }

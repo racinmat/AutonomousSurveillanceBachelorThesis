@@ -1,6 +1,5 @@
 #pragma once
 #include "Rectangle.h"
-#include "vector"
 
 using namespace std;
 
@@ -13,11 +12,15 @@ namespace App
 	public:
 		Goal(int x, int y, int width, int height);
 		virtual ~Goal();
-		std::shared_ptr<Rectangle> rectangle; //todo: pøesunout do private
-		bool contains(shared_ptr<Point> location);
+		virtual bool contains(shared_ptr<Point> location);
 		friend bool operator==(const Goal& lhs, const Goal& rhs);
 		friend bool operator!=(const Goal& lhs, const Goal& rhs);
-		friend std::size_t hash_value(const Goal& obj);
+		virtual shared_ptr<Point> getRandomPointInside();
+		friend size_t hash_value(const Goal& obj);
+		virtual shared_ptr<Rectangle> getRectangle();	//není const, protože jeho potomek se zavoláním getteru lazy inicializuje. po vytvoøení builderu bude opìt moct být lazy
+
+	protected:
+		shared_ptr<Rectangle> rectangle;
 	};
 
 	class GoalHasher

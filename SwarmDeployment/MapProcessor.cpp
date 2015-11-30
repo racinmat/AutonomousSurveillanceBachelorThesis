@@ -85,7 +85,7 @@ namespace App
 		for (auto goal : map->getGoals())
 		{
 			if (colDetect.coldetect(
-				Rectangle2D(goal->rectangle->getX(), goal->rectangle->getY(), goal->rectangle->getWidth(), goal->rectangle->getHeight()), cell))
+				Rectangle2D(goal->getRectangle()->getX(), goal->getRectangle()->getY(), goal->getRectangle()->getWidth(), goal->getRectangle()->getHeight()), cell))
 			{
 				return Grid::Goal;
 			}
@@ -218,7 +218,7 @@ namespace App
 			endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
-				auto goal = map->getGoals()[i]->rectangle;
+				auto goal = map->getGoals()[i]->getRectangle();
 				int middleX = goal->getX() + goal->getWidth() / 2;
 				int middleY = goal->getY() + goal->getHeight() / 2;
 

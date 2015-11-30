@@ -25,3 +25,10 @@ double Random::fromZeroToOne()
 	return (double(rand()) / (RAND_MAX));	//random number from 0 to 1
 //	return 0.3;	//pro kontrolu vùèi matlabu
 }
+
+template <typename T>
+T Random::element(std::vector<T> const vector)
+{
+	int randomIndex = rand() % vector.size();
+	return vector[randomIndex];
+}

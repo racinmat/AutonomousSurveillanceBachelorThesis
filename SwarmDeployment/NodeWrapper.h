@@ -3,6 +3,7 @@
 #include <set>
 #include <memory>
 
+using namespace App;
 
 namespace AStar
 {

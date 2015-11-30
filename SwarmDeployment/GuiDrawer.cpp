@@ -34,7 +34,7 @@ namespace Ui
 
 		for (auto goal : map->getGoals())
 		{
-			auto r = goal->rectangle;
+			auto r = goal->getRectangle();
 			scene->addRect(r->getX(), r->getY(), r->getWidth(), r->getHeight(), QPen(Qt::green), QBrush(Qt::green));
 		}
 

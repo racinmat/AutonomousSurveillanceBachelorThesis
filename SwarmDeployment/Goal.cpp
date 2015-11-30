@@ -1,4 +1,5 @@
 #include "Goal.h"
+#include "Random.h"
 
 namespace App
 {
@@ -15,6 +16,18 @@ namespace App
 	bool Goal::contains(shared_ptr<Point> location)
 	{
 		return rectangle->contains(location);
+	}
+
+	shared_ptr<Point> Goal::getRandomPointInside()
+	{
+		int x = Random::inRange(rectangle->getX(), rectangle->getX() + rectangle->getWidth());
+		int y = Random::inRange(rectangle->getY(), rectangle->getY() + rectangle->getHeight());
+		return make_shared<Point>(x, y);
+	}
+
+	shared_ptr<Rectangle> Goal::getRectangle()
+	{
+		return rectangle;
 	}
 
 	bool operator==(const Goal& lhs, const Goal& rhs)
