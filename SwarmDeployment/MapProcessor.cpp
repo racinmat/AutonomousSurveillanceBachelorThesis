@@ -16,7 +16,7 @@ namespace App
 	{
 	}
 
-	shared_ptr<MapGraph> MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	shared_ptr<MapGraph> MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize, bool allowSwarmSplitting)
 	{
 		//firstly we have to get map as 2D matrix, grid
 		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
@@ -31,41 +31,9 @@ namespace App
 
 		//now we determine starting and ending node.
 		//Start node is node, where starts UAV in middle
-		//End node is node in middle of each goal recrangle
-		//Todo: vymyslet, zda zde natvrdo pouívat pro nalezení støedu obdélníky èi ne
-		//todo: vymyslet, jak pouít node s podobnım náklonem, pokud nejsou uav pøesnì na hranách ètvercù. moná brát ještì okolní nodes, pokud na nich není pøekáka?
+		//End node is node in middle of goalGroup rectangle
 		shared_ptr<Node> startNode = getStartNode(nodes, map, cellSize);
-		auto endNodes = getEndNodes(nodes, map, cellSize);
-
-
-		//úprava, aby mapa odpovídala matlabovské pøedloze pro pøesné porovnávání
-		//nastaveno pro mapu 3
-		bool modifyByHand = false;
-		if (modifyByHand)
-		{
-			for (auto node : nodes)
-			{
-				if (node->contains(75, 75, cellSize / 2))	//nalezení node, ve které je støed
-				{
-					startNode = node;
-					break;
-				}
-			}
-
-			for (size_t i = 0; i < map->getGoals().size(); i++)
-			{
-
-				for (auto node : nodes)
-				{
-					if (node->contains(725, 775, cellSize / 2))	//nalezení node, ve které je støed
-					{
-						endNodes[i] = node;
-						break;
-					}
-				}
-			}
-		}
-
+		auto endNodes = getEndNodes(nodes, map, cellSize, allowSwarmSplitting);
 
 		shared_ptr<MapGraph> graph = make_shared<MapGraph>(nodes, startNode, endNodes);
 		return graph;
@@ -241,25 +209,50 @@ namespace App
 		return startNode;
 	}
 
-	vector<shared_ptr<Node>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize)
+	vector<shared_ptr<Node>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize, bool allowSwarmSplitting)
 	{
-		auto endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
-		for (size_t i = 0; i < map->getGoals().size(); i++)
+		auto endNodes = vector<shared_ptr<Node>>();
+		if (allowSwarmSplitting)
 		{
-			auto goal = map->getGoals()[i]->rectangle;
-			int middleX = goal->getX() + goal->getWidth() / 2;
-			int middleY = goal->getY() + goal->getHeight() / 2;
-
-
-			for (auto node : nodes)
+			//end node pro kadı cíl zvláš
+			endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
+			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
-				if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
+				auto goal = map->getGoals()[i]->rectangle;
+				int middleX = goal->getX() + goal->getWidth() / 2;
+				int middleY = goal->getY() + goal->getHeight() / 2;
+
+
+				for (auto node : nodes)
 				{
-					endNodes[i] = node;
-					break;
+					if (node->contains(middleX, middleY, cellSize / 2))	//nalezení node, ve které je støed
+					{
+						endNodes[i] = node;
+						break;
+					}
 				}
 			}
+		} else
+		{
+			endNodes = vector<shared_ptr<Node>>(1);
+			//end node je jen jedna, pro celı goalGroup
+			auto goalMiddle = map->getGoalGroup()->getMiddle();
+
+			double range = -cellSize / 2;	//zaènu zápornì, protoe hned na zaèátku pøièítám.
+			do		//pokud je v cílové node pøekáka, zvìtším radius o 1 a hledám dál
+			{
+				range += cellSize;	//todo: contains metoda pracuje v range pro ètverec, moná by bylo dobré to pøedìlat na krunici
+				for (auto node : nodes)
+				{
+					if (node->getGridType() != Grid::Obstacle && node->contains(goalMiddle, range))	//nalezení node, ve které je støed
+					{
+						endNodes[0] = node;
+						break;
+					}
+				}
+			} while (!endNodes[0]);
 		}
+
 		return endNodes;
 	}
 

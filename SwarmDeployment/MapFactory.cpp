@@ -81,10 +81,10 @@ namespace App
 		map5->addGoal(make_shared<Goal>(385, 801, 230, 100));
 		map5->addGoal(make_shared<Goal>(301, 521, 150, 180));
 		map5->addGoal(make_shared<Goal>(551, 521, 150, 180));
-		map5->addObstacle(make_shared<Obstacle>(199, 699, 601, 101));
-		map5->addObstacle(make_shared<Obstacle>(199, 519, 101, 201));
-		map5->addObstacle(make_shared<Obstacle>(699, 519, 101, 201));
-		map5->addObstacle(make_shared<Obstacle>(199, 199, 601, 101));
+		map5->addObstacle(make_shared<Obstacle>(201, 701, 598, 98));
+		map5->addObstacle(make_shared<Obstacle>(201, 519, 98, 198));
+		map5->addObstacle(make_shared<Obstacle>(701, 519, 98, 198));
+		map5->addObstacle(make_shared<Obstacle>(201, 201, 598, 98));
 		maps.push_back(map5);
 
 		std::shared_ptr<Map> map6 = std::make_shared<Map>();

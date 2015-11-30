@@ -7,32 +7,32 @@
 namespace AStar
 {
 
-	class NodeWrapper : public std::enable_shared_from_this<NodeWrapper>
+	class NodeWrapper : public enable_shared_from_this<NodeWrapper>
 	{
 	public:
 		virtual ~NodeWrapper();
-		NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode);
-		virtual double getDistance(std::shared_ptr<NodeWrapper> node);
-		virtual double getDistance(std::shared_ptr<App::Node> node);
-		virtual std::set<std::shared_ptr<NodeWrapper>> expand(std::shared_ptr<App::Node> endNode);
-		virtual void recalculateHeuristic(std::shared_ptr<App::Node> endNode);
-		virtual std::shared_ptr<NodeWrapper> getParent() const;
-		virtual std::shared_ptr<App::Node> getNode() const;
+		NodeWrapper(shared_ptr<NodeWrapper> parent, shared_ptr<Node> node, shared_ptr<Node> endNode);
+		virtual double getDistance(shared_ptr<NodeWrapper> node);
+		virtual double getDistance(shared_ptr<Node> node);
+		virtual set<shared_ptr<NodeWrapper>> expand(shared_ptr<Node> endNode);
+		virtual void recalculateHeuristic(shared_ptr<Node> endNode);
+		virtual shared_ptr<NodeWrapper> getParent() const;
+		virtual shared_ptr<Node> getNode() const;
 		virtual double getX() const;
 		virtual double getY() const;
 		virtual double getFromStart() const;
 		virtual double getHeuristicToEnd() const;
 		virtual bool hasParent();
-		virtual std::vector<std::shared_ptr<NodeWrapper>> getWay();
+		virtual vector<shared_ptr<NodeWrapper>> getWay();
 		virtual double getTotalCost();
 		virtual bool operator==(const NodeWrapper& another);
-		virtual bool operator==(const App::Node& another);
+		virtual bool operator==(const Node& another);
 		virtual bool operator!=(const NodeWrapper& another);
-		virtual bool operator!=(const App::Node& another);
+		virtual bool operator!=(const Node& another);
 	protected:
-		std::string coords;
-		std::shared_ptr<NodeWrapper> parent;
-		std::shared_ptr<App::Node> node;
+		string coords;
+		shared_ptr<NodeWrapper> parent;
+		shared_ptr<Node> node;
 		double fromStart;
 		double fromParent;
 		double heuristicToEnd;

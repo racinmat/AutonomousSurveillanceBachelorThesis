@@ -51,7 +51,7 @@ namespace App
 			}
 			if (goal->rectangle->getY() < leftLowerY)
 			{
-				leftLowerX = goal->rectangle->getY();
+				leftLowerY = goal->rectangle->getY();
 			}
 			if (goal->rectangle->getX() + goal->rectangle->getWidth() > rightUpperX)
 			{

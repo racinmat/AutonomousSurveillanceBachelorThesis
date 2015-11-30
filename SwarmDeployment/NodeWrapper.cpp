@@ -10,7 +10,7 @@ namespace AStar
 	{
 	}
 
-	NodeWrapper::NodeWrapper(std::shared_ptr<NodeWrapper> parent, std::shared_ptr<App::Node> node, std::shared_ptr<App::Node> endNode) :
+	NodeWrapper::NodeWrapper(shared_ptr<NodeWrapper> parent, shared_ptr<Node> node, shared_ptr<Node> endNode) :
 		parent(parent), node(node), pathLength(parent == nullptr ? 1 : parent->pathLength + 1)
 	{
 		if (parent == nullptr)
@@ -23,13 +23,13 @@ namespace AStar
 			this->fromStart = this->parent->getFromStart() + this->fromParent;
 			this->fromStart += this->parent->node->getCost();//zde zahrnu do výpoètù cenu podle vzdálenosti od pøekážek. Petrlík cenou hodnotu fromStart násobil, ale pøijde mi logiètìjší pøièítání. Vytkouším pøièítání pozdìji
 		}
-		this->coords = std::string("x:") + std::to_string(node->getPoint()->getX()) + std::string(",y:") + std::to_string(node->getPoint()->getY());
+		this->coords = string("x:") + to_string(node->getPoint()->getX()) + string(",y:") + to_string(node->getPoint()->getY());
 		this->heuristicToEnd = 0;
 		this->recalculateHeuristic(endNode);
 		this->totalCost = this->getFromStart() + this->getHeuristicToEnd();
 	}
 
-	double NodeWrapper::getDistance(std::shared_ptr<NodeWrapper> node)
+	double NodeWrapper::getDistance(shared_ptr<NodeWrapper> node)
 	{
 		double xDist = this->getX() - node->getX();
 		xDist *= xDist;
@@ -38,7 +38,7 @@ namespace AStar
 		return sqrt(xDist + yDist);
 	}
 
-	double NodeWrapper::getDistance(std::shared_ptr<App::Node> node)
+	double NodeWrapper::getDistance(shared_ptr<Node> node)
 	{
 		double xDist = this->getX() - node->getPoint()->getX();
 		xDist *= xDist;
@@ -47,27 +47,27 @@ namespace AStar
 		return sqrt(xDist + yDist);
 	}
 
-	std::set<std::shared_ptr<NodeWrapper>> NodeWrapper::expand(std::shared_ptr<App::Node> endNode)
+	set<shared_ptr<NodeWrapper>> NodeWrapper::expand(shared_ptr<Node> endNode)
 	{
 		auto expanded = this->node->getNeighborsWithoutObstacles();
-		auto expandedWrapper = std::set<std::shared_ptr<NodeWrapper>>();
+		auto expandedWrapper = set<shared_ptr<NodeWrapper>>();
 		for (auto node : expanded) {
-			expandedWrapper.insert(std::make_shared<NodeWrapper>(shared_from_this(), node, endNode));
+			expandedWrapper.insert(make_shared<NodeWrapper>(shared_from_this(), node, endNode));
 		}
 		return expandedWrapper;
 	}
 
-	void NodeWrapper::recalculateHeuristic(std::shared_ptr<App::Node> endNode)
+	void NodeWrapper::recalculateHeuristic(shared_ptr<Node> endNode)
 	{
 		this->heuristicToEnd = getDistance(endNode);
 	}
 
-	std::shared_ptr<NodeWrapper> NodeWrapper::getParent() const
+	shared_ptr<NodeWrapper> NodeWrapper::getParent() const
 	{
 		return parent;
 	}
 
-	std::shared_ptr<App::Node> NodeWrapper::getNode() const
+	shared_ptr<Node> NodeWrapper::getNode() const
 	{
 		return node;
 	}
@@ -97,9 +97,9 @@ namespace AStar
 		return this->parent != nullptr;
 	}
 
-	std::vector<std::shared_ptr<NodeWrapper>> NodeWrapper::getWay()
+	vector<shared_ptr<NodeWrapper>> NodeWrapper::getWay()
 	{
-		auto wayToTarget = std::vector<std::shared_ptr<NodeWrapper>>(pathLength);
+		auto wayToTarget = vector<shared_ptr<NodeWrapper>>(pathLength);
 		auto iter = shared_from_this();
 		int index = pathLength;
 		while (iter->hasParent()) {
@@ -122,7 +122,7 @@ namespace AStar
 		return  getX() == another.getX() && getY() == another.getY();
 	}
 
-	bool NodeWrapper::operator==(const App::Node& another)
+	bool NodeWrapper::operator==(const Node& another)
 	{
 		return  getX() == another.getPoint()->getX() && getY() == another.getPoint()->getY();
 	}
@@ -132,7 +132,7 @@ namespace AStar
 		return !(*this == another);
 	}
 
-	bool NodeWrapper::operator!=(const App::Node& another)
+	bool NodeWrapper::operator!=(const Node& another)
 	{
 		return !(*this == another);
 	}

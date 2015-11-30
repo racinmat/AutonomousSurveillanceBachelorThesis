@@ -192,7 +192,7 @@ void testing()
 	MapFactory factory;
 	auto map = factory.createMaps(configuration->getUavCount())[0];
 	MapProcessor processor(make_shared<LoggerInterface>());
-	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize());
+	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
 	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 	a -= a % configuration->getAStarCellSize();
 	a += (configuration->getAStarCellSize() / 2);

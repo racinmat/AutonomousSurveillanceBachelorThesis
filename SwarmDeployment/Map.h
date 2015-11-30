@@ -24,6 +24,7 @@ namespace App
 		void addUavStart(shared_ptr<Uav> start);
 		vector<shared_ptr<Uav>> getUavsStart();
 		int countUavs() const;
+		virtual shared_ptr<GoalGroup> getGoalGroup() const;
 
 	protected:
 		vector<shared_ptr<Goal>> goals;

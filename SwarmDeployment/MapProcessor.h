@@ -13,14 +13,14 @@ namespace App
 	public:
 		MapProcessor(shared_ptr<LoggerInterface> logger);
 		virtual ~MapProcessor();
-		shared_ptr<MapGraph> mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);
+		shared_ptr<MapGraph> mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize, bool allowSwarmSplitting);
 
 	protected:
 		vector<vector<Grid>> getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize);	//returns 2D matrix as grid of map
 		Grid analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize);
 		vector<shared_ptr<Node>> gridToNodes(vector<vector<Grid>> mapGrid, int cellSize);
 		shared_ptr<Node> getStartNode(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
-		vector<shared_ptr<Node>> getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize);
+		vector<shared_ptr<Node>> getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize, bool allowSwarmSplitting);
 		void countDistancesToObstacles(vector<shared_ptr<Node>> nodes, int cellSize);
 		shared_ptr<LoggerInterface> logger;
 		double getDistanceBetweenNodes(int cellSize);

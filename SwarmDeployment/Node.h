@@ -25,6 +25,8 @@ namespace App
 		void increaseCost(double increase);
 		Grid getGridType() const;
 		bool contains(int x, int y, int distance);
+		bool contains(Point point, int distance);
+		bool contains(shared_ptr<Point> point, int distance);
 		friend bool operator==(const Node& lhs, const Node& rhs);
 		friend bool operator!=(const Node& lhs, const Node& rhs);
 		friend size_t hash_value(const Node& obj);

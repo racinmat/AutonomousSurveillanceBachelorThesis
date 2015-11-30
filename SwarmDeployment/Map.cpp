@@ -53,6 +53,11 @@ namespace App
 		return uavsStart.size();
 	}
 
+	shared_ptr<GoalGroup> Map::getGoalGroup() const
+	{
+		return goalGroup;
+	}
+
 	void Map::addObstacle(shared_ptr<Obstacle> obstacle)
 	{
 		obstacles.push_back(obstacle);

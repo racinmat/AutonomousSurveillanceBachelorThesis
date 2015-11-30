@@ -85,6 +85,16 @@ namespace App
 		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
 	}
 
+	bool Node::contains(Point point, int distance)
+	{
+		return contains(point.getX(), point.getY(), distance);
+	}
+
+	bool Node::contains(shared_ptr<Point> point, int distance)
+	{
+		return contains(*point.get(), distance);
+	}
+
 	double Node::getDistanceToObstacle() const
 	{
 		return distanceToObstacle;
