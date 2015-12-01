@@ -113,8 +113,8 @@ namespace App
 			}
 		}
 
-		double cost_neighbor = 10; // cena node, pokud je nìkde vedle ní pøekážka
-		double cost_diagonal = 5; // cena node, pokud je diagonálnì k ní pøekážka
+		double cost_neighbor = 20; // cena node, pokud je nìkde vedle ní pøekážka
+		double cost_diagonal = 10; // cena node, pokud je diagonálnì k ní pøekážka
 		index = 0;	//index dané node
 
 		//adding of neighbors, when all nodes are added

@@ -88,8 +88,8 @@ namespace Ui
 		int y = 12;
 		for (auto node : nodes)
 		{
-//			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
-			addText(QString::fromStdString(to_string(int(node->getDistanceToObstacle()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
+			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
+//			addText(QString::fromStdString(to_string(int(node->getDistanceToObstacle()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
 		}
 		mainWindow->updateView();
 	}
