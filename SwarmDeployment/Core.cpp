@@ -125,7 +125,7 @@ namespace App
 			}
 		}
 
-		auto final_nodes = vector<shared_ptr<State>>(rrt_max_nodes);
+		auto final_nodes = vector<shared_ptr<State>>();
 
 		//pøíprava mapy <stringová reprezentace bodu, node> pro rychlé urèování souèasné node
 		auto nodesMap = std::map<string, shared_ptr<Node>>();	//todo: naplnit na zaèátku
@@ -134,7 +134,6 @@ namespace App
 			nodesMap[node->getPoint()->toString()] = node;
 		}
 
-		int nodes_count = rrt_max_nodes;	//todo: zjistit, co s tou promìnnou mám dìlat
 		shared_ptr<State> newState;
 		shared_ptr<State> nearState = initialState;
 		auto output = make_shared<Output>();
@@ -237,11 +236,11 @@ namespace App
 				{
 					output->goal_reached.push_back(uav->getReachedGoal());
 				}
-				final_nodes[m] = newState;	//rekurzí se ze stavu dá získat celá cesta
+				output->finalNodes.push_back(newState);	//rekurzí se ze stavu dá získat celá cesta
 				char buffer[1024];
+				m++;
 				sprintf(buffer, "%d viable paths found so far.", m);
 				logger->logText(buffer);
-				m++;
 			}
 			output->distancesToGoal[i] = newState->distanceOfNewNodes;	//tohle dát do promìnné State, nastavit v select_input a pak to ze State tahat
 
@@ -252,7 +251,7 @@ namespace App
 			}
 		}
 		
-		final_nodes[m] = nodes[nodes.size() - 1];	//poslední prvek
+		output->finalNodes.push_back(nodes[nodes.size() - 1]);	//poslední prvek
 		check_near_goal(newState->uavs, map);
 		output->goal_reached = vector<shared_ptr<GoalInterface>>();
 		for (auto uav : newState->uavs)

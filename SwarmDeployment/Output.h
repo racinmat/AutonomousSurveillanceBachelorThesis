@@ -19,8 +19,7 @@ namespace App
 		vector<shared_ptr<GoalInterface>> goal_reached;	//empty pointer, pokud uav nedorazilo. vektor dlouhý jako poèet uav
 		//todo: pøedìlat na mapy
 		vector<double> distancesToGoal;		//ke každé UAV délka cesty k cíli
-		shared_ptr<State> closestState;		//stav, ve kterém mají všechna UAV co nejmenší vzdálenosti ke støedùm svých cílù. vzdálenosti se sèítají a hledá se minimum
-
+		vector<shared_ptr<State>> finalNodes;
 	};
 
 }

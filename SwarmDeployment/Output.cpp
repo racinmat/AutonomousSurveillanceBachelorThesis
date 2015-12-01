@@ -6,6 +6,7 @@ namespace App
 
 	Output::Output()
 	{
+		finalNodes = vector<shared_ptr<State>>();
 	}
 
 
