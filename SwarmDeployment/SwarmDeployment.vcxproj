@@ -184,6 +184,7 @@
     </ClCompile>
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GoalGroup.cpp" />
+    <ClCompile Include="GoalInterface.cpp" />
     <ClCompile Include="Gui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
@@ -302,6 +303,7 @@
     </ClInclude>
     <ClInclude Include="Goal.h" />
     <ClInclude Include="GoalGroup.h" />
+    <ClInclude Include="GoalInterface.h" />
     <ClInclude Include="Gui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>

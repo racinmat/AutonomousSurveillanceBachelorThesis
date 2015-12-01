@@ -9,5 +9,10 @@ public:
 	static double inRange(double from, double to);
 	static double fromZeroToOne();
 	template < typename T>
-	static T element(std::vector<T> const vector);
+	//když pøesunu tìlo funkce do cpp souboru, pøestane fungovat kompilace, because fuck you, C++. http://stackoverflow.com/questions/3040480/c-template-function-compiles-in-header-but-not-implementation/3040706#3040706
+	static T element(std::vector<T> const vector)
+	{
+		int randomIndex = rand() % vector.size();
+		return vector[randomIndex];
+	}
 };

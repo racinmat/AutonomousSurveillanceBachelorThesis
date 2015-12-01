@@ -4,9 +4,8 @@
 namespace App
 {
 		
-	GoalGroup::GoalGroup() : Goal(0, 0, 0, 0)	//inicializuji až lazy. Todo: možná pøedìlat, aby se goalGroup vytvoøil builderPaternem, pak budu moct eager loadovat
+	GoalGroup::GoalGroup() //inicializuji až lazy. Todo: možná pøedìlat, aby se goalGroup vytvoøil builderPaternem, pak budu moct eager loadovat
 	{
-		rectangle.reset();
 	}
 	
 	GoalGroup::~GoalGroup()
@@ -47,7 +46,7 @@ namespace App
 
 	shared_ptr<Point> GoalGroup::getRandomPointInside()
 	{
-		auto randomGoal = Random::element(goals);
+		shared_ptr<Goal> randomGoal = Random::element(goals);
 		return randomGoal->getRandomPointInside();
 	}
 

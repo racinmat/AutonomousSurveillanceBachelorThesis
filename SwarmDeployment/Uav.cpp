@@ -48,12 +48,12 @@ namespace App
 		return reachedGoal != false;
 	}
 
-	shared_ptr<Goal> Uav::getReachedGoal() const
+	shared_ptr<GoalInterface> Uav::getReachedGoal() const
 	{
 		return reachedGoal;
 	}
 
-	void Uav::setReachedGoal(shared_ptr<Goal> reachedGoal)
+	void Uav::setReachedGoal(shared_ptr<GoalInterface> reachedGoal)
 	{
 		this->reachedGoal = reachedGoal;
 	}

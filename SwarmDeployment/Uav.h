@@ -19,8 +19,8 @@ namespace App
 		virtual shared_ptr<PointParticle> getPointParticle() const;
 		friend ostream& operator<<(ostream& os, const Uav& obj);
 		virtual bool isGoalReached() const;
-		virtual shared_ptr<Goal> getReachedGoal() const;
-		virtual void setReachedGoal(shared_ptr<Goal> reachedGoal);
+		virtual shared_ptr<GoalInterface> getReachedGoal() const;
+		virtual void setReachedGoal(shared_ptr<GoalInterface> reachedGoal);
 		shared_ptr<GuidingPathsCurrentPositions> current_indexes;
 		friend bool operator<(const Uav& lhs, const Uav& rhs);	//kvùli používání jako klíèe v std::map
 		friend bool operator<=(const Uav& lhs, const Uav& rhs);
@@ -33,7 +33,7 @@ namespace App
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;
-		shared_ptr<Goal> reachedGoal;
+		shared_ptr<GoalInterface> reachedGoal;
 		int id;
 		static int lastId;
 	};

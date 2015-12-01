@@ -232,7 +232,7 @@ namespace App
 			output->distancesToGoal = vector<double>(nodes.size());
 			if (isGoalReached) // pokud je nalezen cíl
 			{
-				output->goal_reached = vector<shared_ptr<Goal>>();
+				output->goal_reached = vector<shared_ptr<GoalInterface>>();
 				for(auto uav : newState->uavs)
 				{
 					output->goal_reached.push_back(uav->getReachedGoal());
@@ -254,7 +254,7 @@ namespace App
 		
 		final_nodes[m] = nodes[nodes.size() - 1];	//poslední prvek
 		check_near_goal(newState->uavs, map);
-		output->goal_reached = vector<shared_ptr<Goal>>();
+		output->goal_reached = vector<shared_ptr<GoalInterface>>();
 		for (auto uav : newState->uavs)
 		{
 			output->goal_reached.push_back(uav->getReachedGoal());
@@ -690,7 +690,7 @@ namespace App
 		}
 	}
 
-	shared_ptr<Point> Core::random_state_goal(shared_ptr<Goal> goal, shared_ptr<Map> map)
+	shared_ptr<Point> Core::random_state_goal(shared_ptr<GoalInterface> goal, shared_ptr<Map> map)
 	{
 		shared_ptr<Point> random_state;
 		do

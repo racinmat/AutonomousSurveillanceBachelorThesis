@@ -8,7 +8,6 @@ namespace App
 	{
 		obstacles = vector<shared_ptr<Obstacle>>();
 		goals = vector<shared_ptr<Goal>>();
-		goals = vector<shared_ptr<Goal>>();
 		uavsStart = vector<shared_ptr<Uav>>();
 		goalGroup = make_shared<GoalGroup>();
 	}

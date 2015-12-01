@@ -2,13 +2,14 @@
 #include <memory>
 #include "Goal.h"
 #include <vector>
+#include "GoalInterface.h"
 
 using namespace std;
 
 namespace App
 {
 		
-	class GoalGroup : public Goal	// goalGroup dìdí z cíle, abych nemusel nikde v UAV mìnit logiku pøi použití GoalGroup, pokud se v UAV konroluje, zda dorazila do cíle 
+	class GoalGroup : public GoalInterface	// goalGroup dìdí z cíle, abych nemusel nikde v UAV mìnit logiku pøi použití GoalGroup, pokud se v UAV konroluje, zda dorazila do cíle 
 	{//todo: zamyslet se, zda by Goal a GoalGroup nemìly implemenovat stejný interface
 	public:
 		GoalGroup();
@@ -20,6 +21,7 @@ namespace App
 		virtual shared_ptr<Point> getRandomPointInside() override;
 	protected:	//rectangle property of parent will be containing all goals
 		vector<shared_ptr<Goal>> goals;
+		shared_ptr<Rectangle> rectangle;
 		void initializeRectangle();	//protože jdou cíle pøidávat dynamicky, vytvoøím rectangle lazy, kdy pøedpokládám, že se nic nebude vytváøet. Vyøešilo by se to builder paternem, ale naah.
 	};
 	

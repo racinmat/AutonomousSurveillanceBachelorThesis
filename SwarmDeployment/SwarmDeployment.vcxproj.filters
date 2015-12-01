@@ -234,6 +234,9 @@
     <ClCompile Include="GoalGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GoalInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -407,6 +410,9 @@
       <Filter>Header Files\Gui</Filter>
     </ClInclude>
     <ClInclude Include="GoalGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
