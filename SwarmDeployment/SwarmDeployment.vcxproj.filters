@@ -67,6 +67,21 @@
     <Filter Include="Header Files\Logging">
       <UniqueIdentifier>{074993db-65b7-4337-b53e-c763d68c2f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ublas">
+      <UniqueIdentifier>{a4170ce7-59c2-456a-820c-5b251654dbcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ublas\detail">
+      <UniqueIdentifier>{382f517a-c20b-4105-88da-d093550fc235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ublas\experimental">
+      <UniqueIdentifier>{06842343-2661-40fe-b7b7-43fffab5d584}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ublas\operation">
+      <UniqueIdentifier>{270c6c46-f5eb-402a-876e-bacd2c19450f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ublas\traits">
+      <UniqueIdentifier>{ee2107a1-2f8f-4c04-8e5c-40130c95d9c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -414,6 +429,162 @@
     </ClInclude>
     <ClInclude Include="GoalInterface.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\assignment.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\banded.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\blas.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\doxydoc.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\exception.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\expression_types.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\functional.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\fwd.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\hermitian.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\io.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\lu.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\matrix.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\matrix_expression.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\matrix_proxy.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\matrix_sparse.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\matrix_vector.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation_blocked.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation_sparse.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operations.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\storage.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\storage_sparse.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\symmetric.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\tags.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\traits.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\triangular.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\vector.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\vector_expression.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\vector_of_vector.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\vector_proxy.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\vector_sparse.hpp">
+      <Filter>Header Files\ublas</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\concepts.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\config.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\definitions.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\documentation.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\duff.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\iterator.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\matrix_assign.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\raw.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\returntype_deduction.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\temporary.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\detail\vector_assign.hpp">
+      <Filter>Header Files\ublas\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\experimental\sparse_view.hpp">
+      <Filter>Header Files\ublas\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\begin.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\c_array.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\end.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\num_columns.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\num_rows.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\operation\size.hpp">
+      <Filter>Header Files\ublas\operation</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\traits\c_array.hpp">
+      <Filter>Header Files\ublas\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\traits\const_iterator_type.hpp">
+      <Filter>Header Files\ublas\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="ublas\traits\iterator_type.hpp">
+      <Filter>Header Files\ublas\traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -53,6 +53,7 @@ namespace App
 		virtual bool isTextOutputEnabled() const;
 		virtual void inNarrowPassage();
 		virtual void outsideNarrowPassage();
+		virtual int getGoalElementSize() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -90,6 +91,7 @@ namespace App
 		double guidingNearDist;
 		double maxTurn;
 		int divisionCount;
+		int goalElementSize;
 	};
 
 }

@@ -42,6 +42,7 @@ namespace App
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
+		goalElementSize = 1;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -259,5 +260,10 @@ namespace App
 			narrowPassageCount = 0;
 			divisionCount = 0;
 		}
+	}
+
+	int Configuration::getGoalElementSize() const
+	{
+		return goalElementSize;
 	}
 }

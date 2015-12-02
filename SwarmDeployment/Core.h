@@ -54,7 +54,13 @@ namespace App
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		void splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, vector<shared_ptr<UavGroup>> uavGroups, shared_ptr<State> state);
-			
+
+		vector<shared_ptr<State>> getPath(shared_ptr<State> last_node);
+		//function [ best_node, map, value] = get_best_fitness( final_nodes )
+		pair<shared_ptr<State>, double> get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map);
+		double fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map);
+		void save_output();
+
 	protected:
 		shared_ptr<LoggerInterface> logger;
 		vector<shared_ptr<Map>> maps;

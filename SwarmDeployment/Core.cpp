@@ -51,7 +51,6 @@ namespace App
 
 	void Core::run()
 	{
-		file = ofstream("myLogging.txt");
 		
 		clock_t start;
 		double duration;
@@ -75,9 +74,21 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
+		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
-		rrtPath(paths, configuration, map, nodes->getAllNodes());
-		file.close();
+		[output.closest_node, output.distance_to_goal] = get_closest_node_to_goal();
+		if ~any(output.goal_reached)
+			last_node = output.closest_node;
+		else
+			[last_node, ~] = get_best_fitness(output->finalNodes, map);
+		end
+
+
+
+		path = get_path(last_node);
+
+		save_output();
+
 	}
 
 	void Core::testGui()
@@ -269,23 +280,7 @@ namespace App
 		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
 		int worldWidth = configuration->getWorldWidth();
 		int worldHeight = configuration->getWorldHeight();
-		int number_of_uavs = map->getUavsStart().size();
 		unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates;
-
-//		valarray<double> propabilities = valarray<double>(guiding_paths.size());	//tohle nakonec vùbec není použito, protože se cesty urèily pøesnì. 
-		//todo: vyøešit problém s tím, že kratší cesta je prozkoumána døíve
-
-//		int sum = 0; // sum = celková délka všech vedoucích cest
-//
-//		// delší cesta má vìtší prpst.proto, aby algoritmus asymptiticky pokryl každou cestu stejnì hustì. na delší cestu tedy pøipadne více bodù.
-//		for (size_t i = 0; i < guiding_paths.size(); i++)
-//		{
-//			int pathSize = guiding_paths[i]->getSize(); // èím delší cesta, tím vìtší pravdìpodobnost, že se tou cestou vydá, aspoò doufám
-//			propabilities[i] = pathSize;		// propabilities je normální, 1D pole. nechápu, proè tady používá notaci pro 2D pole
-//			sum += pathSize;
-//		}
-//
-//		propabilities /= sum;
 
 		double random = Random::fromZeroToOne();
 		if (random > guided_sampling_prob) //vybírá se náhodný vzorek
@@ -1071,5 +1066,122 @@ namespace App
 		{
 			uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
 		}
+	}
+
+	vector<shared_ptr<State>> Core::getPath(shared_ptr<State> last_node)
+	{
+		vector<shared_ptr<State>> path = vector<shared_ptr<State>>();
+		auto iterNode = last_node;
+		do
+		{
+			path.push_back(iterNode);
+			iterNode = last_node->prev;
+		} while (iterNode->prev);
+
+		//todo: zjistit, zda potøebuji na nìco geo_path_length a další vìci, které jsou zakomentované
+//		geo_path_length = 0;
+//		for m = 2:length(path)
+//			for n = 1 : number_of_uavs
+//				geo_path_length = geo_path_length + ...
+//				sqrt((path(m).loc(1, n) - path(m - 1).loc(1, n)) ^ 2 + ...
+//					(path(m).loc(2, n) - path(m - 1).loc(2, n)) ^ 2);
+//			end
+//		end
+//		geo_path_length = geo_path_length / number_of_uavs;
+//
+//		output.geometric_path_length = geo_path_length;
+//		output.path = path;
+//		output.runtime = nodes(end).time_added;
+//		output.curvature = get_curvature(path);
+
+		reverse(path.begin(), path.end());	//abych mìl cestu od zaèátku do konce
+		return path;
+	}
+
+	pair<shared_ptr<State>, double> Core::get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map)
+	{
+//		function[best_node, map, value] = get_best_fitness(final_nodes)
+//			% FITNESS_FUNCTION Summary of this function goes here
+//			%   Detailed explanation goes here
+//
+//			fit_tmp = NaN(1, length(final_nodes));
+//
+//		for m = 1:length(final_nodes) + 1
+//			if m > length(final_nodes) || isnan(final_nodes(m).index)
+//				m = m - 1; %#ok
+//				fit = fit_tmp(1, 1:m);
+//				[~, index] = min(fit(1, :));
+//				best_node = final_nodes(index);
+//				[value, map] = fitness_function(best_node.loc);
+//				map.reset();
+//				break
+//			end
+//			[fit_tmp(m), map] = fitness_function(final_nodes(1, m).loc);
+//			map.reset();
+//		end
+
+		auto finalStatesFitness = unordered_map<shared_ptr<State>, double>();
+		for (auto finalState : final_nodes)
+		{
+			finalStatesFitness[finalState] = fitness_function(finalState, map);
+		}
+
+		//finding solution with best fitness
+		pair<shared_ptr<State>, double> min = *min_element(finalStatesFitness.begin(), finalStatesFitness.end(), 
+			[](pair<shared_ptr<State>, double> a, pair<shared_ptr<State>, double> b) {return a.second < b.second; }
+		);
+		return min;
+	}
+
+	double Core::fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map)
+	{
+		int elementSize = configuration->getGoalElementSize();
+
+		//do matice (vektoru vektorù) si budu ukládat hodnoty, jak uav vidí dané místo. matice je cíl diskretizovaný stejnì jako pøi a star hledání.
+		//prázdný cíl má hodnotu 100. pokud cíl vidí UAV, vydìlí se hodnota dvìma. Nejmenší souèet je nejlepší.
+//		function[fitness, map] = fitness_function(final_node)
+//			% FITNESS_FUNCTION Summary of this function goes here
+//			%   Detailed explanation goes here
+//
+//			global number_of_uavs params goal_map
+//
+//			for n = 1:number_of_uavs
+//				goal_map.apply_camera(final_node(1, n), final_node(2, n), params.camera.x, params.camera.y, params.world_dimensions);
+//			end
+//			fitness = goal_map.get_sum();
+//			map = goal_map;
+//		end
+
+		//inicializace matic
+		auto goalMatrixes = unordered_map<Goal, vector<vector<double>>>();
+		for (auto goal : map->getGoals())
+		{
+			goalMatrixes[*goal.get()] = vector<vector<double>>();
+		}
+		for (auto goalMatrix : goalMatrixes)
+		{
+			auto goal = goalMatrix.first;
+			auto matrix = goalMatrix.second;
+			for (size_t i = 0; i < goal.getRectangle()->getWidth(); i++)
+			{
+
+			}
+		}
+	}
+
+	void Core::save_output()
+	{
+		function[] = save_output()
+			% SAVE_OUTPUT Summary of this function goes here
+			%   Detailed explanation goes here
+
+			global params output
+
+			dir_path = strcat('output/', date);
+		mkdir(dir_path)
+			matfile = fullfile(dir_path, datestr(clock, 30));
+		data = struct('params', params, 'output', output); %#ok
+			save(matfile, 'data');
+		end
 	}
 }
