@@ -9,10 +9,17 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-#include "Gui.h"					//zakomentovat pro noGui
+//include "Gui.h"					//zakomentovat pro noGui
+#include "boost/numeric/ublas/matrix.hpp"
+#include "boost/numeric/ublas/matrix_proxy.hpp"
+#include <boost/numeric/ublas/vector.hpp>
+#include "boost/numeric/ublas/io.hpp"
 
 //INITIALIZE_EASYLOGGINGPP
 
+using std::cout;
+using std::endl;
+namespace ublas = boost::numeric::ublas;
 
 int run(int argc, char *argv[])
 {
@@ -50,81 +57,81 @@ inline void hash_combine(size_t& seed, const T& v)
 }
 
 
-class B
-{
-
-public:
-	B() : ints(vector<int>()), id(lastId++)
-	{
-	}
-	B(const B& other) : ints(vector<int>())
-	{
-		for (auto a : other.as)
-		{
-			as.push_back(make_shared<A>(*a.get()));
-		}
-		ints = other.ints;
-		id = other.id;
-	}
-
-	friend bool operator==(const B& lhs, const B& rhs)
-	{
-		return lhs.id == rhs.id;
-	}
-
-	friend bool operator!=(const B& lhs, const B& rhs)
-	{
-		return !(lhs == rhs);
-	}
-
-	size_t hash_value() const
-	{
-		size_t seed = 0x2277B8A9;
-		hash_combine(seed, id);
-		return seed;
-	}
-
-	static size_t hash(const B& obj)
-	{
-		return obj.hash_value();
-	}
-
-	vector<shared_ptr<A>> as;
-	vector<int> ints;
-	int id;
-	static int lastId;
-
-};
-
-int B::lastId = 0;
-
-
-class BHasher
-{
-public:
-	size_t operator() (B const& key) const
-	{
-		return key.hash_value();
-	}
-};
-
-class BPtrHasher
-{
-public:
-	size_t operator() (shared_ptr<B> const& key) const
-	{
-		return key->hash_value();
-	}
-};
-
-class EqualFn
-{
-public:
-	bool operator() (B const& t1, B const& t2) const
-	{
-		return t1 == t2;
-	}
-};
+//class B
+//{
+//
+//public:
+//	B() : ints(vector<int>()), id(lastId++)
+//	{
+//	}
+//	B(const B& other) : ints(vector<int>())
+//	{
+//		for (auto a : other.as)
+//		{
+//			as.push_back(make_shared<A>(*a.get()));
+//		}
+//		ints = other.ints;
+//		id = other.id;
+//	}
+//
+//	friend bool operator==(const B& lhs, const B& rhs)
+//	{
+//		return lhs.id == rhs.id;
+//	}
+//
+//	friend bool operator!=(const B& lhs, const B& rhs)
+//	{
+//		return !(lhs == rhs);
+//	}
+//
+//	size_t hash_value() const
+//	{
+//		size_t seed = 0x2277B8A9;
+//		hash_combine(seed, id);
+//		return seed;
+//	}
+//
+//	static size_t hash(const B& obj)
+//	{
+//		return obj.hash_value();
+//	}
+//
+//	vector<shared_ptr<A>> as;
+//	vector<int> ints;
+//	int id;
+//	static int lastId;
+//
+//};
+//
+//int B::lastId = 0;
+//
+//
+//class BHasher
+//{
+//public:
+//	size_t operator() (B const& key) const
+//	{
+//		return key.hash_value();
+//	}
+//};
+//
+//class BPtrHasher
+//{
+//public:
+//	size_t operator() (shared_ptr<B> const& key) const
+//	{
+//		return key->hash_value();
+//	}
+//};
+//
+//class EqualFn
+//{
+//public:
+//	bool operator() (B const& t1, B const& t2) const
+//	{
+//		return t1 == t2;
+//	}
+//};
 
 void testing()
 {
@@ -187,19 +194,19 @@ void testing()
 
 	
 	// testování rychlosti motion modelu kvùli optimalizaci
-	auto configuration = make_shared<Configuration>();
-	auto core = make_shared<Core>(configuration);
-	MapFactory factory;
-	auto map = factory.createMaps(configuration->getUavCount())[0];
-	MapProcessor processor(make_shared<LoggerInterface>());
-	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-	a -= a % configuration->getAStarCellSize();
-	a += (configuration->getAStarCellSize() / 2);
-	for(auto b : a)
-	{
-		cout << b << endl;
-	}
+//	auto configuration = make_shared<Configuration>();
+//	auto core = make_shared<Core>(configuration);
+//	MapFactory factory;
+//	auto map = factory.createMaps(configuration->getUavCount())[0];
+//	MapProcessor processor(make_shared<LoggerInterface>());
+//	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+//	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+//	a -= a % configuration->getAStarCellSize();
+//	a += (configuration->getAStarCellSize() / 2);
+//	for(auto b : a)
+//	{
+//		cout << b << endl;
+//	}
 
 	/*
 	auto near_node = make_shared<App::State>(configuration->getInputCount());
@@ -365,6 +372,65 @@ void testing()
 //	cout << vec2.size() << endl;
 //	cout << vec3.size() << endl;
 
+	ublas::matrix<double> m(3, 3, 4);
+	cout << m << endl;
+
+	boost::numeric::ublas::vector<double> v(2, 3);
+	cout << v << endl;
+
+//	project(m, ublas::range(1, 1), ublas::range(0, 2)) = v;
+
+	auto m1 = ublas::matrix<double>(4, 4, 0);
+	m1(1, 1) = 2;
+	m1(1, 2) = 2;
+	m1(2, 1) = 2;
+	m1(2, 2) = 2;
+
+
+	auto m2 = ublas::matrix<double>(4, 4, 4);
+	auto m7 = ublas::matrix<double>(2, 2, 3);
+	auto m6 = ublas::matrix<double>(4, 4, 0);
+//	project(m6, ublas::range(1, 2), ublas::range(1, 2)) = m7;
+	ublas::subrange(m2, 1, 3, 1, 3) = ublas::matrix<double>(2, 2, 3);	//assigning smaller matrix to subvector
+
+	for (size_t i = 0; i < m1.size1(); i++)
+	{
+		cout << row(m1, i) << endl;
+	}
+	cout << endl;
+
+	for (size_t i = 0; i < m7.size1(); i++)
+	{
+		cout << row(m7, i) << endl;
+	}
+	cout << endl;
+
+	for (size_t i = 0; i < m6.size1(); i++)
+	{
+		cout << row(m6, i) << endl;
+	}
+	cout << endl;
+
+	for (size_t i = 0; i < m2.size1(); i++)
+	{
+		cout << row(m2, i) << endl;
+	}
+	cout << endl;
+
+	auto m3 = prod(m1, m2);
+	auto m4 = element_prod(m1, m2);
+
+	for (size_t i = 0; i < m3.size1(); i++)
+	{
+		cout << row(m3, i) << endl;
+	}
+	cout << endl;
+	for (size_t i = 0; i < m4.size1(); i++)
+	{
+		cout << row(m4, i) << endl;
+	}
+	cout << endl;
+
 	cin.get();
 }
 
@@ -373,8 +439,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 	return returnValue;
 }
 

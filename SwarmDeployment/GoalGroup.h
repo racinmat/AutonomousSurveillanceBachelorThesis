@@ -15,10 +15,12 @@ namespace App
 		GoalGroup();
 		virtual ~GoalGroup();
 		virtual void addGoal(shared_ptr<Goal> goal);
-		virtual shared_ptr<Point> getMiddle();
+		virtual shared_ptr<Point> getMiddle() override;
 		virtual bool contains(shared_ptr<Point> location) override;
 		virtual shared_ptr<Rectangle> getRectangle() override;
 		virtual shared_ptr<Point> getRandomPointInside() override;
+		shared_ptr<Goal> getConcreteGoal(shared_ptr<Point> location) override;
+
 	protected:	//rectangle property of parent will be containing all goals
 		vector<shared_ptr<Goal>> goals;
 		shared_ptr<Rectangle> rectangle;

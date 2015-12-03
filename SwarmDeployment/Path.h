@@ -9,7 +9,7 @@ namespace App
 	class Path
 	{
 	public:
-		Path();
+		Path(shared_ptr<GoalInterface> goal);
 		virtual ~Path();
 		vector<shared_ptr<Node>> getNodes() const;
 		int getSize() const;
@@ -24,9 +24,11 @@ namespace App
 		bool isFirstCloserOrSameToEnd(shared_ptr<Node> first, shared_ptr<Node> second);
 		size_t hash() const;
 		int getIndex(shared_ptr<Node> node);
+		virtual shared_ptr<GoalInterface> getGoal() const;
 
 	protected:
 		vector<shared_ptr<Node>> nodes;
+		shared_ptr<GoalInterface> goal;
 	};
 
 

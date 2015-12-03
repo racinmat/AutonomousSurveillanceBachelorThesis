@@ -12,8 +12,8 @@ namespace App
 	{
 	}
 
-	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path) : uavs(uavs),
-		guidingPath(guiding_path)
+	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path) : 
+		uavs(uavs), guidingPath(guiding_path)
 	{
 	}
 

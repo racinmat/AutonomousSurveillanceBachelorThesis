@@ -30,6 +30,7 @@ namespace App
 		friend bool operator!=(const Uav& lhs, const Uav& rhs);
 		size_t hash_value() const;
 		virtual int getId() const;
+		virtual shared_ptr<Goal> getConcreteGoal();
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;

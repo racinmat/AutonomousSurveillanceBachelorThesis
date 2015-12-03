@@ -4,7 +4,7 @@
 namespace App
 {
 
-	Path::Path()
+	Path::Path(shared_ptr<GoalInterface> goal) : goal(goal)
 	{
 		nodes = std::vector<std::shared_ptr<Node>>();
 	}
@@ -79,6 +79,11 @@ namespace App
 			}
 		}
 		throw "Node not found";
+	}
+
+	shared_ptr<GoalInterface> Path::getGoal() const
+	{
+		return goal;
 	}
 
 	void Path::addToEnd(std::shared_ptr<Node> node)

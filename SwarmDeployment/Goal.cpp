@@ -30,6 +30,16 @@ namespace App
 		return rectangle;
 	}
 
+	shared_ptr<Goal> Goal::getConcreteGoal(shared_ptr<Point> location)
+	{
+		return shared_from_this();
+	}
+
+	shared_ptr<Point> Goal::getMiddle()
+	{
+		return rectangle->getMiddle();
+	}
+
 	bool operator==(const Goal& lhs, const Goal& rhs)
 	{
 		return *lhs.rectangle.get() == *rhs.rectangle.get();

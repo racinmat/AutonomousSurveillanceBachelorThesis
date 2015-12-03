@@ -54,6 +54,16 @@ namespace App
 		throw "No equal node found for node " + to_string(uav->getId());
 	}
 
+	bool State::areUavsInGoals()
+	{
+		bool allInGoals = true;
+		for (auto uav : uavs)
+		{
+			allInGoals = allInGoals && uav->isGoalReached();
+		}
+		return allInGoals;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;

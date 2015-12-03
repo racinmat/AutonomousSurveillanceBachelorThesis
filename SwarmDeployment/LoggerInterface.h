@@ -19,7 +19,7 @@ namespace App
 		virtual void logMapGrid(vector<vector<Grid>> mapGrid);
 		virtual void logMapNodes(vector<shared_ptr<Node>> nodes);
 		virtual void logAStarNode(shared_ptr<AStar::NodeWrapper> node);
-		virtual void logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<shared_ptr<Node>> ends);
+		virtual void logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends);
 		virtual void logText(string string);
 		virtual void logText(char const string[]);
 		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode);

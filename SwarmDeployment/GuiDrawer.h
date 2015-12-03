@@ -22,7 +22,7 @@ namespace Ui
 		virtual void logMapGrid(vector<vector<App::Grid>> mapGrid) override;
 		virtual void logMapNodes(vector<shared_ptr<App::Node>> nodes) override;
 		virtual void logAStarNode(shared_ptr<AStar::NodeWrapper> node) override;
-		virtual void logGuidingPaths(vector<shared_ptr<App::Path>> paths, shared_ptr<App::Node> start, vector<shared_ptr<App::Node>> ends) override;
+		virtual void logGuidingPaths(vector<shared_ptr<App::Path>> paths, shared_ptr<App::Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends) override;
 		virtual void logText(string string) override;
 		virtual void logText(char const string[]) override;
 		virtual void logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode) override;

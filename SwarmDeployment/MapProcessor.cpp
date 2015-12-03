@@ -209,32 +209,30 @@ namespace App
 		return startNode;
 	}
 
-	vector<shared_ptr<Node>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize, bool allowSwarmSplitting)
+	vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize, bool allowSwarmSplitting)
 	{
-		auto endNodes = vector<shared_ptr<Node>>();
+		vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> endNodes;
 		if (allowSwarmSplitting)
 		{
 			//end node pro kaûd˝ cÌl zvl·öù
-			endNodes = vector<shared_ptr<Node>>(map->getGoals().size());
+			endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(map->getGoals().size());
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
 				auto goal = map->getGoals()[i]->getRectangle();
-				int middleX = goal->getX() + goal->getWidth() / 2;
-				int middleY = goal->getY() + goal->getHeight() / 2;
-
+				auto middle = goal->getMiddle();
 
 				for (auto node : nodes)
 				{
-					if (node->contains(middleX, middleY, cellSize / 2))	//nalezenÌ node, ve kterÈ je st¯ed
+					if (node->contains(middle, cellSize / 2))	//nalezenÌ node, ve kterÈ je st¯ed
 					{
-						endNodes[i] = node;
+						endNodes[i] = make_tuple(node, goal);
 						break;
 					}
 				}
 			}
 		} else
 		{
-			endNodes = vector<shared_ptr<Node>>(1);
+			endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(1);
 			//end node je jen jedna, pro cel˝ goalGroup
 			auto goalMiddle = map->getGoalGroup()->getMiddle();
 
@@ -246,11 +244,11 @@ namespace App
 				{
 					if (node->getGridType() != Grid::Obstacle && node->contains(goalMiddle, range))	//nalezenÌ node, ve kterÈ je st¯ed
 					{
-						endNodes[0] = node;
+						endNodes[0] = make_tuple(node, map->getGoalGroup());
 						break;
 					}
 				}
-			} while (!endNodes[0]);
+			} while (!get<0>(endNodes[0]));
 		}
 
 		return endNodes;

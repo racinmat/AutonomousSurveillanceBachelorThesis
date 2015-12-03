@@ -7,7 +7,7 @@ using namespace std;
 namespace App
 {
 
-	class Goal : public GoalInterface
+	class Goal : public GoalInterface, public enable_shared_from_this<Goal>
 	{
 
 	public:
@@ -19,6 +19,8 @@ namespace App
 		virtual shared_ptr<Point> getRandomPointInside() override;
 		friend size_t hash_value(const Goal& obj);
 		virtual shared_ptr<Rectangle> getRectangle() override;	//není const, protože GoalGroup implementace GoalInterfacu se zavoláním getteru lazy inicializuje. po vytvoøení builderu bude opìt moct být lazy
+		virtual shared_ptr<Goal> getConcreteGoal(shared_ptr<Point> location) override;
+		virtual shared_ptr<Point> getMiddle() override;
 
 	protected:
 		shared_ptr<Rectangle> rectangle;

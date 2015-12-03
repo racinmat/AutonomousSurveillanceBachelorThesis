@@ -101,14 +101,15 @@ namespace Ui
 //		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, std::vector<std::shared_ptr<App::Node>> ends)
+	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends)
 	{
 		int cellSize = configuration->getAStarCellSize();
-		scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::yellow), QBrush(Qt::yellow));
-		for (auto end : ends)
-		{
-			scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
-		}
+//		scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
+//		for (auto end : ends)
+//		{
+//			auto endPoint = get<0>(end);
+//			scene->addRect(endPoint->getPoint()->getX() - cellSize/2, endPoint->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::yellow), QBrush(Qt::yellow));
+//		}
 
 		for (auto path : paths)
 		{

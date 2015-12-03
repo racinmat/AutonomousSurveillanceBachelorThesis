@@ -23,10 +23,13 @@
 #include "Uav.h"
 #include <valarray>
 #include <algorithm>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #define PI 3.14159265358979323846
 
 using namespace std;
+using namespace boost::numeric;
 
 namespace App
 {
@@ -76,16 +79,17 @@ namespace App
 
 		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
-		[output.closest_node, output.distance_to_goal] = get_closest_node_to_goal();
-		if ~any(output.goal_reached)
-			last_node = output.closest_node;
-		else
-			[last_node, ~] = get_best_fitness(output->finalNodes, map);
-		end
+		shared_ptr<State> lastState;
+		if (output->goals_reached)
+		{
+			lastState = get_best_fitness(output->finalNodes, map);
+		} else
+		{
+			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
+			lastState = get_closest_node_to_goal(allNodes, paths, map);
+		}
 
-
-
-		path = get_path(last_node);
+		auto path = getPath(lastState);
 
 		save_output();
 
@@ -233,20 +237,10 @@ namespace App
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
 			check_near_goal(newState->uavs, map);
 
-			bool isGoalReached = true;
-			for (auto uav : newState->uavs)
-			{
-				isGoalReached = isGoalReached && uav->isGoalReached();
-			}
-
 			output->distancesToGoal = vector<double>(nodes.size());
-			if (isGoalReached) // pokud je nalezen cíl
+			if (newState->areUavsInGoals()) // pokud je nalezen cíl
 			{
-				output->goal_reached = vector<shared_ptr<GoalInterface>>();
-				for(auto uav : newState->uavs)
-				{
-					output->goal_reached.push_back(uav->getReachedGoal());
-				}
+				output->goals_reached = newState->areUavsInGoals();
 				output->finalNodes.push_back(newState);	//rekurzí se ze stavu dá získat celá cesta
 				char buffer[1024];
 				m++;
@@ -264,11 +258,7 @@ namespace App
 		
 		output->finalNodes.push_back(nodes[nodes.size() - 1]);	//poslední prvek
 		check_near_goal(newState->uavs, map);
-		output->goal_reached = vector<shared_ptr<GoalInterface>>();
-		for (auto uav : newState->uavs)
-		{
-			output->goal_reached.push_back(uav->getReachedGoal());
-		}
+		output->goals_reached = newState->areUavsInGoals();
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
 		logger->logText("RRT-Path finished");
@@ -301,15 +291,7 @@ namespace App
 		}
 		else
 		{
-			vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
-			if (configuration->getAllowSwarmSplitting())
-			{
-				splitUavsToGroups(guiding_paths, map, uavGroups, state);
-			}
-			else
-			{
-				uavGroups[0] = make_shared<UavGroup>(state->uavs, guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
-			}
+			vector<shared_ptr<UavGroup>> uavGroups = splitUavsToGroups(guiding_paths, map, state, configuration->getAllowSwarmSplitting());
 			for (auto group : uavGroups)
 			{
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
@@ -1028,44 +1010,53 @@ namespace App
 		return Point(x, y);
 	}
 
-	void Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, vector<shared_ptr<UavGroup>> uavGroups, shared_ptr<State> state)
+	vector<shared_ptr<UavGroup>> Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting)
 	{
-		int number_of_uavs = map->getUavsStart().size();
-
-		//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
-		//tohle je pro groups. 
-		valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
-		double totalVolume = 0;
-		for (size_t i = 0; i < map->getGoals().size(); i++)
+		vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
+		if (allowSwarmSplitting)
 		{
-			double volume = map->getGoals()[i]->getRectangle()->getVolume();
-			ratios[i] = volume;
-			totalVolume += volume;
-		}
+			int number_of_uavs = map->getUavsStart().size();
 
-		ratios /= totalVolume;	//valarray umožòuje vektorové operace, každý prvek je v rozsahu od 0 do 1
-
-
-		//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
-
-		int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
-		for (size_t i = 0; i < uavGroups.size(); i++)
-		{
-			int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
-			auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
-			for (size_t j = 0; j < uavsCountInGroup; j++)
+			//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro každé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
+			//tohle je pro groups. 
+			valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+			double totalVolume = 0;
+			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
-				uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+				double volume = map->getGoals()[i]->getRectangle()->getVolume();
+				ratios[i] = volume;
+				totalVolume += volume;
 			}
-			uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
-			uavsInGroups += uavsCountInGroup;
+
+			ratios /= totalVolume;	//valarray umožòuje vektorové operace, každý prvek je v rozsahu od 0 do 1
+
+
+									//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
+
+			int uavsInGroups = 0;	//poèítá, kolik uav je rozvržených do skupin, kvùli zaokrouhlování
+			for (size_t i = 0; i < uavGroups.size(); i++)
+			{
+				int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
+				auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
+				for (size_t j = 0; j < uavsCountInGroup; j++)
+				{
+					uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+				}
+				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
+				uavsInGroups += uavsCountInGroup;
+			}
+			//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
+			int remaining = map->getUavsStart().size() - uavsInGroups;
+			for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
+			{
+				uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
+			}
 		}
-		//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
-		int remaining = map->getUavsStart().size() - uavsInGroups;
-		for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
+		else
 		{
-			uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
+			uavGroups[0] = make_shared<UavGroup>(state->uavs, guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
 		}
+		return uavGroups;
 	}
 
 	vector<shared_ptr<State>> Core::getPath(shared_ptr<State> last_node)
@@ -1098,28 +1089,8 @@ namespace App
 		return path;
 	}
 
-	pair<shared_ptr<State>, double> Core::get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map)
+	shared_ptr<State> Core::get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map)
 	{
-//		function[best_node, map, value] = get_best_fitness(final_nodes)
-//			% FITNESS_FUNCTION Summary of this function goes here
-//			%   Detailed explanation goes here
-//
-//			fit_tmp = NaN(1, length(final_nodes));
-//
-//		for m = 1:length(final_nodes) + 1
-//			if m > length(final_nodes) || isnan(final_nodes(m).index)
-//				m = m - 1; %#ok
-//				fit = fit_tmp(1, 1:m);
-//				[~, index] = min(fit(1, :));
-//				best_node = final_nodes(index);
-//				[value, map] = fitness_function(best_node.loc);
-//				map.reset();
-//				break
-//			end
-//			[fit_tmp(m), map] = fitness_function(final_nodes(1, m).loc);
-//			map.reset();
-//		end
-
 		auto finalStatesFitness = unordered_map<shared_ptr<State>, double>();
 		for (auto finalState : final_nodes)
 		{
@@ -1130,58 +1101,127 @@ namespace App
 		pair<shared_ptr<State>, double> min = *min_element(finalStatesFitness.begin(), finalStatesFitness.end(), 
 			[](pair<shared_ptr<State>, double> a, pair<shared_ptr<State>, double> b) {return a.second < b.second; }
 		);
-		return min;
+		return min.first;
 	}
 
 	double Core::fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map)
 	{
 		int elementSize = configuration->getGoalElementSize();
+		double initialValue = 100;
+		double uavCameraX = (150 / elementSize);
+		double uavCameraY = floor(100 / elementSize);
+		double halfCameraX = floor(uavCameraX / 2);
+		double halfCameraY = floor(uavCameraY / 2);
+		double uavInitValue = 1/2;
 
 		//do matice (vektoru vektorù) si budu ukládat hodnoty, jak uav vidí dané místo. matice je cíl diskretizovaný stejnì jako pøi a star hledání.
 		//prázdný cíl má hodnotu 100. pokud cíl vidí UAV, vydìlí se hodnota dvìma. Nejmenší souèet je nejlepší.
-//		function[fitness, map] = fitness_function(final_node)
-//			% FITNESS_FUNCTION Summary of this function goes here
-//			%   Detailed explanation goes here
-//
-//			global number_of_uavs params goal_map
-//
-//			for n = 1:number_of_uavs
-//				goal_map.apply_camera(final_node(1, n), final_node(2, n), params.camera.x, params.camera.y, params.world_dimensions);
-//			end
-//			fitness = goal_map.get_sum();
-//			map = goal_map;
-//		end
+		//matice UAV má všude 1, jen tam, kam vidí UAV, je 0.5. Pak se prvek po prvku vynásobí s maticí cílù. tím se vydìlí dvìma to, co vidí UAV a zbytek je nedotèen.
 
-		//inicializace matic
-		auto goalMatrixes = unordered_map<Goal, vector<vector<double>>>();
+		//inicializace matice cílù. Všechny cíle jsou v jedné matici
+		int rowCount = floor(configuration->getWorldHeight() / elementSize);
+		int columnCount = floor(configuration->getWorldWidth() / elementSize);
+		auto goalMatrix = ublas::matrix<double>(rowCount, columnCount, 0);//initializes matrix with 0
 		for (auto goal : map->getGoals())
 		{
-			goalMatrixes[*goal.get()] = vector<vector<double>>();
-		}
-		for (auto goalMatrix : goalMatrixes)
-		{
-			auto goal = goalMatrix.first;
-			auto matrix = goalMatrix.second;
-			for (size_t i = 0; i < goal.getRectangle()->getWidth(); i++)
-			{
+			
+			//filling goal in matrix with initial value
 
-			}
+			auto rect = goal->getRectangle();
+			auto width = floor(rect->getWidth() / elementSize);
+			auto height = floor(rect->getHeight() / elementSize);
+			ublas::subrange(goalMatrix, rect->getX(), rect->getX() + width, rect->getY(), rect->getY() + height) = ublas::matrix<double>(width, height, initialValue);
 		}
+
+		//inicializace matic UAV
+		auto uavMatrixes = unordered_map<Uav, ublas::matrix<double>, UavHasher>();
+		for (auto uav : final_node->uavs)
+		{
+			uavMatrixes[*uav.get()] = ublas::matrix<double>(rowCount, columnCount, 1);//initializes matrix with 1
+		}
+		for (auto uavMatrix : uavMatrixes)
+		{
+			auto uav = uavMatrix.first;
+			auto matrix = uavMatrix.second;
+
+			//filling goal in matrix with initial value
+			auto loc = uav.getPointParticle()->getLocation();
+			ublas::subrange(matrix, loc->getX() - halfCameraX, loc->getX() + halfCameraX, loc->getY() - halfCameraY, loc->getY() + halfCameraY) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
+		}
+
+		//vytvoøení prùniku nenulových hodnot a úprava hodnot matice mapy
+		for (auto uavMatrix : uavMatrixes)
+		{
+			auto uav = uavMatrix.first;
+			auto matrix = uavMatrix.second;
+
+			goalMatrix = element_prod(goalMatrix, matrix);
+		}
+
+		return sum(prod(ublas::scalar_vector<double>(goalMatrix.size1()), goalMatrix));	//sum of whole matrix, for weird reason, I must multiply here (prod), fuck you C++ http://stackoverflow.com/questions/24398059/how-do-i-sum-all-elements-in-a-ublas-matrix
 	}
+
+	shared_ptr<State> Core::get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map)
+	{
+//	function [ best_node, lowest_distance ] = get_closest_node_to_goal(  )
+//	%GET_CLOSEST_NODE_TO_GOAL Summary of this function goes here
+//	%   Detailed explanation goes here
+//	
+//	global nodes number_of_uavs goals
+//	
+//	lowest_distance = inf(length(goals),number_of_uavs);
+//	best_node = nodes(1);
+//	for m=1:length(nodes)
+//	    for k=1:length(goals)
+//	        for n=1:number_of_uavs
+//	        distance(k,n) = sqrt((nodes(m).loc(1,n)-(goals{k}.x+goals{k}.width/2))^2 + ...
+//	            (nodes(m).loc(2,n)-(goals{k}.y+goals{k}.height/2))^2);
+//	        end
+//	    end
+//	    if sum(sum(distance))<sum(sum(lowest_distance))
+//	        lowest_distance = distance;
+//	        best_node=nodes(m);
+//	    end
+//	end
+//	end
+		vector<pair<shared_ptr<State>, double>> statesAndCosts = vector<pair<shared_ptr<State>, double>>();
+		for (auto state : states)
+		{
+			double distance = 0;
+			auto uavGroups = splitUavsToGroups(guiding_paths, map, state, configuration->getAllowSwarmSplitting());
+			for (auto group : uavGroups)
+			{
+				for (auto uav : group->getUavs())
+				{
+					auto loc = uav->getPointParticle()->getLocation();
+					auto goalLoc = group->getGuidingPath()->getGoal()->getMiddle();
+					distance += sqrt(loc->getDistanceSquared(goalLoc));
+				}
+			}
+			statesAndCosts.push_back(make_pair(state, distance));
+		}
+
+		//finding state nearest to goals
+		pair<shared_ptr<State>, double> min = *min_element(statesAndCosts.begin(), statesAndCosts.end(),
+			[](pair<shared_ptr<State>, double> a, pair<shared_ptr<State>, double> b) {return a.second < b.second; }
+		);
+		return min.first;
+	}
+
 
 	void Core::save_output()
 	{
-		function[] = save_output()
-			% SAVE_OUTPUT Summary of this function goes here
-			%   Detailed explanation goes here
-
-			global params output
-
-			dir_path = strcat('output/', date);
-		mkdir(dir_path)
-			matfile = fullfile(dir_path, datestr(clock, 30));
-		data = struct('params', params, 'output', output); %#ok
-			save(matfile, 'data');
-		end
+//		function[] = save_output()
+//			% SAVE_OUTPUT Summary of this function goes here
+//			%   Detailed explanation goes here
+//
+//			global params output
+//
+//			dir_path = strcat('output/', date);
+//			mkdir(dir_path)
+//			matfile = fullfile(dir_path, datestr(clock, 30));
+//			data = struct('params', params, 'output', output); %#ok
+//			save(matfile, 'data');
+//		end
 	}
 }

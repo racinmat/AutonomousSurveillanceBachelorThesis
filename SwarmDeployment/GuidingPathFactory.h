@@ -15,7 +15,7 @@ namespace App
 	public:
 		GuidingPathFactory(shared_ptr<LoggerInterface> logger);
 		virtual ~GuidingPathFactory();
-		std::vector<std::shared_ptr<Path>> createGuidingPaths(std::vector<std::shared_ptr<Node>> nodes, std::shared_ptr<Node> start, std::vector<std::shared_ptr<Node>> ends);
+		vector<shared_ptr<Path>> createGuidingPaths(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends);
 	
 	protected:
 		shared_ptr<LoggerInterface> logger;

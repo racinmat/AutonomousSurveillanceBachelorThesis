@@ -50,6 +50,18 @@ namespace App
 		return randomGoal->getRandomPointInside();
 	}
 
+	shared_ptr<Goal> GoalGroup::getConcreteGoal(shared_ptr<Point> location)
+	{
+		for (auto goal : goals)
+		{
+			if (goal->contains(location))
+			{
+				return goal;
+			}
+		}
+		throw "Goal not found";
+	}
+
 	void GoalGroup::initializeRectangle()
 	{
 		//nejdøíve najdu 2 krají body ze všech obdélníkù (cílù) (levý dolní a pravý horní), abych z nìj pak vytvoøil velký, všepokrývající obdélník.

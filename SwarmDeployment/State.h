@@ -25,6 +25,7 @@ namespace App
 		shared_ptr<Uav> getUav(shared_ptr<Uav> uav);	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
 		static int lastIndex;
 		double distanceOfNewNodes;	//protože se mìní, ukládám ji sem
+		bool areUavsInGoals();
 	};
 
 }

@@ -105,4 +105,8 @@ namespace App
 		return id;
 	}
 
+	shared_ptr<Goal> Uav::getConcreteGoal()
+	{
+		return getReachedGoal()->getConcreteGoal(getPointParticle()->getLocation());
+	}
 }

@@ -8,17 +8,17 @@
 namespace AStar
 {
 
-	class AStar : public App::PathFindingAlgorithm
+	class AStar : public PathFindingAlgorithm
 	{
 	public:
-		AStar(shared_ptr<App::LoggerInterface> logger);
+		AStar(shared_ptr<LoggerInterface> logger);
 		virtual ~AStar() override;
-		std::shared_ptr<App::Path> findPath(std::vector<std::shared_ptr<App::Node>> nodes, std::shared_ptr<App::Node> start, std::shared_ptr<App::Node> end) override;
+		shared_ptr<Path> findPath(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, shared_ptr<Node> end, shared_ptr<GoalInterface> goal) override;
 
 	protected:
 		OpenedSet opened;
 		ClosedSet closed;
-		shared_ptr<App::LoggerInterface> logger;
+		shared_ptr<LoggerInterface> logger;
 	};
 
 }

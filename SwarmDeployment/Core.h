@@ -53,12 +53,12 @@ namespace App
 		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
-		void splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, vector<shared_ptr<UavGroup>> uavGroups, shared_ptr<State> state);
+		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting);
 
 		vector<shared_ptr<State>> getPath(shared_ptr<State> last_node);
-		//function [ best_node, map, value] = get_best_fitness( final_nodes )
-		pair<shared_ptr<State>, double> get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map);
+		shared_ptr<State> get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map);
 		double fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map);
+		shared_ptr<State> get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map);
 		void save_output();
 
 	protected:

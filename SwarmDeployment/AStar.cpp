@@ -13,7 +13,7 @@ namespace AStar
 	{
 	}
 
-	shared_ptr<App::Path> AStar::findPath(vector<shared_ptr<App::Node>> nodes, shared_ptr<App::Node> start, shared_ptr<App::Node> end)
+	shared_ptr<App::Path> AStar::findPath(vector<shared_ptr<App::Node>> nodes, shared_ptr<App::Node> start, shared_ptr<App::Node> end, shared_ptr<GoalInterface> goal)
 	{
 		//here is A* algorithm
 		opened = OpenedSet();
@@ -59,7 +59,7 @@ namespace AStar
 		auto way = current->getWay();
 
 //		hydrating path from node wrappers
-		auto path = make_shared<App::Path>();
+		auto path = make_shared<App::Path>(goal);
 		for (size_t i = 0; i < way.size(); i++)
 		{
 			path->addToEnd(way[i]->getNode());

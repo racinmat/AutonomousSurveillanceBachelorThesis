@@ -3,7 +3,7 @@
 namespace App
 {
 
-	MapGraph::MapGraph(std::vector<std::shared_ptr<Node>> nodes, std::shared_ptr<Node> startNode, std::vector<std::shared_ptr<Node>> endNodes) :
+	MapGraph::MapGraph(vector<shared_ptr<Node>> nodes, shared_ptr<Node> startNode, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> endNodes) :
 		nodes(nodes), startNode(startNode), endNodes(endNodes)
 	{
 	}
@@ -12,17 +12,17 @@ namespace App
 	{
 	}
 
-	std::vector<std::shared_ptr<Node>> MapGraph::getAllNodes()
+	vector<shared_ptr<Node>> MapGraph::getAllNodes()
 	{
 		return nodes;
 	}
 
-	std::shared_ptr<Node> MapGraph::getStartNode()
+	shared_ptr<Node> MapGraph::getStartNode()
 	{
 		return startNode;
 	}
 
-	std::vector<std::shared_ptr<Node>> MapGraph::getEndNodes()
+	vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> MapGraph::getEndNodes()
 	{
 		return endNodes;
 	}

@@ -12,12 +12,12 @@ namespace App
 	{
 	}
 
-	std::vector<std::shared_ptr<Path>> GuidingPathFactory::createGuidingPaths(std::vector<std::shared_ptr<Node>> nodes, std::shared_ptr<Node> start, std::vector<std::shared_ptr<Node>> ends) //more ends for more AoI
+	vector<shared_ptr<Path>> GuidingPathFactory::createGuidingPaths(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends) //more ends for more AoI
 	{
-		auto paths = std::vector<std::shared_ptr<Path>>(ends.size());
+		auto paths = vector<shared_ptr<Path>>(ends.size());
 		for (size_t i = 0; i < ends.size(); i++)
 		{
-			paths[i] = algorithm->findPath(nodes, start, ends[i]);
+			paths[i] = algorithm->findPath(nodes, start, get<0>(ends[i]), get<1>(ends[i]));
 		}
 		logger->logGuidingPaths(paths, start, ends);
 		return paths;
