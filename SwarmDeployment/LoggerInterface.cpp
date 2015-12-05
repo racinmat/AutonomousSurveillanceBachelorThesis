@@ -52,4 +52,8 @@ namespace App
 	void LoggerInterface::logRandomStatesCenter(shared_ptr<Point> center)
 	{
 	}
+
+	void LoggerInterface::logBestPath(vector<shared_ptr<State>> path)
+	{
+	}
 }

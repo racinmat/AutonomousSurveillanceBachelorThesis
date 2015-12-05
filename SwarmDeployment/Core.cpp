@@ -92,6 +92,8 @@ namespace App
 
 		auto path = getPath(lastState);
 
+		logger->logBestPath(path);
+
 		save_output();
 
 	}

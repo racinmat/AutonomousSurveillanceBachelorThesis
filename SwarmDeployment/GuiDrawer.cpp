@@ -24,7 +24,7 @@ namespace Ui
 	{
 	}
 
-	void GuiDrawer::logSelectedMap(std::shared_ptr<App::Map> map, int worldWidth, int worldHeight)
+	void GuiDrawer::logSelectedMap(shared_ptr<Map> map, int worldWidth, int worldHeight)
 	{
 		QTextStream cout(stdout);
 		cout << "logging selected map" << endl;
@@ -56,7 +56,7 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logMapGrid(std::vector<std::vector<App::Grid>> mapGrid)
+	void GuiDrawer::logMapGrid(vector<vector<Grid>> mapGrid)
 	{
 //		int cellSize = configuration->getAStarCellSize();
 //		int x = 5;
@@ -81,7 +81,7 @@ namespace Ui
 //		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logMapNodes(vector<shared_ptr<App::Node>> nodes)
+	void GuiDrawer::logMapNodes(vector<shared_ptr<Node>> nodes)
 	{
 		int cellSize = configuration->getAStarCellSize();
 		int x = - 12;
@@ -101,7 +101,7 @@ namespace Ui
 //		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logGuidingPaths(std::vector<std::shared_ptr<App::Path>> paths, std::shared_ptr<App::Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends)
+	void GuiDrawer::logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends)
 	{
 		int cellSize = configuration->getAStarCellSize();
 //		scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
@@ -113,12 +113,12 @@ namespace Ui
 
 		for (auto path : paths)
 		{
-			std::shared_ptr<App::Node> previous = nullptr;
+			shared_ptr<Node> previous = nullptr;
 			for (auto node : path->getNodes())
 			{
 				if (previous != nullptr)
 				{
-					scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
+					auto line = scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
 				}
 				previous = node;
 			}
@@ -126,7 +126,7 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logText(std::string string)
+	void GuiDrawer::logText(string string)
 	{
 		if (configuration->isTextOutputEnabled())
 		{
@@ -144,7 +144,7 @@ namespace Ui
 		logText(string(arr));
 	}
 
-	void GuiDrawer::logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode)
+	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
 	{
 		for (size_t i = 0; i < nearNode->uavs.size(); i++)
 		{
@@ -155,7 +155,7 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates)
+	void GuiDrawer::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
 	{
 //		for (auto pair : randomStates)
 //		{
@@ -167,15 +167,39 @@ namespace Ui
 //		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logRandomStatesCenter(shared_ptr<App::Point> center)
+	void GuiDrawer::logRandomStatesCenter(shared_ptr<Point> center)
 	{
 		scene->addEllipse(center->getX(), center->getY(), 3, 3, QPen(Qt::black), QBrush(Qt::black));
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::setConfiguration(shared_ptr<App::Configuration> configuration)
+	void GuiDrawer::setConfiguration(shared_ptr<Configuration> configuration)
 	{
 		this->configuration = configuration;
+	}
+
+	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path)
+	{
+		bool first = true;
+		for (auto state : path)
+		{
+			//pøeskakuji první iteraci, protože kreslím cesty mezi stávajícím a pøedchozím stavem
+			if (first)
+			{
+				first = false;
+				continue;
+			}
+
+			auto previous = state->prev;
+			for (size_t i = 0; i < state->uavs.size(); i++)
+			{
+				auto uav = state->uavs[i];
+				scene->addLine(state->uavs[i]->getPointParticle()->getLocation()->getX(), state->uavs[i]->getPointParticle()->getLocation()->getY(),
+					previous->uavs[i]->getPointParticle()->getLocation()->getX(), previous->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], 4));
+			}
+			mainWindow->updateView();
+
+		}
 	}
 
 	void GuiDrawer::clear()
