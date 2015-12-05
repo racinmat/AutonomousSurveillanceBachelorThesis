@@ -158,6 +158,9 @@
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Dubins\dubins_test.cpp" />
+    <ClCompile Include="Dubins\rrt.cpp" />
+    <ClCompile Include="PathOptimizer.cpp" />
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
@@ -306,8 +309,12 @@
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Dubins\rrt.h" />
+    <ClInclude Include="Dubins\types.h" />
+    <ClInclude Include="Dubins\utils.h" />
     <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="PathOptimizer.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
     </ClInclude>

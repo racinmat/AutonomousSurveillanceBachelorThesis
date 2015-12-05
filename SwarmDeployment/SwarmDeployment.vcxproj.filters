@@ -67,6 +67,12 @@
     <Filter Include="Header Files\Logging">
       <UniqueIdentifier>{074993db-65b7-4337-b53e-c763d68c2f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Dubins">
+      <UniqueIdentifier>{77ee5b80-80cb-40ae-9553-daa528be6810}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dubins">
+      <UniqueIdentifier>{eb10d318-0a2a-4217-bfd7-ed91c733fe35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -239,6 +245,15 @@
     </ClCompile>
     <ClCompile Include="AoICoverageResolver.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathOptimizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\dubins_test.cpp">
+      <Filter>Source Files\Dubins</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\rrt.cpp">
+      <Filter>Source Files\Dubins</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +435,18 @@
     </ClInclude>
     <ClInclude Include="AoICoverageResolver.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathOptimizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\rrt.h">
+      <Filter>Header Files\Dubins</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\types.h">
+      <Filter>Header Files\Dubins</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\utils.h">
+      <Filter>Header Files\Dubins</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
