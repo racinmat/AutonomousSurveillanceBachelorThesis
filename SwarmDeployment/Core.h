@@ -11,6 +11,7 @@
 #include "InputGenerator.h"
 #include <map>
 #include "UavGroup.h"
+#include <boost/numeric/ublas/matrix.hpp>
 
 using namespace std;
 
@@ -70,6 +71,8 @@ namespace App
 
 		void testGui();
 
+		boost::numeric::ublas::matrix<double> goalMatrix; //jako property kvùli cacheování
+		bool goalMatrixInitialized;
 		ofstream file;	//todo: udìlat nìjaký poøádný logger, tohle je doèasné na rychlé logování
 	};
 

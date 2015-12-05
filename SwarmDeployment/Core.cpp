@@ -43,7 +43,7 @@ namespace App
 
 		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
 		maps = mapFactory.createMaps(configuration->getUavCount());	
-
+		goalMatrixInitialized = false;
 		//todo: udìlat nìjakou inicializaci, která bude mimo kontruktor, abych i mohl zavolat vždy na zaèátku runu, aby se proèistily cache, apod.
 	}
 
@@ -57,6 +57,7 @@ namespace App
 		
 		clock_t start;
 		double duration;
+		goalMatrixInitialized = false;
 
 		start = clock();
 
@@ -1066,9 +1067,10 @@ namespace App
 		do
 		{
 			path.push_back(iterNode);
-			iterNode = last_node->prev;
+			iterNode = iterNode->prev;
 		} while (iterNode->prev);
 
+		path.push_back(iterNode);
 		//todo: zjistit, zda potøebuji na nìco geo_path_length a další vìci, které jsou zakomentované
 //		geo_path_length = 0;
 //		for m = 2:length(path)
@@ -1121,17 +1123,21 @@ namespace App
 		//inicializace matice cílù. Všechny cíle jsou v jedné matici
 		int rowCount = floor(configuration->getWorldHeight() / elementSize);
 		int columnCount = floor(configuration->getWorldWidth() / elementSize);
-		auto goalMatrix = ublas::matrix<double>(rowCount, columnCount, 0);//initializes matrix with 0
-		for (auto goal : map->getGoals())
-		{
-			
-			//filling goal in matrix with initial value
 
-			auto rect = goal->getRectangle();
-			auto width = floor(rect->getWidth() / elementSize);
-			auto height = floor(rect->getHeight() / elementSize);
-			ublas::subrange(goalMatrix, rect->getX(), rect->getX() + width, rect->getY(), rect->getY() + height) = ublas::matrix<double>(width, height, initialValue);
+		if (!goalMatrixInitialized)
+		{
+			goalMatrix = ublas::matrix<double>(rowCount, columnCount, 0);//initializes matrix with 0
+			for (auto goal : map->getGoals())
+			{
+				//filling goal in matrix with initial value
+				auto rect = goal->getRectangle();
+				auto width = floor(rect->getWidth() / elementSize);
+				auto height = floor(rect->getHeight() / elementSize);
+				ublas::subrange(goalMatrix, rect->getX(), rect->getX() + width, rect->getY(), rect->getY() + height) = ublas::matrix<double>(width, height, initialValue);
+			}
+			goalMatrixInitialized = true;
 		}
+		
 
 		//inicializace matic UAV
 		auto uavMatrixes = unordered_map<Uav, ublas::matrix<double>, UavHasher>();
