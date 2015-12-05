@@ -4,6 +4,7 @@
 #include "OpenedSet.h"
 #include "memory"
 #include "LoggerInterface.h"
+#include "Path.h"
 
 namespace AStar
 {
@@ -11,9 +12,9 @@ namespace AStar
 	class AStar : public PathFindingAlgorithm
 	{
 	public:
-		AStar(shared_ptr<LoggerInterface> logger);
+		explicit AStar(shared_ptr<LoggerInterface> logger);
 		virtual ~AStar() override;
-		shared_ptr<Path> findPath(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, shared_ptr<Node> end, shared_ptr<GoalInterface> goal) override;
+		virtual shared_ptr<Path> findPath(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, shared_ptr<Node> end, shared_ptr<GoalInterface> goal) override;
 
 	protected:
 		OpenedSet opened;

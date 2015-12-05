@@ -23,11 +23,6 @@ namespace App
 		return nodes.size();
 	}
 
-	void Path::reverse()
-	{
-		std::reverse(nodes.begin(), nodes.end());
-	}
-
 	shared_ptr<Node> Path::get(int i)
 	{
 		return nodes[i];
@@ -100,4 +95,5 @@ namespace App
 	{
 		return !(lhs == rhs);
 	}
+
 }
