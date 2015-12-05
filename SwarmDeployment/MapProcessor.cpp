@@ -218,7 +218,7 @@ namespace App
 			endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(map->getGoals().size());
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
-				auto goal = map->getGoals()[i]->getRectangle();
+				auto goal = map->getGoals()[i];
 				auto middle = goal->getMiddle();
 
 				for (auto node : nodes)

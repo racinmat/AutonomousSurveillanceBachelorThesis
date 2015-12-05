@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-//include "Gui.h"					//zakomentovat pro noGui
+#include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
@@ -439,8 +439,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
-	testing();
+	returnValue = runGui(argc, argv);
+//	testing();
 	return returnValue;
 }
 

@@ -86,7 +86,7 @@ namespace App
 		} else
 		{
 			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
-			lastState = get_closest_node_to_goal(allNodes, paths, map);
+			lastState = get_closest_node_to_goal(output->nodes, paths, map);
 		}
 
 		auto path = getPath(lastState);
