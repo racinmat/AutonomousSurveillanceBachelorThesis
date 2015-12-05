@@ -17,12 +17,14 @@
 
 namespace geom{
 
+	enum class TypeOfManeuver {RSR, LSL, LSR, RSL, RLR, LRL};
 
 class Dubins: public Path {
 
 private:
 	// in radians
 	myFloat len1, len2, len3;
+	TypeOfManeuver typeOfManeuver;
 
 public:
 
@@ -52,12 +54,13 @@ public:
 
 	void set(Dubins &);
 	
-	virtual Position getPosition(myFloat len) const;
+	virtual Position getPosition(myFloat len) const override;
 
 	Arc getFirstArc() const;
 	Line getCenter() const;
 	Arc getCenterArc() const;
 	Arc getSecondArc() const;
+	TypeOfManeuver getTypeOfManeuver() const;
 
 	Intersection intersectLine(const Line line) const {
 

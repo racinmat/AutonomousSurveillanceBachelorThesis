@@ -9,17 +9,18 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-#include "Gui.h"					//zakomentovat pro noGui
+//include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
 #include "boost/numeric/ublas/io.hpp"
+#include "dubins_test.h"
 
 //INITIALIZE_EASYLOGGINGPP
 
 using std::cout;
 using std::endl;
-namespace ublas = boost::numeric::ublas;
+using namespace boost::numeric;
 
 int run(int argc, char *argv[])
 {
@@ -439,8 +440,9 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
+//	returnValue = runGui(argc, argv);
 //	testing();
+	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }
 

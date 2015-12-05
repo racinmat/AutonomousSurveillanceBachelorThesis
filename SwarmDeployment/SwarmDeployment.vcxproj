@@ -158,22 +158,45 @@
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
-    <ClCompile Include="Dubins\dubins_test.cpp" />
-    <ClCompile Include="Dubins\geom\Arc.cpp" />
-    <ClCompile Include="Dubins\geom\Dubins.cpp" />
-    <ClCompile Include="Dubins\geom\Line.cpp" />
-    <ClCompile Include="Dubins\geom\Path.cpp" />
-    <ClCompile Include="Dubins\geom\Position.cpp" />
-    <ClCompile Include="Dubins\geom\shape\Circle.cpp" />
-    <ClCompile Include="Dubins\geom\shape\Ellipse.cpp" />
-    <ClCompile Include="Dubins\geom\shape\Polygon.cpp" />
-    <ClCompile Include="Dubins\geom\shape\Shape.cpp" />
-    <ClCompile Include="Dubins\geom\shape\ShapePoint.cpp" />
+    <ClCompile Include="Dubins\dubins_test.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Arc.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Dubins.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Line.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Path.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Position.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Circle.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Ellipse.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Polygon.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Shape.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\ShapePoint.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
+    </ClCompile>
     <ClCompile Include="Dubins\rrt.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)\Dubins</AssemblerListingLocation>
     </ClCompile>
     <ClCompile Include="PathOptimizer.cpp" />
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
@@ -345,8 +368,19 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Dubins\types.h" />
-    <ClInclude Include="Dubins\utils.h" />
+    <ClInclude Include="Dubins\types.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Dubins\utils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="dubins_test.h" />
     <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="PathOptimizer.h" />

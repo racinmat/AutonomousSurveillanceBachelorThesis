@@ -50,6 +50,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	length = std::numeric_limits<myFloat>::max();
 
 	// RSR - maneuver
+	typeOfManeuver = TypeOfManeuver::RSR;
 
 	Vector diff = c2right - c1right;
 	myFloat ang = diff.getAngle();
@@ -70,6 +71,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	}
 
 	// LSL - maneuver
+	typeOfManeuver = TypeOfManeuver::LSL;
 
 	diff = c2left - c1left;
 	ang = diff.getAngle();
@@ -95,6 +97,8 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	centerDistance = diff.length();
 
 	if (centerDistance > 2 * radius) {
+		typeOfManeuver = TypeOfManeuver::LSR;
+
 		myFloat alpha = asin(2 * radius / centerDistance);
 		myFloat centerAngle = atan2(c2right.y - c1left.y, c2right.x - c1left.x) + alpha;
 		n2 = sqrt(centerDistance*centerDistance - 4 * radius * radius);
@@ -121,6 +125,8 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	centerDistance = diff.length();
 
 	if (centerDistance > 2 * radius) {
+		typeOfManeuver = TypeOfManeuver::RSL;
+
 		myFloat alpha = asin(2 * radius / centerDistance);
 		myFloat centerAngle = atan2(c2left.y - c1right.y, c2left.x - c1right.x) - alpha;
 		n2 = sqrt(centerDistance * centerDistance - 4 * radius * radius);
@@ -149,6 +155,8 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		centerDistance = diff.length();
 
 		if (centerDistance < 4 * radius) {
+			typeOfManeuver = TypeOfManeuver::RLR;
+
 			// direction of Vector(S1,S2) to Vector(S1,S3)
 			myFloat alpha = acos(centerDistance / radius / 4);
 
@@ -178,6 +186,8 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		centerDistance = diff.length();
 
 		if (centerDistance < 4 * radius) {
+			typeOfManeuver = TypeOfManeuver::LRL;
+
 			// direction of Vector(S1,S2) to Vector(S1,S3)
 			myFloat alpha = acos(centerDistance / radius / 4);
 
@@ -272,7 +282,12 @@ Arc Dubins::getSecondArc() const {
 	return Arc(st, len3, radius);
 }
 
-void print(myFloat n1, myFloat n2, myFloat n3, myFloat len) {
+	TypeOfManeuver Dubins::getTypeOfManeuver() const
+	{
+		return typeOfManeuver;
+	}
+
+	void print(myFloat n1, myFloat n2, myFloat n3, myFloat len) {
 	std::cout << "\tn1 = " << n1 << "\tn2 = " << n2 << "\tn3 = " << n3
 			<< "\tlen = " << len << std::endl;
 }

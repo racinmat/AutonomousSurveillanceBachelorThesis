@@ -7,10 +7,11 @@
 
 #include "geom/geom.h"
 #include <iostream>
+#include <map>
 
 using namespace geom;
 
-int main(int argc, char **argv) {
+int dubins_test(int argc, char **argv) {
 
 	const int COUNT = 10000000;
 
@@ -21,15 +22,25 @@ int main(int argc, char **argv) {
 
 	Dubins d(p1, p2, 100);
 
+	map<TypeOfManeuver, char*> type;
+	type[TypeOfManeuver::RSR] = "RSR";
+	type[TypeOfManeuver::LSR] = "LSR";
+	type[TypeOfManeuver::RSL] = "RSL";
+	type[TypeOfManeuver::LRL] = "LRL";
+	type[TypeOfManeuver::LSL] = "LSL";
+	type[TypeOfManeuver::RLR] = "RLR";
+
 	for (int i = 0; i < COUNT; ++i) {
 		p1.random(100);
 		p2.random(100);
 		d = Dubins(p1, p2, 100);
+		std::cout << type[d.getTypeOfManeuver()] << endl;
 	}
 
 	time_t t2 = clock();
 	std::cout << (t2 - t1) * 1000 / CLOCKS_PER_SEC << " ms" << std::endl;
 
+	return 0;
 }
 
 

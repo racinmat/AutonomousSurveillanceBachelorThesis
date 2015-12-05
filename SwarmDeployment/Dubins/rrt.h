@@ -1,7 +1,7 @@
 #ifndef RRT_H
 #define RRT_H
 
-#include "../types.h"
+#include "types.h"
 #include "../world.h"
 #include "MPNN/include/DNN/multiann.h"
 #include "MPNN/include/DNN/ANN.h"

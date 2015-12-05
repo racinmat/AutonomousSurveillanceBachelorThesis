@@ -7,6 +7,7 @@
 #include <limits>
 #include <cmath>
 #include "../measurement/time_measurement.h"
+#include "types.h"
 
 
 typedef imr::time::TimeMeasurement TimeMeasurement;
@@ -473,20 +474,6 @@ void RRT::optimize_trajectory(){
                 c1 = c_max;
                 c2 = c_min;
                 c3 = c_max;
-                break;
-            case geom::LS:
-                t1 = dubins->getRadius()*fabs(dubins->getLen1())/v_max;
-                t2 = dubins->getLen2()/v_max;
-                t3 = -eps;
-                c1 = c_max;
-                c2 = 0;
-                break;
-            case geom::RS:
-                t1 = dubins->getRadius()*fabs(dubins->getLen1())/v_max;
-                t2 = dubins->getLen2()/v_max;
-                t3 = -eps;
-                c1 = c_min;
-                c2 = 0;
                 break;
             default:
                 break;

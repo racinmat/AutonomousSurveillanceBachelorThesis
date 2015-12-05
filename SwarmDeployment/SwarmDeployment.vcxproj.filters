@@ -535,5 +535,8 @@
     <ClInclude Include="Dubins\geom\shape\ShapePoint.h">
       <Filter>Header Files\Dubins\geom\shape</Filter>
     </ClInclude>
+    <ClInclude Include="dubins_test.h">
+      <Filter>Header Files\Dubins</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
