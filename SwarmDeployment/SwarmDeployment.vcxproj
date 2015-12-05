@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AoICoverageResolver.cpp" />
     <ClCompile Include="AStar.cpp" />
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
@@ -300,6 +301,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AoICoverageResolver.h" />
     <ClInclude Include="AStar.h" />
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />

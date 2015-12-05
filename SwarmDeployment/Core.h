@@ -12,6 +12,7 @@
 #include <map>
 #include "UavGroup.h"
 #include <boost/numeric/ublas/matrix.hpp>
+#include "AoICoverageResolver.h"
 
 using namespace std;
 
@@ -57,8 +58,6 @@ namespace App
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting);
 
 		vector<shared_ptr<State>> getPath(shared_ptr<State> last_node);
-		shared_ptr<State> get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map);
-		double fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map);
 		shared_ptr<State> get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map);
 		void save_output();
 
@@ -68,11 +67,10 @@ namespace App
 		shared_ptr<Configuration> configuration;
 		shared_ptr<StateFactory> stateFactory;
 		shared_ptr<InputGenerator> inputGenerator;
+		shared_ptr<AoICoverageResolver> coverageResolver;
 
 		void testGui();
 
-		boost::numeric::ublas::matrix<double> goalMatrix; //jako property kvùli cacheování
-		bool goalMatrixInitialized;
 		ofstream file;	//todo: udìlat nìjaký poøádný logger, tohle je doèasné na rychlé logování
 	};
 

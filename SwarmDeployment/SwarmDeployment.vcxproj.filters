@@ -237,6 +237,9 @@
     <ClCompile Include="GoalInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AoICoverageResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -413,6 +416,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoalInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AoICoverageResolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
