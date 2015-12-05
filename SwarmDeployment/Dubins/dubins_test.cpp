@@ -5,7 +5,7 @@
  *      Author: Petr Vana
  */
 
-#include "../geom/geom.h"
+#include "geom/geom.h"
 #include <iostream>
 
 using namespace geom;
