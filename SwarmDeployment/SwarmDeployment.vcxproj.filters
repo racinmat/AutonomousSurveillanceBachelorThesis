@@ -73,6 +73,18 @@
     <Filter Include="Source Files\Dubins">
       <UniqueIdentifier>{eb10d318-0a2a-4217-bfd7-ed91c733fe35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Dubins\geom">
+      <UniqueIdentifier>{c715b4a9-ccfc-427d-992b-da218edfa446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dubins\geom">
+      <UniqueIdentifier>{74cfd13c-6b9e-4979-b186-64f269e50563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Dubins\geom\shape">
+      <UniqueIdentifier>{4755f174-a037-42ac-a05e-1970d2e5af1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dubins\geom\shape">
+      <UniqueIdentifier>{32e2b05d-b7e0-4d4c-adc5-49d0dc8fd1c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -254,6 +266,36 @@
     </ClCompile>
     <ClCompile Include="Dubins\rrt.cpp">
       <Filter>Source Files\Dubins</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Arc.cpp">
+      <Filter>Source Files\Dubins\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Dubins.cpp">
+      <Filter>Source Files\Dubins\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Line.cpp">
+      <Filter>Source Files\Dubins\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Path.cpp">
+      <Filter>Source Files\Dubins\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\Position.cpp">
+      <Filter>Source Files\Dubins\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Circle.cpp">
+      <Filter>Source Files\Dubins\geom\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Ellipse.cpp">
+      <Filter>Source Files\Dubins\geom\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Polygon.cpp">
+      <Filter>Source Files\Dubins\geom\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\Shape.cpp">
+      <Filter>Source Files\Dubins\geom\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Dubins\geom\shape\ShapePoint.cpp">
+      <Filter>Source Files\Dubins\geom\shape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,6 +489,51 @@
     </ClInclude>
     <ClInclude Include="Dubins\utils.h">
       <Filter>Header Files\Dubins</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Arc.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Dubins.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\geom.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Intersection.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Line.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\MyMath.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Path.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Point.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Position.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\Vector.h">
+      <Filter>Header Files\Dubins\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\shape\Circle.h">
+      <Filter>Header Files\Dubins\geom\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\shape\Ellipse.h">
+      <Filter>Header Files\Dubins\geom\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\shape\Polygon.h">
+      <Filter>Header Files\Dubins\geom\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\shape\Shape.h">
+      <Filter>Header Files\Dubins\geom\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Dubins\geom\shape\ShapePoint.h">
+      <Filter>Header Files\Dubins\geom\shape</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
