@@ -9,13 +9,15 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-//include "Gui.h"					//zakomentovat pro noGui
+#include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
 #include "boost/numeric/ublas/io.hpp"
 #include "dubins_test.h"
 #include "Random.h"
+
+#define PI 3.14159265358979323846
 
 //INITIALIZE_EASYLOGGINGPP
 
@@ -196,8 +198,8 @@ void testing()
 
 	
 	// testování rychlosti motion modelu kvùli optimalizaci
-//	auto configuration = make_shared<Configuration>();
-//	auto core = make_shared<Core>(configuration);
+	auto configuration = make_shared<Configuration>();
+	auto core = make_shared<Core>(configuration);
 //	MapFactory factory;
 //	auto map = factory.createMaps(configuration->getUavCount())[0];
 //	MapProcessor processor(make_shared<LoggerInterface>());
@@ -439,6 +441,25 @@ void testing()
 //		cout << Random::element(arr) << endl;
 //	}
 
+	auto motionModel = make_shared<CarLikeMotionModel>(configuration);
+
+	auto state = make_shared<PointParticle>(0, 0, PI / 2);
+	auto control = make_shared<CarLikeControl>(50, PI / 200);
+
+	cout << *state.get() << endl;
+	motionModel->calculateState(state, control);
+	cout << *state.get() << endl;
+	motionModel->calculateState(state, control);
+	cout << *state.get() << endl;
+	motionModel->calculateState(state, control);
+	cout << *state.get() << endl;
+	motionModel->calculateState(state, control);
+	cout << *state.get() << endl;
+	motionModel->calculateState(state, control);
+	cout << *state.get() << endl;
+
+	cout << motionModel->getCurveRadius(control);
+
 	cin.get();
 }
 
@@ -447,9 +468,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
+	returnValue = runGui(argc, argv);
 	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }
-

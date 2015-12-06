@@ -300,6 +300,12 @@
     <ClCompile Include="DistanceResolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CarLikeControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CarLikeMotionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -542,6 +548,12 @@
       <Filter>Header Files\Dubins</Filter>
     </ClInclude>
     <ClInclude Include="DistanceResolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarLikeControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarLikeMotionModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

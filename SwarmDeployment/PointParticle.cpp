@@ -52,10 +52,15 @@ namespace App
 		this->rotation = rotation;
 	}
 
+	geom::Position PointParticle::toPosition()
+	{
+		return geom::Position(location->toGeomPoint(), rotation->getZ());
+	}
+
 	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
 	{
 		return os
-			<< "location: " << *obj.location.get() << endl
-			<< " rotation: " << *obj.rotation.get();
+			<< "location: " << *obj.location.get() /*<< endl
+			<< " rotation: " << *obj.rotation.get()*/;
 	}
 }

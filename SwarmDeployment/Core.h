@@ -11,10 +11,11 @@
 #include "InputGenerator.h"
 #include <map>
 #include "UavGroup.h"
-#include <boost/numeric/ublas/matrix.hpp>
 #include "AoICoverageResolver.h"
 #include "DistanceResolver.h"
 #include "PathOptimizer.h"
+#include "CarLikeControl.h"
+#include "CarLikeMotionModel.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ namespace App
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
 		bool insideWorldBounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
 		bool insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
-		shared_ptr<State> car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs);
+		shared_ptr<State> car_like_motion_model(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs);
 		bool check_localization_sep(shared_ptr<State> node);
 		bool trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node);
 		void check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map);
@@ -72,6 +73,7 @@ namespace App
 		shared_ptr<AoICoverageResolver> coverageResolver;
 		shared_ptr<DistanceResolver> distanceResolver;
 		shared_ptr<PathOptimizer> pathOptimizer;
+		shared_ptr<CarLikeMotionModel> motionModel;
 
 		void testGui();
 

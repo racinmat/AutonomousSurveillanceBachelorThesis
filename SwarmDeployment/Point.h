@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include "Dubins/geom/Point.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ namespace App
 		void moveBy(shared_ptr<Point> point);
 		void moveBy(Point point);
 		void moveBy(double x, double y, double z);
+		geom::Point toGeomPoint();
 
 	protected:
 		double x;

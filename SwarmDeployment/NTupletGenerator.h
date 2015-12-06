@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Uav.h"
+#include "CarLikeControl.h"
 
 using namespace std;
 namespace App
@@ -12,10 +13,10 @@ namespace App
 	public:
 		NTupletGenerator();
 		virtual ~NTupletGenerator();
-		vector<unordered_map<App::Uav, shared_ptr<Point>, UavHasher>> generateNTuplet(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys);
+		vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> generateNTuplet(vector<shared_ptr<CarLikeControl>> usedChars, vector<shared_ptr<Uav>> tupletKeys);
 
 	protected:
-		vector<unordered_map<App::Uav, shared_ptr<Point>, UavHasher>> generateNTuplet(vector<shared_ptr<Point>> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
+		vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> generateNTuplet(vector<shared_ptr<CarLikeControl>> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
 	};
 
 }

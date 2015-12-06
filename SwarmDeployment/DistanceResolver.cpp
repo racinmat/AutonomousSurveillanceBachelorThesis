@@ -1,5 +1,5 @@
 #include "DistanceResolver.h"
-
+#include "Configuration.h"
 
 namespace App
 {
@@ -51,6 +51,7 @@ namespace App
 		{
 			secondMap[*uav.get()] = uav->getPointParticle()->getLocation();
 		}
+		return getDistance(first, secondMap);
 	}
 
 }

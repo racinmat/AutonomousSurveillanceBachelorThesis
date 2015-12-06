@@ -102,6 +102,11 @@ namespace App
 		changeZ(z);
 	}
 
+	geom::Point Point::toGeomPoint()
+	{
+		return geom::Point(x, y);
+	}
+
 	std::ostream& operator<<(std::ostream& os, const Point& obj)
 	{
 		return os

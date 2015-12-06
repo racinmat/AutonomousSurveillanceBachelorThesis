@@ -56,10 +56,10 @@ namespace imr {
 		};
 
         struct robot_control {
-            double v;
+            double v;	//rychlost
             double w;
             double c;
-            double t;
+            double t;	//èas
 
             robot_control() : v(0), w(0), c(0), t(0) {}
             robot_control(const robot_control & rc) : v(rc.v), w(rc.w), c(rc.c), t(rc.t) {}

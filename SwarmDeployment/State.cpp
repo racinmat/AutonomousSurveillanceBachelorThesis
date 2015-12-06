@@ -5,14 +5,14 @@ namespace App
 {
 	int State::lastIndex = 0;
 
-	State::State(int inputCount) : index(lastIndex++)
+	State::State(int inputCount) : index(lastIndex++), time(0)
 	{
 		//todo: refactorovat a vyrábìt nové stavy z factory, která jim bude pøedávat délku used_inputs pole podle konfigurace v konstruktoru.
 		used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
 		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
-	State::State(const State& other) : index(index + 1), used_inputs(used_inputs)
+	State::State(const State& other) : index(index + 1), used_inputs(used_inputs), time(time)
 	{
 		for (auto uav : other.uavs)
 		{
@@ -24,7 +24,7 @@ namespace App
 		}
 		for (auto prev_input : other.prev_inputs)
 		{
-			prev_inputs[prev_input.first] = make_shared<Point>(*prev_input.second.get());
+			prev_inputs[prev_input.first] = make_shared<CarLikeControl>(*prev_input.second.get());
 		}
 	}
 
@@ -97,6 +97,16 @@ namespace App
 	void State::setUavs(const vector<shared_ptr<Uav>> shared_ptrs)
 	{
 		uavs = shared_ptrs;
+	}
+
+	void State::incrementTime(double increment)
+	{
+		time += increment;
+	}
+
+	double State::getTime() const
+	{
+		return time;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const State& obj)

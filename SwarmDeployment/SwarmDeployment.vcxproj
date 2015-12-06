@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClCompile Include="AoICoverageResolver.cpp" />
     <ClCompile Include="AStar.cpp" />
+    <ClCompile Include="CarLikeControl.cpp" />
+    <ClCompile Include="CarLikeMotionModel.cpp" />
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
@@ -481,6 +483,8 @@
   <ItemGroup>
     <ClInclude Include="AoICoverageResolver.h" />
     <ClInclude Include="AStar.h" />
+    <ClInclude Include="CarLikeControl.h" />
+    <ClInclude Include="CarLikeMotionModel.h" />
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />

@@ -1,6 +1,7 @@
 #pragma once
 #include "Point.h"
 #include "memory"
+#include "Dubins/geom/Position.h"
 
 using namespace std;
 
@@ -19,7 +20,8 @@ namespace App
 		void setLocation(shared_ptr<Point> location);
 		shared_ptr<Point> getRotation() const;
 		void setRotation(shared_ptr<Point> rotation);
-		friend std::ostream& operator<<(std::ostream& os, const PointParticle& obj);
+		friend ostream& operator<<(ostream& os, const PointParticle& obj);
+		geom::Position toPosition();
 
 	protected:
 		shared_ptr<Point> location;

@@ -1,9 +1,12 @@
 #pragma once
 #include <memory>
-#include "Configuration.h"
+#include "State.h"
+
+using namespace std;
 
 namespace App
 {
+	class Configuration;
 
 	class DistanceResolver
 	{

@@ -38,9 +38,11 @@ namespace App
 		logger(make_shared<LoggerInterface>()), configuration(configuration), 
 		stateFactory(make_shared<StateFactory>(configuration)),
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
-		coverageResolver(make_shared<AoICoverageResolver>()), distanceResolver(make_shared<DistanceResolver>(configuration)),
-		pathOptimizer(make_shared<PathOptimizer>(distanceResolver))
+		coverageResolver(make_shared<AoICoverageResolver>()), 
+		distanceResolver(make_shared<DistanceResolver>(configuration)),
+		motionModel(make_shared<CarLikeMotionModel>(configuration))
 	{
+		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
 		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
@@ -711,48 +713,24 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs)
+	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
 	{
-		auto newNode = stateFactory->createState(*node.get());	//copy constructor is called, makes deep copy
-
-		double uav_size = configuration->getUavSize();
-		// Simulation step length
-		double time_step = configuration->getTimeStep();
+		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length
 		double end_time = configuration->getEndTime();
-		int number_of_uavs = node->getUavs().size();
-		//		global number_of_uavs params empty_trajectory
-		
-		//model parameters
-		//front to rear axle distance
-		double L = uav_size;
-		
-		//prepare trajectory array
-		//repmat is time demanding
-		auto trajectory = vector<shared_ptr<State>>();
-		
+				
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
 
 		for (auto uav : newNode->getUavs())
 		{
 			auto uavPointParticle = uav->getPointParticle();
-			double dPhi = (inputs[*uav.get()]->getX() / L) * tan(inputs[*uav.get()]->getY());	//dPhi se nemìní v rámci vnitøního cyklu, takže staèí spošítat jen jednou
 
-			for (double i = time_step; i < end_time; i += time_step)
-			{
-				//calculate derivatives from inputs
-				double dx = inputs[*uav.get()]->getX() * cos(uavPointParticle->getRotation()->getZ());	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-				double dy = inputs[*uav.get()]->getX() * sin(uavPointParticle->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
-
-				//calculate current state variables
-				uavPointParticle->getLocation()->changeX(dx * time_step);
-				uavPointParticle->getLocation()->changeY(dy * time_step);
-				uavPointParticle->getRotation()->changeZ(dPhi * time_step);
-			}
+			motionModel->calculateState(uavPointParticle, inputs[*uav.get()]);
 			newNode->prev_inputs = inputs;
-			trajectory.push_back(newNode);
 		}
+
+		newNode->incrementTime(end_time);
 
 		return newNode;
 	}

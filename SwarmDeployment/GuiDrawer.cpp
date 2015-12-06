@@ -149,9 +149,16 @@ namespace Ui
 		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
 		{
 			auto uav = nearNode->getUavs()[i];
-			scene->addLine(nearNode->getUavs()[i]->getPointParticle()->getLocation()->getX(), nearNode->getUavs()[i]->getPointParticle()->getLocation()->getY(),
-				newNode->getUavs()[i]->getPointParticle()->getLocation()->getX(), newNode->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()]));
+			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
+			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+				newLoc->getX(), newLoc->getY(), QPen(uavColors[*uav.get()]));
 		}
+
+		QString time = QString("%1").arg(newNode->getTime());
+		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
+		addText(time, loc->getX(), loc->getY());
+
 		mainWindow->updateView();
 	}
 
