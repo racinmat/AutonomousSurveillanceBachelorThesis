@@ -12,7 +12,7 @@ namespace App
 		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
-	State::State(const State& other) : index(index + 1), used_inputs(used_inputs), time(time)
+	State::State(const State& other) : index(other.index + 1), used_inputs(other.used_inputs), time(other.time)
 	{
 		for (auto uav : other.uavs)
 		{
