@@ -35,6 +35,7 @@ int dubins_test(int argc, char **argv) {
 		p2.random(100);
 		d = Dubins(p1, p2, 100);
 		std::cout << type[d.getTypeOfManeuver()] << endl;
+		std::cout << d.isCCC << endl;
 	}
 
 	time_t t2 = clock();

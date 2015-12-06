@@ -15,6 +15,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include "boost/numeric/ublas/io.hpp"
 #include "dubins_test.h"
+#include "Random.h"
 
 //INITIALIZE_EASYLOGGINGPP
 
@@ -372,65 +373,71 @@ void testing()
 //	cout << vec.size() << endl;
 //	cout << vec2.size() << endl;
 //	cout << vec3.size() << endl;
-
-	ublas::matrix<double> m(3, 3, 4);
-	cout << m << endl;
-
-	boost::numeric::ublas::vector<double> v(2, 3);
-	cout << v << endl;
-
-//	project(m, ublas::range(1, 1), ublas::range(0, 2)) = v;
-
-	auto m1 = ublas::matrix<double>(4, 4, 0);
-	m1(1, 1) = 2;
-	m1(1, 2) = 2;
-	m1(2, 1) = 2;
-	m1(2, 2) = 2;
-
-
-	auto m2 = ublas::matrix<double>(4, 4, 4);
-	auto m7 = ublas::matrix<double>(2, 2, 3);
-	auto m6 = ublas::matrix<double>(4, 4, 0);
-//	project(m6, ublas::range(1, 2), ublas::range(1, 2)) = m7;
-	ublas::subrange(m2, 1, 3, 1, 3) = ublas::matrix<double>(2, 2, 3);	//assigning smaller matrix to subvector
-
-	for (size_t i = 0; i < m1.size1(); i++)
-	{
-		cout << row(m1, i) << endl;
-	}
-	cout << endl;
-
-	for (size_t i = 0; i < m7.size1(); i++)
-	{
-		cout << row(m7, i) << endl;
-	}
-	cout << endl;
-
-	for (size_t i = 0; i < m6.size1(); i++)
-	{
-		cout << row(m6, i) << endl;
-	}
-	cout << endl;
-
-	for (size_t i = 0; i < m2.size1(); i++)
-	{
-		cout << row(m2, i) << endl;
-	}
-	cout << endl;
-
-	auto m3 = prod(m1, m2);
-	auto m4 = element_prod(m1, m2);
-
-	for (size_t i = 0; i < m3.size1(); i++)
-	{
-		cout << row(m3, i) << endl;
-	}
-	cout << endl;
-	for (size_t i = 0; i < m4.size1(); i++)
-	{
-		cout << row(m4, i) << endl;
-	}
-	cout << endl;
+//
+//	ublas::matrix<double> m(3, 3, 4);
+//	cout << m << endl;
+//
+//	boost::numeric::ublas::vector<double> v(2, 3);
+//	cout << v << endl;
+//
+////	project(m, ublas::range(1, 1), ublas::range(0, 2)) = v;
+//
+//	auto m1 = ublas::matrix<double>(4, 4, 0);
+//	m1(1, 1) = 2;
+//	m1(1, 2) = 2;
+//	m1(2, 1) = 2;
+//	m1(2, 2) = 2;
+//
+//
+//	auto m2 = ublas::matrix<double>(4, 4, 4);
+//	auto m7 = ublas::matrix<double>(2, 2, 3);
+//	auto m6 = ublas::matrix<double>(4, 4, 0);
+////	project(m6, ublas::range(1, 2), ublas::range(1, 2)) = m7;
+//	ublas::subrange(m2, 1, 3, 1, 3) = ublas::matrix<double>(2, 2, 3);	//assigning smaller matrix to subvector
+//
+//	for (size_t i = 0; i < m1.size1(); i++)
+//	{
+//		cout << row(m1, i) << endl;
+//	}
+//	cout << endl;
+//
+//	for (size_t i = 0; i < m7.size1(); i++)
+//	{
+//		cout << row(m7, i) << endl;
+//	}
+//	cout << endl;
+//
+//	for (size_t i = 0; i < m6.size1(); i++)
+//	{
+//		cout << row(m6, i) << endl;
+//	}
+//	cout << endl;
+//
+//	for (size_t i = 0; i < m2.size1(); i++)
+//	{
+//		cout << row(m2, i) << endl;
+//	}
+//	cout << endl;
+//
+//	auto m3 = prod(m1, m2);
+//	auto m4 = element_prod(m1, m2);
+//
+//	for (size_t i = 0; i < m3.size1(); i++)
+//	{
+//		cout << row(m3, i) << endl;
+//	}
+//	cout << endl;
+//	for (size_t i = 0; i < m4.size1(); i++)
+//	{
+//		cout << row(m4, i) << endl;
+//	}
+//	cout << endl;
+//
+//	vector<int> arr = {1, 2, 3, 4, 5};
+//	for (size_t i = 0; i < 1000; i++)
+//	{
+//		cout << Random::element(arr) << endl;
+//	}
 
 	cin.get();
 }
@@ -441,8 +448,8 @@ int main(int argc, char *argv[])
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
 //	returnValue = runGui(argc, argv);
-//	testing();
-	returnValue = dubins_test(argc, argv);
+	testing();
+//	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }
 

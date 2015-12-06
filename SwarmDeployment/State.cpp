@@ -12,15 +12,15 @@ namespace App
 		fill(used_inputs.begin(), used_inputs.end(), false);
 	}
 
-	State::State(const State& other) : index(index), used_inputs(used_inputs)
+	State::State(const State& other) : index(index + 1), used_inputs(used_inputs)
 	{
 		for (auto uav : other.uavs)
 		{
 			uavs.push_back(make_shared<Uav>(*uav.get()));
 		}
-		if (prev)	//kontrola, zda je shred_pointer prázdný
+		if (previous)	//kontrola, zda je shred_pointer prázdný
 		{
-			prev = make_shared<State>(*other.prev.get());
+			previous = make_shared<State>(*other.previous.get());
 		}
 		for (auto prev_input : other.prev_inputs)
 		{
@@ -64,6 +64,31 @@ namespace App
 		return allInGoals;
 	}
 
+	double State::getDistanceOfNewNodes() const
+	{
+		return distanceOfNewNodes;
+	}
+
+	void State::setDistanceOfNewNodes(const double distance_of_new_nodes)
+	{
+		distanceOfNewNodes = distance_of_new_nodes;
+	}
+
+	int State::getIndex() const
+	{
+		return index;
+	}
+
+	shared_ptr<State> State::getPrevious() const
+	{
+		return previous;
+	}
+
+	void State::setPrevious(const shared_ptr<State> state)
+	{
+		previous = state;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;
@@ -77,9 +102,9 @@ namespace App
 		{
 			os << a;
 		}
-		if (obj.prev)
+		if (obj.previous)
 		{
-			os << " prev: " << *obj.prev.get() << endl;
+			os << " prev: " << *obj.previous.get() << endl;
 		} else
 		{
 			os << " prev: empty" << endl;

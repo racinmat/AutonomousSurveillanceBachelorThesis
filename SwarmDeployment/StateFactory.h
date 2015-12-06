@@ -14,6 +14,7 @@ namespace App
 		explicit StateFactory(shared_ptr<Configuration> configuration);
 		~StateFactory();
 		shared_ptr<State> createState();
+		shared_ptr<State> createState(const State& other);
 
 	protected:
 		shared_ptr<Configuration> configuration;

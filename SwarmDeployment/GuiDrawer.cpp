@@ -190,7 +190,7 @@ namespace Ui
 				continue;
 			}
 
-			auto previous = state->prev;
+			auto previous = state->getPrevious();
 			for (size_t i = 0; i < state->uavs.size(); i++)
 			{
 				auto uav = state->uavs[i];

@@ -18,4 +18,10 @@ namespace App
 	{
 		return make_shared<State>(configuration->getInputCount());
 	}
+
+	shared_ptr<State> StateFactory::createState(const State& other)
+	{
+		return make_shared<State>(other);
+	}
+
 }

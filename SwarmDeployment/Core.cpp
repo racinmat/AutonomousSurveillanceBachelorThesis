@@ -180,9 +180,8 @@ namespace App
 			{
 				if (k > near_count)
 				{
-//					i--;	//todo: zjistit, proè se snižuje i o 1
-//					throw "Not possible to find near node suitable for expansion";
 					logger->logText("Not possible to find near node suitable for expansion");
+					break;
 				}
 				nearState = nearest_neighbor(s_rand, nodes, k);
 
@@ -220,10 +219,9 @@ namespace App
 				break;
 			}
 
-			newState->index = i;
 			if (debug)
 			{
-				logger->logText("[debug] Added node index: " + to_string(newState->index));
+				logger->logText("[debug] Added node index: " + to_string(newState->getIndex()));
 			}
 
 			if (i % 200 == 0)
@@ -249,7 +247,7 @@ namespace App
 				sprintf(buffer, "%d viable paths found so far.", m);
 				logger->logText(buffer);
 			}
-			output->distancesToGoal[i] = newState->distanceOfNewNodes;	//tohle dát do promìnné State, nastavit v select_input a pak to ze State tahat
+			output->distancesToGoal[i] = newState->getDistanceOfNewNodes();	//tohle dát do promìnné State, nastavit v select_input a pak to ze State tahat
 
 			if (i % configuration->getDrawPeriod() == 0)
 			{
@@ -360,7 +358,7 @@ namespace App
 			if (tmp_node->areAllInputsUsed())
 			{
 				char buffer[1024];
-				sprintf(buffer, "Node %d is unexpandable", tmp_node->index);
+				sprintf(buffer, "Node %d is unexpandable", tmp_node->getIndex());
 				logger->logText(buffer);
 				continue;
 			}
@@ -393,7 +391,7 @@ namespace App
 
 			stateDistances.push_back(std::make_tuple(hamilt_dist, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váže
 			char buffer[1024];
-			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->index, hamilt_dist);
+			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->getIndex(), hamilt_dist);
 			logger->logText(buffer);
 
 			sort(stateDistances.begin(), stateDistances.end(),
@@ -413,7 +411,7 @@ namespace App
 			if (debug && count > 0)
 			{
 				char buffer[1024];
-				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f", count, count, near_node->index, distance);
+				sprintf(buffer, "[debug] near node #%d chosen, %d discarded, near node index %d, distance to goal state: %f", count, count, near_node->getIndex(), distance);
 				logger->logText(buffer);
 			}
 		}
@@ -556,12 +554,9 @@ namespace App
 					continue;
 				} else
 				{
-					newState = stateFactory->createState();
-					newState->uavs = tempState->uavs;
-					newState->prev = near_node;
-					newState->prev_inputs = tempState->prev_inputs;
-					newState->index = tempState->index;
-					newState->distanceOfNewNodes = distance_of_new_nodes;
+					newState = stateFactory->createState(*tempState.get());
+					newState->setPrev(near_node);
+					newState->setDistanceOfNewNodes(distance_of_new_nodes);
 					near_node->used_inputs[index] = true;
 					break;
 				}
@@ -740,7 +735,7 @@ namespace App
 	//only modifies node by inputs
 	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> node, unordered_map<Uav, shared_ptr<Point>, UavHasher> inputs)
 	{
-		auto newNode = make_shared<State>(*node.get());	//copy constructor, deep copy
+		auto newNode = stateFactory->createState(*node.get());	//copy constructor is called, makes deep copy
 
 		double uav_size = configuration->getUavSize();
 		// Simulation step length
@@ -1068,8 +1063,8 @@ namespace App
 		do
 		{
 			path.push_back(iterNode);
-			iterNode = iterNode->prev;
-		} while (iterNode->prev);
+			iterNode = iterNode->getPrevious();
+		} while (iterNode->getPrevious());
 
 		path.push_back(iterNode);
 		//todo: zjistit, zda potøebuji na nìco geo_path_length a další vìci, které jsou zakomentované
