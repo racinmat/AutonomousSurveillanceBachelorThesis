@@ -50,7 +50,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	length = std::numeric_limits<myFloat>::max();
 
 	// RSR - maneuver
-	typeOfManeuver = TypeOfManeuver::RSR;
 
 	Vector diff = c2right - c1right;
 	myFloat ang = diff.getAngle();
@@ -64,6 +63,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	//print(n1, n2, n3, nLength);
 
 	if(nLength < length) {
+		typeOfManeuver = TypeOfManeuver::RSR;
 		len1 = n1;
 		len2 = n2;
 		len3 = n3;
@@ -71,7 +71,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	}
 
 	// LSL - maneuver
-	typeOfManeuver = TypeOfManeuver::LSL;
 
 	diff = c2left - c1left;
 	ang = diff.getAngle();
@@ -85,6 +84,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	//print(n1, n2, n3, nLength);
 
 	if (nLength < length) {
+		typeOfManeuver = TypeOfManeuver::LSL;
 		len1 = n1;
 		len2 = n2;
 		len3 = n3;
@@ -97,7 +97,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	centerDistance = diff.length();
 
 	if (centerDistance > 2 * radius) {
-		typeOfManeuver = TypeOfManeuver::LSR;
 
 		myFloat alpha = asin(2 * radius / centerDistance);
 		myFloat centerAngle = atan2(c2right.y - c1left.y, c2right.x - c1left.x) + alpha;
@@ -112,6 +111,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		//print(n1, n2, n3, nLength);
 
 		if (nLength < length) {
+			typeOfManeuver = TypeOfManeuver::LSR;
 			len1 = n1;
 			len2 = n2;
 			len3 = n3;
@@ -125,7 +125,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 	centerDistance = diff.length();
 
 	if (centerDistance > 2 * radius) {
-		typeOfManeuver = TypeOfManeuver::RSL;
 
 		myFloat alpha = asin(2 * radius / centerDistance);
 		myFloat centerAngle = atan2(c2left.y - c1right.y, c2left.x - c1right.x) - alpha;
@@ -140,6 +139,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		//print(n1, n2, n3, nLength);
 
 		if (nLength < length) {
+			typeOfManeuver = TypeOfManeuver::RSL;
 			len1 = n1;
 			len2 = n2;
 			len3 = n3;
@@ -155,7 +155,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		centerDistance = diff.length();
 
 		if (centerDistance < 4 * radius) {
-			typeOfManeuver = TypeOfManeuver::RLR;
 
 			// direction of Vector(S1,S2) to Vector(S1,S3)
 			myFloat alpha = acos(centerDistance / radius / 4);
@@ -172,6 +171,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 			nLength = radius * (fabs(n1) + fabs(n2) + fabs(n3));
 
 			if (nLength < length) {
+				typeOfManeuver = TypeOfManeuver::RLR;
 				isCCC = true;
 				//print(n1, n2, n3, nLength);
 				len1 = n1;
@@ -186,7 +186,6 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 		centerDistance = diff.length();
 
 		if (centerDistance < 4 * radius) {
-			typeOfManeuver = TypeOfManeuver::LRL;
 
 			// direction of Vector(S1,S2) to Vector(S1,S3)
 			myFloat alpha = acos(centerDistance / radius / 4);
@@ -203,6 +202,7 @@ Dubins::Dubins(Position newStart, Position newEnd, myFloat newRadius) {
 			nLength = radius * (fabs(n1) + fabs(n2) + fabs(n3));
 
 			if (nLength < length) {
+				typeOfManeuver = TypeOfManeuver::LRL;
 				isCCC = true;
 				//print(n1, n2, n3, nLength);
 				len1 = n1;

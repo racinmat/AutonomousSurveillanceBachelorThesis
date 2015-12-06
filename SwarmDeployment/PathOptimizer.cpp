@@ -5,7 +5,8 @@ namespace App
 {
 
 
-	PathOptimizer::PathOptimizer()
+	PathOptimizer::PathOptimizer(shared_ptr<DistanceResolver> distanceResolver) : 
+		distanceResolver(distanceResolver)
 	{
 	}
 
@@ -22,8 +23,45 @@ namespace App
 
 		while (notImprovedCount < stopLimit)
 		{
-			//sem pøijde dubbins
 			auto randomFirst = Random::element(path);
+			auto randomSecond = Random::element(path);
+			while (*randomFirst.get() == *randomSecond.get())
+			{
+				randomSecond = Random::element(path);
+			}
+			if (randomFirst->getIndex() > randomSecond->getIndex())
+			{
+				//swap
+				auto temp = randomSecond;
+				randomSecond = randomFirst;
+				randomFirst = temp;
+			}
+
+			for (auto uav : randomSecond->getUavs())
+			{
+
+				double distance = 0;
+				for (auto i = randomSecond; *i.get() != *randomFirst.get(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek
+				{
+					auto previous = i->getPrevious();
+					distance += distanceResolver->getDistance(previous, i);
+				}
+
+				//sem pøijde dubins
+				double newDistance = 0;
+
+				if (newDistance < distance)
+				{
+					//todo: udìlat validace
+					bool isNewPathValid = true;
+
+					if (isNewPathValid)
+					{
+
+					}
+					//zde se vyhodí delší èást cesty a místo ní se sem dá kratší èást cesty
+				}
+			}
 		}
 		return path;
 	}

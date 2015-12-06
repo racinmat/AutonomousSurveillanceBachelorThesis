@@ -146,11 +146,11 @@ namespace Ui
 
 	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
 	{
-		for (size_t i = 0; i < nearNode->uavs.size(); i++)
+		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
 		{
-			auto uav = nearNode->uavs[i];
-			scene->addLine(nearNode->uavs[i]->getPointParticle()->getLocation()->getX(), nearNode->uavs[i]->getPointParticle()->getLocation()->getY(),
-				newNode->uavs[i]->getPointParticle()->getLocation()->getX(), newNode->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()]));
+			auto uav = nearNode->getUavs()[i];
+			scene->addLine(nearNode->getUavs()[i]->getPointParticle()->getLocation()->getX(), nearNode->getUavs()[i]->getPointParticle()->getLocation()->getY(),
+				newNode->getUavs()[i]->getPointParticle()->getLocation()->getX(), newNode->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()]));
 		}
 		mainWindow->updateView();
 	}
@@ -191,11 +191,11 @@ namespace Ui
 			}
 
 			auto previous = state->getPrevious();
-			for (size_t i = 0; i < state->uavs.size(); i++)
+			for (size_t i = 0; i < state->getUavs().size(); i++)
 			{
-				auto uav = state->uavs[i];
-				scene->addLine(state->uavs[i]->getPointParticle()->getLocation()->getX(), state->uavs[i]->getPointParticle()->getLocation()->getY(),
-					previous->uavs[i]->getPointParticle()->getLocation()->getX(), previous->uavs[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], 4));
+				auto uav = state->getUavs()[i];
+				scene->addLine(state->getUavs()[i]->getPointParticle()->getLocation()->getX(), state->getUavs()[i]->getPointParticle()->getLocation()->getY(),
+					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], 4));
 			}
 			mainWindow->updateView();
 

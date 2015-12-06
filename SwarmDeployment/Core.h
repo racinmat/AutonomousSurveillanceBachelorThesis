@@ -13,6 +13,8 @@
 #include "UavGroup.h"
 #include <boost/numeric/ublas/matrix.hpp>
 #include "AoICoverageResolver.h"
+#include "DistanceResolver.h"
+#include "PathOptimizer.h"
 
 using namespace std;
 
@@ -68,6 +70,8 @@ namespace App
 		shared_ptr<StateFactory> stateFactory;
 		shared_ptr<InputGenerator> inputGenerator;
 		shared_ptr<AoICoverageResolver> coverageResolver;
+		shared_ptr<DistanceResolver> distanceResolver;
+		shared_ptr<PathOptimizer> pathOptimizer;
 
 		void testGui();
 

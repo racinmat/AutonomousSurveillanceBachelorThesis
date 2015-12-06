@@ -158,6 +158,7 @@
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="DistanceResolver.cpp" />
     <ClCompile Include="Dubins\dubins_test.cpp">
       <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)</AssemblerListingLocation>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">$(IntDir)/%(RelativeDir)/</ObjectFileName>
@@ -483,6 +484,7 @@
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="DistanceResolver.h" />
     <ClInclude Include="Dubins\geom\Arc.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>

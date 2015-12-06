@@ -38,7 +38,8 @@ namespace App
 		logger(make_shared<LoggerInterface>()), configuration(configuration), 
 		stateFactory(make_shared<StateFactory>(configuration)),
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
-		coverageResolver(make_shared<AoICoverageResolver>())
+		coverageResolver(make_shared<AoICoverageResolver>()), distanceResolver(make_shared<DistanceResolver>(configuration)),
+		pathOptimizer(make_shared<PathOptimizer>(distanceResolver))
 	{
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
@@ -93,6 +94,8 @@ namespace App
 
 		logger->logBestPath(path);
 
+		path = pathOptimizer->optimizePath(path);
+
 		save_output();
 
 	}
@@ -131,10 +134,10 @@ namespace App
 
 		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>();
 		auto initialState = stateFactory->createState();
-		initialState->uavs = map->getUavsStart();
+		initialState->setUavs(map->getUavsStart());
 		nodes.push_back(initialState);
 
-		for (auto uav : initialState->uavs)
+		for (auto uav : initialState->getUavs())
 		{
 			for (auto guidingPath : guiding_paths)
 			{
@@ -191,7 +194,7 @@ namespace App
 				bool allInputsUsed = nearState->areAllInputsUsed();
 
 				auto isNearUavPosition = false;
-				for (auto uavPosition : nearState->uavs)
+				for (auto uavPosition : nearState->getUavs())
 				{
 					isNearUavPosition = isNearUavPosition || uavPosition != false;
 				}
@@ -235,7 +238,7 @@ namespace App
 			s++;
 
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
-			check_near_goal(newState->uavs, map);
+			check_near_goal(newState->getUavs(), map);
 
 			output->distancesToGoal = vector<double>(nodes.size());
 			if (newState->areUavsInGoals()) // pokud je nalezen cíl
@@ -257,7 +260,7 @@ namespace App
 		}
 		
 		output->finalNodes.push_back(nodes[nodes.size() - 1]);	//poslední prvek
-		check_near_goal(newState->uavs, map);
+		check_near_goal(newState->getUavs(), map);
 		output->goals_reached = newState->areUavsInGoals();
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = nodes;
@@ -276,7 +279,7 @@ namespace App
 		if (random > guided_sampling_prob) //vybírá se náhodný vzorek
 		{
 			int index = 0;
-			for (auto uav : state->uavs)
+			for (auto uav : state->getUavs())
 			{
 				if (uav->isGoalReached())
 				{//todo: s tímhle nìco udìlat, a nepøistupovat k poli takhle teple pøes indexy
@@ -338,11 +341,10 @@ namespace App
 		}
 	}
 
-	shared_ptr<State> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand, vector<shared_ptr<State>> nodes, int count)
+	shared_ptr<State> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates, vector<shared_ptr<State>> nodes, int count)
 	{
 		int max_nodes = configuration->getRrtMaxNodes();
 		int debug = configuration->getDebug();
-		NNMethod nn_method = configuration->getNearestNeighborMethod();
 
 		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
 		shared_ptr<State> near_node;
@@ -363,42 +365,18 @@ namespace App
 				continue;
 			}
 			
-			double hamilt_dist = 0;
-			vector<double> distances = vector<double>(tmp_node->uavs.size());
+			double totalDistance = distanceResolver->getDistance(tmp_node, randomStates);
 
-			for (size_t i = 0; i < tmp_node->uavs.size(); i++)
-			{
-				auto uav = tmp_node->uavs[i];
-				auto randomState = s_rand[*uav.get()];
-				distances[i] = uav->getPointParticle()->getLocation()->getDistanceSquared(randomState);
-			}
-
-			switch (nn_method)
-			{
-			case NNMethod::Total:
-				for(auto dist : distances)
-				{
-					hamilt_dist += dist;	//no function for sum, so I must do it by hand
-				}
-				break;
-			case NNMethod::Max:
-				hamilt_dist = *max_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
-				break;
-			case NNMethod::Min:
-				hamilt_dist = *min_element(distances.begin(), distances.end());	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
-				break;
-			}
-
-			stateDistances.push_back(std::make_tuple(hamilt_dist, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váže
+			stateDistances.push_back(make_tuple(totalDistance, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váže
 			char buffer[1024];
-			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->getIndex(), hamilt_dist);
+			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->getIndex(), totalDistance);
 			logger->logText(buffer);
 
 			sort(stateDistances.begin(), stateDistances.end(),
 				[](const tuple<double, shared_ptr<State>>& a,
 					const tuple<double, shared_ptr<State>>& b) -> bool
 			{
-				return std::get<0>(a) < std::get<0>(b);
+				return get<0>(a) < get<0>(b);
 			});
 	
 		}
@@ -437,14 +415,14 @@ namespace App
 		int input_samples_phi = configuration->getInputSamplesPhi();
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
-		int uavCount = near_node->uavs.size();
+		int uavCount = near_node->getUavs().size();
 		int inputCount = configuration->getInputCount();
 		shared_ptr<State> newState;
 
 		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
 		
 		Point uavMiddle(0, 0);
-		for (auto uav : near_node->uavs)
+		for (auto uav : near_node->getUavs())
 		{
 			uavMiddle.moveBy(uav->getPointParticle()->getLocation());
 		}
@@ -457,7 +435,7 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
-		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, near_node->uavs);		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 																												//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
@@ -467,7 +445,7 @@ namespace App
 			auto input = inputs[i];
 			auto tempState = car_like_motion_model(near_node, input);	//this method changes near_node
 			tempStates[i] = tempState;
-			for (auto uav : tempState->uavs)
+			for (auto uav : tempState->getUavs())
 			{
 				double x = uav->getPointParticle()->getLocation()->getX() - near_node->getUav(uav)->getPointParticle()->getLocation()->getX();
 				double y = uav->getPointParticle()->getLocation()->getY() - near_node->getUav(uav)->getPointParticle()->getLocation()->getY();
@@ -483,7 +461,7 @@ namespace App
 		{
 			auto tempState = tempStates[i];
 			d[i] = 0;
-			for (auto uav : tempState->uavs)
+			for (auto uav : tempState->getUavs())
 			{
 				d[i] += randomState[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
 			}
@@ -538,7 +516,7 @@ namespace App
 					continue;
 				}
 
-				if (!insideWorldBounds(tempState->uavs, configuration->getWorldWidth(), configuration->getWorldHeight()))
+				if (!insideWorldBounds(tempState->getUavs(), configuration->getWorldWidth(), configuration->getWorldHeight()))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
 					logger->logText("out of world bounds");
@@ -555,7 +533,7 @@ namespace App
 				} else
 				{
 					newState = stateFactory->createState(*tempState.get());
-					newState->setPrev(near_node);
+					newState->setPrevious(near_node);
 					newState->setDistanceOfNewNodes(distance_of_new_nodes);
 					near_node->used_inputs[index] = true;
 					break;
@@ -604,7 +582,7 @@ namespace App
 		for (auto guiding_path : guiding_paths) {
 			for (auto node : guiding_path->getNodes())	//todo: možná to pøedìlat a iterovat obrácenì, abych jel odzadu a udìlal break, když narazím na currentPoint u uav, abych nemusel kontrolovat isFirstCloserToEnd
 			{
-				for (auto uav : state->uavs)
+				for (auto uav : state->getUavs())
 				{
 					bool reached = false;
 					if (uav->getPointParticle()->getLocation()->getDistanceSquared(node->getPoint()) < pow(guiding_near_dist, 2))
@@ -742,7 +720,7 @@ namespace App
 		double time_step = configuration->getTimeStep();
 		// Simulation length
 		double end_time = configuration->getEndTime();
-		int number_of_uavs = node->uavs.size();
+		int number_of_uavs = node->getUavs().size();
 		//		global number_of_uavs params empty_trajectory
 		
 		//model parameters
@@ -756,7 +734,7 @@ namespace App
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
 
-		for (auto uav : newNode->uavs)
+		for (auto uav : newNode->getUavs())
 		{
 			auto uavPointParticle = uav->getPointParticle();
 			double dPhi = (inputs[*uav.get()]->getX() / L) * tan(inputs[*uav.get()]->getY());	//dPhi se nemìní v rámci vnitøního cyklu, takže staèí spošítat jen jednou
@@ -781,7 +759,7 @@ namespace App
 
 	bool Core::check_localization_sep(shared_ptr<State> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
 	{
-		int number_of_uavs = node->uavs.size();
+		int number_of_uavs = node->getUavs().size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
 		double relative_distance_max = configuration->getRelativeDistanceMax();
 		bool check_fov = configuration->getCheckFov();
@@ -805,8 +783,8 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				auto uavI = node->uavs[i]->getPointParticle()->getLocation();
-				auto uavJ = node->uavs[j]->getPointParticle()->getLocation();
+				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
+				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
 
 				if (uavI->getDistance(uavJ) <= relative_distance_min)
 				{
@@ -820,10 +798,10 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				auto uavI = node->uavs[i]->getPointParticle()->getLocation();
-				double uavIphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
-				auto uavJ = node->uavs[j]->getPointParticle()->getLocation();
-				double uavJphi = node->uavs[i]->getPointParticle()->getRotation()->getZ();
+				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
+				double uavIphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
+				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
+				double uavJphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
 
 				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
 				{
@@ -869,16 +847,16 @@ namespace App
 	bool Core::trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node)
 	{
 		
-		int number_of_uavs = near_node->uavs.size();
+		int number_of_uavs = near_node->getUavs().size();
 		for (size_t i = 0; i < number_of_uavs; i++)
 		{
 			for (size_t j = 0; j < number_of_uavs; j++)
 			{
 				if (i != j && line_segments_intersection(
-					near_node->uavs[i]->getPointParticle()->getLocation(),
-					tmp_node->uavs[i]->getPointParticle()->getLocation(),
-					near_node->uavs[j]->getPointParticle()->getLocation(),
-					tmp_node->uavs[j]->getPointParticle()->getLocation()))
+					near_node->getUavs()[i]->getPointParticle()->getLocation(),
+					tmp_node->getUavs()[i]->getPointParticle()->getLocation(),
+					near_node->getUavs()[j]->getPointParticle()->getLocation(),
+					tmp_node->getUavs()[j]->getPointParticle()->getLocation()))
 				{
 					return true;
 				}
@@ -894,7 +872,7 @@ namespace App
 		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
 				
 		int k = index;
-		for (auto uav : near_node->uavs)
+		for (auto uav : near_node->getUavs())
 		{
 			double x = uav->getPointParticle()->getLocation()->getX();
 			double y = uav->getPointParticle()->getLocation()->getY();
@@ -1037,7 +1015,7 @@ namespace App
 				auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
 				{
-					uavs[j] = state->uavs[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+					uavs[j] = state->getUavs()[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
 				}
 				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
 				uavsInGroups += uavsCountInGroup;
@@ -1046,12 +1024,12 @@ namespace App
 			int remaining = map->getUavsStart().size() - uavsInGroups;
 			for (size_t i = 0; i < remaining; i++)	//zbytku je vždycky stejnì nebo ménì než poètu skupin
 			{
-				uavGroups[i]->addUav(state->uavs[uavsInGroups + i]);
+				uavGroups[i]->addUav(state->getUavs()[uavsInGroups + i]);
 			}
 		}
 		else
 		{
-			uavGroups[0] = make_shared<UavGroup>(state->uavs, guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
+			uavGroups[0] = make_shared<UavGroup>(state->getUavs(), guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
 		}
 		return uavGroups;
 	}
@@ -1068,20 +1046,6 @@ namespace App
 
 		path.push_back(iterNode);
 		//todo: zjistit, zda potøebuji na nìco geo_path_length a další vìci, které jsou zakomentované
-//		geo_path_length = 0;
-//		for m = 2:length(path)
-//			for n = 1 : number_of_uavs
-//				geo_path_length = geo_path_length + ...
-//				sqrt((path(m).loc(1, n) - path(m - 1).loc(1, n)) ^ 2 + ...
-//					(path(m).loc(2, n) - path(m - 1).loc(2, n)) ^ 2);
-//			end
-//		end
-//		geo_path_length = geo_path_length / number_of_uavs;
-//
-//		output.geometric_path_length = geo_path_length;
-//		output.path = path;
-//		output.runtime = nodes(end).time_added;
-//		output.curvature = get_curvature(path);
 
 		reverse(path.begin(), path.end());	//abych mìl cestu od zaèátku do konce
 		return path;
@@ -1089,27 +1053,6 @@ namespace App
 
 	shared_ptr<State> Core::get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map)
 	{
-//	function [ best_node, lowest_distance ] = get_closest_node_to_goal(  )
-//	%GET_CLOSEST_NODE_TO_GOAL Summary of this function goes here
-//	%   Detailed explanation goes here
-//	
-//	global nodes number_of_uavs goals
-//	
-//	lowest_distance = inf(length(goals),number_of_uavs);
-//	best_node = nodes(1);
-//	for m=1:length(nodes)
-//	    for k=1:length(goals)
-//	        for n=1:number_of_uavs
-//	        distance(k,n) = sqrt((nodes(m).loc(1,n)-(goals{k}.x+goals{k}.width/2))^2 + ...
-//	            (nodes(m).loc(2,n)-(goals{k}.y+goals{k}.height/2))^2);
-//	        end
-//	    end
-//	    if sum(sum(distance))<sum(sum(lowest_distance))
-//	        lowest_distance = distance;
-//	        best_node=nodes(m);
-//	    end
-//	end
-//	end
 		vector<pair<shared_ptr<State>, double>> statesAndCosts = vector<pair<shared_ptr<State>, double>>();
 		for (auto state : states)
 		{

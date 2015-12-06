@@ -297,6 +297,9 @@
     <ClCompile Include="Dubins\geom\shape\ShapePoint.cpp">
       <Filter>Source Files\Dubins\geom\shape</Filter>
     </ClCompile>
+    <ClCompile Include="DistanceResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -537,6 +540,9 @@
     </ClInclude>
     <ClInclude Include="dubins_test.h">
       <Filter>Header Files\Dubins</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceResolver.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

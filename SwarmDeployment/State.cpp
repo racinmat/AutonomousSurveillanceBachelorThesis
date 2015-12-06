@@ -89,6 +89,16 @@ namespace App
 		previous = state;
 	}
 
+	vector<shared_ptr<Uav>> State::getUavs() const
+	{
+		return uavs;
+	}
+
+	void State::setUavs(const vector<shared_ptr<Uav>> shared_ptrs)
+	{
+		uavs = shared_ptrs;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;
@@ -117,4 +127,18 @@ namespace App
 		return os;
 	}
 
+	bool operator==(const State& lhs, const State& rhs)
+	{
+		return lhs.uavs == rhs.uavs
+			&& lhs.used_inputs == rhs.used_inputs
+			&& lhs.prev_inputs == rhs.prev_inputs
+			&& lhs.distanceOfNewNodes == rhs.distanceOfNewNodes
+			&& lhs.previous == rhs.previous
+			&& lhs.index == rhs.index;
+	}
+
+	bool operator!=(const State& lhs, const State& rhs)
+	{
+		return !(lhs == rhs);
+	}
 }
