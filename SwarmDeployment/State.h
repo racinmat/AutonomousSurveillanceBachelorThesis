@@ -20,7 +20,7 @@ namespace App
 		unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> prev_inputs;	//vstupy, které vedly do této node
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const State& obj);
-		shared_ptr<Uav> getUav(shared_ptr<Uav> uav);	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
+		shared_ptr<Uav> getUav(shared_ptr<Uav> uav) const;	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
 		bool areUavsInGoals();
 		virtual double getDistanceOfNewNodes() const;
 		virtual void setDistanceOfNewNodes(const double distance_of_new_nodes);
@@ -34,6 +34,7 @@ namespace App
 		virtual void incrementTime(double increment);
 		virtual double getTime() const;
 		virtual void swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second);
+		virtual void setTime(const double time);
 
 	protected:
 		vector<shared_ptr<Uav>> uavs; //spojení promìnných loc a rot z Node objektu z matlabu. nejspíš node bude jiná pro rrt path a pro diskretizaci na nalezen guiding path

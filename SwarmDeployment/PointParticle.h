@@ -22,6 +22,8 @@ namespace App
 		void setRotation(shared_ptr<Point> rotation);
 		friend ostream& operator<<(ostream& os, const PointParticle& obj);
 		geom::Position toPosition();
+		friend bool operator==(const PointParticle& lhs, const PointParticle& rhs);
+		friend bool operator!=(const PointParticle& lhs, const PointParticle& rhs);
 
 	protected:
 		shared_ptr<Point> location;

@@ -42,7 +42,7 @@ namespace App
 		return areAllInputsUsed;
 	}
 
-	shared_ptr<Uav> State::getUav(shared_ptr<Uav> uav)
+	shared_ptr<Uav> State::getUav(shared_ptr<Uav> uav) const
 	{
 		for(auto other : uavs)
 		{
@@ -118,6 +118,11 @@ namespace App
 		secondUav->setId(tempId);
 	}
 
+	void State::setTime(const double time)
+	{
+		this->time = time;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;
@@ -148,12 +153,16 @@ namespace App
 
 	bool operator==(const State& lhs, const State& rhs)
 	{
-		return lhs.uavs == rhs.uavs
-			&& lhs.used_inputs == rhs.used_inputs
-			&& lhs.prev_inputs == rhs.prev_inputs
-			&& lhs.distanceOfNewNodes == rhs.distanceOfNewNodes
-			&& lhs.previous == rhs.previous
-			&& lhs.index == rhs.index;
+		bool same = true;
+
+		for (auto uav : lhs.uavs)
+		{
+			if (*uav->getPointParticle().get() != *rhs.getUav(uav)->getPointParticle().get())
+			{
+				same = false;
+			}
+		}
+		return same;
 	}
 
 	bool operator!=(const State& lhs, const State& rhs)

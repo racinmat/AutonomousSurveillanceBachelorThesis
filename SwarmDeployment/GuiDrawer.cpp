@@ -191,7 +191,7 @@ namespace Ui
 		this->configuration = configuration;
 	}
 
-	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path)
+	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path, bool optimization)
 	{
 		bool first = true;
 		for (auto state : path)

@@ -63,4 +63,15 @@ namespace App
 			<< "location: " << *obj.location.get() << endl
 			<< " rotation: " << *obj.rotation.get();
 	}
+
+	bool operator==(const PointParticle& lhs, const PointParticle& rhs)
+	{
+		return *lhs.location.get() == *rhs.location.get()
+			&& *lhs.rotation.get() == *rhs.rotation.get();
+	}
+
+	bool operator!=(const PointParticle& lhs, const PointParticle& rhs)
+	{
+		return !(lhs == rhs);
+	}
 }

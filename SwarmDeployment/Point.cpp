@@ -117,9 +117,9 @@ namespace App
 
 	bool operator==(const Point& lhs, const Point& rhs)
 	{
-		return lhs.x == rhs.x
-			&& lhs.y == rhs.y
-			&& lhs.z == rhs.z;
+		return fabs(lhs.x - rhs.x) < DBL_EPSILON
+			&& fabs(lhs.y - rhs.y) < DBL_EPSILON
+			&& fabs(lhs.z - rhs.z) < DBL_EPSILON;
 	}
 
 	bool operator!=(const Point& lhs, const Point& rhs)

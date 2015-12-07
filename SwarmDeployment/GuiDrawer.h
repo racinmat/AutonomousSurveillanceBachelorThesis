@@ -29,7 +29,7 @@ namespace Ui
 		virtual void logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates) override;
 		virtual void logRandomStatesCenter(shared_ptr<App::Point> center) override;
 		virtual void setConfiguration(shared_ptr<App::Configuration> configuration);
-		virtual void logBestPath(vector<shared_ptr<State>> path) override;
+		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false) override;
 		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths) override;
 
 	protected:

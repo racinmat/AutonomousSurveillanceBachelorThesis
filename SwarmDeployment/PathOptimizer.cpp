@@ -24,8 +24,9 @@ namespace App
 	}
 
 	//optimalizuje cestu pomocí Dubinsových manévrù
-	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path)
+	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
+		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
 		int notImprovedCount = 0;
 
@@ -47,12 +48,35 @@ namespace App
 
 			auto end = make_shared<State>(*endOriginal.get());	//kvùli prohazování køížejících se UAV vytvoøím kopii, kterou modifikuji. Až když zjistím, že je nová trajektorie v poøádku, uložím to do pùvodního stavu
 
-			optimizePathBetween(start, end);
+			auto pair = optimizePathBetween(start, end, map);
+			bool isPathChanged = pair.second;
+			auto trajectoryPart = pair.first;
+
+			if (isPathChanged)
+			{
+				trajectoryPart[0]->setPrevious(start);	//navazuji zaèátek nové trajektorie na pøedchoz èást trasy
+				bool isEndOfPath = *endOriginal.get() == *endOfPath.get();	//zda je end koncem celé cesty
+				if (isEndOfPath)
+				{
+					endOfPath = end;
+				}
+				else
+				{
+					shared_ptr<State> afterEnd = endOfPath;	//najdu potomka konce èásti cesty, kterou jsem upravoval, abych navázal i konec cesty
+					while (*(afterEnd->getPrevious()).get() != *endOriginal.get())
+					{
+						afterEnd = afterEnd->getPrevious();
+					}
+					afterEnd->setPrevious(end);
+				}
+			}
+
 		}
-		return path;
+		return PathHandler::getPath(endOfPath);
 	}
 
-	vector<shared_ptr<State>> PathOptimizer::optimizePathBetween(shared_ptr<State> start, shared_ptr<State> end)
+	//bool øíká, zda se cesta zmìnila
+	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathBetween(shared_ptr<State> start, shared_ptr<State> end, shared_ptr<Map> map)
 	{
 		straightenCrossingTrajectories(start, end);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
@@ -63,7 +87,7 @@ namespace App
 		for (auto uav : end->getUavs())
 		{
 			double length = 0;
-			for (auto i = end; *i.get() != *start.get(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek
+			for (auto i = end; i->getTime() != start->getTime(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek
 			{
 				auto previous = i->getPrevious();
 				length += distanceResolver->getDistance(previous, i);	//todo: vymyslet, jak najít vždálenost poèítanou po kružnici, a ne po výsledných pøímkách
@@ -80,11 +104,11 @@ namespace App
 
 		if (areAllDubinsTrajectoriesLonger)
 		{
-			return PathHandler::getPath(start, end); // pùvodní cesta
+			return make_pair(PathHandler::getPath(start, end), false); // pùvodní cesta
 		}
 
 		//nalezení nejdelšího dubbinse ze všech, které jsou kratší než pùvodní trajektorie, podle nìj se bude diskretizovat
-		int largestStepCount;
+		int largestStepCount = 0;
 		for (auto uav : end->getUavs())
 		{
 			auto pair = dubinsTrajectories[*uav.get()];
@@ -107,6 +131,8 @@ namespace App
 		for (size_t i = 0; i < stepCount; i++)
 		{
 			auto newState = make_shared<State>(*previousState.get());
+			newState->setPrevious(previousState);
+			newState->incrementTime(configuration->getEndTime());
 			double distanceCompleted = i * configuration->getDistanceOfNewNodes();	//uražená cesta v dubinsovì manévru
 
 			unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs = unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>();
@@ -121,22 +147,18 @@ namespace App
 				uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
 				uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
 			}
-			newState->setPrevious(previousState);
 
-			bool isValid = true;
 			//validace
-
-
-			if (!isValid)
+			if (!collisionDetector->isStateValid(start, end, map));
 			{
-				return PathHandler::getPath(start, end); // pùvodní cesta
+				return make_pair(PathHandler::getPath(start, end), false); // pùvodní cesta
 			}
 
 			previousState = newState;
 			newTrajectory[i] = newState;
 			logger->logNewState(previousState, newState, true);
 		}
-		return newTrajectory;
+		return make_pair(newTrajectory, true);
 	}
 
 	void PathOptimizer::setLogger(const shared_ptr<LoggerInterface> logger_interface)

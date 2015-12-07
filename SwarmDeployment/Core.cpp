@@ -98,7 +98,9 @@ namespace App
 
 		logger->logBestPath(path);
 
-		path = pathOptimizer->optimizePath(path);
+		path = pathOptimizer->optimizePath(path, map);
+
+		logger->logBestPath(path, true);
 
 //		testGui();
 
