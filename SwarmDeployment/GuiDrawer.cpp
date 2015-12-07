@@ -144,15 +144,21 @@ namespace Ui
 		logText(string(arr));
 	}
 
-	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
+	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
 	{
+		int width = 1;
+		if (optimization)
+		{
+			width = 3;
+		}
+
 		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
 		{
 			auto uav = nearNode->getUavs()[i];
 			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
 			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
 			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-				newLoc->getX(), newLoc->getY(), QPen(uavColors[*uav.get()]));
+				newLoc->getX(), newLoc->getY(), QPen(uavColors[*uav.get()], width));
 		}
 
 		QString time = QString("%1").arg(newNode->getTime());
@@ -209,6 +215,30 @@ namespace Ui
 		}
 	}
 
+	void GuiDrawer::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
+	{
+		for (auto pair : dubinsPaths)
+		{
+			auto uav = pair.first;
+			auto dubins = pair.second.first;
+			auto radius = dubins.getRadius();
+			auto circle1Center = dubins.getFirstArc().getCenter();
+			auto circle2Center = dubins.getSecondArc().getCenter();
+			addCircle(circle1Center.getX(), circle1Center.getY(), radius, Qt::black);
+			addCircle(circle2Center.getX(), circle2Center.getY(), radius, Qt::black);
+			if (dubins.isCCC)
+			{
+				auto middleCircleCenter = dubins.getCenterArc().getCenter();
+				scene->addEllipse(middleCircleCenter.getX(), middleCircleCenter.getY(), radius, radius, QPen(Qt::black), QBrush(Qt::transparent));
+			} else
+			{
+				auto line = dubins.getCenter();
+				scene->addLine(line.p1.getX(), line.p1.getY(), line.p2.getX(), line.p2.getY(), QPen(Qt::black));
+			}
+			mainWindow->updateView();
+		}
+	}
+
 	void GuiDrawer::clear()
 	{
 		double height = view->height();
@@ -251,6 +281,11 @@ namespace Ui
 	{
 		scene->addLine(x - size, y - size, x + size, y + size, QPen(color));
 		scene->addLine(x - size, y + size, x + size, y - size, QPen(color));
+	}
+
+	void GuiDrawer::addCircle(double x, double y, double radius, Qt::GlobalColor color)
+	{
+		scene->addEllipse(x - radius, y - radius, radius * 2, radius * 2, QPen(color), QBrush(Qt::transparent));
 	}
 
 	Qt::GlobalColor GuiDrawer::getRandomColor()

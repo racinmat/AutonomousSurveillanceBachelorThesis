@@ -6,6 +6,7 @@
 #include "Enums.h"
 #include <unordered_map>
 #include "NodeWrapper.h"
+#include "Dubins/geom/Dubins.h"
 
 namespace App
 {
@@ -22,10 +23,11 @@ namespace App
 		virtual void logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends);
 		virtual void logText(string string);
 		virtual void logText(char const string[]);
-		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode);
+		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization = false);
 		virtual void logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates);
 		virtual void logRandomStatesCenter(shared_ptr<Point> center);
 		virtual void logBestPath(vector<shared_ptr<State>> path);
+		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths);
 	};
 
 }

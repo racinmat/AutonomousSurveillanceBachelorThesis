@@ -30,10 +30,14 @@ int dubins_test(int argc, char **argv) {
 
 	Dubins d(p1, p2, 5);
 
-	std::cout << d.getLen1() << endl;
-	std::cout << d.getLen2() << endl;
-	std::cout << d.getLen3() << endl;
-	std::cout << d.getLength() << endl;
+	std::cout << "circle1 center x: " << d.getFirstArc().getCenter().getX() << endl;
+	std::cout << "circle1 center y: " << d.getFirstArc().getCenter().getY() << endl;
+	std::cout << "circle2 center x: " << d.getSecondArc().getCenter().getX() << endl;
+	std::cout << "circle2 center y: " << d.getSecondArc().getCenter().getY() << endl;
+	std::cout << "len1: " << d.getLen1() << endl;
+	std::cout << "len2: " << d.getLen2() << endl;
+	std::cout << "len3: " << d.getLen3() << endl;
+	std::cout << "totalLegth: " << d.getLength() << endl;
 	std::cout << type[d.getTypeOfManeuver()] << endl;
 
 	p1 = Position(Point(0, 0), 0);
@@ -41,10 +45,14 @@ int dubins_test(int argc, char **argv) {
 
 	d = Dubins(p1, p2, 5);
 
-	std::cout << d.getLen1() << endl;
-	std::cout << d.getLen2() << endl;
-	std::cout << d.getLen3() << endl;
-	std::cout << d.getLength() << endl;
+	std::cout << "circle1 center x: " << d.getFirstArc().getCenter().getX() << endl;
+	std::cout << "circle1 center y: " << d.getFirstArc().getCenter().getY() << endl;
+	std::cout << "circle2 center x: " << d.getSecondArc().getCenter().getX() << endl;
+	std::cout << "circle2 center y: " << d.getSecondArc().getCenter().getY() << endl;
+	std::cout << "len1: " << d.getLen1() << endl;
+	std::cout << "len2: " << d.getLen2() << endl;
+	std::cout << "len3: " << d.getLen3() << endl;
+	std::cout << "totalLegth: " << d.getLength() << endl;
 	std::cout << type[d.getTypeOfManeuver()] << endl;
 
 	p1 = Position(Point(0, 0), 0);
@@ -52,10 +60,14 @@ int dubins_test(int argc, char **argv) {
 
 	d = Dubins(p1, p2, 5);
 
-	std::cout << d.getLen1() << endl;
-	std::cout << d.getLen2() << endl;
-	std::cout << d.getLen3() << endl;
-	std::cout << d.getLength() << endl;
+	std::cout << "circle1 center x: " << d.getFirstArc().getCenter().getX() << endl;
+	std::cout << "circle1 center y: " << d.getFirstArc().getCenter().getY() << endl;
+	std::cout << "circle2 center x: " << d.getSecondArc().getCenter().getX() << endl;
+	std::cout << "circle2 center y: " << d.getSecondArc().getCenter().getY() << endl;
+	std::cout << "len1: " << d.getLen1() << endl;
+	std::cout << "len2: " << d.getLen2() << endl;
+	std::cout << "len3: " << d.getLen3() << endl;
+	std::cout << "totalLegth: " << d.getLength() << endl;
 	std::cout << type[d.getTypeOfManeuver()] << endl;
 
 	p1 = Position(Point(0, 0), 0);
@@ -63,10 +75,14 @@ int dubins_test(int argc, char **argv) {
 
 	d = Dubins(p1, p2, 5);
 
-	std::cout << d.getLen1() << endl;
-	std::cout << d.getLen2() << endl;
-	std::cout << d.getLen3() << endl;
-	std::cout << d.getLength() << endl;
+	std::cout << "circle1 center x: " << d.getFirstArc().getCenter().getX() << endl;
+	std::cout << "circle1 center y: " << d.getFirstArc().getCenter().getY() << endl;
+	std::cout << "circle2 center x: " << d.getSecondArc().getCenter().getX() << endl;
+	std::cout << "circle2 center y: " << d.getSecondArc().getCenter().getY() << endl;
+	std::cout << "len1: " << d.getLen1() << endl;
+	std::cout << "len2: " << d.getLen2() << endl;
+	std::cout << "len3: " << d.getLen3() << endl;
+	std::cout << "totalLegth: " << d.getLength() << endl;
 	std::cout << type[d.getTypeOfManeuver()] << endl;
 
 	p1 = Position(Point(0, 0), 0);
@@ -74,10 +90,14 @@ int dubins_test(int argc, char **argv) {
 
 	d = Dubins(p1, p2, 5);
 
-	std::cout << d.getLen1() << endl;	//len u krunice je pouze úhlovı, v radiánech, nepoèítá s polomìrem. vrací to orientovanı úhel, kladnı proti smìru hodinovıch ruèièek, zápornı po smìru hodinovıch ruèièek
-	std::cout << d.getLen2() << endl;
-	std::cout << d.getLen3() << endl;
-	std::cout << d.getLength() << endl;
+	std::cout << "circle1 center x: " << d.getFirstArc().getCenter().getX() << endl;
+	std::cout << "circle1 center y: " << d.getFirstArc().getCenter().getY() << endl;
+	std::cout << "circle2 center x: " << d.getSecondArc().getCenter().getX() << endl;
+	std::cout << "circle2 center y: " << d.getSecondArc().getCenter().getY() << endl;
+	std::cout << "len1: " << d.getLen1() << endl;	//len u krunice je pouze úhlovı, v radiánech, nepoèítá s polomìrem. vrací to orientovanı úhel, kladnı proti smìru hodinovıch ruèièek, zápornı po smìru hodinovıch ruèièek
+	std::cout << "len2: " << d.getLen2() << endl;
+	std::cout << "len3: " << d.getLen3() << endl;
+	std::cout << "totalLegth: " << d.getLength() << endl;
 	std::cout << type[d.getTypeOfManeuver()] << endl;
 
 

@@ -309,6 +309,9 @@
     <ClCompile Include="CollisionDetector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PathHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -560,6 +563,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CollisionDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

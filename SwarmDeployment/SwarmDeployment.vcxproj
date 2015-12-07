@@ -338,6 +338,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)/%(RelativeDir)/</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="PathHandler.cpp" />
     <ClCompile Include="PathOptimizer.cpp" />
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
@@ -671,6 +672,7 @@
     </ClInclude>
     <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="PathHandler.h" />
     <ClInclude Include="PathOptimizer.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>

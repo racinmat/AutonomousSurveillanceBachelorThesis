@@ -56,8 +56,6 @@ namespace App
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting);
-
-		vector<shared_ptr<State>> getPath(shared_ptr<State> last_node);
 		shared_ptr<State> get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map);
 		void save_output();
 

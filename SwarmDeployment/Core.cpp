@@ -27,6 +27,7 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #define PI 3.14159265358979323846
+#include "PathHandler.h"
 
 using namespace std;
 using namespace boost::numeric;
@@ -43,7 +44,7 @@ namespace App
 		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
 		collisionDetector(make_shared<CollisionDetector>())
 	{
-		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel);
+		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
 		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
@@ -81,23 +82,26 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
+//		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
+//
+//		shared_ptr<State> lastState;
+//		if (output->goals_reached)
+//		{
+//			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+//		} else
+//		{
+//			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
+//			lastState = get_closest_node_to_goal(output->nodes, paths, map);
+//		}
+//
+//		auto path = PathHandler::getPath(lastState);
+//
+//		logger->logBestPath(path);
 
-		shared_ptr<State> lastState;
-		if (output->goals_reached)
-		{
-			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
-		} else
-		{
-			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
-			lastState = get_closest_node_to_goal(output->nodes, paths, map);
-		}
+//		path = pathOptimizer->optimizePath(path);
+//		path = pathOptimizer->optimizePathBetween(path[0], lastState);
 
-		auto path = getPath(lastState);
-
-		logger->logBestPath(path);
-
-		path = pathOptimizer->optimizePath(path);
+		testGui();
 
 		save_output();
 
@@ -105,16 +109,37 @@ namespace App
 
 	void Core::testGui()
 	{
-		for (size_t i = 0; i < 200; i++)
+		//testing kreslení UAV
+		MapFactory mapFactory;
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
+		auto initialState = stateFactory->createState();
+		initialState->setUavs(map->getUavsStart());
+		//inicializace finálního stavu
+		auto lastState = stateFactory->createState(*initialState.get());
+		lastState->setPrevious(initialState);
+		int i = 0;
+		for (auto uav : lastState->getUavs())
 		{
-			this_thread::sleep_for(chrono::milliseconds(500));
-			this->logger->logText(to_string(i));
+			uav->getPointParticle()->getLocation()->setX(700);
+			uav->getPointParticle()->getLocation()->setY(700 + i);
+			i += 30;
 		}
+
+		pathOptimizer->optimizePathBetween(initialState, lastState);
+
+
+//		for (size_t i = 0; i < 200; i++)
+//		{
+//			this_thread::sleep_for(chrono::milliseconds(500));
+//			this->logger->logText(to_string(i));
+//		}
 	}
 
 	void Core::setLogger(shared_ptr<LoggerInterface> logger)
 	{
 		this->logger = logger;
+		pathOptimizer->setLogger(logger);
 	}
 
 	void Core::logConfigurationChange()
@@ -135,10 +160,10 @@ namespace App
 
 		cout << "Starting RRT-path...";
 
-		vector<shared_ptr<State>> nodes = vector<shared_ptr<State>>();
+		vector<shared_ptr<State>> states = vector<shared_ptr<State>>();
 		auto initialState = stateFactory->createState();
 		initialState->setUavs(map->getUavsStart());
-		nodes.push_back(initialState);
+		states.push_back(initialState);
 
 		for (auto uav : initialState->getUavs())
 		{
@@ -189,7 +214,7 @@ namespace App
 					logger->logText("Not possible to find near node suitable for expansion");
 					break;
 				}
-				nearState = nearest_neighbor(s_rand, nodes, k);
+				nearState = nearest_neighbor(s_rand, states, k);
 
 				newState = select_input(s_rand, nearState, map, nodesMap);
 				// Vypadá to, že near_node je ve funkci select_input zmìnìná kvùli kontrole pøekážek
@@ -211,7 +236,7 @@ namespace App
 					char buffer[1024];
 					sprintf(buffer, "Skipping node, k++. allInputsUsed: %d , isNewUavPosition: %d, isNearUavPosition: %d", allInputsUsed, isNewUavPosition, isNearUavPosition);
 					logger->logText(buffer);
-					check_expandability(nodes);
+					check_expandability(states);
 				} else
 				{
 					near_found = true;
@@ -220,7 +245,7 @@ namespace App
 
 			if (!isNewUavPosition)	//spustí se v pøípadì, že se nedorazilo do cíle a nenašla se žádná cesta
 			{
-				check_expandability(nodes);
+				check_expandability(states);
 				logger->logText("NaN in new node");
 				break;
 			}
@@ -237,13 +262,13 @@ namespace App
 				logger->logText(buffer);
 			}
 
-			nodes.push_back(newState);
+			states.push_back(newState);
 			s++;
 
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
 			check_near_goal(newState->getUavs(), map);
 
-			output->distancesToGoal = vector<double>(nodes.size());
+			output->distancesToGoal = vector<double>(states.size());
 			if (newState->areUavsInGoals()) // pokud je nalezen cíl
 			{
 				output->goals_reached = newState->areUavsInGoals();
@@ -262,11 +287,11 @@ namespace App
 			}
 		}
 		
-		output->finalNodes.push_back(nodes[nodes.size() - 1]);	//poslední prvek
+		output->finalNodes.push_back(states[states.size() - 1]);	//poslední prvek
 		check_near_goal(newState->getUavs(), map);
 		output->goals_reached = newState->areUavsInGoals();
 		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
-		output->nodes = nodes;
+		output->nodes = states;
 		logger->logText("RRT-Path finished");
 		return output;
 	}
@@ -603,7 +628,6 @@ namespace App
 				}
 			}
 		}
-
 	}
 
 	void Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
@@ -941,23 +965,6 @@ namespace App
 		return uavGroups;
 	}
 
-	vector<shared_ptr<State>> Core::getPath(shared_ptr<State> last_node)
-	{
-		vector<shared_ptr<State>> path = vector<shared_ptr<State>>();
-		auto iterNode = last_node;
-		do
-		{
-			path.push_back(iterNode);
-			iterNode = iterNode->getPrevious();
-		} while (iterNode->getPrevious());
-
-		path.push_back(iterNode);
-		//todo: zjistit, zda potøebuji na nìco geo_path_length a další vìci, které jsou zakomentované
-
-		reverse(path.begin(), path.end());	//abych mìl cestu od zaèátku do konce
-		return path;
-	}
-
 	shared_ptr<State> Core::get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map)
 	{
 		vector<pair<shared_ptr<State>, double>> statesAndCosts = vector<pair<shared_ptr<State>, double>>();
@@ -983,7 +990,6 @@ namespace App
 		);
 		return min.first;
 	}
-
 
 	void Core::save_output()
 	{

@@ -41,7 +41,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode)
+	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
 	{
 	}
 
@@ -54,6 +54,10 @@ namespace App
 	}
 
 	void LoggerInterface::logBestPath(vector<shared_ptr<State>> path)
+	{
+	}
+
+	void LoggerInterface::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
 	}
 }

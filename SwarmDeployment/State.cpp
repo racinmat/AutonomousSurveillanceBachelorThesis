@@ -111,7 +111,11 @@ namespace App
 
 	void State::swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second)
 	{
-		getUav(first)->
+		auto firstUav = getUav(first);
+		auto secondUav = getUav(second);
+		int tempId = firstUav->getId();
+		firstUav->setId(secondUav->getId());
+		secondUav->setId(tempId);
 	}
 
 	std::ostream& operator<<(std::ostream& os, const State& obj)
