@@ -455,7 +455,6 @@ namespace App
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
 		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavs());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		//translations jsou výstupy z modelu
-		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
 		
 		for (size_t i = 0; i < inputs.size(); i++)
@@ -463,12 +462,6 @@ namespace App
 			auto input = inputs[i];
 			auto tempState = carLikeMotionModel(nearState, input);	//this method changes near_node
 			tempStates[i] = tempState;
-			for (auto uav : tempState->getUavs())
-			{
-				double x = uav->getPointParticle()->getLocation()->getX() - nearState->getUav(uav)->getPointParticle()->getLocation()->getX();
-				double y = uav->getPointParticle()->getLocation()->getY() - nearState->getUav(uav)->getPointParticle()->getLocation()->getY();
-				translations[i][*uav.get()] = make_shared<Point>(x ,y);
-			}
 		}
 
 		vector<double> d = vector<double>(inputCount);
