@@ -46,6 +46,9 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="duplicatesEnabled">
+     <bool>false</bool>
+    </property>
     <item>
      <property name="text">
       <string>Map 0</string>
@@ -79,6 +82,11 @@
     <item>
      <property name="text">
       <string>Map 6</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Map 7</string>
      </property>
     </item>
    </widget>

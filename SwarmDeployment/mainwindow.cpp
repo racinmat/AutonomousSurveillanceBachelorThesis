@@ -91,13 +91,6 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 	ui->map->setCurrentIndex(configuration->getMapNumber());
 	ui->countUav->setValue(configuration->getUavCount());
-	//ui->graphicsView->scene()->addRect(20, 20, 20, 20, QPen(Qt::green), QBrush(Qt::green));
-	//ui->graphicsView->scene()->addRect(100, 300, 50, 100, QPen(Qt::gray), QBrush(Qt::gray));
-	//ui->graphicsView->scene()->addLine(300, 500, 50, 100, QPen(Qt::gray));
-	//ui->graphicsView->scene()->addLine(300, 500, 100, 50);
-
-	//ui->graphicsView->scene()->addLine(500, 500, 550, 550);
-	//ui->graphicsView->scene()->addLine(500, 550, 550, 500);
 
 	painting = false;
 

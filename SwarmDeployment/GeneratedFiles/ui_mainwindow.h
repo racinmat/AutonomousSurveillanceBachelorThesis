@@ -55,6 +55,7 @@ public:
         map = new QComboBox(centralWidget);
         map->setObjectName(QStringLiteral("map"));
         map->setGeometry(QRect(90, 10, 66, 22));
+        map->setDuplicatesEnabled(false);
         stop = new QPushButton(centralWidget);
         stop->setObjectName(QStringLiteral("stop"));
         stop->setGeometry(QRect(100, 60, 75, 23));
@@ -90,6 +91,7 @@ public:
          << QApplication::translate("MainWindow", "Map 4", 0)
          << QApplication::translate("MainWindow", "Map 5", 0)
          << QApplication::translate("MainWindow", "Map 6", 0)
+         << QApplication::translate("MainWindow", "Map 7", 0)
         );
         stop->setText(QApplication::translate("MainWindow", "Stop", 0));
     } // retranslateUi

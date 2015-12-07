@@ -702,7 +702,11 @@ namespace App
 	double Core::getDistanceOfNewNodes(shared_ptr<Node> node)
 	{
 		double base = configuration->getDistanceOfNewNodes();
-		return base * log(node->getDistanceToObstacle());	//èistì heuristicky vymyšlená funkce, aby to nezrychlovalo moc, když to bude dál
+		if (configuration->isSlowerMotionNearObstacles())
+		{
+			base *= log(node->getDistanceToObstacle());	//èistì heuristicky vymyšlená funkce, aby to nezrychlovalo moc, když to bude dál
+		}
+		return base;
 	}
 
 	Point Core::roundToNodeCoords(Point point)

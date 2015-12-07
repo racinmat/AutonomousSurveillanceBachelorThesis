@@ -57,6 +57,7 @@ namespace App
 			if (isPathChanged)
 			{
 				trajectoryPart[0]->setPrevious(start);	//navazuji zaèátek nové trajektorie na pøedchoz èást trasy
+				end = trajectoryPart[trajectoryPart.size() - 1];
 				bool isEndOfPath = *endOriginal.get() == *endOfPath.get();	//zda je end koncem celé cesty
 				if (isEndOfPath)
 				{
@@ -64,11 +65,7 @@ namespace App
 				}
 				else
 				{
-					shared_ptr<State> afterEnd = endOfPath;	//najdu potomka konce èásti cesty, kterou jsem upravoval, abych navázal i konec cesty
-					while (*(afterEnd->getPrevious()).get() != *endOriginal.get())
-					{
-						afterEnd = afterEnd->getPrevious();
-					}
+					shared_ptr<State> afterEnd = path[endIndex + 1];
 					afterEnd->setPrevious(end);
 
 					//pøepoèítání èasù na úseku za optimalizovanou èástí
@@ -176,6 +173,7 @@ namespace App
 		}
 
 		auto lastState = newTrajectory[newTrajectory.size() - 1];
+		end->setPrevious(lastState);
 		end->setTime(lastState->getTime() + configuration->getEndTime());
 		newTrajectory.push_back(end);
 		return make_pair(newTrajectory, true);

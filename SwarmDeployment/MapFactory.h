@@ -3,13 +3,15 @@
 #include "Map.h"
 #include <memory>
 
+using namespace std;
+
 namespace App
 {
 
 	class MapFactory
 	{
 	public:
-		std::vector<std::shared_ptr<Map>> createMaps(int uavCount);
+		vector<shared_ptr<Map>> createMaps(int uavCount);
 
 	};
 

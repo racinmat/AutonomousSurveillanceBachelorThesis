@@ -43,6 +43,7 @@ namespace App
 		narrowPassageCount = 0;
 		divisionCount = 0;
 		goalElementSize = 1;
+		slowerMotionNearObstacles = false;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -265,5 +266,10 @@ namespace App
 	int Configuration::getGoalElementSize() const
 	{
 		return goalElementSize;
+	}
+
+	bool Configuration::isSlowerMotionNearObstacles() const
+	{
+		return slowerMotionNearObstacles;
 	}
 }

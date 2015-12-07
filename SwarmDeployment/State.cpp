@@ -153,16 +153,14 @@ namespace App
 
 	bool operator==(const State& lhs, const State& rhs)
 	{
-		bool same = true;
-
 		for (auto uav : lhs.uavs)
 		{
 			if (*uav->getPointParticle().get() != *rhs.getUav(uav)->getPointParticle().get())
 			{
-				same = false;
+				return false;
 			}
 		}
-		return same;
+		return true;
 	}
 
 	bool operator!=(const State& lhs, const State& rhs)
