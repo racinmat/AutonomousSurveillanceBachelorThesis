@@ -80,14 +80,13 @@ namespace App
 
 		if (areAllDubinsTrajectoriesLonger)
 		{
-			return PathHandler::getPath(start, end);
+			return PathHandler::getPath(start, end); // pùvodní cesta
 		}
 
 		//nalezení nejdelšího dubbinse ze všech, které jsou kratší než pùvodní trajektorie, podle nìj se bude diskretizovat
 		int largestStepCount;
 		for (auto uav : end->getUavs())
 		{
-
 			auto pair = dubinsTrajectories[*uav.get()];
 			auto dubins = pair.first;
 			auto isDubinsShorter = pair.second;
@@ -125,19 +124,18 @@ namespace App
 			newState->setPrevious(previousState);
 
 			bool isValid = true;
+			//validace
+
 
 			if (!isValid)
 			{
-				return PathHandler::getPath(start, end);
+				return PathHandler::getPath(start, end); // pùvodní cesta
 			}
 
 			previousState = newState;
-			//todo: zmìnit hodnoty a nastavit previous
 			newTrajectory[i] = newState;
 			logger->logNewState(previousState, newState, true);
-
 		}
-
 		return newTrajectory;
 	}
 

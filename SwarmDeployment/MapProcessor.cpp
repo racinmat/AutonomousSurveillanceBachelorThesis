@@ -96,6 +96,8 @@ namespace App
 
 	vector<shared_ptr<Node>> MapProcessor::gridToNodes(vector<vector<Grid>> mapGrid, int cellSize)
 	{
+		double cost_neighbor = 30; // cena node, pokud je nìkde vedle ní pøekážka
+		double cost_diagonal = 15; // cena node, pokud je diagonálnì k ní pøekážka
 		auto nodes = vector<shared_ptr<Node>>(mapGrid.size() * mapGrid[0].size());
 		int index = 0;
 
@@ -113,8 +115,6 @@ namespace App
 			}
 		}
 
-		double cost_neighbor = 20; // cena node, pokud je nìkde vedle ní pøekážka
-		double cost_diagonal = 10; // cena node, pokud je diagonálnì k ní pøekážka
 		index = 0;	//index dané node
 
 		//adding of neighbors, when all nodes are added

@@ -42,7 +42,7 @@ namespace App
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
 		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
-		collisionDetector(make_shared<CollisionDetector>())
+		collisionDetector(make_shared<CollisionDetector>(configuration))
 	{
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
@@ -82,26 +82,25 @@ namespace App
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
-//		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
-//
-//		shared_ptr<State> lastState;
-//		if (output->goals_reached)
-//		{
-//			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
-//		} else
-//		{
-//			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
-//			lastState = get_closest_node_to_goal(output->nodes, paths, map);
-//		}
-//
-//		auto path = PathHandler::getPath(lastState);
-//
-//		logger->logBestPath(path);
+		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
-//		path = pathOptimizer->optimizePath(path);
-//		path = pathOptimizer->optimizePathBetween(path[0], lastState);
+		shared_ptr<State> lastState;
+		if (output->goals_reached)
+		{
+			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+		} else
+		{
+			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
+			lastState = get_closest_node_to_goal(output->nodes, paths, map);
+		}
 
-		testGui();
+		auto path = PathHandler::getPath(lastState);
+
+		logger->logBestPath(path);
+
+		path = pathOptimizer->optimizePath(path);
+
+//		testGui();
 
 		save_output();
 
@@ -430,27 +429,18 @@ namespace App
 		return near_node;
 	}
 
-	shared_ptr<State> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<State> near_node, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
+	shared_ptr<State> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<State> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
-//		file << "Near node: " << *near_node.get() << endl;
-//		file << "s_rand";
-//		for (auto a : s_rand)
-//		{
-//			file << *a.get() << endl;
-//		}
-
-		int input_samples_dist = configuration->getInputSamplesDist();
-		int input_samples_phi = configuration->getInputSamplesPhi();
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
-		int uavCount = near_node->getUavs().size();
+		int uavCount = nearState->getUavs().size();
 		int inputCount = configuration->getInputCount();
 		shared_ptr<State> newState;
 
 		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
 		
 		Point uavMiddle(0, 0);
-		for (auto uav : near_node->getUavs())
+		for (auto uav : nearState->getUavs())
 		{
 			uavMiddle.moveBy(uav->getPointParticle()->getLocation());
 		}
@@ -463,20 +453,20 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
-		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-																												//translations jsou výstupy z modelu
+		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavs());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		//translations jsou výstupy z modelu
 		vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translations = vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-
+		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
+		
 		for (size_t i = 0; i < inputs.size(); i++)
 		{
 			auto input = inputs[i];
-			auto tempState = carLikeMotionModel(near_node, input);	//this method changes near_node
+			auto tempState = carLikeMotionModel(nearState, input);	//this method changes near_node
 			tempStates[i] = tempState;
 			for (auto uav : tempState->getUavs())
 			{
-				double x = uav->getPointParticle()->getLocation()->getX() - near_node->getUav(uav)->getPointParticle()->getLocation()->getX();
-				double y = uav->getPointParticle()->getLocation()->getY() - near_node->getUav(uav)->getPointParticle()->getLocation()->getY();
+				double x = uav->getPointParticle()->getLocation()->getX() - nearState->getUav(uav)->getPointParticle()->getLocation()->getX();
+				double y = uav->getPointParticle()->getLocation()->getY() - nearState->getUav(uav)->getPointParticle()->getLocation()->getY();
 				translations[i][*uav.get()] = make_shared<Point>(x ,y);
 			}
 		}
@@ -503,7 +493,7 @@ namespace App
 			while (m < inputCount)
 			{
 				m++;
-				if (near_node->areAllInputsUsed())
+				if (nearState->areAllInputsUsed())
 				{
 //					throw "No valid input left";
 					logger->logText("all inputs are used");
@@ -523,49 +513,24 @@ namespace App
 				}
 				auto tempState = tempStates[index];
 
-				if (!check_localization_sep(tempState))
+				if (!collisionDetector->isStateValid(nearState, tempState, map))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-					logger->logText("check localization sep returned false");
 					continue;
 				}
 
-				if (collisionDetector->areTrajectoriesIntersecting(near_node, tempState))
-				{
-					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-					logger->logText("trajectories intersect");
-					continue;
-				}
-
-				if (near_node->used_inputs[index])
+				if (nearState->used_inputs[index])
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
 					logger->logText("input with index" + to_string(index) + "is used");
 					continue;
 				}
 
-				if (!insideWorldBounds(tempState->getUavs(), configuration->getWorldWidth(), configuration->getWorldHeight()))
-				{
-					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-					logger->logText("out of world bounds");
-					continue;
-				}
-
-				check_obstacle_vcollide_single(near_node, translations, index, map);	//this fills field used_inputs by true and thus new state looks like already used
-
-				if (near_node->used_inputs[index])
-				{
-					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-					logger->logText("input with index" + to_string(index) + "is used after vcollide check");
-					continue;
-				} else
-				{
-					newState = stateFactory->createState(*tempState.get());
-					newState->setPrevious(near_node);
-					newState->setDistanceOfNewNodes(distance_of_new_nodes);
-					near_node->used_inputs[index] = true;
-					break;
-				}
+				newState = stateFactory->createState(*tempState.get());
+				newState->setPrevious(nearState);
+				newState->setDistanceOfNewNodes(distance_of_new_nodes);
+				nearState->used_inputs[index] = true;
+				break;
 			}
 		} else
 		{
@@ -712,29 +677,8 @@ namespace App
 			double x = center->getX() + r*cos(phi);
 			double y = center->getY() + r*sin(phi);
 			randomState = make_shared<Point>(x, y);
-		} while (check_inside_obstacle(randomState, map) && insideWorldBounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
+		} while (check_inside_obstacle(randomState, map) && collisionDetector->insideWorldBounds(randomState, configuration->getWorldWidth(), configuration->getWorldHeight()));
 		return randomState;
-	}
-
-	bool Core::insideWorldBounds(shared_ptr<Point> point, int worldWidth, int worldHeight)
-	{
-		bool inBounds = false;
-
-		if (point->getX() < worldWidth && point->getX() > 0 && point->getY() < worldHeight && point->getY() > 0)
-		{
-			inBounds = true;
-		}
-		return inBounds;
-	}
-
-	bool Core::insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight)
-	{
-		bool inBounds = true;
-		for (auto point : points)
-		{
-			inBounds = inBounds && insideWorldBounds(point->getPointParticle()->getLocation(), worldWidth, worldHeight);
-		}
-		return inBounds;
 	}
 
 	//only modifies node by inputs
@@ -758,144 +702,6 @@ namespace App
 		newNode->incrementTime(end_time);
 
 		return newNode;
-	}
-
-	bool Core::check_localization_sep(shared_ptr<State> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
-	{
-		int number_of_uavs = node->getUavs().size();
-		double relative_distance_min = configuration->getRelativeDistanceMin();
-		double relative_distance_max = configuration->getRelativeDistanceMax();
-		bool check_fov = configuration->getCheckFov();
-		// Neighbor must be in certain angle on / off
-		double localization_angle = configuration->getLocalizationAngle();
-		int required_neighbors = configuration->getRequiredNeighbors();
-		bool allow_swarm_splitting = configuration->getAllowSwarmSplitting();
-
-		// Initialize default values
-		vector<int> neighbors = vector<int>(number_of_uavs);
-		fill(neighbors.begin(), neighbors.end(), 0);	//inicializace
-		
-		// Single UAV needs no localization
-		if (number_of_uavs == 1)
-		{
-			return true;
-		}
-		
-		// Check minimal distance between UAVs
-		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
-		{
-			for (size_t j = i + 1; j < number_of_uavs; j++)
-			{
-				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
-				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
-
-				if (uavI->getDistance(uavJ) <= relative_distance_min)
-				{
-					return false;
-				}
-			}
-		}
-
-		// Check maximal distance between UAVs
-		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
-		{
-			for (size_t j = i + 1; j < number_of_uavs; j++)
-			{
-				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
-				double uavIphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
-				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
-				double uavJphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
-
-				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || fabs(uavIphi - uavJphi) < localization_angle / 2))	//fabs je abs pro float
-				{
-					neighbors[i]++;
-					neighbors[j]++;					
-				}
-			}
-		}
-
-		bool allUavsHaveNeighbors = false;
-		bool oneOrMoreNeighbors = false;
-		for (auto neighbor : neighbors)
-		{
-			allUavsHaveNeighbors = allUavsHaveNeighbors || neighbor >= required_neighbors;
-			oneOrMoreNeighbors = oneOrMoreNeighbors || neighbor >= 1;
-		}
-
-		// Check whether each UAV has required number of neighbors
-		// Pair formations
-		if (allow_swarm_splitting)
-		{
-			return allUavsHaveNeighbors;
-		} else
-		// Whole swarm
-		{
-			int twoOrMoreNeighbors = 0;
-			if (oneOrMoreNeighbors)
-			{
-//				char buffer[1024];
-//				sprintf(buffer, "Neighbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
-//				logger->logText(buffer);
-				for (auto neighbor : neighbors)
-				{
-					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
-				}
-				return twoOrMoreNeighbors >= number_of_uavs - 2;
-			}
-
-		}
-		return false;
-	}
-
-	void Core::check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map)
-	{
-		double uav_size = configuration->getUavSize();
-				
-		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
-				
-		int k = index;
-		for (auto uav : near_node->getUavs())
-		{
-			double x = uav->getPointParticle()->getLocation()->getX();
-			double y = uav->getPointParticle()->getLocation()->getY();
-			double x1 = x - uav_size / 2;
-			double y1 = y - uav_size / 2;
-			double z1 = 1;
-			double x2 = x + uav_size / 2;
-			double y2 = y - uav_size / 2;
-			double z2 = 1;
-			double x3 = x;
-			double y3 = y + uav_size / 2;
-			double z3 = 1;
-			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
-
-			for (auto obs : map->getObstacles())
-			{
-				Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
-				Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
-				Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-				Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-
-				Triangle3D tri1_obs = Triangle3D(p1, p2, p3);
-				Triangle3D tri2_obs = Triangle3D(p1, p4, p3);
-
-
-				double trans[] = { translation[k][*uav.get()]->getX(), translation[k][*uav.get()]->getY(), 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
-				bool col = ColDetect::coldetect(tri_uav, tri1_obs, trans, zero_trans);
-				col = col || ColDetect::coldetect(tri_uav, tri2_obs, trans, zero_trans);
-				if (col)
-				{
-					for (size_t l = 0; l < translation.size(); l++)
-					{
-						if (translation[l][*uav.get()]->getY() == translation[k][*uav.get()]->getY() && translation[l][*uav.get()]->getX() == translation[k][*uav.get()]->getX())
-						{
-							near_node->used_inputs[l] = true;
-						}
-					}
-					near_node->used_inputs[k] = true;
-				}
-			}
-		}
 	}
 
 	double Core::getDistanceOfNewNodes(shared_ptr<Node> node)
