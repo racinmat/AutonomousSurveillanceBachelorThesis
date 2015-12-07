@@ -76,6 +76,11 @@ namespace App
 						path[i]->setTime(previousTime);
 					}
 				}
+				path = PathHandler::getPath(endOfPath);
+				notImprovedCount = 0;
+			} else
+			{
+				notImprovedCount++;
 			}
 		}
 		return PathHandler::getPath(endOfPath);
@@ -92,12 +97,7 @@ namespace App
 		bool areAllDubinsTrajectoriesLonger = true;
 		for (auto uav : end->getUavs())
 		{
-			double length = 0;
-			for (auto i = end; i->getTime() != start->getTime(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek
-			{
-				auto previous = i->getPrevious();
-				length += distanceResolver->getDistance(previous, i);	//todo: vymyslet, jak najít vždálenost poèítanou po kružnici, a ne po výsledných pøímkách
-			}
+			double length = distanceResolver->getLengthOfPath(start, end, uav);
 
 			auto dubins = Dubins(start->getUav(uav)->getPointParticle()->toPosition(), uav->getPointParticle()->toPosition(), motionModel->getMinimalCurveRadius());
 			double newLength = dubins.getLength();	//vrací délku celého manévru
@@ -121,13 +121,18 @@ namespace App
 			auto dubins = pair.first;
 			auto isDubinsShorter = pair.second;
 			double newLength = dubins.getLength();	//vrací délku celého manévru
-			int totalTime = newLength / maxSpeed;	//doba cesty
+			double totalTime = newLength / maxSpeed;	//doba cesty
 			int stepCount = totalTime / configuration->getEndTime();	//poèet krokù, doba celého manévru / doba jednoho kroku
 
 			if (isDubinsShorter && stepCount > largestStepCount)
 			{
 				largestStepCount = stepCount;
 			}
+		}
+
+		if (largestStepCount == 0)	//tak malá cesta, že je menší než krok simulace
+		{
+			return make_pair(PathHandler::getPath(start, end), false); // pùvodní cesta
 		}
 
 		//zde provedu diskretizaci postupnì pro všechna uav najednou, kus po kusu a pøitom budu kontrolovat všechny podmínky
@@ -169,13 +174,16 @@ namespace App
 
 			previousState = newState;
 			newTrajectory[i] = newState;
-			logger->logNewState(previousState, newState, true);
+//			logger->logNewState(previousState, newState, true);
 		}
 
 		auto lastState = newTrajectory[newTrajectory.size() - 1];
 		end->setPrevious(lastState);
 		end->setTime(lastState->getTime() + configuration->getEndTime());
 		newTrajectory.push_back(end);
+
+		double newLength = distanceResolver->getLengthOfPath(newTrajectory[0], end);
+
 		return make_pair(newTrajectory, true);
 	}
 
