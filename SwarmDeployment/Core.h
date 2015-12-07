@@ -16,6 +16,7 @@
 #include "PathOptimizer.h"
 #include "CarLikeControl.h"
 #include "CarLikeMotionModel.h"
+#include "CollisionDetector.h"
 
 using namespace std;
 
@@ -49,13 +50,9 @@ namespace App
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
 		bool insideWorldBounds(shared_ptr<Point> point, int worldWidth, int worldHeight);
 		bool insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
-		shared_ptr<State> car_like_motion_model(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs);
+		shared_ptr<State> carLikeMotionModel(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs);
 		bool check_localization_sep(shared_ptr<State> node);
-		bool trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node);
 		void check_obstacle_vcollide_single(shared_ptr<State> near_node, vector<unordered_map<Uav, shared_ptr<Point>, UavHasher>> translation, int index, shared_ptr<Map> map);
-		bool line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
-		bool line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
-		shared_ptr<Point> line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting);
@@ -74,6 +71,7 @@ namespace App
 		shared_ptr<DistanceResolver> distanceResolver;
 		shared_ptr<PathOptimizer> pathOptimizer;
 		shared_ptr<CarLikeMotionModel> motionModel;
+		shared_ptr<CollisionDetector> collisionDetector;
 
 		void testGui();
 

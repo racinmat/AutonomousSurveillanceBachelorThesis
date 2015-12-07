@@ -158,6 +158,7 @@
     <ClCompile Include="CarLikeControl.cpp" />
     <ClCompile Include="CarLikeMotionModel.cpp" />
     <ClCompile Include="ClosedSet.cpp" />
+    <ClCompile Include="CollisionDetector.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DistanceResolver.cpp" />
@@ -486,6 +487,7 @@
     <ClInclude Include="CarLikeControl.h" />
     <ClInclude Include="CarLikeMotionModel.h" />
     <ClInclude Include="ClosedSet.h" />
+    <ClInclude Include="CollisionDetector.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="DistanceResolver.h" />

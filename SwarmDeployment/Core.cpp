@@ -40,7 +40,8 @@ namespace App
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
-		motionModel(make_shared<CarLikeMotionModel>(configuration))
+		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
+		collisionDetector(make_shared<CollisionDetector>())
 	{
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
@@ -143,7 +144,7 @@ namespace App
 		{
 			for (auto guidingPath : guiding_paths)
 			{
-				uav->current_indexes->set(guidingPath, guidingPath->get(0));
+				uav->getCurrentGuidingPathPositions()->set(guidingPath, guidingPath->get(0));
 			}
 		}
 
@@ -445,7 +446,7 @@ namespace App
 		for (size_t i = 0; i < inputs.size(); i++)
 		{
 			auto input = inputs[i];
-			auto tempState = car_like_motion_model(near_node, input);	//this method changes near_node
+			auto tempState = carLikeMotionModel(near_node, input);	//this method changes near_node
 			tempStates[i] = tempState;
 			for (auto uav : tempState->getUavs())
 			{
@@ -504,7 +505,7 @@ namespace App
 					continue;
 				}
 
-				if (trajectory_intersection(near_node, tempState))
+				if (collisionDetector->areTrajectoriesIntersecting(near_node, tempState))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
 					logger->logText("trajectories intersect");
@@ -593,10 +594,10 @@ namespace App
 						//Narrow passage detection
 						detect_narrow_passage(node);
 					}
-					auto uavCurrentPoint = uav->current_indexes->get(guiding_path);
+					auto uavCurrentPoint = uav->getCurrentGuidingPathPositions()->get(guiding_path);
 					if (reached && guiding_path->hasNext(uavCurrentPoint) && guiding_path->isFirstCloserOrSameToEnd(node, uavCurrentPoint)) //ošetøení, aby se UAV nevracela, a by nepøetekl index u guidingPath
 					{
-						uav->current_indexes->set(guiding_path, guiding_path->getNext(uavCurrentPoint));
+						uav->getCurrentGuidingPathPositions()->set(guiding_path, guiding_path->getNext(uavCurrentPoint));
 						break;
 					}
 				}
@@ -713,7 +714,7 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<State> Core::car_like_motion_model(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
+	shared_ptr<State> Core::carLikeMotionModel(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
 	{
 		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length
@@ -781,7 +782,7 @@ namespace App
 				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
 				double uavJphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
 
-				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || abs(uavIphi - uavJphi) < localization_angle / 2))
+				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || fabs(uavIphi - uavJphi) < localization_angle / 2))	//fabs je abs pro float
 				{
 					neighbors[i]++;
 					neighbors[j]++;					
@@ -818,27 +819,6 @@ namespace App
 				return twoOrMoreNeighbors >= number_of_uavs - 2;
 			}
 
-		}
-		return false;
-	}
-
-	bool Core::trajectory_intersection(shared_ptr<State> near_node, shared_ptr<State> tmp_node)
-	{
-		
-		int number_of_uavs = near_node->getUavs().size();
-		for (size_t i = 0; i < number_of_uavs; i++)
-		{
-			for (size_t j = 0; j < number_of_uavs; j++)
-			{
-				if (i != j && line_segments_intersection(
-					near_node->getUavs()[i]->getPointParticle()->getLocation(),
-					tmp_node->getUavs()[i]->getPointParticle()->getLocation(),
-					near_node->getUavs()[j]->getPointParticle()->getLocation(),
-					tmp_node->getUavs()[j]->getPointParticle()->getLocation()))
-				{
-					return true;
-				}
-			}
 		}
 		return false;
 	}
@@ -892,57 +872,6 @@ namespace App
 				}
 			}
 		}
-	}
-
-	bool Core::line_segments_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)
-	{
-		auto p = line_line_intersection(p1, p2, p3, p4);
-		
-		if (isfinite(p->getX()) && isfinite(p->getY()))
-		{
-			if (line_point_intersection(p, p1, p2) &&
-				line_point_intersection(p, p3, p4))
-			{
-				return true;
-			}
-
-		}
-		return false;
-	}
-
-	bool Core::line_point_intersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2)
-	{
-		double tolerance = 1e-10;
-
-		double x = q->getX();
-		double y = q->getY();
-		double x1 = p1->getX();
-		double y1 = p1->getY();
-		double x2 = p2->getX();
-		double y2 = p2->getY();
-
-		double value = (pow(x - x1, 2) + pow(y - y1, 2)) + (pow(x - x2, 2) + pow(y - y2, 2)) - (pow(x1 - x2, 2) + pow(y1 - y2, 2));
-
-		return value <= tolerance;
-	}
-
-	shared_ptr<Point> Core::line_line_intersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4)
-	{
-		double x1 = p1->getX();
-		double y1 = p1->getY();
-		double x2 = p2->getX();
-		double y2 = p2->getY();
-		double x3 = p3->getX();
-		double y3 = p3->getY();
-		double x4 = p4->getX();
-		double y4 = p4->getY();
-
-		double px = ((x1*y2 - y1*x2)*(x3 - x4) - (x1 - x2)*(x3*y4 - y3*x4)) / 
-			((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
-		double py = ((x1*y2 - y1*x2)*(y3 - y4) - (y1 - y2)*(x3*y4 - y3*x4)) / 
-			((x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4));
-
-		return make_shared<Point>(px, py);
 	}
 
 	double Core::getDistanceOfNewNodes(shared_ptr<Node> node)

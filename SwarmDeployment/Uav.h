@@ -21,7 +21,6 @@ namespace App
 		virtual bool isGoalReached() const;
 		virtual shared_ptr<GoalInterface> getReachedGoal() const;
 		virtual void setReachedGoal(shared_ptr<GoalInterface> reachedGoal);
-		shared_ptr<GuidingPathsCurrentPositions> current_indexes;
 		friend bool operator<(const Uav& lhs, const Uav& rhs);	//kvùli používání jako klíèe v std::map
 		friend bool operator<=(const Uav& lhs, const Uav& rhs);
 		friend bool operator>(const Uav& lhs, const Uav& rhs);
@@ -31,12 +30,15 @@ namespace App
 		size_t hash_value() const;
 		virtual int getId() const;
 		virtual shared_ptr<Goal> getConcreteGoal();
+		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
+		virtual void setId(const int id);
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;
 		shared_ptr<GoalInterface> reachedGoal;
 		int id;
 		static int lastId;
+		shared_ptr<GuidingPathsCurrentPositions> currentGuidingPathPositions;
 	};
 
 

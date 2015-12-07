@@ -82,7 +82,7 @@ namespace App
 
 	bool Node::contains(int x, int y, int distance)
 	{
-		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;
+		return abs(x - point->getX()) <= distance && abs(y - point->getY()) <= distance;	//abs je pouze pro integery
 	}
 
 	bool Node::contains(Point point, int distance)

@@ -47,9 +47,9 @@ namespace App
 		int bestIndex = 0;
 		for (auto uav : uavs)
 		{
-			if (guidingPath->getIndex(uav->current_indexes->get(guidingPath)) > bestIndex)		//todo: možná zrefactorovat, aby guidingPath dokázala øíct, jaká node je best
+			if (guidingPath->getIndex(uav->getCurrentGuidingPathPositions()->get(guidingPath)) > bestIndex)		//todo: možná zrefactorovat, aby guidingPath dokázala øíct, jaká node je best
 			{
-				bestIndex = guidingPath->getIndex(uav->current_indexes->get(guidingPath));
+				bestIndex = guidingPath->getIndex(uav->getCurrentGuidingPathPositions()->get(guidingPath));
 			}
 		}
 		return guidingPath->get(bestIndex);

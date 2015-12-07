@@ -306,6 +306,9 @@
     <ClCompile Include="CarLikeMotionModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -554,6 +557,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CarLikeMotionModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionDetector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

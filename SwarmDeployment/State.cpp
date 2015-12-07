@@ -109,6 +109,11 @@ namespace App
 		return time;
 	}
 
+	void State::swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second)
+	{
+		getUav(first)->
+	}
+
 	std::ostream& operator<<(std::ostream& os, const State& obj)
 	{
 		os << "index: " << obj.index << endl;

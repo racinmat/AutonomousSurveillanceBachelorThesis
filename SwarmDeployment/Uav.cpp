@@ -8,28 +8,28 @@ namespace App
 	Uav::Uav(const Uav& other) 
 	{
 		pointParticle = make_shared<PointParticle>(*other.pointParticle.get());	//potøebuji naklonovat pouze polohu a rotaci, zbytek chci stejný
-		current_indexes = other.current_indexes;	//pøedávám pointer na tu samou instanci, zámìrnì, aby se current_index posouval i starým stavùm
+		currentGuidingPathPositions = other.currentGuidingPathPositions;	//pøedávám pointer na tu samou instanci, zámìrnì, aby se current_index posouval i starým stavùm
 		reachedGoal = other.reachedGoal;
 		id = other.id;
 	}
 
 	Uav::Uav(shared_ptr<PointParticle> pointParticle) : 
-		current_indexes(make_shared<GuidingPathsCurrentPositions>()), pointParticle(pointParticle), id(lastId++)	//todo: do konstruktoru možná pøedávat délku cesty, abych mohl pole naalokovat hned na zaèátku.
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), pointParticle(pointParticle), id(lastId++)	//todo: do konstruktoru možná pøedávat délku cesty, abych mohl pole naalokovat hned na zaèátku.
 	{
 	}
 
 	Uav::Uav(shared_ptr<Point> location, shared_ptr<Point> rotation) : 
-		current_indexes(make_shared<GuidingPathsCurrentPositions>()), pointParticle(make_shared<PointParticle>(location, rotation)), id(lastId++)
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), pointParticle(make_shared<PointParticle>(location, rotation)), id(lastId++)
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double rotationZ) : 
-		current_indexes(make_shared<GuidingPathsCurrentPositions>()), pointParticle(make_shared<PointParticle>(locationX, locationY, rotationZ)), id(lastId++)
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), pointParticle(make_shared<PointParticle>(locationX, locationY, rotationZ)), id(lastId++)
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ) :
-		current_indexes(make_shared<GuidingPathsCurrentPositions>()), 
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), 
 		pointParticle(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ)), id(lastId++)
 	{
 	}
@@ -108,5 +108,15 @@ namespace App
 	shared_ptr<Goal> Uav::getConcreteGoal()
 	{
 		return getReachedGoal()->getConcreteGoal(getPointParticle()->getLocation());
+	}
+
+	shared_ptr<GuidingPathsCurrentPositions> Uav::getCurrentGuidingPathPositions() const
+	{
+		return currentGuidingPathPositions;
+	}
+
+	void Uav::setId(const int id)
+	{
+		this->id = id;
 	}
 }

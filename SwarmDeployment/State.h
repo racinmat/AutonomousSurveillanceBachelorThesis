@@ -33,6 +33,7 @@ namespace App
 		virtual void setUavs(const vector<shared_ptr<Uav>> shared_ptrs);
 		virtual void incrementTime(double increment);
 		virtual double getTime() const;
+		virtual void swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second);
 
 	protected:
 		vector<shared_ptr<Uav>> uavs; //spojení promìnných loc a rot z Node objektu z matlabu. nejspíš node bude jiná pro rrt path a pro diskretizaci na nalezen guiding path

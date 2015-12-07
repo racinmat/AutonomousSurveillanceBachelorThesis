@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-#include "Gui.h"					//zakomentovat pro noGui
+//include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
@@ -441,24 +441,35 @@ void testing()
 //		cout << Random::element(arr) << endl;
 //	}
 
-	auto motionModel = make_shared<CarLikeMotionModel>(configuration);
+//	auto motionModel = make_shared<CarLikeMotionModel>(configuration);
+//
+//	auto state = make_shared<PointParticle>(0, 0, PI / 2);
+//	auto control = make_shared<CarLikeControl>(50, PI / 200);
+//
+//	cout << *state.get() << endl;
+//	motionModel->calculateState(state, control);
+//	cout << *state.get() << endl;
+//	motionModel->calculateState(state, control);
+//	cout << *state.get() << endl;
+//	motionModel->calculateState(state, control);
+//	cout << *state.get() << endl;
+//	motionModel->calculateState(state, control);
+//	cout << *state.get() << endl;
+//	motionModel->calculateState(state, control);
+//	cout << *state.get() << endl;
+//
+//	cout << motionModel->getCurveRadius(control);
 
-	auto state = make_shared<PointParticle>(0, 0, PI / 2);
-	auto control = make_shared<CarLikeControl>(50, PI / 200);
-
-	cout << *state.get() << endl;
-	motionModel->calculateState(state, control);
-	cout << *state.get() << endl;
-	motionModel->calculateState(state, control);
-	cout << *state.get() << endl;
-	motionModel->calculateState(state, control);
-	cout << *state.get() << endl;
-	motionModel->calculateState(state, control);
-	cout << *state.get() << endl;
-	motionModel->calculateState(state, control);
-	cout << *state.get() << endl;
-
-	cout << motionModel->getCurveRadius(control);
+//	CollisionDetector c;
+//	auto p1 = make_shared<Point>(0, 0);
+//	auto p2 = make_shared<Point>(10, 0);
+//	auto p3 = make_shared<Point>(0, 10);
+//	auto p4 = make_shared<Point>(10, 10);
+//	auto p = c.lineLineIntersection(p1, p2, p3, p4);
+//
+//	cout << *p << endl;
+//	cout << isfinite(p->getX()) << endl;	//vrací false
+//	cout << isfinite(p->getY()) << endl;	//vrací false
 
 	cin.get();
 }
@@ -468,7 +479,7 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
+//	returnValue = runGui(argc, argv);
 	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;

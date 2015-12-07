@@ -199,9 +199,9 @@ namespace App
 		for(auto possibleStartNode : startingNodes)
 		{
 			double angle = atan2(possibleStartNode->getPoint()->getY() - averageLocation->getY(), possibleStartNode->getPoint()->getX() - averageLocation->getX());
-			if (abs(angle - averageRotation) < similarRotation)
+			if (fabs(angle - averageRotation) < similarRotation)
 			{
-				similarRotation = abs(angle - averageRotation);
+				similarRotation = fabs(angle - averageRotation);
 				startNode = possibleStartNode;
 			}
 		}

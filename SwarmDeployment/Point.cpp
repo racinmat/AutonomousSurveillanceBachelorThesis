@@ -81,8 +81,8 @@ namespace App
 
 	double Point::getDistanceSquared(std::shared_ptr<Point> point)
 	{
-		return pow(abs(getX() - point->getX()), 2)
-			+ pow(abs(getY() - point->getY()), 2);
+		return pow(fabs(getX() - point->getX()), 2)
+			+ pow(fabs(getY() - point->getY()), 2);
 	}
 
 	void Point::moveBy(shared_ptr<Point> point)
