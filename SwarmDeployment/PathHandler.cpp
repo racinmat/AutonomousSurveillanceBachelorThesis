@@ -36,7 +36,7 @@ namespace App
 		{
 			path.push_back(iterNode);
 			iterNode = iterNode->getPrevious();
-		} while (*iterNode->getPrevious().get() != *start.get());
+		} while (*iterNode.get() != *start.get());
 
 		path.push_back(iterNode);
 

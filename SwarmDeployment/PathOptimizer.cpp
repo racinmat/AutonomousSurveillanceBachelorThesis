@@ -32,19 +32,21 @@ namespace App
 
 		while (notImprovedCount < stopLimit)
 		{
-			auto start = Random::element(path);
-			auto endOriginal = Random::element(path);
-			while (*start.get() == *endOriginal.get())
+			auto startIndex = Random::index(path);	//indexy jsou kvùli jednoduššímu pohybu v poli
+			auto endIndex = Random::index(path);
+			while (startIndex == endIndex)
 			{
-				endOriginal = Random::element(path);
+				endIndex = Random::index(path);
 			}
-			if (start->getIndex() > endOriginal->getIndex())
+			if (startIndex > endIndex)
 			{
 				//swap
-				auto temp = endOriginal;
-				endOriginal = start;
-				start = temp;
+				auto temp = endIndex;
+				endIndex = startIndex;
+				startIndex = temp;
 			}
+			auto start = path[startIndex];
+			auto endOriginal = path[endIndex];
 
 			auto end = make_shared<State>(*endOriginal.get());	//kvùli prohazování køížejících se UAV vytvoøím kopii, kterou modifikuji. Až když zjistím, že je nová trajektorie v poøádku, uložím to do pùvodního stavu
 
@@ -58,7 +60,7 @@ namespace App
 				bool isEndOfPath = *endOriginal.get() == *endOfPath.get();	//zda je end koncem celé cesty
 				if (isEndOfPath)
 				{
-					endOfPath = end;
+					endOfPath = end;	//poslední prvek trajectoryPart
 				}
 				else
 				{
@@ -68,9 +70,16 @@ namespace App
 						afterEnd = afterEnd->getPrevious();
 					}
 					afterEnd->setPrevious(end);
+
+					//pøepoèítání èasù na úseku za optimalizovanou èástí
+					double previousTime = end->getTime();
+					for (size_t i = endIndex + 1; i < path.size(); i++)
+					{
+						previousTime += configuration->getEndTime();
+						path[i]->setTime(previousTime);
+					}
 				}
 			}
-
 		}
 		return PathHandler::getPath(endOfPath);
 	}
@@ -141,15 +150,22 @@ namespace App
 			{
 				auto dubins = dubinsTrajectories[*uav.get()].first;
 
-				auto newPosition = dubins.getPosition(distanceCompleted + configuration->getDistanceOfNewNodes());
+				if (distanceCompleted + configuration->getDistanceOfNewNodes() < dubins.getLength())
+				{
+					auto newPosition = dubins.getPosition(distanceCompleted + configuration->getDistanceOfNewNodes());
 
-				uav->getPointParticle()->getLocation()->setX(newPosition.getPoint().getX());
-				uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
-				uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
+					uav->getPointParticle()->getLocation()->setX(newPosition.getPoint().getX());
+					uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
+					uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
+				} else
+				{	//uav, které už dorazilo do cíle, "poèká" na ostatní
+					uav->getPointParticle()->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
+					uav->getPointParticle()->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+				}
 			}
 
 			//validace
-			if (!collisionDetector->isStateValid(start, end, map));
+			if (!collisionDetector->isStateValid(start, end, map))
 			{
 				return make_pair(PathHandler::getPath(start, end), false); // pùvodní cesta
 			}
@@ -158,6 +174,10 @@ namespace App
 			newTrajectory[i] = newState;
 			logger->logNewState(previousState, newState, true);
 		}
+
+		auto lastState = newTrajectory[newTrajectory.size() - 1];
+		end->setTime(lastState->getTime() + configuration->getEndTime());
+		newTrajectory.push_back(end);
 		return make_pair(newTrajectory, true);
 	}
 
