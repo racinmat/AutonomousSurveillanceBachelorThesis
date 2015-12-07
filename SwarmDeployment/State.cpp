@@ -18,9 +18,9 @@ namespace App
 		{
 			uavs.push_back(make_shared<Uav>(*uav.get()));
 		}
-		if (previous)	//kontrola, zda je shred_pointer prázdný
+		if (other.previous)	//kontrola, zda je shred_pointer prázdný
 		{
-			previous = make_shared<State>(*other.previous.get());
+			previous = other.previous;
 		}
 		for (auto prev_input : other.prev_inputs)
 		{
