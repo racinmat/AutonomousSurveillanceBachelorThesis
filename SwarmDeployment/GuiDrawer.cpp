@@ -193,6 +193,12 @@ namespace Ui
 
 	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path, bool optimization)
 	{
+		int width = 3;
+		if (optimization)
+		{
+			width = 4;
+		}
+
 		bool first = true;
 		for (auto state : path)
 		{
@@ -208,7 +214,7 @@ namespace Ui
 			{
 				auto uav = state->getUavs()[i];
 				scene->addLine(state->getUavs()[i]->getPointParticle()->getLocation()->getX(), state->getUavs()[i]->getPointParticle()->getLocation()->getY(),
-					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], 4));
+					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], width));
 			}
 			mainWindow->updateView();
 
@@ -217,26 +223,26 @@ namespace Ui
 
 	void GuiDrawer::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
-		for (auto pair : dubinsPaths)
-		{
-			auto uav = pair.first;
-			auto dubins = pair.second.first;
-			auto radius = dubins.getRadius();
-			auto circle1Center = dubins.getFirstArc().getCenter();
-			auto circle2Center = dubins.getSecondArc().getCenter();
-			addCircle(circle1Center.getX(), circle1Center.getY(), radius, Qt::black);
-			addCircle(circle2Center.getX(), circle2Center.getY(), radius, Qt::black);
-			if (dubins.isCCC)
-			{
-				auto middleCircleCenter = dubins.getCenterArc().getCenter();
-				scene->addEllipse(middleCircleCenter.getX(), middleCircleCenter.getY(), radius, radius, QPen(Qt::black), QBrush(Qt::transparent));
-			} else
-			{
-				auto line = dubins.getCenter();
-				scene->addLine(line.p1.getX(), line.p1.getY(), line.p2.getX(), line.p2.getY(), QPen(Qt::black));
-			}
-			mainWindow->updateView();
-		}
+//		for (auto pair : dubinsPaths)
+//		{
+//			auto uav = pair.first;
+//			auto dubins = pair.second.first;
+//			auto radius = dubins.getRadius();
+//			auto circle1Center = dubins.getFirstArc().getCenter();
+//			auto circle2Center = dubins.getSecondArc().getCenter();
+//			addCircle(circle1Center.getX(), circle1Center.getY(), radius, Qt::black);
+//			addCircle(circle2Center.getX(), circle2Center.getY(), radius, Qt::black);
+//			if (dubins.isCCC)
+//			{
+//				auto middleCircleCenter = dubins.getCenterArc().getCenter();
+//				scene->addEllipse(middleCircleCenter.getX(), middleCircleCenter.getY(), radius, radius, QPen(Qt::black), QBrush(Qt::transparent));
+//			} else
+//			{
+//				auto line = dubins.getCenter();
+//				scene->addLine(line.p1.getX(), line.p1.getY(), line.p2.getX(), line.p2.getY(), QPen(Qt::black));
+//			}
+//			mainWindow->updateView();
+//		}
 	}
 
 	void GuiDrawer::clear()

@@ -54,20 +54,9 @@ namespace App
 		return getDistance(first, secondMap);
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<State> first, unordered_map<Uav, shared_ptr<Point>, UavHasher> second, shared_ptr<Uav> uav)
-	{
-		auto secondState = second[*uav.get()];
-		return first->getUav(uav)->getPointParticle()->getLocation()->getDistance(secondState);
-	}
-
 	double DistanceResolver::getDistance(shared_ptr<State> first, shared_ptr<State> second, shared_ptr<Uav> uav)
 	{
-		auto secondMap = unordered_map<Uav, shared_ptr<Point>, UavHasher>();
-		for (auto uav : second->getUavs())
-		{
-			secondMap[*uav.get()] = uav->getPointParticle()->getLocation();
-		}
-		return getDistance(first, secondMap, uav);
+		return first->getUav(uav)->getPointParticle()->getLocation()->getDistance(second->getUav(uav)->getPointParticle()->getLocation());
 	}
 
 	double DistanceResolver::getLengthOfPath(shared_ptr<State> start, shared_ptr<State> end)
@@ -77,6 +66,17 @@ namespace App
 		{
 			auto previous = i->getPrevious();
 			length += getDistance(previous, i);	//todo: vymyslet, jak najít vždálenost poèítanou po kružnici, a ne po výsledných pøímkách
+		}
+		return length;
+	}
+
+	double DistanceResolver::getLengthOfPath(vector<shared_ptr<State>> path)
+	{
+		double length = 0;
+		for (size_t i = 1; i < path.size(); i++)
+		{
+			auto state = path[i];
+			length += getDistance(state->getPrevious(), state);
 		}
 		return length;
 	}

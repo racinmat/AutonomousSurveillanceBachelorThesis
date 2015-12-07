@@ -26,6 +26,8 @@ namespace App
 	//optimalizuje cestu pomocí Dubinsových manévrù
 	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
+		double pathLength = distanceResolver->getLengthOfPath(path);
+
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
 		int notImprovedCount = 0;
@@ -57,7 +59,7 @@ namespace App
 			if (isPathChanged)
 			{
 				trajectoryPart[0]->setPrevious(start);	//navazuji zaèátek nové trajektorie na pøedchoz èást trasy
-				end = trajectoryPart[trajectoryPart.size() - 1];
+				endOfPath = trajectoryPart[trajectoryPart.size() - 1];
 				bool isEndOfPath = *endOriginal.get() == *endOfPath.get();	//zda je end koncem celé cesty
 				if (isEndOfPath)
 				{
@@ -77,7 +79,14 @@ namespace App
 					}
 				}
 				path = PathHandler::getPath(endOfPath);
-				notImprovedCount = 0;
+				if (distanceResolver->getLengthOfPath(path) < pathLength)
+				{
+					notImprovedCount = 0;
+					pathLength = distanceResolver->getLengthOfPath(path);
+				} else
+				{
+					notImprovedCount++;
+				}
 			} else
 			{
 				notImprovedCount++;
@@ -150,20 +159,36 @@ namespace App
 			//zde se pro každé UAV vybere podle typu Dubinsova manévru vhodný input pro motion model
 			for (auto uav : newState->getUavs())
 			{
-				auto dubins = dubinsTrajectories[*uav.get()].first;
-
-				if (distanceCompleted + configuration->getDistanceOfNewNodes() < dubins.getLength())
+				auto pair = dubinsTrajectories[*uav.get()];
+				auto dubins = pair.first;
+				auto isDubinsShorter = pair.second;
+				if (isDubinsShorter)
 				{
-					auto newPosition = dubins.getPosition(distanceCompleted + configuration->getDistanceOfNewNodes());
+					if (distanceCompleted + configuration->getDistanceOfNewNodes() < dubins.getLength())
+					{
+						auto newPosition = dubins.getPosition(distanceCompleted + configuration->getDistanceOfNewNodes());
 
-					uav->getPointParticle()->getLocation()->setX(newPosition.getPoint().getX());
-					uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
-					uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
+						uav->getPointParticle()->getLocation()->setX(newPosition.getPoint().getX());
+						uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
+						uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
+					}
+					else
+					{	//uav, které už dorazilo do cíle, "poèká" na ostatní
+						uav->getPointParticle()->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
+						uav->getPointParticle()->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+					}
 				} else
-				{	//uav, které už dorazilo do cíle, "poèká" na ostatní
-					uav->getPointParticle()->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
-					uav->getPointParticle()->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+				{
+					shared_ptr<State> currentOldState = end;
+					while (currentOldState->getTime() > newState->getTime())
+					{
+						currentOldState = currentOldState->getPrevious();
+					}
+					//pokud je kratší pùvodní cesta pro dané uav, bere se pro dané uav pùvodní cesta
+					uav->getPointParticle()->setLocation(currentOldState->getUav(uav)->getPointParticle()->getLocation());
+					uav->getPointParticle()->setRotation(currentOldState->getUav(uav)->getPointParticle()->getRotation());
 				}
+
 			}
 
 			//validace
