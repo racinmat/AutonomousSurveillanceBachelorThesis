@@ -144,7 +144,7 @@ namespace Ui
 		logText(string(arr));
 	}
 
-	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
+	void GuiDrawer::logNewState(shared_ptr<LinkedState> nearNode, shared_ptr<LinkedState> newNode, bool optimization)
 	{
 		int width = 1;
 		if (optimization)
@@ -191,7 +191,7 @@ namespace Ui
 		this->configuration = configuration;
 	}
 
-	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path, bool optimization)
+	void GuiDrawer::logBestPath(vector<shared_ptr<LinkedState>> path, bool optimization)
 	{
 		int width = 3;
 		if (optimization)

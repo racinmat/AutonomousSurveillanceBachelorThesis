@@ -5,7 +5,7 @@ using namespace std;
 
 namespace App
 {
-	class State;
+	class LinkedState;
 	class Configuration;
 
 	class StateFactory
@@ -13,8 +13,8 @@ namespace App
 	public:
 		explicit StateFactory(shared_ptr<Configuration> configuration);
 		~StateFactory();
-		shared_ptr<State> createState();
-		shared_ptr<State> createState(const State& other);
+		shared_ptr<LinkedState> createState();
+		shared_ptr<LinkedState> createState(const LinkedState& other);
 
 	protected:
 		shared_ptr<Configuration> configuration;

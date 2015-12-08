@@ -84,7 +84,7 @@ namespace App
 
 		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
-		shared_ptr<State> lastState;
+		shared_ptr<LinkedState> lastState;
 		if (output->goals_reached)
 		{
 			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
@@ -161,7 +161,7 @@ namespace App
 
 		cout << "Starting RRT-path...";
 
-		vector<shared_ptr<State>> states = vector<shared_ptr<State>>();
+		vector<shared_ptr<LinkedState>> states = vector<shared_ptr<LinkedState>>();
 		auto initialState = stateFactory->createState();
 		initialState->setUavs(map->getUavsStart());
 		states.push_back(initialState);
@@ -174,7 +174,7 @@ namespace App
 			}
 		}
 
-		auto final_nodes = vector<shared_ptr<State>>();
+		auto final_nodes = vector<shared_ptr<LinkedState>>();
 
 		//pøíprava mapy <stringová reprezentace bodu, node> pro rychlé urèování souèasné node
 		auto nodesMap = std::map<string, shared_ptr<Node>>();	//todo: naplnit na zaèátku
@@ -183,8 +183,8 @@ namespace App
 			nodesMap[node->getPoint()->toString()] = node;
 		}
 
-		shared_ptr<State> newState;
-		shared_ptr<State> nearState = initialState;
+		shared_ptr<LinkedState> newState;
+		shared_ptr<LinkedState> nearState = initialState;
 		auto output = make_shared<Output>();
 
 		int i = 0; // poèet expandovaných nodes, hned na zaèátku se zvýší o jedna
@@ -297,7 +297,7 @@ namespace App
 		return output;
 	}
 
-	unordered_map<Uav, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state)
+	unordered_map<Uav, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state)
 	{
 		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
 		int worldWidth = configuration->getWorldWidth();
@@ -370,21 +370,21 @@ namespace App
 		}
 	}
 
-	shared_ptr<State> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates, vector<shared_ptr<State>> nodes, int count)
+	shared_ptr<LinkedState> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates, vector<shared_ptr<LinkedState>> nodes, int count)
 	{
 		int max_nodes = configuration->getRrtMaxNodes();
 		int debug = configuration->getDebug();
 
-		vector<shared_ptr<State>> near_arr = vector<shared_ptr<State>>();
-		shared_ptr<State> near_node;
-		vector<tuple<double, shared_ptr<State>>> stateDistances;	//celková vzdálenost pro daný State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepoužívá
+		vector<shared_ptr<LinkedState>> near_arr = vector<shared_ptr<LinkedState>>();
+		shared_ptr<LinkedState> near_node;
+		vector<tuple<double, shared_ptr<LinkedState>>> stateDistances;	//celková vzdálenost pro daný State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepoužívá
 		int s = 1;
 		double current_best = DBL_MAX;
 		
 		for (int j = 0; j < nodes.size(); j++)
 		{
 			// Distance of next node in the tree
-			shared_ptr<State> tmp_node = nodes[j];
+			shared_ptr<LinkedState> tmp_node = nodes[j];
 
 			if (tmp_node->areAllInputsUsed())
 			{
@@ -402,8 +402,8 @@ namespace App
 			logger->logText(buffer);
 
 			sort(stateDistances.begin(), stateDistances.end(),
-				[](const tuple<double, shared_ptr<State>>& a,
-					const tuple<double, shared_ptr<State>>& b) -> bool
+				[](const tuple<double, shared_ptr<LinkedState>>& a,
+					const tuple<double, shared_ptr<LinkedState>>& b) -> bool
 			{
 				return get<0>(a) < get<0>(b);
 			});
@@ -431,13 +431,13 @@ namespace App
 		return near_node;
 	}
 
-	shared_ptr<State> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<State> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
+	shared_ptr<LinkedState> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = nearState->getUavs().size();
 		int inputCount = configuration->getInputCount();
-		shared_ptr<State> newState;
+		shared_ptr<LinkedState> newState;
 
 		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
 		
@@ -457,7 +457,7 @@ namespace App
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
 		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavs());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		//translations jsou výstupy z modelu
-		vector<shared_ptr<State>> tempStates = vector<shared_ptr<State>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
+		vector<shared_ptr<LinkedState>> tempStates = vector<shared_ptr<LinkedState>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
 		
 		for (size_t i = 0; i < inputs.size(); i++)
 		{
@@ -545,7 +545,7 @@ namespace App
 		return newState;
 	}
 
-	int Core::check_expandability(vector<shared_ptr<State>> nodes)
+	int Core::check_expandability(vector<shared_ptr<LinkedState>> nodes)
 	{
 		int unexpandable_count = 0;
 		for (auto node : nodes)
@@ -565,7 +565,7 @@ namespace App
 	}
 
 	//detects narrow passage
-	void Core::guiding_point_reached(shared_ptr<State> state, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist)
+	void Core::guiding_point_reached(shared_ptr<LinkedState> state, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist)
 	{
 		for (auto guiding_path : guiding_paths) {
 			for (auto node : guiding_path->getNodes())	//todo: možná to pøedìlat a iterovat obrácenì, abych jel odzadu a udìlal break, když narazím na currentPoint u uav, abych nemusel kontrolovat isFirstCloserToEnd
@@ -677,7 +677,7 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<State> Core::carLikeMotionModel(shared_ptr<State> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
+	shared_ptr<LinkedState> Core::carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
 	{
 		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length
@@ -721,7 +721,7 @@ namespace App
 		return Point(x, y);
 	}
 
-	vector<shared_ptr<UavGroup>> Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<State> state, bool allowSwarmSplitting)
+	vector<shared_ptr<UavGroup>> Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state, bool allowSwarmSplitting)
 	{
 		vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
 		if (allowSwarmSplitting)
@@ -770,9 +770,9 @@ namespace App
 		return uavGroups;
 	}
 
-	shared_ptr<State> Core::get_closest_node_to_goal(vector<shared_ptr<State>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map)
+	shared_ptr<LinkedState> Core::get_closest_node_to_goal(vector<shared_ptr<LinkedState>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map)
 	{
-		vector<pair<shared_ptr<State>, double>> statesAndCosts = vector<pair<shared_ptr<State>, double>>();
+		vector<pair<shared_ptr<LinkedState>, double>> statesAndCosts = vector<pair<shared_ptr<LinkedState>, double>>();
 		for (auto state : states)
 		{
 			double distance = 0;
@@ -790,8 +790,8 @@ namespace App
 		}
 
 		//finding state nearest to goals
-		pair<shared_ptr<State>, double> min = *min_element(statesAndCosts.begin(), statesAndCosts.end(),
-			[](pair<shared_ptr<State>, double> a, pair<shared_ptr<State>, double> b) {return a.second < b.second; }
+		pair<shared_ptr<LinkedState>, double> min = *min_element(statesAndCosts.begin(), statesAndCosts.end(),
+			[](pair<shared_ptr<LinkedState>, double> a, pair<shared_ptr<LinkedState>, double> b) {return a.second < b.second; }
 		);
 		return min.first;
 	}

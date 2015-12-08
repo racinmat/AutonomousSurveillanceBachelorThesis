@@ -13,8 +13,8 @@ namespace App
 	public:
 		PathHandler();
 		virtual ~PathHandler();
-		static vector<shared_ptr<State>> getPath(shared_ptr<State> end);
-		static vector<shared_ptr<State>> getPath(shared_ptr<State> start, shared_ptr<State> end);
+		static vector<shared_ptr<LinkedState>> getPath(shared_ptr<LinkedState> end);
+		static vector<shared_ptr<LinkedState>> getPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end);
 	};
 
 }

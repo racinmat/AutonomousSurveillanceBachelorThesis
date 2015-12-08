@@ -18,8 +18,8 @@ namespace App
 			shared_ptr<CarLikeMotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
 			shared_ptr<LoggerInterface> logger);
 		virtual ~PathOptimizer();
-		vector<shared_ptr<State>> optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map);
-		pair<vector<shared_ptr<State>>, bool> optimizePathBetween(shared_ptr<State> start, shared_ptr<State> end, shared_ptr<Map> map);
+		vector<shared_ptr<LinkedState>> optimizePath(vector<shared_ptr<LinkedState>> path, shared_ptr<Map> map);
+		pair<vector<shared_ptr<LinkedState>>, bool> optimizePathBetween(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end, shared_ptr<Map> map);
 		virtual void setLogger(const shared_ptr<LoggerInterface> logger_interface);
 
 	protected:
@@ -28,7 +28,7 @@ namespace App
 		shared_ptr<CarLikeMotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
 		shared_ptr<LoggerInterface> logger;
-		void straightenCrossingTrajectories(shared_ptr<State> start, shared_ptr<State> end);
+		void straightenCrossingTrajectories(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end);
 	};
 
 

@@ -15,24 +15,24 @@ namespace App
 	{
 	}
 
-	shared_ptr<State> AoICoverageResolver::get_best_fitness(vector<shared_ptr<State>> final_nodes, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
+	shared_ptr<LinkedState> AoICoverageResolver::get_best_fitness(vector<shared_ptr<LinkedState>> final_nodes, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
 	{
 		goalMatrixInitialized = false;	//invalidace cache pøed zaèátkem hledání
 
-		auto finalStatesFitness = unordered_map<shared_ptr<State>, double>();
+		auto finalStatesFitness = unordered_map<shared_ptr<LinkedState>, double>();
 		for (auto finalState : final_nodes)
 		{
 			finalStatesFitness[finalState] = fitness_function(finalState, map, elementSize, worldWidth, worldHeight);
 		}
 
 		//finding solution with best fitness
-		pair<shared_ptr<State>, double> min = *min_element(finalStatesFitness.begin(), finalStatesFitness.end(),
-			[](pair<shared_ptr<State>, double> a, pair<shared_ptr<State>, double> b) {return a.second < b.second; }
+		pair<shared_ptr<LinkedState>, double> min = *min_element(finalStatesFitness.begin(), finalStatesFitness.end(),
+			[](pair<shared_ptr<LinkedState>, double> a, pair<shared_ptr<LinkedState>, double> b) {return a.second < b.second; }
 		);
 		return min.first;
 	}
 
-	double AoICoverageResolver::fitness_function(shared_ptr<State> final_node, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
+	double AoICoverageResolver::fitness_function(shared_ptr<LinkedState> final_node, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
 	{
 		double initialValue = 100;
 		double uavCameraX = (150 / elementSize);

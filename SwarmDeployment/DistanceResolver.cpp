@@ -13,7 +13,7 @@ namespace App
 	{
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<State> first, unordered_map<Uav, shared_ptr<Point>, UavHasher> second)
+	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, unordered_map<Uav, shared_ptr<Point>, UavHasher> second)
 	{
 		NNMethod nn_method = configuration->getNearestNeighborMethod();
 		double totalDistance = 0;
@@ -44,7 +44,7 @@ namespace App
 		return totalDistance;
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<State> first, shared_ptr<State> second)
+	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, shared_ptr<LinkedState> second)
 	{
 		auto secondMap = unordered_map<Uav, shared_ptr<Point>, UavHasher>();
 		for (auto uav : second->getUavs())
@@ -54,12 +54,12 @@ namespace App
 		return getDistance(first, secondMap);
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<State> first, shared_ptr<State> second, shared_ptr<Uav> uav)
+	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, shared_ptr<LinkedState> second, shared_ptr<Uav> uav)
 	{
 		return first->getUav(uav)->getPointParticle()->getLocation()->getDistance(second->getUav(uav)->getPointParticle()->getLocation());
 	}
 
-	double DistanceResolver::getLengthOfPath(shared_ptr<State> start, shared_ptr<State> end)
+	double DistanceResolver::getLengthOfPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
 	{
 		double length = 0;
 		for (auto i = end; i->getTime() != start->getTime(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek
@@ -70,7 +70,7 @@ namespace App
 		return length;
 	}
 
-	double DistanceResolver::getLengthOfPath(vector<shared_ptr<State>> path)
+	double DistanceResolver::getLengthOfPath(vector<shared_ptr<LinkedState>> path)
 	{
 		double length = 0;
 		for (size_t i = 1; i < path.size(); i++)
@@ -81,7 +81,7 @@ namespace App
 		return length;
 	}
 
-	double DistanceResolver::getLengthOfPath(shared_ptr<State> start, shared_ptr<State> end, shared_ptr<Uav> uav)
+	double DistanceResolver::getLengthOfPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end, shared_ptr<Uav> uav)
 	{
 		double length = 0;
 		for (auto i = end; i->getTime() != start->getTime(); i = i->getPrevious())	//i jede od konce po prvek, jehož pøedchùdce je zaèátek

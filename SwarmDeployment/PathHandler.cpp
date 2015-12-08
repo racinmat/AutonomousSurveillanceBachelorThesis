@@ -12,9 +12,9 @@ namespace App
 	{
 	}
 
-	vector<shared_ptr<State>> PathHandler::getPath(shared_ptr<State> end)
+	vector<shared_ptr<LinkedState>> PathHandler::getPath(shared_ptr<LinkedState> end)
 	{
-		vector<shared_ptr<State>> path = vector<shared_ptr<State>>();
+		vector<shared_ptr<LinkedState>> path = vector<shared_ptr<LinkedState>>();
 		auto iterNode = end;
 		do
 		{
@@ -28,9 +28,9 @@ namespace App
 		return path;
 	}
 
-	vector<shared_ptr<State>> PathHandler::getPath(shared_ptr<State> start, shared_ptr<State> end)
+	vector<shared_ptr<LinkedState>> PathHandler::getPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
 	{
-		vector<shared_ptr<State>> path = vector<shared_ptr<State>>();
+		vector<shared_ptr<LinkedState>> path = vector<shared_ptr<LinkedState>>();
 		auto iterNode = end;
 		do
 		{

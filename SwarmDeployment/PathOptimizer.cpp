@@ -24,11 +24,11 @@ namespace App
 	}
 
 	//optimalizuje cestu pomocí Dubinsových manévrù
-	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map)
+	vector<shared_ptr<LinkedState>> PathOptimizer::optimizePath(vector<shared_ptr<LinkedState>> path, shared_ptr<Map> map)
 	{
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
-		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
+		shared_ptr<LinkedState> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
 		int notImprovedCount = 0;
 
@@ -50,7 +50,7 @@ namespace App
 			auto start = path[startIndex];
 			auto endOriginal = path[endIndex];
 
-			auto end = make_shared<State>(*endOriginal.get());	//kvùli prohazování køížejících se UAV vytvoøím kopii, kterou modifikuji. Až když zjistím, že je nová trajektorie v poøádku, uložím to do pùvodního stavu
+			auto end = make_shared<LinkedState>(*endOriginal.get());	//kvùli prohazování køížejících se UAV vytvoøím kopii, kterou modifikuji. Až když zjistím, že je nová trajektorie v poøádku, uložím to do pùvodního stavu
 
 			auto pair = optimizePathBetween(start, end, map);
 			bool isPathChanged = pair.second;
@@ -67,7 +67,7 @@ namespace App
 				}
 				else
 				{
-					shared_ptr<State> afterEnd = path[endIndex + 1];
+					shared_ptr<LinkedState> afterEnd = path[endIndex + 1];
 					afterEnd->setPrevious(end);
 
 					//pøepoèítání èasù na úseku za optimalizovanou èástí
@@ -96,7 +96,7 @@ namespace App
 	}
 
 	//bool øíká, zda se cesta zmìnila
-	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathBetween(shared_ptr<State> start, shared_ptr<State> end, shared_ptr<Map> map)
+	pair<vector<shared_ptr<LinkedState>>, bool> PathOptimizer::optimizePathBetween(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end, shared_ptr<Map> map)
 	{
 		straightenCrossingTrajectories(start, end);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
@@ -146,11 +146,11 @@ namespace App
 
 		//zde provedu diskretizaci postupnì pro všechna uav najednou, kus po kusu a pøitom budu kontrolovat všechny podmínky
 		int stepCount = largestStepCount;
-		vector<shared_ptr<State>> newTrajectory = vector<shared_ptr<State>>(stepCount);
+		vector<shared_ptr<LinkedState>> newTrajectory = vector<shared_ptr<LinkedState>>(stepCount);
 		auto previousState = start;
 		for (size_t i = 0; i < stepCount; i++)
 		{
-			auto newState = make_shared<State>(*previousState.get());
+			auto newState = make_shared<LinkedState>(*previousState.get());
 			newState->setPrevious(previousState);
 			newState->incrementTime(configuration->getEndTime());
 			double distanceCompleted = i * configuration->getDistanceOfNewNodes();	//uražená cesta v dubinsovì manévru
@@ -179,7 +179,7 @@ namespace App
 					}
 				} else
 				{
-					shared_ptr<State> currentOldState = end;
+					shared_ptr<LinkedState> currentOldState = end;
 					while (currentOldState->getTime() > newState->getTime())
 					{
 						currentOldState = currentOldState->getPrevious();
@@ -217,7 +217,7 @@ namespace App
 		logger = logger_interface;
 	}
 
-	void PathOptimizer::straightenCrossingTrajectories(shared_ptr<State> start, shared_ptr<State> end)
+	void PathOptimizer::straightenCrossingTrajectories(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
 	{
 		bool intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
 		while (intersecting)

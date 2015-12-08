@@ -6,7 +6,7 @@ namespace App
 
 	Output::Output()
 	{
-		finalNodes = vector<shared_ptr<State>>();
+		finalNodes = vector<shared_ptr<LinkedState>>();
 	}
 
 

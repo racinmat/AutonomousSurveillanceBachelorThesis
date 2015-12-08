@@ -25,11 +25,11 @@ namespace Ui
 		virtual void logGuidingPaths(vector<shared_ptr<App::Path>> paths, shared_ptr<App::Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends) override;
 		virtual void logText(string string) override;
 		virtual void logText(char const string[]) override;
-		virtual void logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode, bool optimization = false) override;
+		virtual void logNewState(shared_ptr<App::LinkedState> nearNode, shared_ptr<App::LinkedState> newNode, bool optimization = false) override;
 		virtual void logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates) override;
 		virtual void logRandomStatesCenter(shared_ptr<App::Point> center) override;
 		virtual void setConfiguration(shared_ptr<App::Configuration> configuration);
-		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false) override;
+		virtual void logBestPath(vector<shared_ptr<LinkedState>> path, bool optimization = false) override;
 		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths) override;
 
 	protected:

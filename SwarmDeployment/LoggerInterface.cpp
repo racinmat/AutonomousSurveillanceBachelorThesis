@@ -41,7 +41,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
+	void LoggerInterface::logNewState(shared_ptr<LinkedState> nearNode, shared_ptr<LinkedState> newNode, bool optimization)
 	{
 	}
 
@@ -53,7 +53,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logBestPath(vector<shared_ptr<State>> path, bool optimization)
+	void LoggerInterface::logBestPath(vector<shared_ptr<LinkedState>> path, bool optimization)
 	{
 	}
 

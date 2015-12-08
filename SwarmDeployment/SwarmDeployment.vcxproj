@@ -415,7 +415,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="NodeSet.cpp" />
-    <ClCompile Include="State.cpp" />
+    <ClCompile Include="LinkedState.cpp" />
     <ClCompile Include="StateFactory.cpp" />
     <ClCompile Include="Uav.cpp" />
     <ClCompile Include="UavGroup.cpp" />
@@ -712,7 +712,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="NodeSet.h" />
-    <ClInclude Include="State.h" />
+    <ClInclude Include="LinkedState.h" />
     <ClInclude Include="StateFactory.h" />
     <ClInclude Include="Uav.h" />
     <ClInclude Include="UavGroup.h" />
