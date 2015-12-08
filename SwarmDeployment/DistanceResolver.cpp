@@ -13,7 +13,7 @@ namespace App
 	{
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, unordered_map<Uav, shared_ptr<Point>, UavHasher> second)
+	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, unordered_map<Uav, shared_ptr<Point>, UavHasher> second)
 	{
 		NNMethod nn_method = configuration->getNearestNeighborMethod();
 		double totalDistance = 0;
@@ -44,7 +44,7 @@ namespace App
 		return totalDistance;
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, shared_ptr<LinkedState> second)
+	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, shared_ptr<StateInterface> second)
 	{
 		auto secondMap = unordered_map<Uav, shared_ptr<Point>, UavHasher>();
 		for (auto uav : second->getUavs())
@@ -70,13 +70,12 @@ namespace App
 		return length;
 	}
 
-	double DistanceResolver::getLengthOfPath(vector<shared_ptr<LinkedState>> path)
+	double DistanceResolver::getLengthOfPath(vector<shared_ptr<StateInterface>> path)
 	{
 		double length = 0;
 		for (size_t i = 1; i < path.size(); i++)
 		{
-			auto state = path[i];
-			length += getDistance(state->getPrevious(), state);
+			length += getDistance(path[i - 1], path[i]);
 		}
 		return length;
 	}

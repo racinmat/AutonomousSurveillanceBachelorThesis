@@ -416,7 +416,9 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="NodeSet.cpp" />
     <ClCompile Include="LinkedState.cpp" />
+    <ClCompile Include="State.cpp" />
     <ClCompile Include="StateFactory.cpp" />
+    <ClCompile Include="StateInterface.cpp" />
     <ClCompile Include="Uav.cpp" />
     <ClCompile Include="UavGroup.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
@@ -713,7 +715,9 @@
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="NodeSet.h" />
     <ClInclude Include="LinkedState.h" />
+    <ClInclude Include="State.h" />
     <ClInclude Include="StateFactory.h" />
+    <ClInclude Include="StateInterface.h" />
     <ClInclude Include="Uav.h" />
     <ClInclude Include="UavGroup.h" />
     <ClInclude Include="VCollide\AABB.H" />

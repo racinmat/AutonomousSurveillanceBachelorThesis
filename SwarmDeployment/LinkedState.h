@@ -4,13 +4,14 @@
 #include <string>
 #include "Uav.h"
 #include "CarLikeControl.h"
+#include "StateInterface.h"
 
 using namespace std;
 
 namespace App
 {
 
-	class LinkedState
+	class LinkedState : public StateInterface
 	{
 	public:
 		LinkedState(int inputCount);

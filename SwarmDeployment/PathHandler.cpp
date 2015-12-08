@@ -28,6 +28,17 @@ namespace App
 		return path;
 	}
 
+	vector<shared_ptr<State>> PathHandler::createStatePath(vector<shared_ptr<LinkedState>> path)
+	{
+		vector<shared_ptr<State>> newPath = vector<shared_ptr<State>>(path.size());
+		for (size_t i = 0; i < path.size(); i++)
+		{
+			newPath[i] = make_shared<State>(*path[i].get());
+		}
+
+		return newPath;
+	}
+
 	vector<shared_ptr<LinkedState>> PathHandler::getPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
 	{
 		vector<shared_ptr<LinkedState>> path = vector<shared_ptr<LinkedState>>();

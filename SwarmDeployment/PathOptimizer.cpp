@@ -24,7 +24,7 @@ namespace App
 	}
 
 	//optimalizuje cestu pomocí Dubinsových manévrù
-	vector<shared_ptr<LinkedState>> PathOptimizer::optimizePath(vector<shared_ptr<LinkedState>> path, shared_ptr<Map> map)
+	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
@@ -96,7 +96,7 @@ namespace App
 	}
 
 	//bool øíká, zda se cesta zmìnila
-	pair<vector<shared_ptr<LinkedState>>, bool> PathOptimizer::optimizePathBetween(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end, shared_ptr<Map> map)
+	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathBetween(shared_ptr<State> start, shared_ptr<State> end, shared_ptr<Map> map)
 	{
 		straightenCrossingTrajectories(start, end);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
