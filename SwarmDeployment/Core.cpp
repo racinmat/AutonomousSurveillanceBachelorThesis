@@ -129,7 +129,7 @@ namespace App
 			i += 30;
 		}
 
-		pathOptimizer->optimizePathBetween(initialState, lastState, map);
+		pathOptimizer->optimizePathPart(initialState, lastState, map);
 
 
 //		for (size_t i = 0; i < 200; i++)

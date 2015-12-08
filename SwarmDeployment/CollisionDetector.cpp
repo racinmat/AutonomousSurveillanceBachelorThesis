@@ -17,7 +17,7 @@ namespace App
 	{
 	}
 
-	bool CollisionDetector::areTrajectoriesIntersecting(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
+	bool CollisionDetector::areTrajectoriesIntersecting(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
 	{
 		for (auto uav1 : start->getUavs())
 		{
@@ -88,7 +88,7 @@ namespace App
 		return make_shared<Point>(px, py);
 	}
 
-	pair<shared_ptr<Uav>, shared_ptr<Uav>> CollisionDetector::getIntersectingUavs(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
+	pair<shared_ptr<Uav>, shared_ptr<Uav>> CollisionDetector::getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
 	{
 		for (auto uav1 : start->getUavs())
 		{
@@ -107,7 +107,7 @@ namespace App
 		throw "uavs are not intersecting";
 	}
 
-	bool CollisionDetector::checkRelativeLocalization(shared_ptr<LinkedState> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
+	bool CollisionDetector::checkRelativeLocalization(shared_ptr<StateInterface> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
 	{
 		int number_of_uavs = node->getUavs().size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
@@ -216,7 +216,7 @@ namespace App
 		return inBounds;
 	}
 
-	bool CollisionDetector::isStateValid(shared_ptr<LinkedState> oldState, shared_ptr<LinkedState> newState, shared_ptr<Map> map)
+	bool CollisionDetector::isStateValid(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map)
 	{
 		bool isStateValid = true;
 		if (!checkRelativeLocalization(newState))
@@ -238,7 +238,7 @@ namespace App
 		return isStateValid;
 	}
 	//returns true, when no collisions are detected, returns false, when there are any collisions
-	bool CollisionDetector::check_obstacle_vcollide_single(shared_ptr<LinkedState> new_node, shared_ptr<Map> map)
+	bool CollisionDetector::check_obstacle_vcollide_single(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
 		double uav_size = configuration->getUavSize();
 
