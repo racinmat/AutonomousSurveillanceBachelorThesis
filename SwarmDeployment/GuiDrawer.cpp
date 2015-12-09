@@ -149,7 +149,8 @@ namespace Ui
 		int width = 1;
 		if (optimization)
 		{
-			width = 3;
+			width = 1;
+//			width = 2;
 		}
 
 		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
@@ -158,7 +159,7 @@ namespace Ui
 			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
 			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
 			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-				newLoc->getX(), newLoc->getY(), QPen(uavColors[*uav.get()], width));
+				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 		}
 
 		QString time = QString("%1").arg(newNode->getTime());
@@ -193,7 +194,7 @@ namespace Ui
 
 	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path, bool optimization)
 	{
-		int width = 3;
+		int width = 2;
 		if (optimization)
 		{
 			width = 4;
@@ -215,7 +216,7 @@ namespace Ui
 			{
 				auto uav = state->getUavs()[i];
 				scene->addLine(state->getUavs()[i]->getPointParticle()->getLocation()->getX(), state->getUavs()[i]->getPointParticle()->getLocation()->getY(),
-					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], width));
+					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 			}
 			mainWindow->updateView();
 			previous = state;

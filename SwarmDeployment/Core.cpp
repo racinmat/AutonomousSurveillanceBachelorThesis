@@ -100,13 +100,17 @@ namespace App
 
 		logger->logBestPath(statePath);
 
+		pathOptimizer->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
+
+		logger->logBestPath(statePath);
+
 		statePath = pathOptimizer->optimizePath(statePath, map);
 
 		logger->logBestPath(statePath, true);
 
 //		testGui();
 
-		save_output();
+ 		save_output();
 
 	}
 
@@ -133,7 +137,7 @@ namespace App
 		path.push_back(initState);
 		path.push_back(lastState);
 
-		pathOptimizer->optimizePathPart(path, map);
+//		pathOptimizer->optimizePathPart(path, map);
 
 
 //		for (size_t i = 0; i < 200; i++)

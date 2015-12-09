@@ -47,15 +47,8 @@ namespace App
 				endIndex = startIndex;
 				startIndex = temp;
 			}
-			auto start = path[startIndex];
-			auto endOriginal = path[endIndex];
 
-			auto end = make_shared<State>(*endOriginal.get());	//kvùli prohazování køížejících se UAV vytvoøím kopii, kterou modifikuji. Až když zjistím, že je nová trajektorie v poøádku, uložím to do pùvodního stavu
-			vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;
-			vector<shared_ptr<State>>::const_iterator endIterator = path.begin() + endIndex + 1;
-			vector<shared_ptr<State>> pathPart(startIterator, endIterator);
-
-			auto pair = optimizePathPart(pathPart, map);
+			auto pair = optimizePathPart(startIndex, endIndex, map, path);
 			auto trajectoryPart = pair.first;
 			bool isPathChanged = pair.second;
 
@@ -67,7 +60,7 @@ namespace App
 				
 				if (startIndex > 0)	//pøed vyseknutou èástí je další èást
 				{
-					pathFirstPart = vector<shared_ptr<State>>(path.begin(), path.begin() + startIndex - 1);	//subvector, vykousnutí èásti vektoru
+					pathFirstPart = vector<shared_ptr<State>>(path.begin(), path.begin() + startIndex);	//subvector, vykousnutí èásti vektoru, prvek na pozici startIndex už tam není
 				}
 
 				if (endIndex < path.size() - 1)	//po vyseknuté èásti je ještì další èást
@@ -99,11 +92,13 @@ namespace App
 	}
 
 	//bool øíká, zda se cesta zmìnila
-	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathPart(vector<shared_ptr<State>> pathPart, shared_ptr<Map> map)
+	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathPart(int startIndex, int endIndex, shared_ptr<Map> map, vector<shared_ptr<State>> path)
 	{
+		vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;
+		vector<shared_ptr<State>>::const_iterator endIterator = path.begin() + endIndex + 1;
+		vector<shared_ptr<State>> pathPart(startIterator, endIterator);
 		auto start = pathPart[0];
 		auto end = pathPart[pathPart.size() - 1];
-		straightenCrossingTrajectories(start, end);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
 		double maxSpeed = configuration->getDistanceOfNewNodes();	//také reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu
 		//pøedpoèítám si délky všech dubinsù pøedem
@@ -182,12 +177,15 @@ namespace App
 					}
 				} else
 				{
+					//pokud je kratší pùvodní cesta pro dané uav, bere se pro dané uav pùvodní cesta, pokud je pùvodní cesta kratší na poèet krokù, uav "èeká" v cíli
+					shared_ptr<State> currentOldState;
 					if (i >= pathPart.size())
 					{
-						throw "wut? new path is longer";
+						currentOldState = pathPart[pathPart.size() - 1];
+					} else
+					{
+						currentOldState = pathPart[i];
 					}
-					shared_ptr<State> currentOldState = pathPart[i];
-					//pokud je kratší pùvodní cesta pro dané uav, bere se pro dané uav pùvodní cesta
 					uav->getPointParticle()->setLocation(currentOldState->getUav(uav)->getPointParticle()->getLocation());
 					uav->getPointParticle()->setRotation(currentOldState->getUav(uav)->getPointParticle()->getRotation());
 				}
@@ -216,15 +214,25 @@ namespace App
 		logger = logger_interface;
 	}
 
-	void PathOptimizer::straightenCrossingTrajectories(shared_ptr<State> start, shared_ptr<State> end)
+	//narovná všechny trajektorie pøedtím, než se sputí optimalizace Dubinsem
+	void PathOptimizer::straightenCrossingTrajectories(vector<shared_ptr<State>> path)
 	{
-		bool intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
-		while (intersecting)
+		auto start = path[0];
+		for (size_t i = 1; i < path.size(); i++)
 		{
-			auto uavs = collisionDetector->getIntersectingUavs(start, end);
-			//swap intersecting uavs
-			end->swapUavs(uavs.first, uavs.second);
-			intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
+			auto end = path[i];
+			bool intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
+			while (intersecting)
+			{
+				auto uavs = collisionDetector->getIntersectingUavs(start, end);
+				//swap intersecting uavs in all states after end (including end)
+				for (size_t j = i; j < path.size(); j++)
+				{
+					auto toBeSwapped = path[j];
+					toBeSwapped->swapUavs(uavs.first, uavs.second);
+				}
+				intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
+			}
 		}
 	}
 

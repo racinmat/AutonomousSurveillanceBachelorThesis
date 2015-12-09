@@ -471,6 +471,72 @@ void testing()
 //	cout << isfinite(p->getX()) << endl;	//vrací false
 //	cout << isfinite(p->getY()) << endl;	//vrací false
 
+// práce s poli
+	vector<int> vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	vector<int> vec2 = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+	for (auto e : vec1) {
+		cout << e << ", ";
+	}	
+	cout << endl;
+	for (auto e : vec2) {
+		cout << e << ", ";
+	}
+	cout << endl;
+
+	vec1 = vector<int>(vec2.begin() + 3, vec2.end());	//subvector, vykousnutí èásti vektoru
+	for (auto e : vec1) {
+		cout << e << ", ";
+	}
+	cout << endl;
+	vec1 = vector<int>(vec2.begin() + 3, vec2.begin() + 7);	//subvector, vykousnutí èásti vektoru
+	for (auto e : vec1) {
+		cout << e << ", ";
+	}
+	cout << endl;
+
+	vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	for (auto e : vec1) {
+		cout << e << ", ";
+	}
+	cout << endl;
+	//	//spojení 3 èástí cesty
+	vector<int> vec3 = vector<int>(vec1.begin(), vec1.begin() + 4);
+	vec3.insert(vec3.end(), vec2.begin(), vec2.end());
+//	vec3.insert(vec3.end(), vec2.begin(), vec2.end());
+	for (auto e : vec3) {
+		cout << e << ", ";
+	}
+	cout << endl;
+
+
+	vector<int> path = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	vector<int> trajectoryPart = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+	vector<int> pathFirstPart;		//èást pøed dubinsem
+	vector<int> pathMiddlePart = trajectoryPart;	//èást nahrazená dubinsem
+	vector<int> pathLastPart;		//èást po dubinsovi
+
+	int startIndex = 5;
+	int endIndex = 8;
+
+	if (startIndex > 0)	//pøed vyseknutou èástí je další èást
+	{
+		pathFirstPart = vector<int>(path.begin(), path.begin() + startIndex);	//subvector, vykousnutí èásti vektoru
+	}
+
+	if (endIndex < path.size() - 1)	//po vyseknuté èásti je ještì další èást
+	{
+		pathLastPart = vector<int>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnutí èásti vektoru
+	}
+
+	auto newPath = pathFirstPart;
+	newPath.insert(newPath.end(), pathMiddlePart.begin(), pathMiddlePart.end());
+	newPath.insert(newPath.end(), pathLastPart.begin(), pathLastPart.end());
+
+	for (auto e : newPath) {
+		cout << e << ", ";
+	}
+	cout << endl;
+
 	cin.get();
 }
 
