@@ -162,9 +162,9 @@ namespace Ui
 				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 		}
 
-		QString time = QString("%1").arg(newNode->getTime());
-		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
-		addText(time, loc->getX(), loc->getY());
+//		QString time = QString("%1").arg(newNode->getTime());
+//		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
+//		addText(time, loc->getX(), loc->getY());
 
 		mainWindow->updateView();
 	}

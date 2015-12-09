@@ -15,6 +15,7 @@ namespace App
 		virtual ~CollisionDetector();
 		bool areTrajectoriesIntersecting(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end);
 		bool areLineSegmentsIntersecting(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
+		bool areLineSegmentsIntersecting(shared_ptr<Uav> uav1start, shared_ptr<Uav> uav1end, shared_ptr<Uav> uav2start, shared_ptr<Uav> uav2end);
 		bool LinePointIntersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2);
 		shared_ptr<Point> lineLineIntersection(shared_ptr<Point> p1, shared_ptr<Point> p2, shared_ptr<Point> p3, shared_ptr<Point> p4);
 		pair<shared_ptr<Uav>, shared_ptr<Uav>> getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end);

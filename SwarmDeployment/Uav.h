@@ -32,6 +32,7 @@ namespace App
 		virtual shared_ptr<Goal> getConcreteGoal();
 		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
 		virtual void setId(const int id);
+		virtual void setPointParticle(const shared_ptr<PointParticle> point_particle);
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;

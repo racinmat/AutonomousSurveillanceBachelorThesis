@@ -52,6 +52,13 @@ namespace App
 		return false;
 	}
 
+	bool CollisionDetector::areLineSegmentsIntersecting(shared_ptr<Uav> uav1start, shared_ptr<Uav> uav1end, shared_ptr<Uav> uav2start, shared_ptr<Uav> uav2end)
+	{
+		return areLineSegmentsIntersecting(
+			uav1start->getPointParticle()->getLocation(), uav1end->getPointParticle()->getLocation(),
+			uav2start->getPointParticle()->getLocation(), uav2end->getPointParticle()->getLocation());
+	}
+
 	bool CollisionDetector::LinePointIntersection(shared_ptr<Point> q, shared_ptr<Point> p1, shared_ptr<Point> p2)
 	{
 		double tolerance = 1e-10;

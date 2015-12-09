@@ -60,7 +60,7 @@ namespace App
 
 	ostream& operator<<(ostream& os, const Uav& obj)
 	{
-		return os << "pointParticle: " << obj.pointParticle;
+		return os << "id: " << obj.id << endl << "pointParticle: " << *obj.pointParticle;
 	}
 
 	bool operator<(const Uav& lhs, const Uav& rhs)
@@ -118,5 +118,10 @@ namespace App
 	void Uav::setId(const int id)
 	{
 		this->id = id;
+	}
+
+	void Uav::setPointParticle(const shared_ptr<PointParticle> point_particle)
+	{
+		pointParticle = point_particle;
 	}
 }
