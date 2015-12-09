@@ -96,13 +96,13 @@ namespace App
 
 		auto path = PathHandler::getPath(lastState);
 
-		logger->logBestPath(path);
-
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
+
+		logger->logBestPath(statePath);
 
 		statePath = pathOptimizer->optimizePath(statePath, map);
 
-		logger->logBestPath(path, true);
+		logger->logBestPath(statePath, true);
 
 //		testGui();
 

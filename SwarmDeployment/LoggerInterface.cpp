@@ -53,7 +53,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logBestPath(vector<shared_ptr<LinkedState>> path, bool optimization)
+	void LoggerInterface::logBestPath(vector<shared_ptr<State>> path, bool optimization)
 	{
 	}
 

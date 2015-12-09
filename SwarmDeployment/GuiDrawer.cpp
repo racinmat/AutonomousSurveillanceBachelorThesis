@@ -191,7 +191,7 @@ namespace Ui
 		this->configuration = configuration;
 	}
 
-	void GuiDrawer::logBestPath(vector<shared_ptr<LinkedState>> path, bool optimization)
+	void GuiDrawer::logBestPath(vector<shared_ptr<State>> path, bool optimization)
 	{
 		int width = 3;
 		if (optimization)
@@ -200,16 +200,17 @@ namespace Ui
 		}
 
 		bool first = true;
+		shared_ptr<State> previous;
 		for (auto state : path)
 		{
 			//pøeskakuji první iteraci, protože kreslím cesty mezi stávajícím a pøedchozím stavem
 			if (first)
 			{
 				first = false;
+				previous = state;
 				continue;
 			}
 
-			auto previous = state->getPrevious();
 			for (size_t i = 0; i < state->getUavs().size(); i++)
 			{
 				auto uav = state->getUavs()[i];
@@ -217,7 +218,7 @@ namespace Ui
 					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(uavColors[*uav.get()], width));
 			}
 			mainWindow->updateView();
-
+			previous = state;
 		}
 	}
 
