@@ -61,8 +61,6 @@ namespace App
 
 			if (isPathChanged)
 			{
-				bool isEndOfPath = ;	//zda je end koncem celé cesty
-
 				vector<shared_ptr<State>> pathFirstPart;		//èást pøed dubinsem
 				vector<shared_ptr<State>> pathMiddlePart = trajectoryPart;	//èást nahrazená dubinsem
 				vector<shared_ptr<State>> pathLastPart;		//èást po dubinsovi

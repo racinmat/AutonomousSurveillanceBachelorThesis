@@ -100,7 +100,7 @@ namespace App
 
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
 
-		path = pathOptimizer->optimizePath(path, map);
+		statePath = pathOptimizer->optimizePath(statePath, map);
 
 		logger->logBestPath(path, true);
 
@@ -118,9 +118,9 @@ namespace App
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		auto initialState = stateFactory->createState();
 		initialState->setUavs(map->getUavsStart());
+		auto initState = make_shared<State>(*initialState.get());
 		//inicializace finálního stavu
-		auto lastState = stateFactory->createState(*initialState.get());
-		lastState->setPrevious(initialState);
+		auto lastState = make_shared<State>(*initialState.get());
 		int i = 0;
 		for (auto uav : lastState->getUavs())
 		{
@@ -129,7 +129,11 @@ namespace App
 			i += 30;
 		}
 
-		pathOptimizer->optimizePathPart(initialState, lastState, map);
+		auto path = vector<shared_ptr<State>>();
+		path.push_back(initState);
+		path.push_back(lastState);
+
+		pathOptimizer->optimizePathPart(path, map);
 
 
 //		for (size_t i = 0; i < 200; i++)
