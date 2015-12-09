@@ -109,20 +109,6 @@ namespace App
 		return time;
 	}
 
-	void LinkedState::swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second)
-	{
-		auto firstUav = getUav(first);
-		auto secondUav = getUav(second);
-		int tempId = firstUav->getId();
-		firstUav->setId(secondUav->getId());
-		secondUav->setId(tempId);
-	}
-
-	void LinkedState::setTime(const double time)
-	{
-		this->time = time;
-	}
-
 	std::ostream& operator<<(std::ostream& os, const LinkedState& obj)
 	{
 		os << "index: " << obj.index << endl;
