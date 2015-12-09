@@ -17,6 +17,7 @@
 #include "CarLikeControl.h"
 #include "CarLikeMotionModel.h"
 #include "CollisionDetector.h"
+#include "PathHandler.h"
 
 using namespace std;
 
@@ -66,6 +67,7 @@ namespace App
 		shared_ptr<PathOptimizer> pathOptimizer;
 		shared_ptr<CarLikeMotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
+		shared_ptr<PathHandler> pathHandler;
 
 		void testGui();
 

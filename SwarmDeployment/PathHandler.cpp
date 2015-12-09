@@ -3,7 +3,8 @@
 namespace App
 {
 
-	PathHandler::PathHandler()
+	PathHandler::PathHandler(shared_ptr<CollisionDetector> collisionDetector) : 
+		collisionDetector(collisionDetector)
 	{
 	}
 
@@ -53,6 +54,28 @@ namespace App
 
 		reverse(path.begin(), path.end());	//abych mìl cestu od zaèátku do konce
 		return path;
+	}
+
+	//narovná všechny trajektorie pøedtím, než se sputí optimalizace Dubinsem
+	void PathHandler::straightenCrossingTrajectories(vector<shared_ptr<State>> path)
+	{
+		auto start = path[0];
+		for (size_t i = 1; i < path.size(); i++)
+		{
+			auto end = path[i];
+			bool intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
+			while (intersecting)
+			{
+				auto uavs = collisionDetector->getIntersectingUavs(start, end);
+				//swap intersecting uavs in all states after end (including end)
+				for (size_t j = i; j < path.size(); j++)
+				{
+					auto toBeSwapped = path[j];
+					toBeSwapped->swapUavs(uavs.first, uavs.second);
+				}
+				intersecting = collisionDetector->areTrajectoriesIntersecting(start, end);
+			}
+		}
 	}
 
 }

@@ -44,6 +44,7 @@ namespace App
 		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
 		collisionDetector(make_shared<CollisionDetector>(configuration))
 	{
+		pathHandler = make_shared<PathHandler>(collisionDetector);
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
@@ -94,13 +95,13 @@ namespace App
 			lastState = get_closest_node_to_goal(output->nodes, paths, map);
 		}
 
-		auto path = PathHandler::getPath(lastState);
+		auto path = pathHandler->getPath(lastState);
 
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
 
 		logger->logBestPath(statePath);
 
-		pathOptimizer->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
+		pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
 		logger->logBestPath(statePath);
 
