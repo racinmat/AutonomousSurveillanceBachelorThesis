@@ -29,7 +29,7 @@ namespace App
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
-		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
+		int stopLimit = 500;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
 		int notImprovedCount = 0;
 
 		while (notImprovedCount < stopLimit)
@@ -68,7 +68,6 @@ namespace App
 					pathLastPart = vector<shared_ptr<State>>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnutí èásti vektoru
 				}
 
-				//todo: tyhle operace s poli si otestovat
 				//spojení 3 èástí cesty
 				auto newPath = pathFirstPart;
 				newPath.insert(newPath.end(), pathMiddlePart.begin(), pathMiddlePart.end());

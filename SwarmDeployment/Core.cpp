@@ -101,16 +101,16 @@ namespace App
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
 
 		logger->logBestPath(statePath);
-
 		persister->savePath(statePath);
 
-		statePath = pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíí trajektorie, pak nemohu optimalizovat
-
-		logger->logBestPath(statePath);
+//		statePath = pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíí trajektorie, pak nemohu optimalizovat
+//
+//		logger->logBestPath(statePath);
 
 		statePath = pathOptimizer->optimizePath(statePath, map);
 
 		logger->logBestPath(statePath, true);
+		persister->savePath(statePath);
 
 //		testGui();
 
