@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "State.h"
+#include "VCollide/Triangle3D.h"
 
 using namespace std;
 
@@ -24,9 +25,11 @@ namespace App
 		bool insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight);
 		bool isStateValid(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map);
 		bool check_obstacle_vcollide_single(shared_ptr<StateInterface> new_node, shared_ptr<Map> map);
+		bool checkObstaclesInTrajectories(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map);
 
 	protected:
 		shared_ptr<Configuration> configuration;
+		bool collidesWithObstacles(Triangle3D triangle, shared_ptr<Map> map);
 	};
 
 }

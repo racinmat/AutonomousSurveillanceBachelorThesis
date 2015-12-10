@@ -242,15 +242,16 @@ namespace App
 		{
 			isStateValid = false;
 		}
+		if (!checkObstaclesInTrajectories(oldState, newState, map))
+		{
+			isStateValid = false;
+		}
 		return isStateValid;
 	}
 	//returns true, when no collisions are detected, returns false, when there are any collisions
 	bool CollisionDetector::check_obstacle_vcollide_single(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
 		double uav_size = configuration->getUavSize();
-
-		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
-
 		for (auto uav : new_node->getUavs())
 		{
 			double x = uav->getPointParticle()->getLocation()->getX();
@@ -264,28 +265,68 @@ namespace App
 			double x3 = x;
 			double y3 = y + uav_size / 2;
 			double z3 = 1;
+
 			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
 
-			for (auto obs : map->getObstacles())
+			if (collidesWithObstacles(tri_uav, map))
 			{
-				Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
-				Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
-				Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-				Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-
-				Triangle3D tri1_obs = Triangle3D(p1, p2, p3);
-				Triangle3D tri2_obs = Triangle3D(p1, p4, p3);
-
-
-				bool col = ColDetect::coldetect(tri_uav, tri1_obs, zero_trans, zero_trans);
-				col = col || ColDetect::coldetect(tri_uav, tri2_obs, zero_trans, zero_trans);
-				if (col)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		return true;
 	}
 
+	bool CollisionDetector::checkObstaclesInTrajectories(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map)
+	{
+		double uav_size = configuration->getUavSize();
+		for (auto uav : oldState->getUavs())
+		{
+			double x = uav->getPointParticle()->getLocation()->getX();
+			double y = uav->getPointParticle()->getLocation()->getY();
+			double x1 = x - uav_size / 2;
+			double y1 = y - uav_size / 2;
+			double z1 = 1;
+			double x2 = x + uav_size / 2;
+			double y2 = y + uav_size / 2;
+			double z2 = 1;
+			double x3 = newState->getUav(uav)->getPointParticle()->getLocation()->getX();
+			double y3 = newState->getUav(uav)->getPointParticle()->getLocation()->getY();
+			double z3 = 1;
+
+			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
+			if (collidesWithObstacles(tri_uav, map))
+			{
+				return false;
+			}
+
+		}
+		return true;
+	}
+
+	bool CollisionDetector::collidesWithObstacles(Triangle3D triangle, shared_ptr<Map> map)
+	{
+
+		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
+
+		for (auto obs : map->getObstacles())
+		{
+			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
+			Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
+			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
+
+			Triangle3D tri1_obs = Triangle3D(p1, p2, p3);
+			Triangle3D tri2_obs = Triangle3D(p1, p4, p3);
+
+
+			bool col = ColDetect::coldetect(triangle, tri1_obs, zero_trans, zero_trans);
+			col = col || ColDetect::coldetect(triangle, tri2_obs, zero_trans, zero_trans);
+			if (col)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
