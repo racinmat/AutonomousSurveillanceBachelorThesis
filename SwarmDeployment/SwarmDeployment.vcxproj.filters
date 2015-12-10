@@ -318,6 +318,9 @@
     <ClCompile Include="StateInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Persister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -578,6 +581,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StateInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Persister.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

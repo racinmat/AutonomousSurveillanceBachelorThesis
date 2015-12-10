@@ -104,7 +104,7 @@ namespace App
 		{
 			map7->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
 		}
-		map7->addGoal(make_shared<Goal>(300, 100, 150, 150));
+		map7->addGoal(make_shared<Goal>(200, 50, 150, 150));
 		maps.push_back(map7);
 
 		return maps;

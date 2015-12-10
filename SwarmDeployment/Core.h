@@ -18,6 +18,7 @@
 #include "CarLikeMotionModel.h"
 #include "CollisionDetector.h"
 #include "PathHandler.h"
+#include "Persister.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ namespace App
 		shared_ptr<CarLikeMotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
 		shared_ptr<PathHandler> pathHandler;
+		shared_ptr<Persister> persister;
 
 		void testGui();
 

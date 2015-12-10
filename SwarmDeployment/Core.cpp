@@ -42,7 +42,8 @@ namespace App
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
 		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
-		collisionDetector(make_shared<CollisionDetector>(configuration))
+		collisionDetector(make_shared<CollisionDetector>(configuration)),
+		persister(make_shared<Persister>())
 	{
 		pathHandler = make_shared<PathHandler>(collisionDetector);
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
@@ -101,7 +102,9 @@ namespace App
 
 		logger->logBestPath(statePath);
 
-		pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
+		persister->savePath(statePath);
+
+		statePath = pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
 
 		logger->logBestPath(statePath);
 
@@ -111,7 +114,7 @@ namespace App
 
 //		testGui();
 
- 		save_output();
+		save_output();
 
 	}
 

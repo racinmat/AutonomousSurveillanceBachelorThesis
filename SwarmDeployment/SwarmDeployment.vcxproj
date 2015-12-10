@@ -410,6 +410,7 @@
     <ClCompile Include="OpenedSet.cpp" />
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="Persister.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="PointParticle.cpp" />
     <ClCompile Include="Random.cpp" />
@@ -709,6 +710,7 @@
     <ClInclude Include="Output.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PathFindingAlgorithm.h" />
+    <ClInclude Include="Persister.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="PointParticle.h" />
     <ClInclude Include="Random.h" />
