@@ -8,6 +8,7 @@ using namespace std;
 
 namespace App
 {
+	enum class UavPath {First, Second};
 
 	class PathHandler
 	{
@@ -17,7 +18,7 @@ namespace App
 		static vector<shared_ptr<LinkedState>> getPath(shared_ptr<LinkedState> end);
 		static vector<shared_ptr<State>> createStatePath(vector<shared_ptr<LinkedState>> path);	//rebuilds path with non linked State
 		static vector<shared_ptr<LinkedState>> getPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end);
-		void straightenCrossingTrajectories(vector<shared_ptr<State>> path);
+		vector<shared_ptr<State>> straightenCrossingTrajectories(vector<shared_ptr<State>> path);
 
 	protected:
 		shared_ptr<CollisionDetector> collisionDetector;

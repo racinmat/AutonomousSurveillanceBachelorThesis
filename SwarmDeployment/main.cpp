@@ -472,46 +472,46 @@ void testing()
 //	cout << isfinite(p->getY()) << endl;	//vrací false
 
 //// práce s poli
-	vector<int> vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	vector<int> vec2 = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
-	for (auto e : vec1) {
-		cout << e << ", ";
-	}	
-	cout << endl;
-	for (auto e : vec2) {
-		cout << e << ", ";
-	}
-	cout << endl;
-
-	vec1 = vector<int>(vec2.begin() + 3, vec2.end());	//subvector, vykousnutí èásti vektoru
-	for (auto e : vec1) {
-		cout << e << ", ";
-	}
-	cout << endl;
-	vec1 = vector<int>(vec2.begin() + 3, vec2.begin() + 7);	//subvector, vykousnutí èásti vektoru
-	for (auto e : vec1) {
-		cout << e << ", ";
-	}
-	cout << endl;
-
-	vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	for (auto e : vec1) {
-		cout << e << ", ";
-	}
-	cout << endl;
-	//	//spojení 3 èástí cesty
-	vector<int> vec3 = vector<int>(vec1.begin(), vec1.begin() + 4);
-	vec3.insert(vec3.end(), vec2.begin(), vec2.end());		//vložení za pole
-	for (auto e : vec3) {
-		cout << e << ", ";
-	}
-	cout << endl;
-
-	vec3.insert(vec3.begin() + 2, vec2.begin(), vec2.end());	//vložení dovnitø pole, ne na kraj
-	for (auto e : vec3) {
-		cout << e << ", ";
-	}
-	cout << endl;
+//	vector<int> vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+//	vector<int> vec2 = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+//	for (auto e : vec1) {
+//		cout << e << ", ";
+//	}	
+//	cout << endl;
+//	for (auto e : vec2) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
+//
+//	vec1 = vector<int>(vec2.begin() + 3, vec2.end());	//subvector, vykousnutí èásti vektoru
+//	for (auto e : vec1) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
+//	vec1 = vector<int>(vec2.begin() + 3, vec2.begin() + 7);	//subvector, vykousnutí èásti vektoru
+//	for (auto e : vec1) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
+//
+//	vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+//	for (auto e : vec1) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
+//	//	//spojení 3 èástí cesty
+//	vector<int> vec3 = vector<int>(vec1.begin(), vec1.begin() + 4);
+//	vec3.insert(vec3.end(), vec2.begin(), vec2.end());		//vložení za pole
+//	for (auto e : vec3) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
+//
+//	vec3.insert(vec3.begin() + 2, vec2.begin(), vec2.end());	//vložení dovnitø pole, ne na kraj
+//	for (auto e : vec3) {
+//		cout << e << ", ";
+//	}
+//	cout << endl;
 
 //
 //
@@ -546,46 +546,46 @@ void testing()
 
 //	narovnávání zkøížených cest
 
-//	StateFactory factory(configuration);
-//	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
-//
-//	auto uav1 = make_shared<Uav>(make_shared<PointParticle>(0, 0, 0));
-//	auto uav2 = make_shared<Uav>(make_shared<PointParticle>(1, 0, 0));
-//	auto uav3 = make_shared<Uav>(make_shared<PointParticle>(2, 0, 0));
-//	auto uav4 = make_shared<Uav>(make_shared<PointParticle>(3, 0, 0));
-//	vector<shared_ptr<Uav>> uavs = {uav1, uav2, uav3, uav4};
-//
-//	auto state1 = factory.createState();
-//	state1->setUavs(uavs);
-//
-//	auto state2 = factory.createState(*state1.get());
-//	state2->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 1));
-//	state2->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 1));
-//	state2->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(2, 0.5));
-//	state2->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 1));
-//
-//	auto state3 = factory.createState(*state1.get());
-//	state3->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 2));
-//	state3->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 2));
-//	state3->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 0.5));
-//	state3->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 2));
-//
-//	auto state4 = factory.createState(*state1.get());
-//	state4->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 3));
-//	state4->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 3));
-//	state4->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 3));
-//	state4->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 3));
-//
-//	vector<shared_ptr<LinkedState>> linkedPath = { state1, state2, state3, state4 };
-//
-//	auto path = pathHandler.createStatePath(linkedPath);
-//
-//	pathHandler.straightenCrossingTrajectories(path);
-//		
-//	for (auto state : path)
-//	{
-//		cout << *state << endl;
-//	}
+	StateFactory factory(configuration);
+	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
+
+	auto uav1 = make_shared<Uav>(make_shared<PointParticle>(0, 0, 0));
+	auto uav2 = make_shared<Uav>(make_shared<PointParticle>(1, 0, 0));
+	auto uav3 = make_shared<Uav>(make_shared<PointParticle>(2, 0, 0));
+	auto uav4 = make_shared<Uav>(make_shared<PointParticle>(3, 0, 0));
+	vector<shared_ptr<Uav>> uavs = {uav1, uav2, uav3, uav4};
+
+	auto state1 = factory.createState();
+	state1->setUavs(uavs);
+
+	auto state2 = factory.createState(*state1.get());
+	state2->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 1));
+	state2->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 1));
+	state2->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(2, 0.5));
+	state2->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 1));
+
+	auto state3 = factory.createState(*state1.get());
+	state3->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 2));
+	state3->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 2));
+	state3->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 0.5));
+	state3->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 2));
+
+	auto state4 = factory.createState(*state1.get());
+	state4->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 3));
+	state4->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 3));
+	state4->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 3));
+	state4->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 3));
+
+	vector<shared_ptr<LinkedState>> linkedPath = { state1, state2, state3, state4 };
+
+	auto path = pathHandler.createStatePath(linkedPath);
+
+	path = pathHandler.straightenCrossingTrajectories(path);
+		
+	for (auto state : path)
+	{
+		cout << *state << endl;
+	}
 
 	cin.get();
 }

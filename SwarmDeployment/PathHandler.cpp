@@ -57,7 +57,7 @@ namespace App
 	}
 
 	//narovná všechny trajektorie pøedtím, než se sputí optimalizace Dubinsem
-	void PathHandler::straightenCrossingTrajectories(vector<shared_ptr<State>> path)
+	vector<shared_ptr<State>> PathHandler::straightenCrossingTrajectories(vector<shared_ptr<State>> path)
 	{
 		for (size_t i = 1; i < path.size(); i++)
 		{
@@ -72,6 +72,11 @@ namespace App
 						auto anotherStart = path[j - 1]->getUav(another);
 						auto anotherEnd = another;
 
+						//aby se nehledala kolize u toho samého uav
+						if (*start.get() == *anotherStart.get() && *end.get() == *anotherEnd.get())
+						{
+							continue;
+						}
 						bool intersecting = collisionDetector->areLineSegmentsIntersecting(start, end, anotherStart, anotherEnd);
 						//swap intersecting uavs in all states after end (including end)
 						if (intersecting)
@@ -95,6 +100,18 @@ namespace App
 							vector<shared_ptr<State>> waitingStates;
 							int startIndex = min(i, j);	//aby se zaèala prohazovat cesta od prvku s kolizemi, který je nejblíže cíli
 
+
+							UavPath preservePointParticle = i > j ? UavPath::First : UavPath::Second;	//urèuje, zda je delší první nebo druhá èást, tedy, jaká si má "zachovat bod", který by se jinak vymazal
+							shared_ptr<PointParticle> preservedPointParticle;
+							if (preservePointParticle == UavPath::First)
+							{
+								preservedPointParticle = path[i - 1]->getUav(uav)->getPointParticle();
+							}
+							else {
+								preservedPointParticle = path[j - 1]->getUav(another)->getPointParticle();
+							}
+
+
 							auto waitingState = path[startIndex - 1];
 							for (size_t k = 0; k < waitingStatesCount; k++)
 							{
@@ -102,24 +119,48 @@ namespace App
 							}
 							path.insert(path.begin() + startIndex - 1, waitingStates.begin(), waitingStates.end());
 
-
 							//odzadu zapisuji do pole prohozené cesty
+							//vlastní scope to má jen, protože mi pøijde èistší, že každý cyklus má vlastní promìnnou index
 							{
 								int index = pathToEnd2.size() - 1;
-								for (size_t k = path.size() - 1; k >= i; k++)
+								for (size_t k = path.size() - 1; k >= i; k--)
 								{
-									path[k]->getUav(uav)->setPointParticle(pathToEnd2[index]);
+									//pokud je jedna cesta kratší než druhá (což je vždy), tak se musí pøed novou èást cesty (tedy pro index < 0) vložit další èekací stav
+									if (index < 0)
+									{
+										path[k]->getUav(uav)->setPointParticle(path[k - 1]->getUav(uav)->getPointParticle());
+									} else
+									{
+										path[k]->getUav(uav)->setPointParticle(pathToEnd2[index]);
+									}
 									index--;
+								}
+
+								if (preservePointParticle == UavPath::First)
+								{
+									path[i - 1]->getUav(uav)->setPointParticle(preservedPointParticle);
 								}
 							}
 							{
 								int index = pathToEnd1.size() - 1;
-								for (size_t k = path.size() - 1; k >= j; k++)
+								for (size_t k = path.size() - 1; k >= j; k--)
 								{
-									path[k]->getUav(another)->setPointParticle(pathToEnd1[index]);
+									//pokud je jedna cesta kratší než druhá (což je vždy), tak se musí pøed novou èást cesty (tedy pro index < 0) vložit další èekací stav
+									if (index < 0)
+									{
+										path[k]->getUav(another)->setPointParticle(path[k - 1]->getUav(another)->getPointParticle());
+									}
+									else
+									{
+										path[k]->getUav(another)->setPointParticle(pathToEnd1[index]);
+									}
 									index--;
 								}
 
+								if (preservePointParticle == UavPath::Second)
+								{
+									path[j - 1]->getUav(another)->setPointParticle(preservedPointParticle);
+								}
 							}
 
 							//místo výmìny id vymìním èásti cest, protože budu mìnit rùznì dlouhé úseky (rùznì dlouhé na poèet stavù)
@@ -131,9 +172,9 @@ namespace App
 						}
 					}
 				}
-
 			}
 		}
+		return path;
 	}
 
 }
