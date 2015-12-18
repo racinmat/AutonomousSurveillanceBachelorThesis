@@ -124,4 +124,12 @@ namespace App
 	{
 		pointParticle = point_particle;
 	}
+
+	mObject Uav::toJson() const
+	{
+		mObject object;
+		object["id"] = this->id;
+		object["pointParticle"] = this->pointParticle->toJson();
+		return object;
+	}
 }

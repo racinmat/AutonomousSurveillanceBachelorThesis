@@ -57,6 +57,14 @@ namespace App
 		return geom::Position(location->toGeomPoint(), rotation->getZ());
 	}
 
+	mObject PointParticle::toJson() const
+	{
+		mObject object;
+		object["location"] = this->location->toJson();
+		object["rotation"] = this->rotation->toJson();
+		return object;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
 	{
 		return os

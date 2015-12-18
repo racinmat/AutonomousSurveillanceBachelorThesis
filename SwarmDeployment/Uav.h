@@ -3,6 +3,9 @@
 #include <vector>
 #include "Goal.h"
 #include "GuidingPathsCurrentPositions.h"
+#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+
+using namespace json_spirit;
 
 namespace App
 {
@@ -33,6 +36,7 @@ namespace App
 		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
 		virtual void setId(const int id);
 		virtual void setPointParticle(const shared_ptr<PointParticle> point_particle);
+		mObject toJson() const;
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;

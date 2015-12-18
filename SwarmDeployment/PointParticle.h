@@ -2,8 +2,10 @@
 #include "Point.h"
 #include "memory"
 #include "Dubins/geom/Position.h"
+#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
 
 using namespace std;
+using namespace json_spirit;
 
 namespace App
 {
@@ -24,6 +26,7 @@ namespace App
 		geom::Position toPosition();
 		friend bool operator==(const PointParticle& lhs, const PointParticle& rhs);
 		friend bool operator!=(const PointParticle& lhs, const PointParticle& rhs);
+		mObject toJson() const;
 
 	protected:
 		shared_ptr<Point> location;

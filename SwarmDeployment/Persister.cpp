@@ -1,5 +1,8 @@
 #include "Persister.h"
 #include <fstream>
+#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+#include <json_spirit_v4.08/json_spirit/json_spirit_writer.h>
+
 //include <boost/algorithm/string.hpp>
 //include <boost/algorithm/string/split.hpp>
 
@@ -23,6 +26,24 @@ namespace App
 		}
 		cout << endl;
 		file.close();
+	}
+
+	void Persister::savePathToJson(vector<shared_ptr<State>> path)
+	{
+		const string file_name("path" + to_string(time(nullptr)) + ".json");
+
+		mArray addr_array;
+		for (auto state : path) {
+			state->toJson(addr_array);
+		}
+
+
+		ofstream os(file_name);
+
+		write_formatted(addr_array, os);
+
+		os.close();
+
 	}
 
 	vector<shared_ptr<State>> Persister::loadPath()

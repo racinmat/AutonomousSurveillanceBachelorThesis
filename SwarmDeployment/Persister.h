@@ -12,6 +12,7 @@ namespace App
 		Persister();
 		virtual ~Persister();
 		void savePath(vector<shared_ptr<State>> path);
+		void savePathToJson(vector<shared_ptr<State>> path);
 		vector<shared_ptr<State>> loadPath();
 	};
 

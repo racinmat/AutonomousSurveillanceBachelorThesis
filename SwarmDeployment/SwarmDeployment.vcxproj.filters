@@ -85,6 +85,15 @@
     <Filter Include="Source Files\Dubins\geom\shape">
       <UniqueIdentifier>{32e2b05d-b7e0-4d4c-adc5-49d0dc8fd1c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\JsonSpirit">
+      <UniqueIdentifier>{d588c923-ea02-4394-b2df-004cfe7ea436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JsonSpirit">
+      <UniqueIdentifier>{92a81366-ff0f-4e4b-9d01-c6c443136fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JsonExamples">
+      <UniqueIdentifier>{b357007a-87f9-4bff-be95-2ba365f4c0fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -320,6 +329,21 @@
     </ClCompile>
     <ClCompile Include="Persister.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_spirit\json_spirit_reader.cpp">
+      <Filter>Source Files\JsonSpirit</Filter>
+    </ClCompile>
+    <ClCompile Include="json_spirit\json_spirit_value.cpp">
+      <Filter>Source Files\JsonSpirit</Filter>
+    </ClCompile>
+    <ClCompile Include="json_spirit\json_spirit_writer.cpp">
+      <Filter>Source Files\JsonSpirit</Filter>
+    </ClCompile>
+    <ClCompile Include="json_spirit_v4.08\json_demo\json_demo.cpp">
+      <Filter>Source Files\JsonExamples</Filter>
+    </ClCompile>
+    <ClCompile Include="json_spirit_v4.08\json_map_demo\json_map_demo.cpp">
+      <Filter>Source Files\JsonExamples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +609,36 @@
     </ClInclude>
     <ClInclude Include="Persister.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_error_position.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_reader.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_reader_template.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_stream_reader.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_utils.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_value.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_writer.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_writer_options.h">
+      <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="json_spirit\json_spirit_writer_template.h">
+      <Filter>Header Files\JsonSpirit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

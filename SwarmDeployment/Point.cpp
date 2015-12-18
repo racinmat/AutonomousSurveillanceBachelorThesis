@@ -107,6 +107,15 @@ namespace App
 		return geom::Point(x, y);
 	}
 
+	mObject Point::toJson() const
+	{
+		mObject object;
+		object["x"] = this->x;
+		object["y"] = this->y;
+		object["z"] = this->z;
+		return object;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const Point& obj)
 	{
 		return os
