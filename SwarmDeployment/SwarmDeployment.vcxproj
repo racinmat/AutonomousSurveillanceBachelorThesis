@@ -341,8 +341,18 @@
     <ClCompile Include="json_spirit\json_spirit_reader.cpp" />
     <ClCompile Include="json_spirit\json_spirit_value.cpp" />
     <ClCompile Include="json_spirit\json_spirit_writer.cpp" />
-    <ClCompile Include="json_spirit_v4.08\json_demo\json_demo.cpp" />
-    <ClCompile Include="json_spirit_v4.08\json_map_demo\json_map_demo.cpp" />
+    <ClCompile Include="json_spirit_v4.08\json_demo\json_demo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="json_spirit_v4.08\json_map_demo\json_map_demo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseNoGui|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="PathHandler.cpp" />
     <ClCompile Include="PathOptimizer.cpp" />
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
