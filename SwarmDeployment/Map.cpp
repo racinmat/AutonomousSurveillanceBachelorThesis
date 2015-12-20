@@ -57,6 +57,25 @@ namespace App
 		return goalGroup;
 	}
 
+	mObject Map::toJson() const
+	{
+		mArray goals;
+		for (auto goal : this->goals)
+		{
+			goals.push_back(goal->getRectangle()->toJson());
+		}
+
+		mArray obstacles;
+		for (auto obstacle : this->obstacles)
+		{
+			obstacles.push_back(obstacle->rectangle->toJson());
+		}
+		mObject object;
+		object["goals"] = goals;
+		object["obstacles"] = obstacles;
+		return object;
+	}
+
 	void Map::addObstacle(shared_ptr<Obstacle> obstacle)
 	{
 		obstacles.push_back(obstacle);

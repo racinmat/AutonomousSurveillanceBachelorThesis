@@ -111,7 +111,7 @@ namespace App
 
 		logger->logBestPath(statePath, true);
 		persister->savePath(statePath);
-		persister->savePathToJson(statePath);
+		persister->savePathToJson(statePath, map);
 
 //		testGui();
 

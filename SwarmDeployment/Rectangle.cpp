@@ -45,6 +45,15 @@ namespace App
 		return make_shared<Point>(getX() + getWidth()/2, getY() + getHeight()/2);
 	}
 
+	mObject Rectangle::toJson() const
+	{
+		mObject object;
+		object["location"] = this->location->toJson();
+		object["width"] = this->m_width;
+		object["height"] = this->m_height;
+		return object;
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

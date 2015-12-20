@@ -6,6 +6,7 @@
 #include "GoalGroup.h"
 
 using namespace std;
+using namespace json_spirit;
 
 namespace App
 {
@@ -25,6 +26,7 @@ namespace App
 		vector<shared_ptr<Uav>> getUavsStart();
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
+		mObject toJson() const;
 
 	protected:
 		vector<shared_ptr<Goal>> goals;

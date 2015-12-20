@@ -26,6 +26,7 @@ namespace App
 		friend bool operator!=(const Rectangle& lhs, const Rectangle& rhs);
 		friend size_t hash_value(const Rectangle& obj);
 		shared_ptr<Point> getMiddle();
+		mObject toJson() const;
 
 	protected:
 		shared_ptr<Point> location;

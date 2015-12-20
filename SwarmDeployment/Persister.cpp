@@ -28,19 +28,23 @@ namespace App
 		file.close();
 	}
 
-	void Persister::savePathToJson(vector<shared_ptr<State>> path)
+	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		const string file_name("path" + to_string(time(nullptr)) + ".json");
 
-		mArray addr_array;
-		for (auto state : path) {
-			state->toJson(addr_array);
-		}
+		mObject content;
 
+		content["map"] = map->toJson();
+
+		mArray jsonPath;
+		for (auto state : path) {
+			jsonPath.push_back(state->toJson());
+		}
+		content["path"] = jsonPath;
 
 		ofstream os(file_name);
 
-		write_formatted(addr_array, os);
+		write_formatted(content, os);
 
 		os.close();
 
