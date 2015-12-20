@@ -10,6 +10,13 @@ namespace App
 		m_width = width;
 	}
 
+	Rectangle::Rectangle(const Rectangle& other): 
+		location(make_shared<Point>(*other.location.get())),
+	    m_height(other.m_height),
+	    m_width(other.m_width)
+	{
+	}
+
 	void Rectangle::setX(int x)
 	{
 		location->setX(x);

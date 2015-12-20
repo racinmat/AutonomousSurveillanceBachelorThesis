@@ -27,12 +27,14 @@ namespace App
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
 		mObject toJson() const;
+		void amplifyObstacles(int sizeIncrement);
 
 	protected:
 		vector<shared_ptr<Goal>> goals;
 		vector<shared_ptr<Obstacle>> obstacles;
 		vector<shared_ptr<Uav>> uavsStart;
 		shared_ptr<GoalGroup> goalGroup;
+		vector<shared_ptr<Obstacle>> originalObstacles;
 	};
 
 }

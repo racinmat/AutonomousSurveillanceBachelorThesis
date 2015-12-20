@@ -12,6 +12,7 @@ namespace App
 	public:
 		Rectangle(int x, int y, int width, int height);
 
+		Rectangle(const Rectangle& other);
 		int getX() const;
 		int getY() const;
 		int getHeight() const;

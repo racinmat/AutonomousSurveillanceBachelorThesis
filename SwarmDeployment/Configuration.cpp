@@ -44,6 +44,7 @@ namespace App
 		divisionCount = 0;
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
+		obstacleIncrement = 20;
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -271,5 +272,10 @@ namespace App
 	bool Configuration::isSlowerMotionNearObstacles() const
 	{
 		return slowerMotionNearObstacles;
+	}
+
+	int Configuration::getObstacleIncrement() const
+	{
+		return obstacleIncrement;
 	}
 }

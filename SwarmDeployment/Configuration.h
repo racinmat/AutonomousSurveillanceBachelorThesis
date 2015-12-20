@@ -55,6 +55,7 @@ namespace App
 		virtual void outsideNarrowPassage();
 		virtual int getGoalElementSize() const;
 		virtual bool isSlowerMotionNearObstacles() const;
+		virtual int getObstacleIncrement() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -94,6 +95,7 @@ namespace App
 		int divisionCount;
 		int goalElementSize;
 		bool slowerMotionNearObstacles;
+		int obstacleIncrement;
 	};
 
 }

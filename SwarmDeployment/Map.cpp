@@ -7,6 +7,7 @@ namespace App
 	Map::Map()
 	{
 		obstacles = vector<shared_ptr<Obstacle>>();
+		originalObstacles = vector<shared_ptr<Obstacle>>();
 		goals = vector<shared_ptr<Goal>>();
 		uavsStart = vector<shared_ptr<Uav>>();
 		goalGroup = make_shared<GoalGroup>();
@@ -66,7 +67,7 @@ namespace App
 		}
 
 		mArray obstacles;
-		for (auto obstacle : this->obstacles)
+		for (auto obstacle : this->originalObstacles)
 		{
 			obstacles.push_back(obstacle->rectangle->toJson());
 		}
@@ -76,9 +77,21 @@ namespace App
 		return object;
 	}
 
+	void Map::amplifyObstacles(int sizeIncrement)
+	{
+		for (auto obstacle : this->obstacles)
+		{
+			obstacle->rectangle->setX(obstacle->rectangle->getX() - sizeIncrement);
+			obstacle->rectangle->setY(obstacle->rectangle->getY() - sizeIncrement);
+			obstacle->rectangle->setWidth(obstacle->rectangle->getWidth() + sizeIncrement);
+			obstacle->rectangle->setHeight(obstacle->rectangle->getHeight() + sizeIncrement);
+		}
+	}
+
 	void Map::addObstacle(shared_ptr<Obstacle> obstacle)
 	{
 		obstacles.push_back(obstacle);
+		originalObstacles.push_back(make_shared<Obstacle>(*obstacle.get()));
 	}
 
 }
