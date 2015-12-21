@@ -108,7 +108,7 @@ namespace App
 //
 //		logger->logBestPath(statePath);
 
-		statePath = pathOptimizer->optimizePath(statePath, map);
+		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
 
 		logger->logBestPath(statePath, true);
 		persister->savePath(statePath);

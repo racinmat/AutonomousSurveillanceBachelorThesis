@@ -18,9 +18,10 @@ namespace App
 			shared_ptr<CarLikeMotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
 			shared_ptr<LoggerInterface> logger);
 		virtual ~PathOptimizer();
-		vector<shared_ptr<State>> optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map);
+		vector<shared_ptr<State>> optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map);
 		pair<vector<shared_ptr<State>>, bool> optimizePathPart(int startIndex, int endIndex, shared_ptr<Map> map, vector<shared_ptr<State>> path);
 		virtual void setLogger(const shared_ptr<LoggerInterface> logger_interface);
+		vector<shared_ptr<State>> removeDuplicitStates(vector<shared_ptr<State>> path);
 
 	protected:
 		shared_ptr<DistanceResolver> distanceResolver;

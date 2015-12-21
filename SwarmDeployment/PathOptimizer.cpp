@@ -24,7 +24,7 @@ namespace App
 	}
 
 	//optimalizuje cestu pomocí Dubinsových manévrù
-	vector<shared_ptr<State>> PathOptimizer::optimizePath(vector<shared_ptr<State>> path, shared_ptr<Map> map)
+	vector<shared_ptr<State>> PathOptimizer::optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
@@ -213,4 +213,41 @@ namespace App
 		logger = logger_interface;
 	}
 
+	vector<shared_ptr<State>> PathOptimizer::removeDuplicitStates(vector<shared_ptr<State>> path)
+	{
+		vector<shared_ptr<State>> shorterPath = vector<shared_ptr<State>>();
+		bool first = true;
+		shared_ptr<State> previous;
+		for (auto state : path)
+		{
+			//pøeskoèení prvního
+			if (first)
+			{
+				first = false;
+				previous = state;
+				shorterPath.push_back(state);
+				continue;
+			}
+
+			//porovnání stejných vzdálenosti sousedních stavù
+			bool areStatesSame = true;
+			for (auto uav : state->getUavs())
+			{
+				auto loc = uav->getPointParticle()->getLocation();
+				auto previousLoc = previous->getUav(uav)->getPointParticle()->getLocation();
+				if (loc->getDistance(previousLoc) > 0.01)
+				{
+					areStatesSame = false;
+				}
+			}
+
+			if (!areStatesSame)
+			{
+				shorterPath.push_back(state);
+			}
+
+			previous = state;
+		}
+		return shorterPath;
+	}
 }

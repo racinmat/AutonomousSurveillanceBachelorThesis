@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-#include "Gui.h"					//zakomentovat pro noGui
+//include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
@@ -587,47 +587,66 @@ void testing()
 //	}
 
 //	narovnávání zkøížených cest 2
-	StateFactory factory(configuration);
-	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
+//	StateFactory factory(configuration);
+//	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
+//
+//	auto uav1 = make_shared<Uav>(make_shared<PointParticle>(0, 0, 0));
+//	auto uav2 = make_shared<Uav>(make_shared<PointParticle>(1, 0, 0));
+//	auto uav3 = make_shared<Uav>(make_shared<PointParticle>(2, 0, 0));
+//	auto uav4 = make_shared<Uav>(make_shared<PointParticle>(3, 0, 0));
+//	vector<shared_ptr<Uav>> uavs = {uav1, uav2, uav3, uav4};
+//
+//	auto state1 = factory.createState();
+//	state1->setUavs(uavs);
+//
+//	auto state2 = factory.createState(*state1.get());
+//	state2->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 1));
+//	state2->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 1));
+//	state2->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(2, 0.5));
+//	state2->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 1));
+//
+//	auto state3 = factory.createState(*state1.get());
+//	state3->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 2));
+//	state3->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(2, 1));
+//	state3->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 0.5));
+//	state3->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(2, 2));
+//
+//	auto state4 = factory.createState(*state1.get());
+//	state4->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 3));
+//	state4->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(3, 3));
+//	state4->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 3));
+//	state4->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(2, 3));
+//
+//	vector<shared_ptr<LinkedState>> linkedPath = { state1, state2, state3, state4 };
+//
+//	auto path = pathHandler.createStatePath(linkedPath);
+//
+//	path = pathHandler.straightenCrossingTrajectories(path);
+//		
+//	for (auto state : path)
+//	{
+//		cout << *state << endl;
+//	}
 
-	auto uav1 = make_shared<Uav>(make_shared<PointParticle>(0, 0, 0));
-	auto uav2 = make_shared<Uav>(make_shared<PointParticle>(1, 0, 0));
-	auto uav3 = make_shared<Uav>(make_shared<PointParticle>(2, 0, 0));
-	auto uav4 = make_shared<Uav>(make_shared<PointParticle>(3, 0, 0));
-	vector<shared_ptr<Uav>> uavs = {uav1, uav2, uav3, uav4};
-
-	auto state1 = factory.createState();
-	state1->setUavs(uavs);
-
-	auto state2 = factory.createState(*state1.get());
-	state2->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 1));
-	state2->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(1, 1));
-	state2->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(2, 0.5));
-	state2->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(3, 1));
-
-	auto state3 = factory.createState(*state1.get());
-	state3->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 2));
-	state3->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(2, 1));
-	state3->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 0.5));
-	state3->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(2, 2));
-
-	auto state4 = factory.createState(*state1.get());
-	state4->getUav(uav1)->getPointParticle()->setLocation(make_shared<Point>(0, 3));
-	state4->getUav(uav2)->getPointParticle()->setLocation(make_shared<Point>(3, 3));
-	state4->getUav(uav3)->getPointParticle()->setLocation(make_shared<Point>(4, 3));
-	state4->getUav(uav4)->getPointParticle()->setLocation(make_shared<Point>(2, 3));
-
-	vector<shared_ptr<LinkedState>> linkedPath = { state1, state2, state3, state4 };
-
-	auto path = pathHandler.createStatePath(linkedPath);
-
-	path = pathHandler.straightenCrossingTrajectories(path);
-		
+	vector<int> path = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+//	path.erase(path.begin() + 2);
+//	path.erase(path.begin() + 4);
+//	path.erase(path.begin() + 5);
+	int i = 0;
 	for (auto state : path)
 	{
-		cout << *state << endl;
+		if (state % 3 == 0)
+		{
+			path.erase(path.begin() + i);
+			i--;
+		}
+		i++;
 	}
 
+	for (auto state : path)
+	{
+		cout << state << endl;
+	}
 
 	cin.get();
 }
@@ -637,8 +656,8 @@ int main(int argc, char *argv[])
 //	LOG(DEBUG) << "start of app, testing log.";
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 //	returnValue = dubins_test(argc, argv);
 //	return returnValue;
 }

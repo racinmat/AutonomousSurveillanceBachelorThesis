@@ -83,8 +83,8 @@ namespace App
 		{
 			obstacle->rectangle->setX(obstacle->rectangle->getX() - sizeIncrement);
 			obstacle->rectangle->setY(obstacle->rectangle->getY() - sizeIncrement);
-			obstacle->rectangle->setWidth(obstacle->rectangle->getWidth() + sizeIncrement);
-			obstacle->rectangle->setHeight(obstacle->rectangle->getHeight() + sizeIncrement);
+			obstacle->rectangle->setWidth(obstacle->rectangle->getWidth() + 2 * sizeIncrement);
+			obstacle->rectangle->setHeight(obstacle->rectangle->getHeight() + 2 * sizeIncrement);
 		}
 	}
 
