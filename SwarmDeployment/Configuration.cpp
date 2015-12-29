@@ -44,7 +44,7 @@ namespace App
 		divisionCount = 0;
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
-		obstacleIncrement = 50;
+		obstacleIncrement = 35;
 	}
 
 	int Configuration::getAStarCellSize() const

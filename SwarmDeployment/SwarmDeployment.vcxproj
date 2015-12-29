@@ -688,7 +688,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="json_spirit\json_spirit.h" />
     <ClInclude Include="json_spirit\json_spirit_error_position.h" />

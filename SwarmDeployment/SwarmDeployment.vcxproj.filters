@@ -64,9 +64,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Header Files\Logging">
-      <UniqueIdentifier>{074993db-65b7-4337-b53e-c763d68c2f91}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Dubins">
       <UniqueIdentifier>{77ee5b80-80cb-40ae-9553-daa528be6810}</UniqueIdentifier>
     </Filter>
@@ -498,9 +495,6 @@
     </ClInclude>
     <ClInclude Include="Uav.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="easyloggingpp-9.80\src\easylogging++.h">
-      <Filter>Header Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="GuidingPathsCurrentPositions.h">
       <Filter>Header Files</Filter>
