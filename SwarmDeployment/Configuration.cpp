@@ -45,6 +45,7 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 35;
+		curvature = 2 * tan(PI / 150);
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -277,5 +278,10 @@ namespace App
 	int Configuration::getObstacleIncrement() const
 	{
 		return obstacleIncrement;
+	}
+
+	double Configuration::getCurvature() const
+	{
+		return curvature;
 	}
 }

@@ -3,7 +3,6 @@
 #include "Configuration.h"
 #include "MapFactory.h"
 #include "Path.h"
-#include "GuidingPathFactory.h"
 #include "MapProcessor.h"
 #include <iostream>
 #include <cstdio>
@@ -28,6 +27,7 @@
 
 #define PI 3.14159265358979323846
 #include "PathHandler.h"
+#include "CarLikeAnalyticMotionModel.h"
 
 using namespace std;
 using namespace boost::numeric;
@@ -41,9 +41,10 @@ namespace App
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
-		motionModel(make_shared<CarLikeMotionModel>(configuration)), 
+		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration)), 
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
-		persister(make_shared<Persister>())
+		persister(make_shared<Persister>()),
+		guidingPathFactory(make_shared<GuidingPathFactory>(logger))
 	{
 		pathHandler = make_shared<PathHandler>(collisionDetector);
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
@@ -78,8 +79,7 @@ namespace App
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-		GuidingPathFactory pathFactory = GuidingPathFactory(logger);
-		auto paths = pathFactory.createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
 
 		duration = (clock() - start) / double(CLOCKS_PER_SEC);
 
@@ -109,14 +109,13 @@ namespace App
 //		logger->logBestPath(statePath);
 
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
+		statePath = pathOptimizer->removeDuplicitStates(statePath);
 
 		logger->logBestPath(statePath, true);
 		persister->savePath(statePath);
 		persister->savePathToJson(statePath, map);
 
 //		testGui();
-
-		save_output();
 
 	}
 
@@ -812,19 +811,4 @@ namespace App
 		return min.first;
 	}
 
-	void Core::save_output()
-	{
-//		function[] = save_output()
-//			% SAVE_OUTPUT Summary of this function goes here
-//			%   Detailed explanation goes here
-//
-//			global params output
-//
-//			dir_path = strcat('output/', date);
-//			mkdir(dir_path)
-//			matfile = fullfile(dir_path, datestr(clock, 30));
-//			data = struct('params', params, 'output', output); %#ok
-//			save(matfile, 'data');
-//		end
-	}
 }

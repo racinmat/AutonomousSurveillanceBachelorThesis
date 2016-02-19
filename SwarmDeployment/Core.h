@@ -19,6 +19,8 @@
 #include "CollisionDetector.h"
 #include "PathHandler.h"
 #include "Persister.h"
+#include "GuidingPathFactory.h"
+#include "MotionModel.h"
 
 using namespace std;
 
@@ -55,7 +57,6 @@ namespace App
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state, bool allowSwarmSplitting);
 		shared_ptr<LinkedState> get_closest_node_to_goal(vector<shared_ptr<LinkedState>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map);
-		void save_output();
 
 	protected:
 		shared_ptr<LoggerInterface> logger;
@@ -66,10 +67,11 @@ namespace App
 		shared_ptr<AoICoverageResolver> coverageResolver;
 		shared_ptr<DistanceResolver> distanceResolver;
 		shared_ptr<PathOptimizer> pathOptimizer;
-		shared_ptr<CarLikeMotionModel> motionModel;
+		shared_ptr<MotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
 		shared_ptr<PathHandler> pathHandler;
 		shared_ptr<Persister> persister;
+		shared_ptr<GuidingPathFactory> guidingPathFactory;
 
 		void testGui();
 

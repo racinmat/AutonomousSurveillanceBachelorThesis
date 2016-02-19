@@ -11,7 +11,7 @@ namespace App
 
 
 	PathOptimizer::PathOptimizer(shared_ptr<DistanceResolver> distanceResolver, shared_ptr<Configuration> configuration, 
-		shared_ptr<CarLikeMotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
+		shared_ptr<MotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
 		shared_ptr<LoggerInterface> logger) :
 		distanceResolver(distanceResolver), configuration(configuration), motionModel(motionModel), collisionDetector(collisionDetector), 
 		logger(logger)

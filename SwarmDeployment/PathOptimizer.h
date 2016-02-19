@@ -15,7 +15,7 @@ namespace App
 	{
 	public:
 		PathOptimizer(shared_ptr<DistanceResolver> distanceResolver, shared_ptr<Configuration> configuration, 
-			shared_ptr<CarLikeMotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
+			shared_ptr<MotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
 			shared_ptr<LoggerInterface> logger);
 		virtual ~PathOptimizer();
 		vector<shared_ptr<State>> optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map);
@@ -26,7 +26,7 @@ namespace App
 	protected:
 		shared_ptr<DistanceResolver> distanceResolver;
 		shared_ptr<Configuration> configuration;
-		shared_ptr<CarLikeMotionModel> motionModel;
+		shared_ptr<MotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
 		shared_ptr<LoggerInterface> logger;
 		//pøedávám indexy, protože potøebuji iterovat od endu do konce pole

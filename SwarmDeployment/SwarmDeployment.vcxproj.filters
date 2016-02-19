@@ -342,6 +342,12 @@
     <ClCompile Include="json_spirit_v4.08\json_map_demo\json_map_demo.cpp">
       <Filter>Source Files\JsonExamples</Filter>
     </ClCompile>
+    <ClCompile Include="CarLikeAnalyticMotionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -633,6 +639,12 @@
     </ClInclude>
     <ClInclude Include="json_spirit\json_spirit_writer_template.h">
       <Filter>Header Files\JsonSpirit</Filter>
+    </ClInclude>
+    <ClInclude Include="CarLikeAnalyticMotionModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionModel.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="AoICoverageResolver.cpp" />
     <ClCompile Include="AStar.cpp" />
+    <ClCompile Include="CarLikeAnalyticMotionModel.cpp" />
     <ClCompile Include="CarLikeControl.cpp" />
     <ClCompile Include="CarLikeMotionModel.cpp" />
     <ClCompile Include="ClosedSet.cpp" />
@@ -353,6 +354,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoGui|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MotionModel.cpp" />
     <ClCompile Include="PathHandler.cpp" />
     <ClCompile Include="PathOptimizer.cpp" />
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
@@ -503,6 +505,7 @@
   <ItemGroup>
     <ClInclude Include="AoICoverageResolver.h" />
     <ClInclude Include="AStar.h" />
+    <ClInclude Include="CarLikeAnalyticMotionModel.h" />
     <ClInclude Include="CarLikeControl.h" />
     <ClInclude Include="CarLikeMotionModel.h" />
     <ClInclude Include="ClosedSet.h" />
@@ -699,6 +702,7 @@
     <ClInclude Include="json_spirit\json_spirit_writer.h" />
     <ClInclude Include="json_spirit\json_spirit_writer_options.h" />
     <ClInclude Include="json_spirit\json_spirit_writer_template.h" />
+    <ClInclude Include="MotionModel.h" />
     <ClInclude Include="PathHandler.h" />
     <ClInclude Include="PathOptimizer.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">

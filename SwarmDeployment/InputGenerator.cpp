@@ -14,6 +14,11 @@ namespace App {
 
 	vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs)
 	{
+		if (uavs.size() == 0)
+		{
+			throw "Uavs size is 0. No inputs are generated";
+		}
+
 		string stringRepresentation = argumentsToString(distance_of_new_nodes, max_turn, uavs);
 		if (isInCache(stringRepresentation))
 		{
