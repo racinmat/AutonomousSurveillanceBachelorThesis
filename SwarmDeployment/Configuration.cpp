@@ -27,7 +27,8 @@ namespace App
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
-		maxTurn = PI / 150;
+//		maxTurn = PI / 150;				//pro numerický model
+		maxTurn = 2 * tan(PI / 150);	//pro analytický model
 		timeStep = 0.05;
 		endTime = 0.5;
 		relativeDistanceMax = 80;
@@ -37,7 +38,7 @@ namespace App
 		checkFov = false;
 		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
 		stop = false;
-		textOutputEnabled = true;
+		textOutputEnabled = false;
 		narrowPassageDivisor = 1;
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
@@ -45,7 +46,6 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 35;
-		curvature = 2 * tan(PI / 150);
 	}
 
 	int Configuration::getAStarCellSize() const
@@ -280,8 +280,4 @@ namespace App
 		return obstacleIncrement;
 	}
 
-	double Configuration::getCurvature() const
-	{
-		return curvature;
-	}
 }

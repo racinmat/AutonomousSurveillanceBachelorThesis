@@ -217,9 +217,9 @@ namespace App
 			auto near_node = make_shared<App::LinkedState>(configuration->getInputCount());
 			auto uavs = vector<shared_ptr<Uav>>();
 			uavs.push_back(make_shared<App::Uav>(2, 20, 0));
-			uavs.push_back(make_shared<App::Uav>(2, 30, 0));
-			uavs.push_back(make_shared<App::Uav>(2, 40, 0));
-			uavs.push_back(make_shared<App::Uav>(2, 50, 0));
+//			uavs.push_back(make_shared<App::Uav>(2, 30, 0));
+//			uavs.push_back(make_shared<App::Uav>(2, 40, 0));
+//			uavs.push_back(make_shared<App::Uav>(2, 50, 0));
 			near_node->setUavs(uavs);
 
 			int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
@@ -277,7 +277,7 @@ namespace App
 
 					for (size_t j = 0; j < cycles; j++)
 					{
-						oldMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
+//						oldMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
 					}
 				}
 			}
@@ -289,7 +289,7 @@ namespace App
 			start = clock();
 			double count = 0;
 
-			for (size_t i = 0; i < inputs.size(); i++)
+			for (size_t i = 0; i < 1; i++)
 			{
 				auto input = inputs[i];
 				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
@@ -303,9 +303,12 @@ namespace App
 				{
 					auto uavPointParticle = uav->getPointParticle();
 
+					cout << "starting to calculate next states:" << endl;
+					cout << *uavPointParticle << endl;
 					for (size_t j = 0; j < cycles; j++)
 					{
 						newMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
+						cout << *uavPointParticle << endl;
 					}
 				}
 			}
@@ -314,8 +317,9 @@ namespace App
 
 			cout << to_string(duration) << " miliseconds to calculate analytic car like motion model" << endl;
 
-			cout << "old motion model curve" << oldMotionModel->getMinimalCurveRadius() << endl;
-			cout << "new motion model curve" << 1/newMotionModel->getMinimalCurveRadius() << endl;
+			cout << "inputs count: " << inputs.size() << endl;
+			cout << "old motion model curve " << oldMotionModel->getMinimalCurveRadius() << endl;
+			cout << "new motion model curve " << newMotionModel->getMinimalCurveRadius() << endl;
 
 		// toto nemodifikuje pole
 		//	auto ratios = vector<double>(5); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths

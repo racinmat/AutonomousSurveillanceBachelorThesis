@@ -41,7 +41,8 @@ namespace App
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
-		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)), 
+//		motionModel(make_shared<CarLikeMotionModel>(configuration, logger)), 
+		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)),
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
 		persister(make_shared<Persister>()),
 		guidingPathFactory(make_shared<GuidingPathFactory>(logger))
@@ -452,7 +453,7 @@ namespace App
 
 	shared_ptr<LinkedState> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
-		double max_turn = configuration->getCurvature();
+		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = nearState->getUavs().size();
 		int inputCount = configuration->getInputCount();
@@ -525,7 +526,7 @@ namespace App
 						index = i;
 					}
 				}
-				auto tempState = tempStates[index];
+				auto tempState = tempStates[index];	//temp state s nejmenší vzdáleností od náhodnì vybraného bodu z RRT-Path
 
 				if (!collisionDetector->isStateValid(nearState, tempState, map))
 				{

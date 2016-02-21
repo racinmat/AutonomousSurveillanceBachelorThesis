@@ -56,7 +56,6 @@ namespace App
 		virtual int getGoalElementSize() const;
 		virtual bool isSlowerMotionNearObstacles() const;
 		virtual int getObstacleIncrement() const;
-		virtual double getCurvature() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -97,7 +96,6 @@ namespace App
 		int goalElementSize;
 		bool slowerMotionNearObstacles;
 		int obstacleIncrement;
-		double curvature;
 	};
 
 }

@@ -14,10 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setScene(new QGraphicsScene());
 	drawer = make_shared<Ui::GuiDrawer>(ui->graphicsView, this, this, ui->text);
 	//	ui->graphicsView->setTransform();
-//	ui->graphicsView->scale(0.9, -0.9);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
+	ui->graphicsView->scale(0.9, -0.9);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
 										//Negative number in scale is switching direction of axis.
 										//Fuck, it also reverses texts.
-	ui->graphicsView->scale(2, -2);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
+//	ui->graphicsView->scale(2, -2);	//scaling of canvas, when I do not want 1000 to be 1000px, but only 900px. 
 }
 
 MainWindow::~MainWindow()
