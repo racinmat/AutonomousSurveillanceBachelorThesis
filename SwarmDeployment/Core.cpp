@@ -41,7 +41,7 @@ namespace App
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
-		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration)), 
+		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)), 
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
 		persister(make_shared<Persister>()),
 		guidingPathFactory(make_shared<GuidingPathFactory>(logger))
@@ -156,6 +156,7 @@ namespace App
 	{
 		this->logger = logger;
 		pathOptimizer->setLogger(logger);
+		motionModel->setLogger(logger);
 	}
 
 	void Core::logConfigurationChange()
@@ -413,8 +414,11 @@ namespace App
 
 			stateDistances.push_back(make_tuple(totalDistance, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váže
 			char buffer[1024];
-			sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->getIndex(), totalDistance);
-			logger->logText(buffer);
+			if (debug)
+			{
+				sprintf(buffer, "[debug] near node #%d found, distance to goal state: %f", tmp_node->getIndex(), totalDistance);
+				logger->logText(buffer);
+			}
 
 			sort(stateDistances.begin(), stateDistances.end(),
 				[](const tuple<double, shared_ptr<LinkedState>>& a,
@@ -448,7 +452,7 @@ namespace App
 
 	shared_ptr<LinkedState> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
-		double max_turn = configuration->getMaxTurn();
+		double max_turn = configuration->getCurvature();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = nearState->getUavs().size();
 		int inputCount = configuration->getInputCount();
@@ -532,7 +536,7 @@ namespace App
 				if (nearState->used_inputs[index])
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-					logger->logText("input with index" + to_string(index) + "is used");
+//					logger->logText("input with index" + to_string(index) + "is used");
 					continue;
 				}
 

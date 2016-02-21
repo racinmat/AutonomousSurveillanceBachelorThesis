@@ -6,8 +6,8 @@
 namespace App
 {
 
-	CarLikeMotionModel::CarLikeMotionModel(shared_ptr<Configuration> configuration) : 
-		configuration(configuration)
+	CarLikeMotionModel::CarLikeMotionModel(shared_ptr<Configuration> configuration, shared_ptr<LoggerInterface> logger) : 
+		configuration(configuration), logger(logger)
 	{
 	}
 
@@ -18,6 +18,9 @@ namespace App
 
 	void CarLikeMotionModel::calculateState(shared_ptr<PointParticle> state, shared_ptr<CarLikeControl> control)
 	{
+		double diffX = 0;
+		double diffY = 0;
+
 		double uav_size = configuration->getUavSize();
 		double time_step = configuration->getTimeStep();
 		double end_time = configuration->getEndTime();
@@ -31,10 +34,13 @@ namespace App
 			double dy = control->getStep() * sin(state->getRotation()->getZ());	//input není klasický bod se souøadnicemi X, Y, ale objekt se dvìma èísly, odpovídajícími dvìma vstupùm do car_like modelu
 
 			//calculate current state variables
+			diffX += dx * time_step;
+			diffY += dy * time_step;
 			state->getLocation()->changeX(dx * time_step);
 			state->getLocation()->changeY(dy * time_step);
 			state->getRotation()->changeZ(dPhi * time_step);
 		}
+		logger->logText("x: " + to_string(diffX) + ", y: " + to_string(diffY));
 	}
 
 	double CarLikeMotionModel::getCurveRadius(shared_ptr<CarLikeControl> control)
@@ -68,5 +74,10 @@ namespace App
 		}
 		totalRotation /= 20;	//nechápu, proè dìlit zrovna dvacítkou
 		return totalRotation;
+	}
+
+	void CarLikeMotionModel::setLogger(shared_ptr<LoggerInterface> logger)
+	{
+		this->logger = logger;
 	}
 }

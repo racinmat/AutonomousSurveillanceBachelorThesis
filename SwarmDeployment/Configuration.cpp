@@ -21,7 +21,7 @@ namespace App
 		rrtMinNodes = 1;
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
-		debug = true;
+		debug = false;
 		distanceOfNewNodes = 30;
 		guidingNearDist = 40;
 		numberOfSolutions = 10000;
@@ -37,7 +37,7 @@ namespace App
 		checkFov = false;
 		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
 		stop = false;
-		textOutputEnabled = false;
+		textOutputEnabled = true;
 		narrowPassageDivisor = 1;
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;

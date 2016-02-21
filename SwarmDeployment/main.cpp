@@ -256,8 +256,8 @@ namespace App
 			auto stateFactory = make_shared<StateFactory>(configuration);
 			size_t cycles = 10;
 
-			auto oldMotionModel = make_shared<CarLikeMotionModel>(configuration);
-			auto newMotionModel = make_shared<CarLikeAnalyticMotionModel>(configuration);
+			auto oldMotionModel = make_shared<CarLikeMotionModel>(configuration, make_shared<LoggerInterface>());
+			auto newMotionModel = make_shared<CarLikeAnalyticMotionModel>(configuration, make_shared<LoggerInterface>());
 
 			start = clock();
 
