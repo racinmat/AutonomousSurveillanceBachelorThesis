@@ -81,7 +81,6 @@ namespace App
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
 		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-
 		duration = (clock() - start) / double(CLOCKS_PER_SEC);
 
 		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
@@ -158,6 +157,7 @@ namespace App
 		this->logger = logger;
 		pathOptimizer->setLogger(logger);
 		motionModel->setLogger(logger);
+		collisionDetector->setLogger(logger);
 	}
 
 	void Core::logConfigurationChange()
@@ -182,6 +182,12 @@ namespace App
 		auto initialState = stateFactory->createState();
 		initialState->setUavs(map->getUavsStart());
 		states.push_back(initialState);
+
+		if (!collisionDetector->isInitialSwarmStateFeasible(initialState))
+		{
+			throw "Initial state in chosen map is not feasible.";
+		}
+
 
 		for (auto uav : initialState->getUavs())
 		{
@@ -457,6 +463,7 @@ namespace App
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
 		int uavCount = nearState->getUavs().size();
 		int inputCount = configuration->getInputCount();
+		bool debug = configuration->getDebug();
 		shared_ptr<LinkedState> newState;
 
 		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
@@ -531,13 +538,20 @@ namespace App
 				if (!collisionDetector->isStateValid(nearState, tempState, map))
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					if (debug)
+					{
+						logger->logText("state with with index " + to_string(index) + " is not valid");
+					}
 					continue;
 				}
 
 				if (nearState->used_inputs[index])
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
-//					logger->logText("input with index" + to_string(index) + "is used");
+					if (debug)
+					{
+						logger->logText("input with index " + to_string(index) + " is used");
+					}
 					continue;
 				}
 

@@ -10,9 +10,11 @@ namespace App
 	{
 		aStarCellSize = 50;
 		mapNumber = 5;
-		uavCount = 4;
-		worldHeight = 1000;
-		worldWidth = 1000;
+		uavCount = 3;
+//		worldHeight = 1000;
+//		worldWidth = 1000;
+		worldHeight = 800;	//k mapě 8
+		worldWidth = 800;
 		uavSize = 0.5;
 		samplingRadius = 60;
 		drawPeriod = 1;
@@ -29,10 +31,12 @@ namespace App
 		nearestNeighborMethod = NNMethod::Total;
 //		maxTurn = PI / 150;				//pro numerický model
 		maxTurn = 2 * tan(PI / 150);	//pro analytický model
-		timeStep = 0.05;
+		timeStep = 0.05;	//pouze k numerickému modelu
 		endTime = 0.5;
-		relativeDistanceMax = 80;
-		relativeDistanceMin = 10;
+//		relativeDistanceMax = 80;
+//		relativeDistanceMin = 10;
+		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
+		relativeDistanceMin = 200;		//pro mapu 8
 		localizationAngle = PI / 2;
 		requiredNeighbors = 1;
 		checkFov = false;
@@ -46,6 +50,15 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 35;
+
+		if (relativeDistanceMin > relativeDistanceMax)
+		{
+			throw "Configuration is invalid, minimal relative distance is bigger than maximal relative distance.";
+		}
+		if (rrtMinNodes > rrtMaxNodes)
+		{
+			throw "Configuration is invalid, minimal rrt nodes count is bigger than maximal relative nodes count.";
+		}
 	}
 
 	int Configuration::getAStarCellSize() const

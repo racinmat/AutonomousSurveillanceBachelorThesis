@@ -225,26 +225,47 @@ namespace App
 
 	bool CollisionDetector::isStateValid(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map)
 	{
+		bool debug = configuration->getDebug();
 		bool isStateValid = true;
 		if (!checkRelativeLocalization(newState))
 		{
 			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("node does not comply relative localization");
+			}
 		}
 		if (areTrajectoriesIntersecting(oldState, newState))
 		{
 			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("node has intersecting trajectories");
+			}
 		}
 		if (!insideWorldBounds(newState->getUavs(), configuration->getWorldWidth(), configuration->getWorldHeight()))
 		{
 			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("node is outside of world bounds");
+			}
 		}
 		if (!check_obstacle_vcollide_single(newState, map))
 		{
 			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("node has obstacles in vcollide");
+			}
 		}
 		if (!checkObstaclesInTrajectories(oldState, newState, map))
 		{
 			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("node has obstacles in trajectories");
+			}
 		}
 		return isStateValid;
 	}
@@ -301,6 +322,26 @@ namespace App
 
 		}
 		return true;
+	}
+
+	bool CollisionDetector::isInitialSwarmStateFeasible(shared_ptr<StateInterface> state)
+	{
+		bool debug = configuration->getDebug();
+		bool isStateValid = true;
+		if (!checkRelativeLocalization(state))
+		{
+			isStateValid = false;
+			if (debug)
+			{
+				logger->logText("initial swarm position does not comply relative localization");
+			}
+		}
+		return isStateValid;
+	}
+
+	void CollisionDetector::setLogger(shared_ptr<LoggerInterface> logger)
+	{
+		this->logger = logger;
 	}
 
 	bool CollisionDetector::collidesWithObstacles(Triangle3D triangle, shared_ptr<Map> map)
