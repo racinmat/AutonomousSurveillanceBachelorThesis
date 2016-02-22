@@ -77,7 +77,7 @@ namespace App
 
 			//filling goal in matrix with initial value
 			auto loc = uav.getPointParticle()->getLocation();
-			ublas::subrange(matrix, loc->getX() - halfCameraX, loc->getX() + halfCameraX, loc->getY() - halfCameraY, loc->getY() + halfCameraY) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
+			ublas::subrange(matrix, round(loc->getX() - halfCameraX), round(loc->getX() + halfCameraX), round(loc->getY() - halfCameraY), round(loc->getY() + halfCameraY)) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
 		}
 
 		//vytvoøení prùniku nenulových hodnot a úprava hodnot matice mapy
