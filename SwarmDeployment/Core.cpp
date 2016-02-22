@@ -112,6 +112,7 @@ namespace App
 		statePath = pathOptimizer->removeDuplicitStates(statePath);
 
 		logger->logBestPath(statePath, true);
+		logger->saveVisualMap();
 		persister->savePath(statePath);
 		persister->savePathToJson(statePath, map);
 

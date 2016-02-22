@@ -28,6 +28,7 @@ namespace App
 		virtual void logRandomStatesCenter(shared_ptr<Point> center);
 		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false);
 		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths);
+		virtual void saveVisualMap();
 	};
 
 }

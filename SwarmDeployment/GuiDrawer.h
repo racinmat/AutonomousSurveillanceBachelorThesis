@@ -31,6 +31,7 @@ namespace Ui
 		virtual void setConfiguration(shared_ptr<App::Configuration> configuration);
 		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false) override;
 		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths) override;
+		virtual void saveVisualMap() override;
 
 	protected:
 		QGraphicsView* view;

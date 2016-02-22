@@ -77,10 +77,10 @@ namespace App
 
 			//filling goal in matrix with initial value
 			auto loc = uav.getPointParticle()->getLocation();
-			int minX = max<int>(round(loc->getX() - halfCameraX), 0);
-			int maxX = min<int>(round(loc->getX() + halfCameraX), rowCount);
-			int minY = max<int>(round(loc->getY() - halfCameraY), 0);
-			int maxY = min<int>(round(loc->getY() + halfCameraY), columnCount);
+			int minX = max<int>(floor(loc->getX() - halfCameraX), 0);
+			int maxX = min<int>(floor(loc->getX() + halfCameraX), rowCount - 1);
+			int minY = max<int>(floor(loc->getY() - halfCameraY), 0);
+			int maxY = min<int>(floor(loc->getY() + halfCameraY), columnCount - 1);
 			ublas::subrange(matrix, minX, maxX, minY, maxY) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
 		}
 

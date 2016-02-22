@@ -437,6 +437,7 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateFactory.cpp" />
     <ClCompile Include="StateInterface.cpp" />
+    <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Uav.cpp" />
     <ClCompile Include="UavGroup.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
@@ -748,6 +749,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateFactory.h" />
     <ClInclude Include="StateInterface.h" />
+    <ClInclude Include="Strings.h" />
     <ClInclude Include="Uav.h" />
     <ClInclude Include="UavGroup.h" />
     <ClInclude Include="VCollide\AABB.H" />

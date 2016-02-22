@@ -60,4 +60,8 @@ namespace App
 	void LoggerInterface::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
 	}
+
+	void LoggerInterface::saveVisualMap()
+	{
+	}
 }

@@ -6,6 +6,7 @@
 #include <QtWidgets/QMessageBox>
 #include "mainwindow.h"
 #include "Configuration.h"
+#include "Strings.h"
 
 namespace Ui
 {
@@ -245,6 +246,14 @@ namespace Ui
 //			}
 //			mainWindow->updateView();
 //		}
+	}
+
+	void GuiDrawer::saveVisualMap()
+	{
+		QWidget *w = mainWindow;
+		static int count = 0;
+		QPixmap p = QPixmap::grabWidget(w);
+		p.save(QString::fromStdString("path-" + Strings::currentDateTime() + ".png"));
 	}
 
 	void GuiDrawer::clear()

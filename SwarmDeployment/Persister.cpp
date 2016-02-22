@@ -2,6 +2,7 @@
 #include <fstream>
 #include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
 #include <json_spirit_v4.08/json_spirit/json_spirit_writer.h>
+#include "Strings.h"
 
 //include <boost/algorithm/string.hpp>
 //include <boost/algorithm/string/split.hpp>
@@ -20,7 +21,7 @@ namespace App
 
 	void Persister::savePath(vector<shared_ptr<State>> path)
 	{
-		ofstream file = ofstream("path" + to_string(time(nullptr)) +  ".txt");
+		ofstream file = ofstream("path-" + Strings::currentDateTime() +  ".txt");
 		for (auto state : path) {
 			file << *state << ", " << endl;
 		}
@@ -30,7 +31,7 @@ namespace App
 
 	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
-		const string file_name("path" + to_string(time(nullptr)) + ".json");
+		const string file_name("path-" + Strings::currentDateTime() + ".json");
 
 		mObject content;
 
