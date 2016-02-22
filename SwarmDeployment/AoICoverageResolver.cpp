@@ -77,7 +77,11 @@ namespace App
 
 			//filling goal in matrix with initial value
 			auto loc = uav.getPointParticle()->getLocation();
-			ublas::subrange(matrix, round(loc->getX() - halfCameraX), round(loc->getX() + halfCameraX), round(loc->getY() - halfCameraY), round(loc->getY() + halfCameraY)) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
+			int minX = max<int>(round(loc->getX() - halfCameraX), 0);
+			int maxX = min<int>(round(loc->getX() + halfCameraX), rowCount);
+			int minY = max<int>(round(loc->getY() - halfCameraY), 0);
+			int maxY = min<int>(round(loc->getY() + halfCameraY), columnCount);
+			ublas::subrange(matrix, minX, maxX, minY, maxY) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
 		}
 
 		//vytvoøení prùniku nenulových hodnot a úprava hodnot matice mapy
