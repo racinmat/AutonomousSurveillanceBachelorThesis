@@ -132,4 +132,14 @@ namespace App
 		object["pointParticle"] = this->pointParticle->toJson();
 		return object;
 	}
+
+	shared_ptr<CarLikeControl> Uav::getPreviousInput() const
+	{
+		return previousInput;
+	}
+
+	void Uav::setPreviousInput(const shared_ptr<CarLikeControl> car_like_control)
+	{
+		previousInput = car_like_control;
+	}
 }

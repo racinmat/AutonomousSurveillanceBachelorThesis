@@ -164,7 +164,8 @@ namespace App
 					auto pointParticle = uav->getPointParticle();
 					if (distanceCompleted < dubins.getLength())
 					{
-						pointParticle->setDubinsManeuver(dubins.getTypeOfManeuver());	//pokud je maneuver null, poèítá se s tím, že UAV èeká na místì
+
+						//TODO: zde uložit podle pozice v Dubinsovì manévru vstup
 
 						auto newPosition = dubins.getPosition(distanceCompleted);
 

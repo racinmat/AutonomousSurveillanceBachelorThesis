@@ -192,10 +192,39 @@ public:
 		return radius;
 	}
 
-	inline myFloat getTotalTurning(){
+	inline myFloat getTotalTurning() {
 		return fabs(len1) + fabs(len3);
 	}
 
+	double getTrajectoryPart1Length() {
+		return fabs(len1) * radius;
+	}
+
+	double getTrajectoryPart2Length() {
+		if (isCCC)
+		{
+			return fabs(len2) * radius;
+		} else
+		{
+			return len2;
+		}
+	}
+
+	double getTrajectoryPart3Length() {
+		return fabs(len3) * radius;
+	}
+
+	bool isInPart1(double position) {
+		return position < getTrajectoryPart1Length();
+	}
+
+	bool isInPart2(double position) {
+		return !isInPart1(position) && position < (getTrajectoryPart1Length() + getTrajectoryPart2Length());
+	}
+
+	bool isInPart3(double position) {
+		return !isInPart1(position) && !isInPart2(position) && position < length;
+	}
 };
 
 } // namespace geom

@@ -28,13 +28,10 @@ namespace App
 		friend bool operator==(const PointParticle& lhs, const PointParticle& rhs);
 		friend bool operator!=(const PointParticle& lhs, const PointParticle& rhs);
 		mObject toJson() const;
-		virtual geom::TypeOfManeuver getDubinsManeuver() const;
-		virtual void setDubinsManeuver(const geom::TypeOfManeuver dubins_maneuver);
 
 	protected:
 		shared_ptr<Point> location;
 		shared_ptr<Point> rotation;
-		geom::TypeOfManeuver dubinsManeuver;	//type of dubins maneuver, used in replacing rrt path by dubins to allow changing frequency of path sampling.
 	};
 
 
