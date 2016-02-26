@@ -266,7 +266,7 @@ namespace App
 				auto input = inputs[i];
 				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
 																		// Simulation length
-				double end_time = configuration->getEndTime();
+				double end_time = configuration->getTimeStep();
 
 				//main simulation loop
 				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
@@ -294,7 +294,7 @@ namespace App
 				auto input = inputs[i];
 				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
 																			// Simulation length
-				double end_time = configuration->getEndTime();
+				double end_time = configuration->getTimeStep();
 
 				//main simulation loop
 				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost

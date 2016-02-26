@@ -15,7 +15,6 @@
 #include "DistanceResolver.h"
 #include "PathOptimizer.h"
 #include "CarLikeControl.h"
-#include "CarLikeMotionModel.h"
 #include "CollisionDetector.h"
 #include "PathHandler.h"
 #include "Persister.h"

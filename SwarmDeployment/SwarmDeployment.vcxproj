@@ -157,7 +157,6 @@
     <ClCompile Include="AStar.cpp" />
     <ClCompile Include="CarLikeAnalyticMotionModel.cpp" />
     <ClCompile Include="CarLikeControl.cpp" />
-    <ClCompile Include="CarLikeMotionModel.cpp" />
     <ClCompile Include="ClosedSet.cpp" />
     <ClCompile Include="CollisionDetector.cpp" />
     <ClCompile Include="Configuration.cpp" />
@@ -509,7 +508,6 @@
     <ClInclude Include="AStar.h" />
     <ClInclude Include="CarLikeAnalyticMotionModel.h" />
     <ClInclude Include="CarLikeControl.h" />
-    <ClInclude Include="CarLikeMotionModel.h" />
     <ClInclude Include="ClosedSet.h" />
     <ClInclude Include="CollisionDetector.h" />
     <ClInclude Include="Configuration.h" />

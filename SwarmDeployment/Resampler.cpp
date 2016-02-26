@@ -7,8 +7,9 @@ Resampler::Resampler(shared_ptr<Configuration> configuration) : configuration(co
 
 vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<State>> path)
 {
+	double timeStep = configuration->getTimeStep();
 	int sampleCount = path.size();
-	double totalTime = configuration->getEndTime() * sampleCount;	//total time to fly the path
+	double totalTime = timeStep * sampleCount;	//total time to fly the path
 	double currentFrequency = sampleCount / totalTime;	//samples per second
 	double maxFrequency = configuration->getMaxSampleFrequency();
 	double maxSampleCount = configuration->getMaxSampleCount();
@@ -18,8 +19,10 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 	double newTimeStep = 1 / newFrequency;
 
 	vector<shared_ptr<State>> newPath = vector<shared_ptr<State>>();
-	for (size_t currentTime = 0; currentTime < totalTime; currentTime += )	//promìnnou currentTime pojedu od 0 do konce a oèekávám, že pøevzorkováním trajektorii témìø nezmìním, UAV bude ve stejný èas na stejném místì
+	newPath.push_back(make_shared<State>(*path[0]));
+	for (size_t currentTime = newTimeStep; currentTime < totalTime; currentTime += newTimeStep)	//promìnnou currentTime pojedu od 0 do konce a oèekávám, že pøevzorkováním trajektorii témìø nezmìním, UAV bude ve stejný èas na stejném místì
 	{
+
 	}
 }
 

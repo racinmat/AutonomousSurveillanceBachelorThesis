@@ -130,7 +130,7 @@ namespace App
 			auto isDubinsShorter = pair.second;
 			double newLength = dubins.getLength();	//vrací délku celého manévru
 			double totalTime = newLength / maxSpeed;	//doba cesty
-			int stepCount = totalTime / configuration->getEndTime();	//poèet krokù, doba celého manévru / doba jednoho kroku
+			int stepCount = totalTime / configuration->getTimeStep();	//poèet krokù, doba celého manévru / doba jednoho kroku
 
 			if (isDubinsShorter && stepCount > largestStepCount)
 			{

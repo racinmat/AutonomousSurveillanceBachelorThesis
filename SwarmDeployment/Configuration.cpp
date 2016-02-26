@@ -34,8 +34,7 @@ namespace App
 //		maxTurn = PI / 150;				//pro numerický model
 //		maxTurn = 2 * tan(PI / 150);	//pro analytický model
 		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
-		timeStep = 0.05;	//pouze k numerickému modelu
-		endTime = 0.5;
+		timeStep = 0.5;
 //		relativeDistanceMax = 80;
 //		relativeDistanceMin = 10;
 		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
@@ -207,12 +206,12 @@ namespace App
 
 	double Configuration::getTimeStep() const
 	{
-		return timeStep;
+		return 0.0;
 	}
 
-	double Configuration::getEndTime() const
+	double Configuration::getTimeStep() const
 	{
-		return endTime;
+		return timeStep;
 	}
 
 	double Configuration::getRelativeDistanceMin() const

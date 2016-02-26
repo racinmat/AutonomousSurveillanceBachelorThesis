@@ -1,10 +1,10 @@
 #pragma once
 #include "State.h"
 #include "DistanceResolver.h"
-#include "CarLikeMotionModel.h"
 #include "CollisionDetector.h"
 #include "Dubins/geom/geom.h"
 #include "LoggerInterface.h"
+#include "MotionModel.h"
 
 namespace App
 {

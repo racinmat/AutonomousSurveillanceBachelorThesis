@@ -41,7 +41,6 @@ namespace App
 		virtual NNMethod getNearestNeighborMethod() const;
 		virtual double getMaxTurn() const;
 		virtual double getTimeStep() const;
-		virtual double getEndTime() const;
 		virtual double getRelativeDistanceMin() const;
 		virtual double getRelativeDistanceMax() const;
 		virtual double getLocalizationAngle() const;
@@ -79,7 +78,6 @@ namespace App
 		double guidedSamplingPropability;
 		NNMethod nearestNeighborMethod;
 		double timeStep;
-		double endTime;
 		double relativeDistanceMin;
 		double relativeDistanceMax;
 		double localizationAngle;
