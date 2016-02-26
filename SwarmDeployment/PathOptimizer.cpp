@@ -93,7 +93,7 @@ namespace App
 	//bool øíká, zda se cesta zmìnila
 	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathPart(int startIndex, int endIndex, shared_ptr<Map> map, vector<shared_ptr<State>> path)
 	{
-		vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;
+		vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;	//iterátory použity pouze k vykousnutí èásti cesty, kterou budu mìnit
 		vector<shared_ptr<State>>::const_iterator endIterator = path.begin() + endIndex + 1;
 		vector<shared_ptr<State>> pathPart(startIterator, endIterator);
 		auto start = pathPart[0];
@@ -161,18 +161,21 @@ namespace App
 				auto isDubinsShorter = pair.second;
 				if (isDubinsShorter)
 				{
+					auto pointParticle = uav->getPointParticle();
 					if (distanceCompleted < dubins.getLength())
 					{
+						pointParticle->setDubinsManeuver(dubins.getTypeOfManeuver());	//pokud je maneuver null, poèítá se s tím, že UAV èeká na místì
+
 						auto newPosition = dubins.getPosition(distanceCompleted);
 
-						uav->getPointParticle()->getLocation()->setX(newPosition.getPoint().getX());
-						uav->getPointParticle()->getLocation()->setY(newPosition.getPoint().getY());
-						uav->getPointParticle()->getRotation()->setZ(newPosition.getAngle());
+						pointParticle->getLocation()->setX(newPosition.getPoint().getX());
+						pointParticle->getLocation()->setY(newPosition.getPoint().getY());
+						pointParticle->getRotation()->setZ(newPosition.getAngle());
 					}
 					else
 					{	//uav, které už dorazilo do cíle, "poèká" na ostatní
-						uav->getPointParticle()->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
-						uav->getPointParticle()->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+						pointParticle->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
+						pointParticle->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
 					}
 				} else
 				{

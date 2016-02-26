@@ -434,6 +434,7 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="NodeSet.cpp" />
     <ClCompile Include="LinkedState.cpp" />
+    <ClCompile Include="Resampler.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateFactory.cpp" />
     <ClCompile Include="StateInterface.cpp" />
@@ -746,6 +747,7 @@
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="NodeSet.h" />
     <ClInclude Include="LinkedState.h" />
+    <ClInclude Include="Resampler.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateFactory.h" />
     <ClInclude Include="StateInterface.h" />

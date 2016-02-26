@@ -56,6 +56,8 @@ namespace App
 		virtual int getGoalElementSize() const;
 		virtual bool isSlowerMotionNearObstacles() const;
 		virtual int getObstacleIncrement() const;
+		virtual int getMaxSampleFrequency() const;
+		virtual int getMaxSampleCount() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -96,6 +98,8 @@ namespace App
 		int goalElementSize;
 		bool slowerMotionNearObstacles;
 		int obstacleIncrement;
+		int maxSampleFrequency;		//used for resampling of trajectories before exporting to csv, max frequency UAV is able to follow
+		int maxSampleCount;			//max count of samples that fit to UAV internal memory
 	};
 
 }

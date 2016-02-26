@@ -65,6 +65,16 @@ namespace App
 		return object;
 	}
 
+	geom::TypeOfManeuver PointParticle::getDubinsManeuver() const
+	{
+		return dubinsManeuver;
+	}
+
+	void PointParticle::setDubinsManeuver(const geom::TypeOfManeuver dubins_maneuver)
+	{
+		dubinsManeuver = dubins_maneuver;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
 	{
 		return os

@@ -15,7 +15,8 @@ namespace App
 //		worldWidth = 1000;
 		worldHeight = 800;	//k mapě 8
 		worldWidth = 800;
-		uavSize = 0.5;
+//		uavSize = 0.5;
+		uavSize = 50;		//k mapě 8, měřeno na velké UAV
 		samplingRadius = 60;
 		drawPeriod = 1;
 		inputSamplesDist = 1;
@@ -24,13 +25,15 @@ namespace App
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
 		debug = false;
-		distanceOfNewNodes = 30;
+//		distanceOfNewNodes = 30;
+		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
 		guidingNearDist = 40;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
 //		maxTurn = PI / 150;				//pro numerický model
-		maxTurn = 2 * tan(PI / 150);	//pro analytický model
+//		maxTurn = 2 * tan(PI / 150);	//pro analytický model
+		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
 		timeStep = 0.05;	//pouze k numerickému modelu
 		endTime = 0.5;
 //		relativeDistanceMax = 80;
@@ -50,6 +53,8 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 35;
+		maxSampleFrequency = 70;
+		maxSampleCount = 2700;
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -293,4 +298,13 @@ namespace App
 		return obstacleIncrement;
 	}
 
+	int Configuration::getMaxSampleFrequency() const
+	{
+		return maxSampleFrequency;
+	}
+
+	int Configuration::getMaxSampleCount() const
+	{
+		return maxSampleCount;
+	}
 }
