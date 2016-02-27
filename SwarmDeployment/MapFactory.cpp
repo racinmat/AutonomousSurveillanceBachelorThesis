@@ -114,7 +114,7 @@ namespace App
 
 		map8->addGoal(make_shared<Goal>(1, 450, 400, 350));
 		map8->addObstacle(make_shared<Obstacle>(200, 200, 100, 100));
-		map8->addObstacle(make_shared<Obstacle>(400, 400, 100, 100));
+		map8->addObstacle(make_shared<Obstacle>(300, 300, 100, 100));
 		maps.push_back(map8);
 
 		return maps;

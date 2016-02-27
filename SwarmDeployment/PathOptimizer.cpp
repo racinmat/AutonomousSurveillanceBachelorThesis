@@ -186,9 +186,12 @@ namespace App
 						pointParticle->getRotation()->setZ(newPosition.getAngle());
 					}
 					else
-					{	//uav, které už dorazilo do cíle, "poèká" na ostatní
+					{	
+						//uav, které už dorazilo do cíle, "poèká" na ostatní
 						pointParticle->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
 						pointParticle->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+
+						uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
 					}
 				} else
 				{

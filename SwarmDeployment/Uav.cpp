@@ -10,6 +10,7 @@ namespace App
 		pointParticle = make_shared<PointParticle>(*other.pointParticle.get());	//potøebuji naklonovat pouze polohu a rotaci, zbytek chci stejný
 		currentGuidingPathPositions = other.currentGuidingPathPositions;	//pøedávám pointer na tu samou instanci, zámìrnì, aby se current_index posouval i starým stavùm
 		reachedGoal = other.reachedGoal;
+		previousInput = other.previousInput;
 		id = other.id;
 	}
 

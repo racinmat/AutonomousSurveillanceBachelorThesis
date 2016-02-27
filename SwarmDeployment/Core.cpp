@@ -93,7 +93,6 @@ namespace App
 			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
 		} else
 		{
-			//todo: narvat do outputu pole všech nodes, a ty sem dát místo allNodes.
 			lastState = get_closest_node_to_goal(output->nodes, paths, map);
 		}
 
@@ -102,11 +101,7 @@ namespace App
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
 
 		logger->logBestPath(statePath);
-		persister->savePath(statePath);
-
-//		statePath = pathHandler->straightenCrossingTrajectories(statePath);	//pokud se køíží trajektorie, pak nemohu optimalizovat
-//
-//		logger->logBestPath(statePath);
+//		persister->savePath(statePath);
 
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
 		statePath = pathOptimizer->removeDuplicitStates(statePath);

@@ -35,7 +35,7 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 			shared_ptr<State> newState = stateFactory->createState(*previous);
 			for (auto uav : newState->getUavs())
 			{
-				auto input = newState->getUav(uav)->getPreviousInput();
+				auto input = next->getUav(uav)->getPreviousInput();
 				input->setStep(newStepSize * j);
 				motionModel->calculateState(uav->getPointParticle(), input);
 			}

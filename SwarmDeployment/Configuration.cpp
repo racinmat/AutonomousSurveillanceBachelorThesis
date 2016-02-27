@@ -17,7 +17,7 @@ namespace App
 		worldWidth = 800;
 //		uavSize = 0.5;
 		uavSize = 50;		//k mapě 8, měřeno na velké UAV
-		samplingRadius = 60;
+		samplingRadius = 60;		//poloměr kružnice, která je okolo bodu z A staru a okolo které se vybírá náhodný bod
 		drawPeriod = 1;
 		inputSamplesDist = 1;
 		inputSamplesPhi = 3;
@@ -27,19 +27,21 @@ namespace App
 		debug = false;
 //		distanceOfNewNodes = 30;
 		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
-		guidingNearDist = 40;
+//		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
+		guidingNearDist = 200;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
 //		maxTurn = PI / 150;				//pro numerický model
 //		maxTurn = 2 * tan(PI / 150);	//pro analytický model
 		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
-		timeStep = 0.5;
-//		relativeDistanceMax = 80;
+//		timeStep = 0.5;
+		timeStep = 1;
+		//		relativeDistanceMax = 80;
 //		relativeDistanceMin = 10;
 		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
 		relativeDistanceMin = 200;		//pro mapu 8
-		localizationAngle = PI / 2;
+		localizationAngle = (3 * PI) / 4;
 		requiredNeighbors = 1;
 		checkFov = false;
 		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
@@ -51,7 +53,7 @@ namespace App
 		divisionCount = 0;
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
-		obstacleIncrement = 35;
+		obstacleIncrement = 30 + relativeDistanceMin/5;			//virtuální zvětšení překážek
 		maxSampleFrequency = 70;
 		maxSampleCount = 2700;
 
