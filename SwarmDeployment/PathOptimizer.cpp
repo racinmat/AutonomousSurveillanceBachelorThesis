@@ -166,6 +166,18 @@ namespace App
 					{
 
 						//TODO: zde uložit podle pozice v Dubinsovì manévru vstup
+						switch (dubins.getCurrentManeuver(distanceCompleted))
+						{
+						case ManeuverPart::L:
+							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), configuration->getMaxTurn()));
+							break;
+						case ManeuverPart::S:
+							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), 0));
+							break;
+						case ManeuverPart::R: 
+							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), - configuration->getMaxTurn()));
+							break;
+						}
 
 						auto newPosition = dubins.getPosition(distanceCompleted);
 

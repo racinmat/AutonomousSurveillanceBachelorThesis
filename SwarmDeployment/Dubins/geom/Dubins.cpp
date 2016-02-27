@@ -287,6 +287,92 @@ Arc Dubins::getSecondArc() const {
 		return typeOfManeuver;
 	}
 
+	myFloat Dubins::getTotalTurning()
+	{
+		return fabs(len1) + fabs(len3);
+	}
+
+	double Dubins::getTrajectoryPart1Length()
+	{
+		return fabs(len1) * radius;
+	}
+
+	double Dubins::getTrajectoryPart2Length()
+	{
+		if (isCCC)
+		{
+			return fabs(len2) * radius;
+		} else
+		{
+			return len2;
+		}
+	}
+
+	double Dubins::getTrajectoryPart3Length()
+	{
+		return fabs(len3) * radius;
+	}
+
+	bool Dubins::isInPart1(double position)
+	{
+		return position < getTrajectoryPart1Length();
+	}
+
+	bool Dubins::isInPart2(double position)
+	{
+		return !isInPart1(position) && position < (getTrajectoryPart1Length() + getTrajectoryPart2Length());
+	}
+
+	bool Dubins::isInPart3(double position)
+	{
+		return !isInPart1(position) && !isInPart2(position) && position < length;
+	}
+
+	ManeuverPart Dubins::getCurrentManeuver(double position)
+	{
+		if (isInPart1(position))
+		{
+			//angleToLeft returns always positive number, it means turning left
+			//angleToRight returns always negative number, it means turning right
+			if (len1 > 0)
+			{
+				return ManeuverPart::L;
+			} else
+			{
+				return ManeuverPart::R;
+			}
+		}
+		if (isInPart2(position))
+		{
+			if (isCCC)
+			{
+				if (len2 > 0)
+				{
+					return ManeuverPart::L;
+				}
+				else
+				{
+					return ManeuverPart::R;
+				}
+			} else
+			{
+				return ManeuverPart::S;
+			}
+		}
+		if (isInPart3(position))
+		{
+			if (len3 > 0)
+			{
+				return ManeuverPart::L;
+			}
+			else
+			{
+				return ManeuverPart::R;
+			}
+		}
+		throw "outside of dubbins maneuver";
+	}
+
 	void print(myFloat n1, myFloat n2, myFloat n3, myFloat len) {
 	std::cout << "\tn1 = " << n1 << "\tn2 = " << n2 << "\tn3 = " << n3
 			<< "\tlen = " << len << std::endl;

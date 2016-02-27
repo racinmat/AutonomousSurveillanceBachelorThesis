@@ -18,6 +18,7 @@
 namespace geom{
 
 	enum class TypeOfManeuver {RSR, LSL, LSR, RSL, RLR, LRL};
+	enum class ManeuverPart { R, L, S};
 
 class Dubins: public Path {
 
@@ -192,39 +193,21 @@ public:
 		return radius;
 	}
 
-	inline myFloat getTotalTurning() {
-		return fabs(len1) + fabs(len3);
-	}
+	inline myFloat getTotalTurning();
 
-	double getTrajectoryPart1Length() {
-		return fabs(len1) * radius;
-	}
+	double getTrajectoryPart1Length();
 
-	double getTrajectoryPart2Length() {
-		if (isCCC)
-		{
-			return fabs(len2) * radius;
-		} else
-		{
-			return len2;
-		}
-	}
+	double getTrajectoryPart2Length();
 
-	double getTrajectoryPart3Length() {
-		return fabs(len3) * radius;
-	}
+	double getTrajectoryPart3Length();
 
-	bool isInPart1(double position) {
-		return position < getTrajectoryPart1Length();
-	}
+	bool isInPart1(double position);
 
-	bool isInPart2(double position) {
-		return !isInPart1(position) && position < (getTrajectoryPart1Length() + getTrajectoryPart2Length());
-	}
+	bool isInPart2(double position);
 
-	bool isInPart3(double position) {
-		return !isInPart1(position) && !isInPart2(position) && position < length;
-	}
+	bool isInPart3(double position);
+
+	ManeuverPart getCurrentManeuver(double position);
 };
 
 } // namespace geom
