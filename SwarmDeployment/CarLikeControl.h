@@ -13,6 +13,7 @@ namespace App
 		virtual double getTurn() const;
 		friend std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj);
 		CarLikeControl(const CarLikeControl& other);
+		virtual void setStep(const double step);
 
 	protected:
 		double step;	//krok vpøed

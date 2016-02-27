@@ -41,11 +41,11 @@ namespace App
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
 		coverageResolver(make_shared<AoICoverageResolver>()), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
-//		motionModel(make_shared<CarLikeMotionModel>(configuration, logger)), 
 		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)),
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
 		persister(make_shared<Persister>()),
-		guidingPathFactory(make_shared<GuidingPathFactory>(logger))
+		guidingPathFactory(make_shared<GuidingPathFactory>(logger)),
+		resampler(make_shared<Resampler>(configuration, stateFactory, motionModel))
 	{
 		pathHandler = make_shared<PathHandler>(collisionDetector);
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
@@ -115,6 +115,9 @@ namespace App
 		logger->saveVisualMap();
 		persister->savePath(statePath);
 		persister->savePathToJson(statePath, map);
+
+		auto newPath = resampler->resampleToMaxFrequency(statePath);
+		persister->savePathToJson(statePath, map, "resampled");
 
 //		testGui();
 
@@ -716,7 +719,7 @@ namespace App
 	{
 		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length
-		double end_time = configuration->getTimeStep();
+		double timeStep = configuration->getTimeStep();
 				
 		//main simulation loop
 		//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
@@ -729,7 +732,7 @@ namespace App
 			newNode->prev_inputs = inputs;
 		}
 
-		newNode->incrementTime(end_time);
+		newNode->incrementTime(timeStep);
 
 		return newNode;
 	}

@@ -28,6 +28,11 @@ namespace App
 	{
 	}
 
+	void CarLikeControl::setStep(const double step)
+	{
+		this->step = step;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj)
 	{
 		return os

@@ -32,6 +32,28 @@ namespace App
 	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		const string file_name("path-" + Strings::currentDateTime() + ".json");
+		savePathToJsonFile(path, map, file_name);
+	}
+
+	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map, string postfix)
+	{
+		const string file_name("path-" + Strings::currentDateTime() + "-" + postfix + ".json");
+		savePathToJsonFile(path, map, file_name);
+	}
+
+	vector<shared_ptr<State>> Persister::loadPath()
+	{
+//		ifstream file("path.txt");
+//		string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+//		vector<string> states;
+//		split(states, content, boost::is_any_of(",\nuavs: \n"));
+
+		//todo: implement
+		return vector<shared_ptr<State>>();
+	}
+
+	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
+	{
 
 		mObject content;
 
@@ -50,16 +72,4 @@ namespace App
 		os.close();
 
 	}
-
-	vector<shared_ptr<State>> Persister::loadPath()
-	{
-//		ifstream file("path.txt");
-//		string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-//		vector<string> states;
-//		split(states, content, boost::is_any_of(",\nuavs: \n"));
-
-		//todo: implement
-		return vector<shared_ptr<State>>();
-	}
-
 }

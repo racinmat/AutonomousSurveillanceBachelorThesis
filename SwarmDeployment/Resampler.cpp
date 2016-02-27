@@ -1,7 +1,8 @@
 #include "Resampler.h"
+#include "Configuration.h"
 
-
-Resampler::Resampler(shared_ptr<Configuration> configuration) : configuration(configuration)
+Resampler::Resampler(shared_ptr<Configuration> configuration, shared_ptr<StateFactory> stateFactory, shared_ptr<MotionModel> motionModel) : 
+	configuration(configuration), stateFactory(stateFactory), motionModel(motionModel)
 {
 }
 
@@ -16,24 +17,33 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 	int maxAvailableFrequency = maxSampleCount / totalTime;
 	double newFrequency = min<double>(maxAvailableFrequency, maxFrequency);	//pokud je maxFrequency vìtší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
 	int ratio = floor(newFrequency / currentFrequency);	//bude ratio krát více vzorkù
-	
+	int newStepSize = configuration->getDistanceOfNewNodes() / ratio;
+
 	//resampling will be only to more samples, because I do not need lower resolution
 	//resampling will be only by whole numbers, it is sufficient
 
 	vector<shared_ptr<State>> newPath = vector<shared_ptr<State>>();
-	newPath.push_back(make_shared<State>(*path[0]));
-	for (size_t currentTime = newTimeStep; currentTime < totalTime; currentTime += newTimeStep)	//promìnnou currentTime pojedu od 0 do konce a oèekávám, že pøevzorkováním trajektorii témìø nezmìním, UAV bude ve stejný èas na stejném místì
+	shared_ptr<State> previous;
+	shared_ptr<State> next;
+	for (size_t i = 1; i < path.size(); i++)
 	{
-		double nextStateTime;
-		int nextOldStateIndex = getNearestNextTimeOfOldPath(currentTime) / timeStep;
-		shared_ptr<State> previousOldState = path[nextOldStateIndex - 1];
-		for (auto uav : previousOldState->getUavs())
+		previous = path[i - 1];
+		next = path[i];
+		newPath.push_back(stateFactory->createState(*previous));
+		for (size_t j = 1; j < ratio - 1; j++)
 		{
-//			uav->getPointParticle()->getDubinsManeuver();
-//			geom::Dubins()
+			shared_ptr<State> newState = stateFactory->createState(*previous);
+			for (auto uav : newState->getUavs())
+			{
+				auto input = newState->getUav(uav)->getPreviousInput();
+				input->setStep(newStepSize * j);
+				motionModel->calculateState(uav->getPointParticle(), input);
+			}
+			newPath.push_back(newState);
 		}
-
+		newPath.push_back(stateFactory->createState(*next));
 	}
+	return newPath;
 }
 
 double Resampler::getNearestNextTimeOfOldPath(double time)

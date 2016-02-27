@@ -20,6 +20,7 @@
 #include "Persister.h"
 #include "GuidingPathFactory.h"
 #include "MotionModel.h"
+#include "Resampler.h"
 
 using namespace std;
 
@@ -71,6 +72,7 @@ namespace App
 		shared_ptr<PathHandler> pathHandler;
 		shared_ptr<Persister> persister;
 		shared_ptr<GuidingPathFactory> guidingPathFactory;
+		shared_ptr<Resampler> resampler;
 
 		void testGui();
 

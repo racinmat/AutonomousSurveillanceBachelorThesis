@@ -206,11 +206,6 @@ namespace App
 
 	double Configuration::getTimeStep() const
 	{
-		return 0.0;
-	}
-
-	double Configuration::getTimeStep() const
-	{
 		return timeStep;
 	}
 
