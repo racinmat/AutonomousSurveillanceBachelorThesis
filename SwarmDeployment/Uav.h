@@ -38,6 +38,7 @@ namespace App
 		virtual void setId(const int id);
 		virtual void setPointParticle(const shared_ptr<PointParticle> point_particle);
 		mObject toJson() const;
+		static shared_ptr<Uav> fromJson(mValue data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);
 

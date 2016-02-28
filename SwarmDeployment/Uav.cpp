@@ -135,6 +135,17 @@ namespace App
 		return object;
 	}
 
+	shared_ptr<Uav> Uav::fromJson(mValue data)
+	{
+		auto pointParticleData = data.get_obj().at("pointParticle").get_obj();
+		auto id = data.get_obj().at("id").get_int();
+		auto previousInputData = data.get_obj().at("previousInput").get_obj();
+		auto uav = make_shared<Uav>(PointParticle::fromJson(pointParticleData));
+		uav->id = id;
+		uav->previousInput = CarLikeControl::fromJson(previousInputData);
+		return uav;
+	}
+
 	CarLikeControl Uav::getPreviousInput() const
 	{
 		return previousInput;

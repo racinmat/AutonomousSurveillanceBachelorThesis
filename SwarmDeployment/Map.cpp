@@ -77,14 +77,18 @@ namespace App
 		return object;
 	}
 
-	shared_ptr<Map> Map::fromJson(mObject json)
+	shared_ptr<Map> Map::fromJson(mValue data)
 	{
 		auto map = make_shared<Map>();
-		//TODO: dodělat
-		//		for(auto goalData : json.at("goals"))
+		auto goals = data.get_obj().at("goals");
+		auto obstacles = data.get_obj().at("obstacles");
+		for (auto goal : goals.get_array())
 		{
-//			auto goal = Goal::
-//			map->addGoal(goal);
+			map->addGoal(Goal::fromJson(goal));
+		}
+		for (auto obstacle : obstacles.get_array())
+		{
+			map->addObstacle(Obstacle::fromJson(obstacle));
 		}
 		return map;
 	}

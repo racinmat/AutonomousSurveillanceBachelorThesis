@@ -19,7 +19,7 @@ namespace App
 		friend bool operator!=(const Goal& lhs, const Goal& rhs);
 		virtual shared_ptr<Point> getRandomPointInside() override;
 		friend size_t hash_value(const Goal& obj);
-		static shared_ptr<Goal> fromJson(mObject data);
+		static shared_ptr<Goal> fromJson(mValue data);
 		virtual shared_ptr<Rectangle> getRectangle() override;	//není const, protože GoalGroup implementace GoalInterfacu se zavoláním getteru lazy inicializuje. po vytvoøení builderu bude opìt moct být lazy
 		virtual shared_ptr<Goal> getConcreteGoal(shared_ptr<Point> location) override;
 		virtual shared_ptr<Point> getMiddle() override;

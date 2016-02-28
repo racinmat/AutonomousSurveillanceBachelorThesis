@@ -46,6 +46,13 @@ namespace App
 		return object;
 	}
 
+	CarLikeControl CarLikeControl::fromJson(mValue data)
+	{
+		auto step = data.get_obj().at("step").get_int();
+		auto turn = data.get_obj().at("step").get_real();
+		return CarLikeControl(step, turn);
+	}
+
 	std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj)
 	{
 		return os

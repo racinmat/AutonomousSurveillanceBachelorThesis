@@ -28,6 +28,7 @@ namespace App
 		friend bool operator==(const PointParticle& lhs, const PointParticle& rhs);
 		friend bool operator!=(const PointParticle& lhs, const PointParticle& rhs);
 		mObject toJson() const;
+		static shared_ptr<PointParticle> fromJson(mObject data);
 
 	protected:
 		shared_ptr<Point> location;

@@ -27,7 +27,7 @@ namespace App
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
 		mObject toJson() const;
-		static shared_ptr<Map> fromJson(mObject json);
+		static shared_ptr<Map> fromJson(mValue json);
 		void amplifyObstacles(int sizeIncrement);
 
 	protected:

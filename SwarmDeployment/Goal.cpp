@@ -30,10 +30,14 @@ namespace App
 		return make_shared<Point>(x, y);
 	}
 
-	shared_ptr<Goal> Goal::fromJson(mObject data)
+	shared_ptr<Goal> Goal::fromJson(mValue data)
 	{
-		//TODO: dodìlat
-		return make_shared<Goal>(0, 0, 0, 0);
+		auto height = data.get_obj().at("height").get_int();
+		auto width = data.get_obj().at("width").get_int();
+		auto location = data.get_obj().at("location");
+		auto x = location.get_obj().at("x").get_int();
+		auto y = location.get_obj().at("y").get_int();
+		return make_shared<Goal>(x, y, width, height);
 	}
 
 	shared_ptr<Rectangle> Goal::getRectangle()

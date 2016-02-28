@@ -20,6 +20,7 @@ namespace App
 		friend std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj);
 		virtual void setStep(const double step);
 		mObject toJson() const;
+		static CarLikeControl fromJson(mValue data);
 
 	protected:
 		double step;	//krok vpøed

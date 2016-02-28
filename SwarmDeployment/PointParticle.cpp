@@ -65,6 +65,16 @@ namespace App
 		return object;
 	}
 
+	shared_ptr<PointParticle> PointParticle::fromJson(mObject data)
+	{
+		auto location = data.at("location");
+		auto x = location.get_obj().at("x").get_real();
+		auto y = location.get_obj().at("y").get_real();
+		auto rotation = data.at("rotation");
+		auto z = location.get_obj().at("z").get_real();
+		return make_shared<PointParticle>(x, y, z);
+	}
+
 	std::ostream& operator<<(std::ostream& os, const PointParticle& obj)
 	{
 		return os
