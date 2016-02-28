@@ -191,7 +191,10 @@ namespace App
 						pointParticle->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
 						pointParticle->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
 
-						uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
+						if (end->getUav(uav)->getPreviousInput())
+						{
+							uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
+						}
 					}
 				} else
 				{
@@ -206,6 +209,8 @@ namespace App
 					}
 					uav->getPointParticle()->setLocation(currentOldState->getUav(uav)->getPointParticle()->getLocation());
 					uav->getPointParticle()->setRotation(currentOldState->getUav(uav)->getPointParticle()->getRotation());
+
+					uav->setPreviousInput(currentOldState->getUav(uav)->getPreviousInput());
 				}
 
 			}

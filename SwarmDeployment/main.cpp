@@ -256,7 +256,6 @@ namespace App
 			auto stateFactory = make_shared<StateFactory>(configuration);
 			size_t cycles = 10;
 
-//			auto oldMotionModel = make_shared<CarLikeMotionModel>(configuration, make_shared<LoggerInterface>());
 			auto newMotionModel = make_shared<CarLikeAnalyticMotionModel>(configuration, make_shared<LoggerInterface>());
 
 			start = clock();
@@ -318,7 +317,6 @@ namespace App
 			cout << to_string(duration) << " miliseconds to calculate analytic car like motion model" << endl;
 
 			cout << "inputs count: " << inputs.size() << endl;
-//			cout << "old motion model curve " << oldMotionModel->getMinimalCurveRadius() << endl;
 			cout << "new motion model curve " << newMotionModel->getMinimalCurveRadius() << endl;
 
 		// toto nemodifikuje pole

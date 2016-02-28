@@ -10,7 +10,10 @@ namespace App
 		pointParticle = make_shared<PointParticle>(*other.pointParticle.get());	//potøebuji naklonovat pouze polohu a rotaci, zbytek chci stejný
 		currentGuidingPathPositions = other.currentGuidingPathPositions;	//pøedávám pointer na tu samou instanci, zámìrnì, aby se current_index posouval i starým stavùm
 		reachedGoal = other.reachedGoal;
-		previousInput = other.previousInput;
+		if (other.previousInput)
+		{
+			previousInput = make_shared<CarLikeControl>(*other.previousInput);
+		}
 		id = other.id;
 	}
 
@@ -148,6 +151,9 @@ namespace App
 
 	void Uav::setPreviousInput(const shared_ptr<CarLikeControl> car_like_control)
 	{
-		previousInput = car_like_control;
+		if (car_like_control)
+		{
+			previousInput = car_like_control;
+		}
 	}
 }

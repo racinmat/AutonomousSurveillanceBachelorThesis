@@ -11,11 +11,11 @@ namespace App
 	{
 	public:
 		CarLikeControl(double step, double turn);
+		CarLikeControl(const CarLikeControl& other);
 		virtual ~CarLikeControl();
 		virtual double getStep() const;
 		virtual double getTurn() const;
 		friend std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj);
-		CarLikeControl(const CarLikeControl& other);
 		virtual void setStep(const double step);
 		mObject toJson() const;
 
