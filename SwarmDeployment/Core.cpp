@@ -79,30 +79,36 @@ namespace App
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
-		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-		duration = (clock() - start) / double(CLOCKS_PER_SEC);
+//		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+//		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+//		duration = (clock() - start) / double(CLOCKS_PER_SEC);
+//
+//		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
+//
+//		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
+//
+//		shared_ptr<LinkedState> lastState;
+//		if (output->goals_reached)
+//		{
+//			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+//		} else
+//		{
+//			lastState = get_closest_node_to_goal(output->nodes, paths, map);
+//		}
+//
+//		auto path = pathHandler->getPath(lastState);
+//
+//		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
+//
+//		logger->logBestPath(statePath);
+//		persister->savePathToJson(statePath, map, "before-dubins");
 
-		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
+		//instead of searching the way, I use saved way to be optimized
+		auto tuple = persister->loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
 
-		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
-
-		shared_ptr<LinkedState> lastState;
-		if (output->goals_reached)
-		{
-			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
-		} else
-		{
-			lastState = get_closest_node_to_goal(output->nodes, paths, map);
-		}
-
-		auto path = pathHandler->getPath(lastState);
-
-		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
-
-		logger->logBestPath(statePath);
-		persister->savePathToJson(statePath, map, "before-dubins");
-
+		vector<shared_ptr<State>> statePath;
+		shared_ptr<Map> loadedMap;
+		tie(statePath, loadedMap) = tuple;
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
 		statePath = pathOptimizer->removeDuplicitStates(statePath);
 

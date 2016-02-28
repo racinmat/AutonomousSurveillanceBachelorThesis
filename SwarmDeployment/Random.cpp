@@ -22,6 +22,6 @@ double Random::inRange(double from, double to)
 
 double Random::fromZeroToOne()
 {
-//	return (double(rand()) / (RAND_MAX));	//random number from 0 to 1
-	return 0.3;								//pro kontrolu vùèi matlabu
+	return (double(rand()) / (RAND_MAX));	//random number from 0 to 1
+//	return 0.3;								//pro kontrolu vùèi matlabu
 }

@@ -48,8 +48,8 @@ namespace App
 
 	CarLikeControl CarLikeControl::fromJson(mValue data)
 	{
-		auto step = data.get_obj().at("step").get_int();
-		auto turn = data.get_obj().at("step").get_real();
+		auto step = data.get_obj().at("step").get_real();
+		auto turn = data.get_obj().at("turn").get_real();
 		return CarLikeControl(step, turn);
 	}
 

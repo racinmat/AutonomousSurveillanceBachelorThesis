@@ -41,7 +41,7 @@ namespace App
 		savePathToJsonFile(path, map, file_name);
 	}
 
-	void Persister::loadPathFromJson(string name)
+	tuple<vector<shared_ptr<State>>, shared_ptr<Map>> Persister::loadPathFromJson(string name)
 	{
 		ifstream is(name);
 		mValue value;
@@ -55,6 +55,7 @@ namespace App
 		{
 			path.push_back(State::fromJson(stateData));
 		}
+		return tuple<vector<shared_ptr<State>>, shared_ptr<Map>>(path, map);
 	}
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
