@@ -18,7 +18,6 @@ namespace App
 		LinkedState(const LinkedState& other);
 		virtual ~LinkedState();
 		vector<bool> used_inputs; // na zaèátku pole false, o délce number_of_inputs
-		unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> prev_inputs;	//vstupy, které vedly do této node
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const LinkedState& obj);
 		virtual shared_ptr<Uav> getUav(shared_ptr<Uav> uav) const override;	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare

@@ -22,10 +22,6 @@ namespace App
 		{
 			previous = other.previous;
 		}
-		for (auto prev_input : other.prev_inputs)
-		{
-			prev_inputs[prev_input.first] = make_shared<CarLikeControl>(*prev_input.second.get());
-		}
 	}
 
 	LinkedState::~LinkedState()
@@ -128,11 +124,6 @@ namespace App
 		} else
 		{
 			os << " prev: empty" << endl;
-		}
-		os << " prev_inputs: ";
-		for (auto a : obj.prev_inputs)
-		{
-			os << "id " << a.first << ": " << *a.second.get() << endl;
 		}
 		return os;
 	}

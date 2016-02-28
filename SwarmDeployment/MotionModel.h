@@ -11,7 +11,7 @@ namespace App
 	{
 	public:
 		MotionModel();
-		virtual void calculateState(shared_ptr<PointParticle> state, shared_ptr<CarLikeControl> control) = 0;
+		virtual void calculateState(shared_ptr<Uav> state, shared_ptr<CarLikeControl> control) = 0;
 		virtual double getMinimalCurveRadius() = 0;	//calculates radius from max value from configuration
 		virtual double getCurveRadius(shared_ptr<CarLikeControl> control) = 0;
 		virtual ~MotionModel();

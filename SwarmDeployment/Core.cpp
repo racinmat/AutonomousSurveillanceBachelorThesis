@@ -112,7 +112,7 @@ namespace App
 		persister->savePathToJson(statePath, map);
 
 		auto newPath = resampler->resampleToMaxFrequency(statePath);
-		persister->savePathToJson(statePath, map, "resampled");
+		persister->savePathToJson(newPath, map, "resampled");
 
 //		testGui();
 
@@ -721,10 +721,7 @@ namespace App
 
 		for (auto uav : newNode->getUavs())
 		{
-			auto uavPointParticle = uav->getPointParticle();
-
-			motionModel->calculateState(uavPointParticle, inputs[*uav.get()]);
-			newNode->prev_inputs = inputs;
+			motionModel->calculateState(uav, inputs[*uav.get()]);
 		}
 
 		newNode->incrementTime(timeStep);

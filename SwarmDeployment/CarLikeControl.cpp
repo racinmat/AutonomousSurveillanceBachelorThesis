@@ -33,6 +33,14 @@ namespace App
 		this->step = step;
 	}
 
+	mObject CarLikeControl::toJson() const
+	{
+		mObject object;
+		object["step"] = this->step;
+		object["turn"] = this->turn;
+		return object;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj)
 	{
 		return os

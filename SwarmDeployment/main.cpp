@@ -307,7 +307,7 @@ namespace App
 					cout << *uavPointParticle << endl;
 					for (size_t j = 0; j < cycles; j++)
 					{
-						newMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
+						newMotionModel->calculateState(uav, input[*uav.get()]);
 						cout << *uavPointParticle << endl;
 					}
 				}

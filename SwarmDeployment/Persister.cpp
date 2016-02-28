@@ -52,6 +52,11 @@ namespace App
 		return vector<shared_ptr<State>>();
 	}
 
+	void Persister::loadPathFromJson(string name, shared_ptr<Map> map)
+	{
+
+	}
+
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
 	{
 

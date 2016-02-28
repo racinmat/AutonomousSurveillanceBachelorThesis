@@ -17,7 +17,7 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 	int maxAvailableFrequency = maxSampleCount / totalTime;
 	double newFrequency = min<double>(maxAvailableFrequency, maxFrequency);	//pokud je maxFrequency vìtší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
 	int ratio = floor(newFrequency / currentFrequency);	//bude ratio krát více vzorkù
-	int newStepSize = configuration->getDistanceOfNewNodes() / ratio;
+	double newStepSize = configuration->getDistanceOfNewNodes() / ratio;
 
 	//resampling will be only to more samples, because I do not need lower resolution
 	//resampling will be only by whole numbers, it is sufficient
@@ -36,10 +36,12 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 			for (auto uav : newState->getUavs())
 			{
 				auto input = next->getUav(uav)->getPreviousInput();
-				input->setStep(newStepSize * j);
+				input->setStep(newStepSize);
 				motionModel->calculateState(uav->getPointParticle(), input);
+				uav->setPreviousInput(input);
 			}
 			newPath.push_back(newState);
+			previous = newState;
 		}
 		newPath.push_back(stateFactory->createState(*next));
 	}

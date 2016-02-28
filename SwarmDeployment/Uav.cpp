@@ -131,6 +131,13 @@ namespace App
 		mObject object;
 		object["id"] = this->id;
 		object["pointParticle"] = this->pointParticle->toJson();
+		if (this->previousInput)
+		{
+			object["previousInput"] = this->previousInput->toJson();
+		} else
+		{
+			object["previousInput"] = NULL;
+		}
 		return object;
 	}
 
