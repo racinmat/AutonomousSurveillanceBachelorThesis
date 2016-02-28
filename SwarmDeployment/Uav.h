@@ -38,8 +38,8 @@ namespace App
 		virtual void setId(const int id);
 		virtual void setPointParticle(const shared_ptr<PointParticle> point_particle);
 		mObject toJson() const;
-		virtual shared_ptr<CarLikeControl> getPreviousInput() const;
-		virtual void setPreviousInput(const shared_ptr<CarLikeControl> car_like_control);
+		virtual CarLikeControl getPreviousInput() const;
+		virtual void setPreviousInput(const CarLikeControl car_like_control);
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;
@@ -47,7 +47,7 @@ namespace App
 		int id;
 		static int lastId;
 		shared_ptr<GuidingPathsCurrentPositions> currentGuidingPathPositions;
-		shared_ptr<CarLikeControl> previousInput;
+		CarLikeControl previousInput;
 	};
 
 

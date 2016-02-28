@@ -12,7 +12,7 @@ namespace App {
 	{
 	}
 
-	vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs)
+	vector<unordered_map<Uav, CarLikeControl, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs)
 	{
 		if (uavs.size() == 0)
 		{
@@ -31,9 +31,9 @@ namespace App {
 		return inputs;
 	}
 
-	vector<shared_ptr<CarLikeControl>> InputGenerator::generateOneUavInputs(int distance_of_new_nodes, double max_turn)
+	vector<CarLikeControl> InputGenerator::generateOneUavInputs(int distance_of_new_nodes, double max_turn)
 	{
-		vector<shared_ptr<CarLikeControl>> oneUavInputs = vector<shared_ptr<CarLikeControl>>();
+		vector<CarLikeControl> oneUavInputs = vector<CarLikeControl>();
 
 		for (size_t k = 0; k < input_samples_dist; k++)
 		{
@@ -41,7 +41,7 @@ namespace App {
 			{
 				double step = distance_of_new_nodes / pow(1.5, k);
 				double turn = -max_turn + 2 * m * max_turn / (input_samples_phi - 1);
-				shared_ptr<CarLikeControl> point = make_shared<CarLikeControl>(step, turn);
+				CarLikeControl point = CarLikeControl(step, turn);
 				oneUavInputs.push_back(point);
 			}
 		}

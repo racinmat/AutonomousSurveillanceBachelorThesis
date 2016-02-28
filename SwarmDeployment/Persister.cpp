@@ -52,9 +52,51 @@ namespace App
 		return vector<shared_ptr<State>>();
 	}
 
-	void Persister::loadPathFromJson(string name, shared_ptr<Map> map)
+	void Persister::loadPathFromJson(string name)
 	{
-
+		ifstream is(name);
+		mValue value;
+		read(is, value);
+		is.close();
+		auto obj = value.get_obj();
+		auto map = value.get_obj().at("map");
+		auto goals = map.get_obj().at("goals");
+		for(auto goal : goals.get_array())
+		{
+			auto height = goal.get_obj().at("height").get_int();
+			auto width = goal.get_obj().at("width").get_int();
+			auto location = goal.get_obj().at("location");
+			auto x = location.get_obj().at("x").get_int();
+			auto y = location.get_obj().at("y").get_int();
+		}
+		auto obstacles = map.get_obj().at("obstacles");
+		for (auto goal : obstacles.get_array())
+		{
+			auto height = goal.get_obj().at("height").get_int();
+			auto width = goal.get_obj().at("width").get_int();
+			auto location = goal.get_obj().at("location");
+			auto x = location.get_obj().at("x").get_int();
+			auto y = location.get_obj().at("y").get_int();
+		}
+		auto path = value.get_obj().at("path");
+		for (auto state : path.get_array())
+		{
+			for (auto uavData : state.get_obj())
+			{
+//				auto idString = uavData.first;
+				auto uav = uavData.second;
+				auto id = uav.get_obj().at("id").get_int();
+				auto pointParticle = uav.get_obj().at("pointParticle");
+				auto location = pointParticle.get_obj().at("location");
+				auto x = location.get_obj().at("x").get_real();
+				auto y = location.get_obj().at("y").get_real();
+				auto rotation = pointParticle.get_obj().at("rotation");
+				auto z = location.get_obj().at("z").get_real();
+				auto previousInput = uav.get_obj().at("previousInput");
+				auto step = previousInput.get_obj().at("step").get_int();
+				auto turn = previousInput.get_obj().at("step").get_real();
+			}
+		}
 	}
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)

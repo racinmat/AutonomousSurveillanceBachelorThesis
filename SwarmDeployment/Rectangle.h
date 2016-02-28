@@ -28,6 +28,7 @@ namespace App
 		friend size_t hash_value(const Rectangle& obj);
 		shared_ptr<Point> getMiddle();
 		mObject toJson() const;
+		static shared_ptr<Rectangle> fromJson(mObject data);
 
 	protected:
 		shared_ptr<Point> location;

@@ -101,7 +101,7 @@ namespace App
 		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
 
 		logger->logBestPath(statePath);
-//		persister->savePath(statePath);
+		persister->savePathToJson(statePath, map, "before-dubins");
 
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
 		statePath = pathOptimizer->removeDuplicitStates(statePath);
@@ -710,7 +710,7 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<LinkedState> Core::carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs)
+	shared_ptr<LinkedState> Core::carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, CarLikeControl, UavHasher> inputs)
 	{
 		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length

@@ -13,10 +13,10 @@ namespace App
 	public:
 		NTupletGenerator();
 		virtual ~NTupletGenerator();
-		vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> generateNTuplet(vector<shared_ptr<CarLikeControl>> usedChars, vector<shared_ptr<Uav>> tupletKeys);
+		vector<unordered_map<Uav, CarLikeControl, UavHasher>> generateNTuplet(vector<CarLikeControl> usedChars, vector<shared_ptr<Uav>> tupletKeys);
 
 	protected:
-		vector<unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>> generateNTuplet(vector<shared_ptr<CarLikeControl>> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
+		vector<unordered_map<Uav, CarLikeControl, UavHasher>> generateNTuplet(vector<CarLikeControl> usedChars, vector<shared_ptr<Uav>> tupletKeys, int index);
 	};
 
 }

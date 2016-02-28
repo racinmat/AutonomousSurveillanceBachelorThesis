@@ -10,6 +10,8 @@ namespace App
 	class CarLikeControl
 	{
 	public:
+
+		CarLikeControl();
 		CarLikeControl(double step, double turn);
 		CarLikeControl(const CarLikeControl& other);
 		virtual ~CarLikeControl();

@@ -77,6 +77,18 @@ namespace App
 		return object;
 	}
 
+	shared_ptr<Map> Map::fromJson(mObject json)
+	{
+		auto map = make_shared<Map>();
+		//TODO: dodělat
+		//		for(auto goalData : json.at("goals"))
+		{
+//			auto goal = Goal::
+//			map->addGoal(goal);
+		}
+		return map;
+	}
+
 	void Map::amplifyObstacles(int sizeIncrement)
 	{
 		for (auto obstacle : this->obstacles)

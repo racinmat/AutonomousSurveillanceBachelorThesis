@@ -9,6 +9,11 @@ namespace App
 		rectangle = std::make_shared<Rectangle>(x, y, width, height);
 	}
 
+	Goal::Goal(shared_ptr<Rectangle> rectangle)
+	{
+		this->rectangle = rectangle;
+	}
+
 	Goal::~Goal() // destructor
 	{
 	}
@@ -23,6 +28,12 @@ namespace App
 		int x = Random::inRange(rectangle->getX(), rectangle->getX() + rectangle->getWidth());
 		int y = Random::inRange(rectangle->getY(), rectangle->getY() + rectangle->getHeight());
 		return make_shared<Point>(x, y);
+	}
+
+	shared_ptr<Goal> Goal::fromJson(mObject data)
+	{
+		//TODO: dodìlat
+		return make_shared<Goal>(0, 0, 0, 0);
 	}
 
 	shared_ptr<Rectangle> Goal::getRectangle()

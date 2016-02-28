@@ -198,126 +198,126 @@ namespace App
 		//	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
 
 
-			// testování rychlosti motion modelu kvùli optimalizaci
-		auto configuration = make_shared<Configuration>();
-		auto core = make_shared<Core>(configuration);
-		//	MapFactory factory;
-		//	auto map = factory.createMaps(configuration->getUavCount())[0];
-		//	MapProcessor processor(make_shared<LoggerInterface>());
-		//	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-		//	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-		//	a -= a % configuration->getAStarCellSize();
-		//	a += (configuration->getAStarCellSize() / 2);
-		//	for(auto b : a)
-		//	{
-		//		cout << b << endl;
-		//	}
-
-			
-			auto near_node = make_shared<App::LinkedState>(configuration->getInputCount());
-			auto uavs = vector<shared_ptr<Uav>>();
-			uavs.push_back(make_shared<App::Uav>(2, 20, 0));
-//			uavs.push_back(make_shared<App::Uav>(2, 30, 0));
-//			uavs.push_back(make_shared<App::Uav>(2, 40, 0));
-//			uavs.push_back(make_shared<App::Uav>(2, 50, 0));
-			near_node->setUavs(uavs);
-
-			int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
-			double max_turn = configuration->getMaxTurn();
-			int input_samples_dist = configuration->getInputSamplesDist();
-			int input_samples_phi = configuration->getInputSamplesPhi();
-			int uavCount = near_node->getUavs().size();
-			int inputCount = configuration->getInputCount();
-			vector<shared_ptr<App::Point>> oneUavInputs = vector<shared_ptr<App::Point>>();
-			shared_ptr<App::State> new_node;
-			App::InputGenerator generator(input_samples_dist, input_samples_phi);
-
-
-			clock_t start;
-			double duration;
-
-
-			//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky).
-			//inputs jsou vstupy do modelu
-//			for (size_t i = 0; i < 10000; i++)
+//			// testování rychlosti motion modelu kvùli optimalizaci
+//		auto configuration = make_shared<Configuration>();
+//		auto core = make_shared<Core>(configuration);
+//		//	MapFactory factory;
+//		//	auto map = factory.createMaps(configuration->getUavCount())[0];
+//		//	MapProcessor processor(make_shared<LoggerInterface>());
+//		//	auto nodes = processor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+//		//	valarray<int> a = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+//		//	a -= a % configuration->getAStarCellSize();
+//		//	a += (configuration->getAStarCellSize() / 2);
+//		//	for(auto b : a)
+//		//	{
+//		//		cout << b << endl;
+//		//	}
+//
+//			
+//			auto near_node = make_shared<App::LinkedState>(configuration->getInputCount());
+//			auto uavs = vector<shared_ptr<Uav>>();
+//			uavs.push_back(make_shared<App::Uav>(2, 20, 0));
+////			uavs.push_back(make_shared<App::Uav>(2, 30, 0));
+////			uavs.push_back(make_shared<App::Uav>(2, 40, 0));
+////			uavs.push_back(make_shared<App::Uav>(2, 50, 0));
+//			near_node->setUavs(uavs);
+//
+//			int distance_of_new_nodes = configuration->getDistanceOfNewNodes();
+//			double max_turn = configuration->getMaxTurn();
+//			int input_samples_dist = configuration->getInputSamplesDist();
+//			int input_samples_phi = configuration->getInputSamplesPhi();
+//			int uavCount = near_node->getUavs().size();
+//			int inputCount = configuration->getInputCount();
+//			vector<shared_ptr<App::Point>> oneUavInputs = vector<shared_ptr<App::Point>>();
+//			shared_ptr<App::State> new_node;
+//			App::InputGenerator generator(input_samples_dist, input_samples_phi);
+//
+//
+//			clock_t start;
+//			double duration;
+//
+//
+//			//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky).
+//			//inputs jsou vstupy do modelu
+////			for (size_t i = 0; i < 10000; i++)
+////			{
+////				distance_of_new_nodes = 20 * (i % 10);	//10 rùzných vstupù do generátoru, abych zjistil rychlost s cache
+//				auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+//				//pokud mám 10 vstupù v cache u samotného NTupleGeneratoru, je to asi 2x pomalejší než bez cache. Takže pro samotný NTupleGenerator cache nepoužívat
+//				//místo toho použiju cache pro celé generování vstupù
+//				//asi 800 ms na 1000 bìhù a 10 vstupù
+//				//s cache asi 300 ms na 1000 bìhù a 10 vstupù
+////			}
+////			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+////
+////			cout << to_string(duration) << " miliseconds to make inputs 1000 times" << endl;
+//
+//
+//			auto stateFactory = make_shared<StateFactory>(configuration);
+//			size_t cycles = 10;
+//
+//			auto newMotionModel = make_shared<CarLikeAnalyticMotionModel>(configuration, make_shared<LoggerInterface>());
+//
+//			start = clock();
+//
+//			for (size_t i = 0; i < inputs.size(); i++)
 //			{
-//				distance_of_new_nodes = 20 * (i % 10);	//10 rùzných vstupù do generátoru, abych zjistil rychlost s cache
-				auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());	//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-				//pokud mám 10 vstupù v cache u samotného NTupleGeneratoru, je to asi 2x pomalejší než bez cache. Takže pro samotný NTupleGenerator cache nepoužívat
-				//místo toho použiju cache pro celé generování vstupù
-				//asi 800 ms na 1000 bìhù a 10 vstupù
-				//s cache asi 300 ms na 1000 bìhù a 10 vstupù
+//				auto input = inputs[i];
+//				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
+//																		// Simulation length
+//				double end_time = configuration->getTimeStep();
+//
+//				//main simulation loop
+//				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
+//
+//				for (auto uav : newNode->getUavs())
+//				{
+//					auto uavPointParticle = uav->getPointParticle();
+//
+//					for (size_t j = 0; j < cycles; j++)
+//					{
+////						oldMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
+//					}
+//				}
 //			}
 //			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 //
-//			cout << to_string(duration) << " miliseconds to make inputs 1000 times" << endl;
-
-
-			auto stateFactory = make_shared<StateFactory>(configuration);
-			size_t cycles = 10;
-
-			auto newMotionModel = make_shared<CarLikeAnalyticMotionModel>(configuration, make_shared<LoggerInterface>());
-
-			start = clock();
-
-			for (size_t i = 0; i < inputs.size(); i++)
-			{
-				auto input = inputs[i];
-				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
-																		// Simulation length
-				double end_time = configuration->getTimeStep();
-
-				//main simulation loop
-				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
-
-				for (auto uav : newNode->getUavs())
-				{
-					auto uavPointParticle = uav->getPointParticle();
-
-					for (size_t j = 0; j < cycles; j++)
-					{
-//						oldMotionModel->calculateState(uavPointParticle, input[*uav.get()]);
-					}
-				}
-			}
-			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
-
-			cout << to_string(duration) << " miliseconds to calculate numeric car like motion model" << endl;
-		
-
-			start = clock();
-			double count = 0;
-
-			for (size_t i = 0; i < 1; i++)
-			{
-				auto input = inputs[i];
-				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
-																			// Simulation length
-				double end_time = configuration->getTimeStep();
-
-				//main simulation loop
-				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
-
-				for (auto uav : newNode->getUavs())
-				{
-					auto uavPointParticle = uav->getPointParticle();
-
-					cout << "starting to calculate next states:" << endl;
-					cout << *uavPointParticle << endl;
-					for (size_t j = 0; j < cycles; j++)
-					{
-						newMotionModel->calculateState(uav, input[*uav.get()]);
-						cout << *uavPointParticle << endl;
-					}
-				}
-			}
-
-			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
-
-			cout << to_string(duration) << " miliseconds to calculate analytic car like motion model" << endl;
-
-			cout << "inputs count: " << inputs.size() << endl;
-			cout << "new motion model curve " << newMotionModel->getMinimalCurveRadius() << endl;
+//			cout << to_string(duration) << " miliseconds to calculate numeric car like motion model" << endl;
+//		
+//
+//			start = clock();
+//			double count = 0;
+//
+//			for (size_t i = 0; i < 1; i++)
+//			{
+//				auto input = inputs[i];
+//				auto newNode = stateFactory->createState(*near_node.get());	//copy constructor is called, makes deep copy
+//																			// Simulation length
+//				double end_time = configuration->getTimeStep();
+//
+//				//main simulation loop
+//				//todo: všude, kde používám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
+//
+//				for (auto uav : newNode->getUavs())
+//				{
+//					auto uavPointParticle = uav->getPointParticle();
+//
+//					cout << "starting to calculate next states:" << endl;
+//					cout << *uavPointParticle << endl;
+//					for (size_t j = 0; j < cycles; j++)
+//					{
+//						newMotionModel->calculateState(uav, input[*uav.get()]);
+//						cout << *uavPointParticle << endl;
+//					}
+//				}
+//			}
+//
+//			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//
+//			cout << to_string(duration) << " miliseconds to calculate analytic car like motion model" << endl;
+//
+//			cout << "inputs count: " << inputs.size() << endl;
+//			cout << "new motion model curve " << newMotionModel->getMinimalCurveRadius() << endl;
 
 		// toto nemodifikuje pole
 		//	auto ratios = vector<double>(5); //pomìry jednotlivých ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
@@ -704,6 +704,9 @@ namespace App
 //			cout << state << endl;
 //		}
 
+		Persister persister = Persister();
+		persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
+
 		cin.get();
 	}
 }
@@ -712,8 +715,8 @@ int main(int argc, char *argv[])
 {
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }

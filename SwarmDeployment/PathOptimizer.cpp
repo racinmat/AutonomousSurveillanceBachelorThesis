@@ -121,7 +121,7 @@ namespace App
 			return make_pair(pathPart, false); // pùvodní cesta
 		}
 
-		//nalezení nejdelšího dubbinse ze všech, které jsou kratší než pùvodní trajektorie, podle nìj se bude diskretizovat
+		//nalezení nejdelšího dubbinse z cest pro všechna UAV, které jsou kratší než pùvodní trajektorie, podle nìj se bude diskretizovat
 		int largestStepCount = 0;
 		for (auto uav : end->getUavs())
 		{
@@ -130,7 +130,7 @@ namespace App
 			auto isDubinsShorter = pair.second;
 			double newLength = dubins.getLength();	//vrací délku celého manévru
 			double totalTime = newLength / maxSpeed;	//doba cesty
-			int stepCount = totalTime / configuration->getTimeStep();	//poèet krokù, doba celého manévru / doba jednoho kroku
+			int stepCount = floor(totalTime / configuration->getTimeStep());	//poèet krokù, doba celého manévru / doba jednoho kroku
 
 			if (isDubinsShorter && stepCount > largestStepCount)
 			{
@@ -150,9 +150,8 @@ namespace App
 		for (size_t i = 0; i <= stepCount; i++)
 		{
 			auto newState = make_shared<State>(*previousState.get());
-			double distanceCompleted = i * configuration->getDistanceOfNewNodes();	//uražená cesta v dubinsovì manévru
+			double distanceCompleted = i * maxSpeed;	//uražená cesta v dubinsovì manévru
 
-			unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs = unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher>();
 			//zde se pro každé UAV vybere podle typu Dubinsova manévru vhodný input pro motion model
 			for (auto uav : newState->getUavs())
 			{
@@ -169,13 +168,13 @@ namespace App
 						switch (dubins.getCurrentManeuver(distanceCompleted))
 						{
 						case ManeuverPart::L:
-							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), configuration->getMaxTurn()));
+							uav->setPreviousInput(CarLikeControl(maxSpeed, configuration->getMaxTurn()));
 							break;
 						case ManeuverPart::S:
-							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), 0));
+							uav->setPreviousInput(CarLikeControl(maxSpeed, 0));
 							break;
 						case ManeuverPart::R: 
-							uav->setPreviousInput(make_shared<CarLikeControl>(configuration->getDistanceOfNewNodes(), - configuration->getMaxTurn()));
+							uav->setPreviousInput(CarLikeControl(maxSpeed, - configuration->getMaxTurn()));
 							break;
 						}
 
@@ -191,10 +190,7 @@ namespace App
 						pointParticle->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
 						pointParticle->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
 
-						if (end->getUav(uav)->getPreviousInput())
-						{
-							uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
-						}
+						uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
 					}
 				} else
 				{

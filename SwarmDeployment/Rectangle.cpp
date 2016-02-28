@@ -61,6 +61,13 @@ namespace App
 		return object;
 	}
 
+	shared_ptr<Rectangle> Rectangle::fromJson(mObject data)
+	{
+		//TODO: dodělat
+//		auto rectangle = make_shared<Rectangle>(data.at("location").get_obj("x"), data.at("location").get_obj("y"), data.at("width"), data.at("height"));
+		return make_shared<Rectangle>(0, 0, 0, 0);
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

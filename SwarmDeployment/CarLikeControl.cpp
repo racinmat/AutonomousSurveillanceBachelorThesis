@@ -3,6 +3,11 @@
 
 namespace App
 {
+	CarLikeControl::CarLikeControl()
+	{
+		step = 0;
+		turn = 0;
+	}
 
 	CarLikeControl::CarLikeControl(double step, double turn) : 
 		step(step), turn(turn)

@@ -15,7 +15,7 @@ namespace App
 		void savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map);
 		void savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map, string postfix);
 		vector<shared_ptr<State>> loadPath();
-		void loadPathFromJson(string name, shared_ptr<Map> map);
+		void loadPathFromJson(string name);
 	private:
 		void savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string name);
 	};

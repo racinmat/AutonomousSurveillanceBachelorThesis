@@ -52,7 +52,7 @@ namespace App
 		shared_ptr<Point> random_state(int x1, int y1, int x2, int y2, shared_ptr<Map> map);
 		bool check_inside_obstacle(shared_ptr<Point> point, shared_ptr<Map> map);
 		shared_ptr<Point> random_state_polar(shared_ptr<Point> center, shared_ptr<Map> map, double radius_min, double radius_max);
-		shared_ptr<LinkedState> carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, shared_ptr<CarLikeControl>, UavHasher> inputs);
+		shared_ptr<LinkedState> carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, CarLikeControl, UavHasher> inputs);
 		double getDistanceOfNewNodes(shared_ptr<Node> node);
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state, bool allowSwarmSplitting);
