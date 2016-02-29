@@ -21,8 +21,8 @@ namespace App
 
 		for (auto uav : first->getUavs())
 		{
-			auto randomState = second[*uav.get()];
-			distances[*uav.get()] = uav->getPointParticle()->getLocation()->getDistance(randomState);
+			auto anotherState = second[*uav.get()];
+			distances[*uav.get()] = uav->getPointParticle()->getLocation()->getDistance(anotherState);
 		}
 
 		switch (nn_method)
@@ -46,6 +46,18 @@ namespace App
 
 	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, shared_ptr<StateInterface> second)
 	{
+		//optimization for NNMethod::Total, is 7.5 times faster than general method.
+		if (configuration->getNearestNeighborMethod() == NNMethod::Total)
+		{
+			double distance = 0;
+			for (auto uav : first->getUavs())
+			{
+				auto uavInSecondState = second->getUav(uav)->getPointParticle()->getLocation();
+				distance += uav->getPointParticle()->getLocation()->getDistance(uavInSecondState);
+			}
+			return distance;
+		}
+
 		auto secondMap = unordered_map<Uav, shared_ptr<Point>, UavHasher>();
 		for (auto uav : second->getUavs())
 		{

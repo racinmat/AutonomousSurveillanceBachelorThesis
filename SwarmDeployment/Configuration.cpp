@@ -54,7 +54,7 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30 + relativeDistanceMin/5;			//virtuální zvětšení překážek
-		maxSampleFrequency = 70;
+		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli
 		maxSampleCount = 2700;
 
 		if (relativeDistanceMin > relativeDistanceMax)

@@ -29,7 +29,7 @@ namespace App
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
-		int stopLimit = 500;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
+		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
 		int notImprovedCount = 0;
 
 		while (notImprovedCount < stopLimit)
@@ -73,10 +73,11 @@ namespace App
 				newPath.insert(newPath.end(), pathMiddlePart.begin(), pathMiddlePart.end());
 				newPath.insert(newPath.end(), pathLastPart.begin(), pathLastPart.end());
 
-				if (distanceResolver->getLengthOfPath(newPath) < pathLength)
+				double newPathDistance = distanceResolver->getLengthOfPath(newPath);
+				if (newPathDistance < pathLength)
 				{
 					notImprovedCount = 0;
-					pathLength = distanceResolver->getLengthOfPath(newPath);
+					pathLength = newPathDistance;
 					path = newPath;
 				} else
 				{
@@ -99,7 +100,7 @@ namespace App
 		auto start = pathPart[0];
 		auto end = pathPart[pathPart.size() - 1];
 
-		double maxSpeed = configuration->getDistanceOfNewNodes();	//také reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu
+		double maxSpeed;	//reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu, tedy step v CarLikeControlu
 		//pøedpoèítám si délky všech dubinsù pøedem
 		unordered_map<Uav, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<Uav, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
 		bool areAllDubinsTrajectoriesLonger = true;
@@ -125,6 +126,8 @@ namespace App
 		int largestStepCount = 0;
 		for (auto uav : end->getUavs())
 		{
+			maxSpeed = uav->getPreviousInput().getStep();
+
 			auto pair = dubinsTrajectories[*uav.get()];
 			auto dubins = pair.first;
 			auto isDubinsShorter = pair.second;
@@ -207,6 +210,8 @@ namespace App
 					uav->getPointParticle()->setRotation(currentOldState->getUav(uav)->getPointParticle()->getRotation());
 
 					uav->setPreviousInput(currentOldState->getUav(uav)->getPreviousInput());
+
+					auto y = uav->getPointParticle()->getLocation()->getY();
 				}
 
 			}

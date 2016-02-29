@@ -170,6 +170,30 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
+	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
+	{
+		int width = 1;
+		if (optimization)
+		{
+			width = 2;
+		}
+
+		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
+		{
+			auto uav = nearNode->getUavs()[i];
+			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
+			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+		}
+
+		//		QString time = QString("%1").arg(newNode->getTime());
+		//		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
+		//		addText(time, loc->getX(), loc->getY());
+
+		mainWindow->updateView();
+	}
+
 	void GuiDrawer::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
 	{
 //		for (auto pair : randomStates)

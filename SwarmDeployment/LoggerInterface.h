@@ -24,6 +24,7 @@ namespace App
 		virtual void logText(string string);
 		virtual void logText(char const string[]);
 		virtual void logNewState(shared_ptr<LinkedState> nearNode, shared_ptr<LinkedState> newNode, bool optimization = false);
+		virtual void logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization = false);
 		virtual void logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates);
 		virtual void logRandomStatesCenter(shared_ptr<Point> center);
 		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false);

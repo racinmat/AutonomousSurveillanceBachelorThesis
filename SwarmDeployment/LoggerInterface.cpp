@@ -45,6 +45,10 @@ namespace App
 	{
 	}
 
+	void LoggerInterface::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
+	{
+	}
+
 	void LoggerInterface::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
 	{
 	}

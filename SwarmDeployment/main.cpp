@@ -705,7 +705,22 @@ namespace App
 //		}
 
 		Persister persister = Persister();
-		persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
+		auto tuple = persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-29-12-19-16-resampled.json");
+
+		vector<shared_ptr<State>> path;
+		shared_ptr<Map> map;
+		tie(path, map) = tuple;
+
+		auto start = clock();
+
+		DistanceResolver resolver = DistanceResolver(make_shared<Configuration>());
+		for (size_t i = 0; i < 100; i++)
+		{
+			resolver.getLengthOfPath(path);
+		}
+		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+
+		cout << to_string(duration) << " miliseconds to calculate distance" << endl;
 
 		cin.get();
 	}
@@ -715,8 +730,8 @@ int main(int argc, char *argv[])
 {
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }

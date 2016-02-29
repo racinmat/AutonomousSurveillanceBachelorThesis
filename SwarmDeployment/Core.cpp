@@ -109,16 +109,18 @@ namespace App
 		vector<shared_ptr<State>> statePath;
 		shared_ptr<Map> loadedMap;
 		tie(statePath, loadedMap) = tuple;
+
+
+		statePath = resampler->resampleToMaxFrequency(statePath);
+		persister->savePathToJson(statePath, map, "resampled");
+
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
 		statePath = pathOptimizer->removeDuplicitStates(statePath);
 
 		logger->logBestPath(statePath, true);
 		logger->saveVisualMap();
 		persister->savePath(statePath);
-		persister->savePathToJson(statePath, map);
-
-		auto newPath = resampler->resampleToMaxFrequency(statePath);
-		persister->savePathToJson(newPath, map, "resampled");
+		persister->savePathToJson(statePath, map, "optimized");
 
 //		testGui();
 
