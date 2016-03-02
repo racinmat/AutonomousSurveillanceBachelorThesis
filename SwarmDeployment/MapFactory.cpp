@@ -1,6 +1,6 @@
 ﻿#include "MapFactory.h"
 #include <memory>
-#include "Uav.h"
+#include "UavForRRT.h"
 
 #define PI 3.14159265358979323846
 
@@ -16,7 +16,7 @@ namespace App
 		shared_ptr<Map> map0 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map0->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI/2));
+			map0->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI/2));
 		}
 		map0->addGoal(make_shared<Goal>(651, 701, 348, 148));
 		map0->addObstacle(make_shared<Obstacle>(0, 401, 698, 48));
@@ -29,7 +29,7 @@ namespace App
 		shared_ptr<Map> map1 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map1->addUavStart(make_shared<Uav>(431 + i * uavDistance, 501, PI / 2));
+			map1->addUavStart(make_shared<UavForRRT>(431 + i * uavDistance, 501, PI / 2));
 		}
 		map1->addGoal(make_shared<Goal>(1, 426, 149, 148));
 		map1->addGoal(make_shared<Goal>(851, 426, 149, 148));
@@ -42,7 +42,7 @@ namespace App
 		shared_ptr<Map> map2 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map2->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
+			map2->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map2->addGoal(make_shared<Goal>(651, 850, 230, 100));
 		map2->addGoal(make_shared<Goal>(651, 550, 230, 100));
@@ -58,7 +58,7 @@ namespace App
 		shared_ptr<Map> map3 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map3->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
+			map3->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map3->addGoal(make_shared<Goal>(701, 701, 150, 150));
 		map3->addObstacle(make_shared<Obstacle>(301, 301, 198, 398));
@@ -67,7 +67,7 @@ namespace App
 		shared_ptr<Map> map4 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map4->addUavStart(make_shared<Uav>(410 + i * uavDistance, 50, PI / 2));
+			map4->addUavStart(make_shared<UavForRRT>(410 + i * uavDistance, 50, PI / 2));
 		}
 		map4->addGoal(make_shared<Goal>(301, 500, 398, 400));
 		map4->addObstacle(make_shared<Obstacle>(300, 300, 400, 200));
@@ -76,7 +76,7 @@ namespace App
 		shared_ptr<Map> map5 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map5->addUavStart(make_shared<Uav>(430 + i * uavDistance, 50, PI / 2));
+			map5->addUavStart(make_shared<UavForRRT>(430 + i * uavDistance, 50, PI / 2));
 		}
 		map5->addGoal(make_shared<Goal>(385, 801, 230, 100));
 		map5->addGoal(make_shared<Goal>(301, 521, 150, 180));
@@ -90,7 +90,7 @@ namespace App
 		shared_ptr<Map> map6 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map6->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
+			map6->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map6->addGoal(make_shared<Goal>(701, 701, 150, 150));
 		map6->addObstacle(make_shared<Obstacle>(400, 0, 200, 470));
@@ -102,15 +102,15 @@ namespace App
 		shared_ptr<Map> map7 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map7->addUavStart(make_shared<Uav>(80 + i * uavDistance, 50, PI / 2));
+			map7->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI / 2));
 		}
 		map7->addGoal(make_shared<Goal>(200, 50, 150, 150));
 		maps.push_back(map7);
 
 		shared_ptr<Map> map8 = make_shared<Map>();				//100 pixelů je 1 metr
-		map8->addUavStart(make_shared<Uav>(450, 50, PI / 2));
-		map8->addUavStart(make_shared<Uav>(600, 200, PI / 2));
-		map8->addUavStart(make_shared<Uav>(750, 50, PI / 2));
+		map8->addUavStart(make_shared<UavForRRT>(450, 50, PI / 2));
+		map8->addUavStart(make_shared<UavForRRT>(600, 200, PI / 2));
+		map8->addUavStart(make_shared<UavForRRT>(750, 50, PI / 2));
 
 		map8->addGoal(make_shared<Goal>(1, 450, 400, 350));
 		map8->addObstacle(make_shared<Obstacle>(200, 200, 100, 100));
