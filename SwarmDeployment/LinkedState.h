@@ -2,7 +2,7 @@
 #include "PointParticle.h"
 #include <vector>
 #include <string>
-#include "Uav.h"
+#include "UavForRRT.h"
 #include "CarLikeControl.h"
 #include "StateInterface.h"
 
@@ -20,7 +20,7 @@ namespace App
 		vector<bool> used_inputs; // na zaèátku pole false, o délce number_of_inputs
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const LinkedState& obj);
-		virtual shared_ptr<Uav> getUav(shared_ptr<Uav> uav) const override;	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
+		virtual shared_ptr<UavForRRT> getUav(shared_ptr<UavForRRT> uav) const override;	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
 		bool areUavsInGoals();
 		virtual double getDistanceOfNewNodes() const;
 		virtual void setDistanceOfNewNodes(const double distance_of_new_nodes);
@@ -29,13 +29,13 @@ namespace App
 		virtual void setPrevious(const shared_ptr<LinkedState> state);
 		friend bool operator==(const LinkedState& lhs, const LinkedState& rhs);
 		friend bool operator!=(const LinkedState& lhs, const LinkedState& rhs);
-		virtual vector<shared_ptr<Uav>> getUavs() const override;
-		virtual void setUavs(const vector<shared_ptr<Uav>> shared_ptrs);
+		virtual vector<shared_ptr<UavForRRT>> getUavs() const override;
+		virtual void setUavs(const vector<shared_ptr<UavForRRT>> shared_ptrs);
 		virtual void incrementTime(double increment);
 		virtual double getTime() const;
 
 	protected:
-		vector<shared_ptr<Uav>> uavs; //spojení promìnných loc a rot z Node objektu z matlabu. nejspíš node bude jiná pro rrt path a pro diskretizaci na nalezen guiding path
+		vector<shared_ptr<UavForRRT>> uavs; //spojení promìnných loc a rot z Node objektu z matlabu. nejspíš node bude jiná pro rrt path a pro diskretizaci na nalezen guiding path
 		double distanceOfNewNodes;	//protože se mìní, ukládám ji sem
 		shared_ptr<LinkedState> previous;
 		int index;

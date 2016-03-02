@@ -12,7 +12,7 @@ namespace App {
 	{
 	}
 
-	vector<unordered_map<Uav, CarLikeControl, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs)
+	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs)
 	{
 		if (uavs.size() == 0)
 		{
@@ -54,7 +54,7 @@ namespace App {
 		return cache.find(stringRepresentation) != cache.end();
 	}
 
-	string InputGenerator::argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs)
+	string InputGenerator::argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs)
 	{
 		string string = "d:" + to_string(distance_of_new_nodes) + "m:" + to_string(max_turn);
 		for (auto uav : uavs)

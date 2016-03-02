@@ -40,7 +40,8 @@ namespace App
 		//		relativeDistanceMax = 80;
 //		relativeDistanceMin = 10;
 		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
-		relativeDistanceMin = 200;		//pro mapu 8
+//		relativeDistanceMin = 200;		//pro mapu 8
+		relativeDistanceMin = 170;		//pro mapu 8
 		localizationAngle = (3 * PI) / 4;
 		requiredNeighbors = 1;
 		checkFov = false;

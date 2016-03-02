@@ -5,22 +5,21 @@
 #include "GuidingPathsCurrentPositions.h"
 #include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
 #include "CarLikeControl.h"
+#include "UavInterface.h"
 
 using namespace json_spirit;
 
 namespace App
 {
 
-	class Uav
+	class Uav : public UavInterface
 	{
 	public:
 		Uav(const Uav& other);
-		explicit Uav(shared_ptr<PointParticle> pointParticle);
 		explicit Uav(shared_ptr<Point> location, shared_ptr<Point> rotation);
 		explicit Uav(double locationX, double locationY, double rotationZ);
 		explicit Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ);
 		virtual ~Uav();
-		virtual shared_ptr<PointParticle> getPointParticle() const;
 		friend ostream& operator<<(ostream& os, const Uav& obj);
 		virtual bool isGoalReached() const;
 		virtual shared_ptr<GoalInterface> getReachedGoal() const;
@@ -44,7 +43,6 @@ namespace App
 		virtual void setPreviousInputStep(double step);
 
 	protected:
-		shared_ptr<PointParticle> pointParticle;
 		shared_ptr<GoalInterface> reachedGoal;
 		int id;
 		static int lastId;

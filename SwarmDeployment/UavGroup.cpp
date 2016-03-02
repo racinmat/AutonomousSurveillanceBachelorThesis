@@ -12,17 +12,17 @@ namespace App
 	{
 	}
 
-	App::UavGroup::UavGroup(vector<shared_ptr<Uav>> uavs, shared_ptr<Path> guiding_path) : 
+	App::UavGroup::UavGroup(vector<shared_ptr<UavForRRT>> uavs, shared_ptr<Path> guiding_path) : 
 		uavs(uavs), guidingPath(guiding_path)
 	{
 	}
 
-	vector<shared_ptr<Uav>> UavGroup::getUavs() const
+	vector<shared_ptr<UavForRRT>> UavGroup::getUavs() const
 	{
 		return uavs;
 	}
 
-	void UavGroup::setUavs(const vector<shared_ptr<Uav>> uavs)
+	void UavGroup::setUavs(const vector<shared_ptr<UavForRRT>> uavs)
 	{
 		this->uavs = uavs;
 	}
@@ -37,7 +37,7 @@ namespace App
 		guidingPath = guiding_path;
 	}
 
-	void UavGroup::addUav(shared_ptr<Uav> uav)
+	void UavGroup::addUav(shared_ptr<UavForRRT> uav)
 	{
 		uavs.push_back(uav);
 	}

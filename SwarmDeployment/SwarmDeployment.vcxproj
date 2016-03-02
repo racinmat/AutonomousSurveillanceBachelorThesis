@@ -439,7 +439,9 @@
     <ClCompile Include="StateInterface.cpp" />
     <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Uav.cpp" />
+    <ClCompile Include="UavForRRT.cpp" />
     <ClCompile Include="UavGroup.cpp" />
+    <ClCompile Include="UavInterface.cpp" />
     <ClCompile Include="VCollide\build.cpp" />
     <ClCompile Include="VCollide\coldetect.cpp" />
     <ClCompile Include="VCollide\collide.cpp" />
@@ -751,7 +753,9 @@
     <ClInclude Include="StateInterface.h" />
     <ClInclude Include="Strings.h" />
     <ClInclude Include="Uav.h" />
+    <ClInclude Include="UavForRRT.h" />
     <ClInclude Include="UavGroup.h" />
+    <ClInclude Include="UavInterface.h" />
     <ClInclude Include="VCollide\AABB.H" />
     <ClInclude Include="VCollide\ColDetect.h" />
     <ClInclude Include="VCollide\EndPoint.H" />

@@ -10,7 +10,7 @@ using namespace json_spirit;
 
 namespace App
 {
-	class Uav;
+	class UavForRRT;
 
 	class Map
 	{
@@ -22,8 +22,8 @@ namespace App
 		size_t countGoals() const;
 		vector<shared_ptr<Goal>> getGoals();
 		vector<shared_ptr<Obstacle>> getObstacles();
-		void addUavStart(shared_ptr<Uav> start);
-		vector<shared_ptr<Uav>> getUavsStart();
+		void addUavStart(shared_ptr<UavForRRT> start);
+		vector<shared_ptr<UavForRRT>> getUavsStart();
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
 		mObject toJson() const;
@@ -33,7 +33,7 @@ namespace App
 	protected:
 		vector<shared_ptr<Goal>> goals;
 		vector<shared_ptr<Obstacle>> obstacles;
-		vector<shared_ptr<Uav>> uavsStart;
+		vector<shared_ptr<UavForRRT>> uavsStart;
 		shared_ptr<GoalGroup> goalGroup;
 		vector<shared_ptr<Obstacle>> originalObstacles;
 	};

@@ -16,7 +16,7 @@ namespace App
 	public:
 		CarLikeAnalyticMotionModel(shared_ptr<Configuration> configuration, shared_ptr<LoggerInterface> logger);
 		virtual ~CarLikeAnalyticMotionModel();
-		void calculateState(shared_ptr<Uav> state, CarLikeControl control) override;
+		void calculateState(shared_ptr<UavForRRT> state, CarLikeControl control) override;
 		double getMinimalCurveRadius() override;	//calculates radius from max value from configuration
 		double getCurveRadius(shared_ptr<CarLikeControl> control) override;
 		void setLogger(shared_ptr<LoggerInterface> logger) override;

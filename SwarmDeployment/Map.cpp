@@ -1,5 +1,5 @@
 ﻿#include "Map.h"
-#include "Uav.h"
+#include "UavForRRT.h"
 
 namespace App
 {
@@ -9,7 +9,7 @@ namespace App
 		obstacles = vector<shared_ptr<Obstacle>>();
 		originalObstacles = vector<shared_ptr<Obstacle>>();
 		goals = vector<shared_ptr<Goal>>();
-		uavsStart = vector<shared_ptr<Uav>>();
+		uavsStart = vector<shared_ptr<UavForRRT>>();
 		goalGroup = make_shared<GoalGroup>();
 	}
 
@@ -38,12 +38,12 @@ namespace App
 		return obstacles;
 	}
 
-	void Map::addUavStart(shared_ptr<Uav> start)
+	void Map::addUavStart(shared_ptr<UavForRRT> start)
 	{
 		uavsStart.push_back(start);
 	}
 
-	vector<shared_ptr<Uav>> Map::getUavsStart()
+	vector<shared_ptr<UavForRRT>> Map::getUavsStart()
 	{
 		return uavsStart;
 	}

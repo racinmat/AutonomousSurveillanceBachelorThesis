@@ -49,7 +49,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
+	void LoggerInterface::logRandomStates(unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStates)
 	{
 	}
 
@@ -61,7 +61,7 @@ namespace App
 	{
 	}
 
-	void LoggerInterface::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
+	void LoggerInterface::logDubinsPaths(unordered_map<UavForRRT, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
 	}
 

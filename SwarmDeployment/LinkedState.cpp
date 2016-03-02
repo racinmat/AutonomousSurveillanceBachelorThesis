@@ -16,7 +16,7 @@ namespace App
 	{
 		for (auto uav : other.uavs)
 		{
-			uavs.push_back(make_shared<Uav>(*uav.get()));
+			uavs.push_back(make_shared<UavForRRT>(*uav.get()));
 		}
 		if (other.previous)	//kontrola, zda je shred_pointer prázdný
 		{
@@ -38,7 +38,7 @@ namespace App
 		return areAllInputsUsed;
 	}
 
-	shared_ptr<Uav> LinkedState::getUav(shared_ptr<Uav> uav) const
+	shared_ptr<UavForRRT> LinkedState::getUav(shared_ptr<UavForRRT> uav) const
 	{
 		for(auto other : uavs)
 		{
@@ -85,12 +85,12 @@ namespace App
 		previous = state;
 	}
 
-	vector<shared_ptr<Uav>> LinkedState::getUavs() const
+	vector<shared_ptr<UavForRRT>> LinkedState::getUavs() const
 	{
 		return uavs;
 	}
 
-	void LinkedState::setUavs(const vector<shared_ptr<Uav>> shared_ptrs)
+	void LinkedState::setUavs(const vector<shared_ptr<UavForRRT>> shared_ptrs)
 	{
 		uavs = shared_ptrs;
 	}

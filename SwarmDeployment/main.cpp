@@ -16,8 +16,12 @@
 #include "dubins_test.h"
 #include "Random.h"
 #include "CarLikeAnalyticMotionModel.h"
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define PI 3.14159265358979323846
+#include <filesystem>
 
 using std::cout;
 using std::endl;
@@ -703,6 +707,14 @@ namespace App
 //		{
 //			cout << state << endl;
 //		}
+
+		char* buffer = new char[100];
+		
+		// Get the current working directory: 
+		buffer = _getcwd(buffer, 100);
+		printf("%s \nLength: %d\n", buffer, strlen(buffer));
+		free(buffer);
+		
 
 		Persister persister = Persister();
 		auto tuple = persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-29-12-19-16-resampled.json");

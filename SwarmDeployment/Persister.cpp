@@ -41,6 +41,28 @@ namespace App
 		savePathToJsonFile(path, map, file_name);
 	}
 
+	void Persister::savePathToCsv(vector<shared_ptr<State>> path, string postfix)
+	{
+		const string file_name("path-" + Strings::currentDateTime() + "-" + postfix + ".csv");
+		ofstream os(file_name);         //Opening file to print info to
+		for (auto state : path)
+		{
+			bool firstInLine = true;
+			for (auto uav : state->getUavs())
+			{
+				if (!firstInLine)
+				{
+					os << "; ";
+				}
+				auto loc = uav->getPointParticle()->getLocation();
+				os << loc->getX() << "; " << loc->getY();
+				firstInLine = false;
+			}
+			os << endl;
+		}
+		os.close();
+	}
+
 	tuple<vector<shared_ptr<State>>, shared_ptr<Map>> Persister::loadPathFromJson(string name)
 	{
 		ifstream is(name);

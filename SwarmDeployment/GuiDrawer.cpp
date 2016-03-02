@@ -194,7 +194,7 @@ namespace Ui
 		mainWindow->updateView();
 	}
 
-	void GuiDrawer::logRandomStates(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates)
+	void GuiDrawer::logRandomStates(unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStates)
 	{
 //		for (auto pair : randomStates)
 //		{
@@ -248,7 +248,7 @@ namespace Ui
 		}
 	}
 
-	void GuiDrawer::logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
+	void GuiDrawer::logDubinsPaths(unordered_map<UavForRRT, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
 //		for (auto pair : dubinsPaths)
 //		{

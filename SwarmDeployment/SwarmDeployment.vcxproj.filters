@@ -225,9 +225,6 @@
     <ClCompile Include="StateFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Uav.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\DebugNoGui\moc_mainwindow.cpp">
       <Filter>Generated Files\DebugNoGui</Filter>
     </ClCompile>
@@ -349,6 +346,15 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Resampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UavForRRT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Uav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UavInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -502,9 +508,6 @@
     <ClInclude Include="Enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Uav.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GuidingPathsCurrentPositions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -650,6 +653,15 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Resampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UavForRRT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Uav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UavInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

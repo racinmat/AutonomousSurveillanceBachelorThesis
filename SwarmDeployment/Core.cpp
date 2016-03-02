@@ -19,7 +19,7 @@
 #include <chrono>
 #include <thread>
 #include "Enums.h"
-#include "Uav.h"
+#include "UavForRRT.h"
 #include <valarray>
 #include <algorithm>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -79,36 +79,40 @@ namespace App
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
-//		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-//		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-//		duration = (clock() - start) / double(CLOCKS_PER_SEC);
-//
-//		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
-//
-//		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
-//
-//		shared_ptr<LinkedState> lastState;
-//		if (output->goals_reached)
-//		{
-//			lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
-//		} else
-//		{
-//			lastState = get_closest_node_to_goal(output->nodes, paths, map);
-//		}
-//
-//		auto path = pathHandler->getPath(lastState);
-//
-//		auto statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
-//
-//		logger->logBestPath(statePath);
-//		persister->savePathToJson(statePath, map, "before-dubins");
+		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		duration = (clock() - start) / double(CLOCKS_PER_SEC);
 
-		//instead of searching the way, I use saved way to be optimized
-		auto tuple = persister->loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
+		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 		vector<shared_ptr<State>> statePath;
-		shared_ptr<Map> loadedMap;
-		tie(statePath, loadedMap) = tuple;
+
+		{
+			auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
+
+			shared_ptr<LinkedState> lastState;
+			if (output->goals_reached)
+			{
+				lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+			} else
+			{
+				lastState = get_closest_node_to_goal(output->nodes, paths, map);
+			}
+
+			auto path = pathHandler->getPath(lastState);
+
+			statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
+		}
+
+		logger->logBestPath(statePath);
+		persister->savePathToJson(statePath, map, "before-dubins");
+
+		//instead of searching the way, I use saved way to be optimized
+//		auto tuple = persister->loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
+//
+//		vector<shared_ptr<State>> statePath;
+//		shared_ptr<Map> loadedMap;
+//		tie(statePath, loadedMap) = tuple;
 
 
 		statePath = resampler->resampleToMaxFrequency(statePath);
@@ -121,6 +125,7 @@ namespace App
 		logger->saveVisualMap();
 		persister->savePath(statePath);
 		persister->savePathToJson(statePath, map, "optimized");
+		persister->savePathToCsv(statePath, "optimized");
 
 //		testGui();
 
@@ -230,7 +235,7 @@ namespace App
 			i++;	// initial node je 0. prvek, proto vkládám od 1
 
 //			%Random state
-			unordered_map<Uav, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
+			unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodných bodù, jeden pro každou kvadrokoptéru
 
 			//Finding appropriate nearest neighbor
 			int k = 0;	//poèítadlo nepoužitelných nodes
@@ -327,12 +332,12 @@ namespace App
 		return output;
 	}
 
-	unordered_map<Uav, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state)
+	unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state)
 	{
 		double guided_sampling_prob = configuration->getGuidedSamplingPropability();
 		int worldWidth = configuration->getWorldWidth();
 		int worldHeight = configuration->getWorldHeight();
-		unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates;
+		unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStates;
 
 		double random = Random::fromZeroToOne();
 		if (random > guided_sampling_prob) //vybírá se náhodný vzorek
@@ -374,7 +379,7 @@ namespace App
 
 			//pøeskládání randomStates podle ID UAV.
 			vector<int> uavIds = vector<int>(randomStates.size());
-			unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStatesSorted;
+			unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStatesSorted;
 			int index = 0;
 			for (auto pair : randomStates)
 			{
@@ -400,7 +405,7 @@ namespace App
 		}
 	}
 
-	shared_ptr<LinkedState> Core::nearest_neighbor(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomStates, vector<shared_ptr<LinkedState>> nodes, int count)
+	shared_ptr<LinkedState> Core::nearest_neighbor(unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStates, vector<shared_ptr<LinkedState>> nodes, int count)
 	{
 		int max_nodes = configuration->getRrtMaxNodes();
 		int debug = configuration->getDebug();
@@ -464,7 +469,7 @@ namespace App
 		return near_node;
 	}
 
-	shared_ptr<LinkedState> Core::select_input(unordered_map<Uav, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
+	shared_ptr<LinkedState> Core::select_input(unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
 		double max_turn = configuration->getMaxTurn();
 		bool relative_localization = true;	//zatím natvrdo, protože nevím, jak se má chovat druhá možnost
@@ -631,7 +636,7 @@ namespace App
 		}
 	}
 
-	void Core::check_near_goal(vector<shared_ptr<Uav>> uavs, shared_ptr<Map> map)
+	void Core::check_near_goal(vector<shared_ptr<UavForRRT>> uavs, shared_ptr<Map> map)
 	{
 		if (configuration->getAllowSwarmSplitting())
 		{
@@ -718,7 +723,7 @@ namespace App
 	}
 
 	//only modifies node by inputs
-	shared_ptr<LinkedState> Core::carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<Uav, CarLikeControl, UavHasher> inputs)
+	shared_ptr<LinkedState> Core::carLikeMotionModel(shared_ptr<LinkedState> state, unordered_map<UavForRRT, CarLikeControl, UavHasher> inputs)
 	{
 		auto newNode = stateFactory->createState(*state.get());	//copy constructor is called, makes deep copy
 		// Simulation length
@@ -786,7 +791,7 @@ namespace App
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
 				int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
-				auto uavs = vector<shared_ptr<Uav>>(uavsCountInGroup);
+				auto uavs = vector<shared_ptr<UavForRRT>>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
 				{
 					uavs[j] = state->getUavs()[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.

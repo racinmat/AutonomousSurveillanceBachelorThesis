@@ -30,7 +30,7 @@ namespace App
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit = 100;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
-		double minOptimizationSpeed = 0.01 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 10% na 1000 iterací.
+		double minOptimizationSpeed = 0.05 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 10% na 1000 iterací.
 		int notImprovedCount = 0;
 		int iterationCount = 0;
 		double initialPathDistance = distanceResolver->getLengthOfPath(path);
@@ -53,11 +53,11 @@ namespace App
 			}
 
 			auto pair = optimizePathPart(startIndex, endIndex, map, path);
-			auto trajectoryPart = pair.first;
 			bool isPathChanged = pair.second;
 
 			if (isPathChanged)
 			{
+				auto trajectoryPart = pair.first;
 				vector<shared_ptr<State>> pathFirstPart;		//èást pøed dubinsem
 				vector<shared_ptr<State>> pathMiddlePart = trajectoryPart;	//èást nahrazená dubinsem
 				vector<shared_ptr<State>> pathLastPart;		//èást po dubinsovi
@@ -112,7 +112,7 @@ namespace App
 
 		double maxSpeed;	//reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu, tedy step v CarLikeControlu
 		//pøedpoèítám si délky všech dubinsù pøedem
-		unordered_map<Uav, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<Uav, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
+		unordered_map<UavForRRT, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<UavForRRT, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
 		bool areAllDubinsTrajectoriesLonger = true;
 		for (auto uav : end->getUavs())
 		{
@@ -234,7 +234,6 @@ namespace App
 
 			previousState = newState;
 			newTrajectory[i] = newState;
-//			logger->logNewState(previousState, newState, true);
 		}
 
 		auto lastState = newTrajectory[newTrajectory.size() - 1];

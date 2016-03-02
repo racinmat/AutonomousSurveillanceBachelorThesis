@@ -27,11 +27,11 @@ namespace Ui
 		virtual void logText(char const string[]) override;
 		virtual void logNewState(shared_ptr<App::LinkedState> nearNode, shared_ptr<App::LinkedState> newNode, bool optimization = false) override;
 		virtual void logNewState(shared_ptr<App::State> nearNode, shared_ptr<App::State> newNode, bool optimization = false) override;
-		virtual void logRandomStates(unordered_map<App::Uav, shared_ptr<App::Point>, App::UavHasher> randomStates) override;
+		virtual void logRandomStates(unordered_map<App::UavForRRT, shared_ptr<App::Point>, App::UavHasher> randomStates) override;
 		virtual void logRandomStatesCenter(shared_ptr<App::Point> center) override;
 		virtual void setConfiguration(shared_ptr<App::Configuration> configuration);
 		virtual void logBestPath(vector<shared_ptr<State>> path, bool optimization = false) override;
-		virtual void logDubinsPaths(unordered_map<Uav, pair<geom::Dubins, bool>, UavHasher> dubinsPaths) override;
+		virtual void logDubinsPaths(unordered_map<UavForRRT, pair<geom::Dubins, bool>, UavHasher> dubinsPaths) override;
 		virtual void saveVisualMap() override;
 
 	protected:
@@ -47,7 +47,7 @@ namespace Ui
 		void addCross(double x, double y, double size, Qt::GlobalColor color);
 		void addCircle(double x, double y, double radius, Qt::GlobalColor color);
 		Qt::GlobalColor getRandomColor();
-		unordered_map<App::Uav, Qt::GlobalColor, App::UavHasher> uavColors;
+		unordered_map<App::UavForRRT, Qt::GlobalColor, App::UavHasher> uavColors;
 		void showPopup(string text);
 	};
 

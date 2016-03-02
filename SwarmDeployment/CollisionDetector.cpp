@@ -52,7 +52,7 @@ namespace App
 		return false;
 	}
 
-	bool CollisionDetector::areLineSegmentsIntersecting(shared_ptr<Uav> uav1start, shared_ptr<Uav> uav1end, shared_ptr<Uav> uav2start, shared_ptr<Uav> uav2end)
+	bool CollisionDetector::areLineSegmentsIntersecting(shared_ptr<UavForRRT> uav1start, shared_ptr<UavForRRT> uav1end, shared_ptr<UavForRRT> uav2start, shared_ptr<UavForRRT> uav2end)
 	{
 		return areLineSegmentsIntersecting(
 			uav1start->getPointParticle()->getLocation(), uav1end->getPointParticle()->getLocation(),
@@ -95,7 +95,7 @@ namespace App
 		return make_shared<Point>(px, py);
 	}
 
-	pair<shared_ptr<Uav>, shared_ptr<Uav>> CollisionDetector::getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
+	pair<shared_ptr<UavForRRT>, shared_ptr<UavForRRT>> CollisionDetector::getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
 	{
 		for (auto uav1 : start->getUavs())
 		{
@@ -213,7 +213,7 @@ namespace App
 		return inBounds;
 	}
 
-	bool CollisionDetector::insideWorldBounds(vector<shared_ptr<Uav>> points, int worldWidth, int worldHeight)
+	bool CollisionDetector::insideWorldBounds(vector<shared_ptr<UavForRRT>> points, int worldWidth, int worldHeight)
 	{
 		bool inBounds = true;
 		for (auto point : points)

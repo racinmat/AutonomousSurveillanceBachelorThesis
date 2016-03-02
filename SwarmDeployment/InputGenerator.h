@@ -1,6 +1,6 @@
 #pragma once
 #include "Point.h"
-#include "Uav.h"
+#include "UavForRRT.h"
 #include "NTupletGenerator.h"
 #include <map>
 #include "CarLikeControl.h"
@@ -13,7 +13,7 @@ class InputGenerator
 public:
 	InputGenerator(int input_samples_dist, int input_samples_phi);
 	virtual ~InputGenerator();
-	vector<unordered_map<Uav, CarLikeControl, UavHasher>> generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs);
+	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs);
 
 protected:
 	NTupletGenerator generator;
@@ -22,9 +22,9 @@ protected:
 	int input_samples_phi;
 
 	//this is map<tuple<all input params string representation>, output>. I make string representation from all inputs and compare it to strings in map
-	map<string, vector<unordered_map<Uav, CarLikeControl, UavHasher>>> cache;	//for same inputs are always same outputs. There will be stored inputs and their outputs.
+	map<string, vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>>> cache;	//for same inputs are always same outputs. There will be stored inputs and their outputs.
 	bool isInCache(string stringRepresentation);
-	string argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<Uav>> uavs);
+	string argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs);
 };
 
 }
