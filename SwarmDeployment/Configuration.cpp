@@ -54,7 +54,7 @@ namespace App
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30 + relativeDistanceMin/5;			//virtuální zvětšení překážek
-		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli
+		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů
 		maxSampleCount = 2700;
 
 		if (relativeDistanceMin > relativeDistanceMax)

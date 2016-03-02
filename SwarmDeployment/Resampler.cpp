@@ -32,7 +32,7 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 		auto start = stateFactory->createState(*previous);
 		for(auto uav : start->getUavs())
 		{
-			uav->getPreviousInput().setStep(newStepSize);	//zùstávala tam pùvodní step size, což je špatnì a dìlalo to bordel v následné optimnalizaci dubinsem
+			uav->setPreviousInputStep(newStepSize);	//zùstávala tam pùvodní step size, což je špatnì a dìlalo to bordel v následné optimnalizaci dubinsem
 		}
 		newPath.push_back(start);
 		for (size_t j = 1; j < ratio - 1; j++)
@@ -50,7 +50,7 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 		auto end = stateFactory->createState(*next);
 		for (auto uav : end->getUavs())
 		{
-			uav->getPreviousInput().setStep(newStepSize);	//zùstávala tam pùvodní step size, což je špatnì a dìlalo to bordel v následné optimnalizaci dubinsem
+			uav->setPreviousInputStep(newStepSize);	//zùstávala tam pùvodní step size, což je špatnì a dìlalo to bordel v následné optimnalizaci dubinsem
 		}
 		newPath.push_back(end);
 	}

@@ -29,8 +29,12 @@ namespace App
 		double pathLength = distanceResolver->getLengthOfPath(path);
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
-		int stopLimit = 100;	//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
+		int stopLimit = 100;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
+		double minOptimizationSpeed = 0.01 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 10% na 1000 iterací.
 		int notImprovedCount = 0;
+		int iterationCount = 0;
+		double initialPathDistance = distanceResolver->getLengthOfPath(path);
+		double distanceDifference = 0;
 
 		while (notImprovedCount < stopLimit)
 		{
@@ -83,9 +87,15 @@ namespace App
 				{
 					notImprovedCount++;
 				}
+				distanceDifference = initialPathDistance - newPathDistance;
 			} else
 			{
 				notImprovedCount++;
+			}
+			iterationCount++;
+			if (iterationCount > 50 && (distanceDifference / initialPathDistance) / double(iterationCount) < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
+			{
+				break;					//pojistka proti pøíliš pomalé optimalizaci
 			}
 		}
 		return path;
@@ -126,14 +136,14 @@ namespace App
 		int largestStepCount = 0;
 		for (auto uav : end->getUavs())
 		{
-			maxSpeed = uav->getPreviousInput().getStep();
+			maxSpeed = uav->getPreviousInput().getStep();	//speed == timeStep == délka kroku
 
 			auto pair = dubinsTrajectories[*uav.get()];
 			auto dubins = pair.first;
 			auto isDubinsShorter = pair.second;
 			double newLength = dubins.getLength();	//vrací délku celého manévru
 			double totalTime = newLength / maxSpeed;	//doba cesty
-			int stepCount = floor(totalTime / configuration->getTimeStep());	//poèet krokù, doba celého manévru / doba jednoho kroku
+			int stepCount = floor(totalTime);	//poèet krokù, doba celého manévru == délka celého manévru / délka kroku
 
 			if (isDubinsShorter && stepCount > largestStepCount)
 			{

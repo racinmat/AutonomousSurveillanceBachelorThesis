@@ -272,6 +272,7 @@ namespace App
 	//returns true, when no collisions are detected, returns false, when there are any collisions
 	bool CollisionDetector::check_obstacle_vcollide_single(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
+		//TODO: zamyslet se, jestli neslouèit tuto metodu a checkObstaclesInTrajectories do jedné, protože øešení kolizí trvá neskuteènì dlouho
 		double uav_size = configuration->getUavSize();
 		for (auto uav : new_node->getUavs())
 		{

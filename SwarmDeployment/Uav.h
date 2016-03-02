@@ -41,6 +41,7 @@ namespace App
 		static shared_ptr<Uav> fromJson(mValue data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);
+		virtual void setPreviousInputStep(double step);
 
 	protected:
 		shared_ptr<PointParticle> pointParticle;

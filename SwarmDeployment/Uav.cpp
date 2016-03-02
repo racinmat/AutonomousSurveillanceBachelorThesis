@@ -155,4 +155,10 @@ namespace App
 	{
 		previousInput = car_like_control;
 	}
+
+	void Uav::setPreviousInputStep(double step)
+	{
+		previousInput.setStep(step);
+	}
+
 }
