@@ -6,41 +6,33 @@ namespace App
 {
 	Uav::Uav(const UavForRRT& other) : UavInterface(other)
 	{
-		currentGuidingPathPositions = other.getCurrentGuidingPathPositions();	//předávám pointer na tu samou instanci, záměrně, aby se current_index posouval i starým stavům
-		reachedGoal = other.getReachedGoal();
 		previousInput = other.getPreviousInput();
 	}
 
 	Uav::Uav(const Uav& other) : UavInterface(other)
 	{
 		//potřebuji naklonovat pouze polohu a rotaci, zbytek chci stejný
-		currentGuidingPathPositions = other.currentGuidingPathPositions;	//předávám pointer na tu samou instanci, záměrně, aby se current_index posouval i starým stavům
-		reachedGoal = other.reachedGoal;
 		previousInput = other.previousInput;
 	}
 
 	Uav::Uav(shared_ptr<PointParticle> pointParticle) :
-		UavInterface(pointParticle),
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
+		UavInterface(pointParticle)
 	{
 	}
 
 
 	Uav::Uav(shared_ptr<Point> location, shared_ptr<Point> rotation) : 
-		UavInterface(make_shared<PointParticle>(location, rotation)), 
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
+		UavInterface(make_shared<PointParticle>(location, rotation))
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double rotationZ) : 
-		UavInterface(make_shared<PointParticle>(locationX, locationY, rotationZ)),
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
+		UavInterface(make_shared<PointParticle>(locationX, locationY, rotationZ))
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ) : 
-		UavInterface(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ)),
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
+		UavInterface(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ))
 	{
 	}
 
@@ -48,34 +40,9 @@ namespace App
 	{
 	}
 
-	bool Uav::isGoalReached() const
-	{
-		return reachedGoal != false;
-	}
-
-	shared_ptr<GoalInterface> Uav::getReachedGoal() const
-	{
-		return reachedGoal;
-	}
-
-	void Uav::setReachedGoal(shared_ptr<GoalInterface> reachedGoal)
-	{
-		this->reachedGoal = reachedGoal;
-	}
-
 	ostream& operator<<(ostream& os, const Uav& obj)
 	{
 		return os << "id: " << obj.id << endl << "pointParticle: " << *obj.pointParticle;
-	}
-
-	shared_ptr<Goal> Uav::getConcreteGoal()
-	{
-		return getReachedGoal()->getConcreteGoal(getPointParticle()->getLocation());
-	}
-
-	shared_ptr<GuidingPathsCurrentPositions> Uav::getCurrentGuidingPathPositions() const
-	{
-		return currentGuidingPathPositions;
 	}
 
 	mObject Uav::toJson() const

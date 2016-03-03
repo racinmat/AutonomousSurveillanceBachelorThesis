@@ -735,6 +735,7 @@ namespace App
 		for (auto uav : newNode->getUavsForRRT())
 		{
 			motionModel->calculateState(uav, inputs[*uav.get()]);
+			uav->setPreviousInput(inputs[*uav.get()]);
 		}
 
 		newNode->incrementTime(timeStep);

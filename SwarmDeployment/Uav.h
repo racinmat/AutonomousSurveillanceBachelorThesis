@@ -23,11 +23,6 @@ namespace App
 		explicit Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ);
 		virtual ~Uav();
 		friend ostream& operator<<(ostream& os, const Uav& obj);
-		virtual bool isGoalReached() const;
-		virtual shared_ptr<GoalInterface> getReachedGoal() const;
-		virtual void setReachedGoal(shared_ptr<GoalInterface> reachedGoal);
-		virtual shared_ptr<Goal> getConcreteGoal();
-		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
 		mObject toJson() const;
 		static shared_ptr<Uav> fromJson(mValue data);
 		virtual CarLikeControl getPreviousInput() const;
@@ -35,8 +30,6 @@ namespace App
 		virtual void setPreviousInputStep(double step);
 
 	protected:
-		shared_ptr<GoalInterface> reachedGoal;
-		shared_ptr<GuidingPathsCurrentPositions> currentGuidingPathPositions;
 		CarLikeControl previousInput;
 	};
 
