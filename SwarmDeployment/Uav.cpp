@@ -1,37 +1,46 @@
-#include "Uav.h"
+ï»¿#include "Uav.h"
 #include <string>
+#include "UavForRRT.h"
 
 namespace App
 {
-	int Uav::lastId = 0;
-
-	Uav::Uav(const Uav& other) : UavInterface(make_shared<PointParticle>(*other.pointParticle.get()))
+	Uav::Uav(const UavForRRT& other) : UavInterface(other)
 	{
-		//potøebuji naklonovat pouze polohu a rotaci, zbytek chci stejný
-		currentGuidingPathPositions = other.currentGuidingPathPositions;	//pøedávám pointer na tu samou instanci, zámìrnì, aby se current_index posouval i starým stavùm
+		currentGuidingPathPositions = other.getCurrentGuidingPathPositions();	//pÅ™edÃ¡vÃ¡m pointer na tu samou instanci, zÃ¡mÄ›rnÄ›, aby se current_index posouval i starÃ½m stavÅ¯m
+		reachedGoal = other.getReachedGoal();
+		previousInput = other.getPreviousInput();
+	}
+
+	Uav::Uav(const Uav& other) : UavInterface(other)
+	{
+		//potÅ™ebuji naklonovat pouze polohu a rotaci, zbytek chci stejnÃ½
+		currentGuidingPathPositions = other.currentGuidingPathPositions;	//pÅ™edÃ¡vÃ¡m pointer na tu samou instanci, zÃ¡mÄ›rnÄ›, aby se current_index posouval i starÃ½m stavÅ¯m
 		reachedGoal = other.reachedGoal;
 		previousInput = other.previousInput;
-		id = other.id;
 	}
+
+	Uav::Uav(shared_ptr<PointParticle> pointParticle) :
+		UavInterface(pointParticle),
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
+	{
+	}
+
 
 	Uav::Uav(shared_ptr<Point> location, shared_ptr<Point> rotation) : 
 		UavInterface(make_shared<PointParticle>(location, rotation)), 
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), 
-		id(lastId++)
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double rotationZ) : 
 		UavInterface(make_shared<PointParticle>(locationX, locationY, rotationZ)),
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()), 
-		id(lastId++)
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
 	{
 	}
 
 	Uav::Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ) : 
 		UavInterface(make_shared<PointParticle>(locationX, locationY, locationZ, rotationX, rotationY, rotationZ)),
-		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>()),
-		id(lastId++)
+		currentGuidingPathPositions(make_shared<GuidingPathsCurrentPositions>())
 	{
 	}
 
@@ -59,48 +68,6 @@ namespace App
 		return os << "id: " << obj.id << endl << "pointParticle: " << *obj.pointParticle;
 	}
 
-	bool operator<(const Uav& lhs, const Uav& rhs)
-	{
-		return lhs.id < rhs.id;
-	}
-
-	bool operator<=(const Uav& lhs, const Uav& rhs)
-	{
-		return !(rhs < lhs);
-	}
-
-	bool operator>(const Uav& lhs, const Uav& rhs)
-	{
-		return rhs < lhs;
-	}
-
-	bool operator>=(const Uav& lhs, const Uav& rhs)
-	{
-		return !(lhs < rhs);
-	}
-
-	bool operator==(const Uav& lhs, const Uav& rhs)
-	{
-		return lhs.id == rhs.id;
-	}
-
-	bool operator!=(const Uav& lhs, const Uav& rhs)
-	{
-		return !(lhs == rhs);
-	}
-
-	size_t Uav::hash_value() const
-	{
-		size_t seed = 0x28003F72;
-		seed ^= (seed << 6) + (seed >> 2) + 0x1B543A89 + static_cast<size_t>(id);
-		return seed;
-	}
-
-	int Uav::getId() const
-	{
-		return id;
-	}
-
 	shared_ptr<Goal> Uav::getConcreteGoal()
 	{
 		return getReachedGoal()->getConcreteGoal(getPointParticle()->getLocation());
@@ -109,16 +76,6 @@ namespace App
 	shared_ptr<GuidingPathsCurrentPositions> Uav::getCurrentGuidingPathPositions() const
 	{
 		return currentGuidingPathPositions;
-	}
-
-	void Uav::setId(const int id)
-	{
-		this->id = id;
-	}
-
-	void Uav::setPointParticle(const shared_ptr<PointParticle> point_particle)
-	{
-		pointParticle = point_particle;
 	}
 
 	mObject Uav::toJson() const

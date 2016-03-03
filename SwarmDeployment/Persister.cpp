@@ -48,7 +48,7 @@ namespace App
 		for (auto state : path)
 		{
 			bool firstInLine = true;
-			for (auto uav : state->getUavs())
+			for (auto uav : state->getBaseUavs())
 			{
 				if (!firstInLine)
 				{

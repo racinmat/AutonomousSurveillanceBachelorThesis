@@ -112,20 +112,20 @@ namespace App
 
 		double maxSpeed;	//reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu, tedy step v CarLikeControlu
 		//pøedpoèítám si délky všech dubinsù pøedem
-		unordered_map<UavForRRT, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<UavForRRT, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
+		unordered_map<Uav, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<Uav, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
 		bool areAllDubinsTrajectoriesLonger = true;
 		for (auto uav : end->getUavs())
 		{
 			double length = distanceResolver->getLengthOfPath(pathPart, uav);
 
-			auto dubins = Dubins(start->getUav(uav)->getPointParticle()->toPosition(), uav->getPointParticle()->toPosition(), motionModel->getMinimalCurveRadius());
+			auto dubins = Dubins(start->getBaseUav(uav)->getPointParticle()->toPosition(), uav->getPointParticle()->toPosition(), motionModel->getMinimalCurveRadius());
 			double newLength = dubins.getLength();	//vrací délku celého manévru
 			bool isDubinsShorter = newLength < length;
 			dubinsTrajectories[*uav.get()] = make_pair(dubins, isDubinsShorter);
 			areAllDubinsTrajectoriesLonger = areAllDubinsTrajectoriesLonger && !isDubinsShorter;
 		}
 
-		logger->logDubinsPaths(dubinsTrajectories);
+//		logger->logDubinsPaths(dubinsTrajectories);
 
 		if (areAllDubinsTrajectoriesLonger)
 		{
@@ -200,8 +200,8 @@ namespace App
 					else
 					{	
 						//uav, které už dorazilo do cíle, "poèká" na ostatní
-						pointParticle->setLocation(end->getUav(uav)->getPointParticle()->getLocation());
-						pointParticle->setRotation(end->getUav(uav)->getPointParticle()->getRotation());
+						pointParticle->setLocation(end->getBaseUav(uav)->getPointParticle()->getLocation());
+						pointParticle->setRotation(end->getBaseUav(uav)->getPointParticle()->getRotation());
 
 						uav->setPreviousInput(end->getUav(uav)->getPreviousInput());
 					}
@@ -216,8 +216,8 @@ namespace App
 					{
 						currentOldState = pathPart[i];
 					}
-					uav->getPointParticle()->setLocation(currentOldState->getUav(uav)->getPointParticle()->getLocation());
-					uav->getPointParticle()->setRotation(currentOldState->getUav(uav)->getPointParticle()->getRotation());
+					uav->getPointParticle()->setLocation(currentOldState->getBaseUav(uav)->getPointParticle()->getLocation());
+					uav->getPointParticle()->setRotation(currentOldState->getBaseUav(uav)->getPointParticle()->getRotation());
 
 					uav->setPreviousInput(currentOldState->getUav(uav)->getPreviousInput());
 
@@ -265,10 +265,10 @@ namespace App
 
 			//porovnání stejných vzdálenosti sousedních stavù
 			bool areStatesSame = true;
-			for (auto uav : state->getUavs())
+			for (auto uav : state->getBaseUavs())
 			{
 				auto loc = uav->getPointParticle()->getLocation();
-				auto previousLoc = previous->getUav(uav)->getPointParticle()->getLocation();
+				auto previousLoc = previous->getBaseUav(uav)->getPointParticle()->getLocation();
 				if (loc->getDistance(previousLoc) > 0.01)
 				{
 					areStatesSame = false;

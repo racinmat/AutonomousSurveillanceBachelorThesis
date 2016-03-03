@@ -13,13 +13,44 @@ namespace App
 	{
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> second)
+	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, unordered_map<UavInterface, shared_ptr<Point>, UavHasher> second)
 	{
 		NNMethod nn_method = configuration->getNearestNeighborMethod();
 		double totalDistance = 0;
-		unordered_map<UavForRRT, double, UavHasher> distances = unordered_map<UavForRRT, double, UavHasher>(first->getUavs().size());
+		unordered_map<UavInterface, double, UavHasher> distances = unordered_map<UavInterface, double, UavHasher>(first->getBaseUavs().size());
 
-		for (auto uav : first->getUavs())
+		for (auto uav : first->getBaseUavs())
+		{
+			auto anotherState = second[*uav.get()];
+			distances[*uav.get()] = uav->getPointParticle()->getLocation()->getDistance(anotherState);
+		}
+
+		switch (nn_method)
+		{
+		case NNMethod::Total:
+			for (auto dist : distances)
+			{
+				auto distance = dist.second;
+				totalDistance += distance;	//no function for sum, so I must do it by hand
+			}
+			break;
+		case NNMethod::Max:
+			totalDistance = (*max_element(distances.begin(), distances.end())).second;	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
+			break;
+		case NNMethod::Min:
+			totalDistance = (*min_element(distances.begin(), distances.end())).second;	//tohle vrací iterátor, který musím dereferencovat, abych získal èíslo. fuck you, C++
+			break;
+		}
+		return totalDistance;
+	}
+
+	double DistanceResolver::getDistance(shared_ptr<LinkedState> first, unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> second)
+	{
+		NNMethod nn_method = configuration->getNearestNeighborMethod();
+		double totalDistance = 0;
+		unordered_map<UavForRRT, double, UavHasher> distances = unordered_map<UavForRRT, double, UavHasher>(first->getBaseUavs().size());
+
+		for (auto uav : first->getUavsForRRT())
 		{
 			auto anotherState = second[*uav.get()];
 			distances[*uav.get()] = uav->getPointParticle()->getLocation()->getDistance(anotherState);
@@ -50,25 +81,25 @@ namespace App
 		if (configuration->getNearestNeighborMethod() == NNMethod::Total)
 		{
 			double distance = 0;
-			for (auto uav : first->getUavs())
+			for (auto uav : first->getBaseUavs())
 			{
-				auto uavInSecondState = second->getUav(uav)->getPointParticle()->getLocation();
+				auto uavInSecondState = second->getBaseUav(uav)->getPointParticle()->getLocation();
 				distance += uav->getPointParticle()->getLocation()->getDistance(uavInSecondState);
 			}
 			return distance;
 		}
 
-		auto secondMap = unordered_map<UavForRRT, shared_ptr<Point>, UavHasher>();
-		for (auto uav : second->getUavs())
+		auto secondMap = unordered_map<UavInterface, shared_ptr<Point>, UavHasher>();
+		for (auto uav : second->getBaseUavs())
 		{
 			secondMap[*uav.get()] = uav->getPointParticle()->getLocation();
 		}
 		return getDistance(first, secondMap);
 	}
 
-	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, shared_ptr<StateInterface> second, shared_ptr<UavForRRT> uav)
+	double DistanceResolver::getDistance(shared_ptr<StateInterface> first, shared_ptr<StateInterface> second, shared_ptr<UavInterface> uav)
 	{
-		return first->getUav(uav)->getPointParticle()->getLocation()->getDistance(second->getUav(uav)->getPointParticle()->getLocation());
+		return first->getBaseUav(uav)->getPointParticle()->getLocation()->getDistance(second->getBaseUav(uav)->getPointParticle()->getLocation());
 	}
 
 	double DistanceResolver::getLengthOfPath(shared_ptr<LinkedState> start, shared_ptr<LinkedState> end)
@@ -103,7 +134,7 @@ namespace App
 	}
 
 
-	double DistanceResolver::getLengthOfPath(vector<shared_ptr<State>> path, shared_ptr<UavForRRT> uav)
+	double DistanceResolver::getLengthOfPath(vector<shared_ptr<State>> path, shared_ptr<Uav> uav)
 	{
 		double length = 0;
 		for (size_t i = 1; i < path.size(); i++)

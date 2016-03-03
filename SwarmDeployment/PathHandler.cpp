@@ -34,7 +34,7 @@ namespace App
 		vector<shared_ptr<State>> newPath = vector<shared_ptr<State>>(path.size());
 		for (size_t i = 0; i < path.size(); i++)
 		{
-			newPath[i] = make_shared<State>(*path[i].get());
+			newPath[i] = make_shared<State>(path[i]);
 		}
 
 		return newPath;
@@ -61,15 +61,15 @@ namespace App
 	{
 		for (size_t i = 1; i < path.size(); i++)
 		{
-			for (auto uav : path[i]->getUavs())
+			for (auto uav : path[i]->getBaseUavs())
 			{
-				auto start = path[i - 1]->getUav(uav);
+				auto start = path[i - 1]->getBaseUav(uav);
 				auto end = uav;
 				for (size_t j = 1; j < path.size(); j++)
 				{
-					for (auto another : path[j]->getUavs())
+					for (auto another : path[j]->getBaseUavs())
 					{
-						auto anotherStart = path[j - 1]->getUav(another);
+						auto anotherStart = path[j - 1]->getBaseUav(another);
 						auto anotherEnd = another;
 
 						//aby se nehledala kolize u toho samého uav
@@ -87,12 +87,12 @@ namespace App
 
 							for (size_t k = i; k < path.size(); k++)
 							{
-								pathToEnd1.push_back(path[k]->getUav(uav)->getPointParticle());
+								pathToEnd1.push_back(path[k]->getBaseUav(uav)->getPointParticle());
 							}
 
 							for (size_t k = j; k < path.size(); k++)
 							{
-								pathToEnd2.push_back(path[k]->getUav(another)->getPointParticle());
+								pathToEnd2.push_back(path[k]->getBaseUav(another)->getPointParticle());
 							}
 
 							//nyní vložím èekací stavy, abych mohl prohodit cesty
@@ -105,10 +105,10 @@ namespace App
 							shared_ptr<PointParticle> preservedPointParticle;
 							if (preservePointParticle == UavPath::First)
 							{
-								preservedPointParticle = path[i - 1]->getUav(uav)->getPointParticle();
+								preservedPointParticle = path[i - 1]->getBaseUav(uav)->getPointParticle();
 							}
 							else {
-								preservedPointParticle = path[j - 1]->getUav(another)->getPointParticle();
+								preservedPointParticle = path[j - 1]->getBaseUav(another)->getPointParticle();
 							}
 
 
@@ -128,17 +128,17 @@ namespace App
 									//pokud je jedna cesta kratší než druhá (což je vždy), tak se musí pøed novou èást cesty (tedy pro index < 0) vložit další èekací stav
 									if (index < 0)
 									{
-										path[k]->getUav(uav)->setPointParticle(path[k - 1]->getUav(uav)->getPointParticle());
+										path[k]->getBaseUav(uav)->setPointParticle(path[k - 1]->getBaseUav(uav)->getPointParticle());
 									} else
 									{
-										path[k]->getUav(uav)->setPointParticle(pathToEnd2[index]);
+										path[k]->getBaseUav(uav)->setPointParticle(pathToEnd2[index]);
 									}
 									index--;
 								}
 
 								if (preservePointParticle == UavPath::First)
 								{
-									path[i - 1]->getUav(uav)->setPointParticle(preservedPointParticle);
+									path[i - 1]->getBaseUav(uav)->setPointParticle(preservedPointParticle);
 								}
 							}
 							{
@@ -148,18 +148,18 @@ namespace App
 									//pokud je jedna cesta kratší než druhá (což je vždy), tak se musí pøed novou èást cesty (tedy pro index < 0) vložit další èekací stav
 									if (index < 0)
 									{
-										path[k]->getUav(another)->setPointParticle(path[k - 1]->getUav(another)->getPointParticle());
+										path[k]->getBaseUav(another)->setPointParticle(path[k - 1]->getBaseUav(another)->getPointParticle());
 									}
 									else
 									{
-										path[k]->getUav(another)->setPointParticle(pathToEnd1[index]);
+										path[k]->getBaseUav(another)->setPointParticle(pathToEnd1[index]);
 									}
 									index--;
 								}
 
 								if (preservePointParticle == UavPath::Second)
 								{
-									path[j - 1]->getUav(another)->setPointParticle(preservedPointParticle);
+									path[j - 1]->getBaseUav(another)->setPointParticle(preservedPointParticle);
 								}
 							}
 

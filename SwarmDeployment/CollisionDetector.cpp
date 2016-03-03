@@ -19,15 +19,15 @@ namespace App
 
 	bool CollisionDetector::areTrajectoriesIntersecting(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
 	{
-		for (auto uav1 : start->getUavs())
+		for (auto uav1 : start->getBaseUavs())
 		{
-			for (auto uav2 : start->getUavs())
+			for (auto uav2 : start->getBaseUavs())
 			{
 				if (*uav1.get() != *uav2.get() && areLineSegmentsIntersecting(
-					start->getUav(uav1)->getPointParticle()->getLocation(),
-					end->getUav(uav1)->getPointParticle()->getLocation(),
-					start->getUav(uav2)->getPointParticle()->getLocation(),
-					end->getUav(uav2)->getPointParticle()->getLocation()))
+					start->getBaseUav(uav1)->getPointParticle()->getLocation(),
+					end->getBaseUav(uav1)->getPointParticle()->getLocation(),
+					start->getBaseUav(uav2)->getPointParticle()->getLocation(),
+					end->getBaseUav(uav2)->getPointParticle()->getLocation()))
 				{
 					return true;
 				}
@@ -52,7 +52,7 @@ namespace App
 		return false;
 	}
 
-	bool CollisionDetector::areLineSegmentsIntersecting(shared_ptr<UavForRRT> uav1start, shared_ptr<UavForRRT> uav1end, shared_ptr<UavForRRT> uav2start, shared_ptr<UavForRRT> uav2end)
+	bool CollisionDetector::areLineSegmentsIntersecting(shared_ptr<UavInterface> uav1start, shared_ptr<UavInterface> uav1end, shared_ptr<UavInterface> uav2start, shared_ptr<UavInterface> uav2end)
 	{
 		return areLineSegmentsIntersecting(
 			uav1start->getPointParticle()->getLocation(), uav1end->getPointParticle()->getLocation(),
@@ -95,17 +95,17 @@ namespace App
 		return make_shared<Point>(px, py);
 	}
 
-	pair<shared_ptr<UavForRRT>, shared_ptr<UavForRRT>> CollisionDetector::getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
+	pair<shared_ptr<UavInterface>, shared_ptr<UavInterface>> CollisionDetector::getIntersectingUavs(shared_ptr<StateInterface> start, shared_ptr<StateInterface> end)
 	{
-		for (auto uav1 : start->getUavs())
+		for (auto uav1 : start->getBaseUavs())
 		{
-			for (auto uav2 : start->getUavs())
+			for (auto uav2 : start->getBaseUavs())
 			{
 				if (*uav1.get() != *uav2.get() && areLineSegmentsIntersecting(
-					start->getUav(uav1)->getPointParticle()->getLocation(),
-					end->getUav(uav1)->getPointParticle()->getLocation(),
-					start->getUav(uav2)->getPointParticle()->getLocation(),
-					end->getUav(uav2)->getPointParticle()->getLocation()))
+					start->getBaseUav(uav1)->getPointParticle()->getLocation(),
+					end->getBaseUav(uav1)->getPointParticle()->getLocation(),
+					start->getBaseUav(uav2)->getPointParticle()->getLocation(),
+					end->getBaseUav(uav2)->getPointParticle()->getLocation()))
 				{
 					return make_pair(uav1, uav2);
 				}
@@ -116,7 +116,7 @@ namespace App
 
 	bool CollisionDetector::checkRelativeLocalization(shared_ptr<StateInterface> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
 	{
-		int number_of_uavs = node->getUavs().size();
+		int number_of_uavs = node->getBaseUavs().size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
 		double relative_distance_max = configuration->getRelativeDistanceMax();
 		bool check_fov = configuration->getCheckFov();
@@ -140,8 +140,8 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
-				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
+				auto uavI = node->getBaseUavs()[i]->getPointParticle()->getLocation();
+				auto uavJ = node->getBaseUavs()[j]->getPointParticle()->getLocation();
 
 				if (uavI->getDistance(uavJ) <= relative_distance_min)
 				{
@@ -155,10 +155,10 @@ namespace App
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
-				auto uavI = node->getUavs()[i]->getPointParticle()->getLocation();
-				double uavIphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
-				auto uavJ = node->getUavs()[j]->getPointParticle()->getLocation();
-				double uavJphi = node->getUavs()[i]->getPointParticle()->getRotation()->getZ();
+				auto uavI = node->getBaseUavs()[i]->getPointParticle()->getLocation();
+				double uavIphi = node->getBaseUavs()[i]->getPointParticle()->getRotation()->getZ();
+				auto uavJ = node->getBaseUavs()[j]->getPointParticle()->getLocation();
+				double uavJphi = node->getBaseUavs()[i]->getPointParticle()->getRotation()->getZ();
 
 				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || fabs(uavIphi - uavJphi) < localization_angle / 2))	//fabs je abs pro float
 				{
@@ -213,7 +213,7 @@ namespace App
 		return inBounds;
 	}
 
-	bool CollisionDetector::insideWorldBounds(vector<shared_ptr<UavForRRT>> points, int worldWidth, int worldHeight)
+	bool CollisionDetector::insideWorldBounds(vector<shared_ptr<UavInterface>> points, int worldWidth, int worldHeight)
 	{
 		bool inBounds = true;
 		for (auto point : points)
@@ -243,7 +243,7 @@ namespace App
 				logger->logText("node has intersecting trajectories");
 			}
 		}
-		if (!insideWorldBounds(newState->getUavs(), configuration->getWorldWidth(), configuration->getWorldHeight()))
+		if (!insideWorldBounds(newState->getBaseUavs(), configuration->getWorldWidth(), configuration->getWorldHeight()))
 		{
 			isStateValid = false;
 			if (debug)
@@ -274,7 +274,7 @@ namespace App
 	{
 		//TODO: zamyslet se, jestli neslouèit tuto metodu a checkObstaclesInTrajectories do jedné, protože øešení kolizí trvá neskuteènì dlouho
 		double uav_size = configuration->getUavSize();
-		for (auto uav : new_node->getUavs())
+		for (auto uav : new_node->getBaseUavs())
 		{
 			double x = uav->getPointParticle()->getLocation()->getX();
 			double y = uav->getPointParticle()->getLocation()->getY();
@@ -301,7 +301,7 @@ namespace App
 	bool CollisionDetector::checkObstaclesInTrajectories(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map)
 	{
 		double uav_size = configuration->getUavSize();
-		for (auto uav : oldState->getUavs())
+		for (auto uav : oldState->getBaseUavs())
 		{
 			double x = uav->getPointParticle()->getLocation()->getX();
 			double y = uav->getPointParticle()->getLocation()->getY();
@@ -311,8 +311,8 @@ namespace App
 			double x2 = x + uav_size / 2;
 			double y2 = y + uav_size / 2;
 			double z2 = 1;
-			double x3 = newState->getUav(uav)->getPointParticle()->getLocation()->getX();
-			double y3 = newState->getUav(uav)->getPointParticle()->getLocation()->getY();
+			double x3 = newState->getBaseUav(uav)->getPointParticle()->getLocation()->getX();
+			double y3 = newState->getBaseUav(uav)->getPointParticle()->getLocation()->getY();
 			double z3 = 1;
 
 			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));

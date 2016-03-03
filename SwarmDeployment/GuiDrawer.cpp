@@ -154,11 +154,11 @@ namespace Ui
 //			width = 2;
 		}
 
-		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
+		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
 		{
-			auto uav = nearNode->getUavs()[i];
-			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
-			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
+			auto uav = nearNode->getUavsForRRT()[i];
+			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
 			scene->addLine(oldLoc->getX(), oldLoc->getY(),
 				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 		}
@@ -178,11 +178,11 @@ namespace Ui
 			width = 2;
 		}
 
-		for (size_t i = 0; i < nearNode->getUavs().size(); i++)
+		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
 		{
 			auto uav = nearNode->getUavs()[i];
-			auto oldLoc = nearNode->getUavs()[i]->getPointParticle()->getLocation();
-			auto newLoc = newNode->getUavs()[i]->getPointParticle()->getLocation();
+			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
 			scene->addLine(oldLoc->getX(), oldLoc->getY(),
 				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 		}
@@ -237,11 +237,11 @@ namespace Ui
 				continue;
 			}
 
-			for (size_t i = 0; i < state->getUavs().size(); i++)
+			for (size_t i = 0; i < state->getBaseUavs().size(); i++)
 			{
-				auto uav = state->getUavs()[i];
-				scene->addLine(state->getUavs()[i]->getPointParticle()->getLocation()->getX(), state->getUavs()[i]->getPointParticle()->getLocation()->getY(),
-					previous->getUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+				auto uav = state->getBaseUavs()[i];
+				scene->addLine(state->getBaseUavs()[i]->getPointParticle()->getLocation()->getX(), state->getBaseUavs()[i]->getPointParticle()->getLocation()->getY(),
+					previous->getBaseUavs()[i]->getPointParticle()->getLocation()->getX(), previous->getBaseUavs()[i]->getPointParticle()->getLocation()->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
 			}
 			mainWindow->updateView();
 			previous = state;

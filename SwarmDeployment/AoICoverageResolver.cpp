@@ -66,7 +66,7 @@ namespace App
 
 		//inicializace matic UAV
 		auto uavMatrixes = unordered_map<UavForRRT, ublas::matrix<double>, UavHasher>();
-		for (auto uav : final_node->getUavs())
+		for (auto uav : final_node->getUavsForRRT())
 		{
 			uavMatrixes[*uav.get()] = ublas::matrix<double>(rowCount, columnCount, 1);//initializes matrix with 1
 		}

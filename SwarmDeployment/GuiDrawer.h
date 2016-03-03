@@ -47,7 +47,7 @@ namespace Ui
 		void addCross(double x, double y, double size, Qt::GlobalColor color);
 		void addCircle(double x, double y, double radius, Qt::GlobalColor color);
 		Qt::GlobalColor getRandomColor();
-		unordered_map<App::UavForRRT, Qt::GlobalColor, App::UavHasher> uavColors;
+		unordered_map<App::UavInterface, Qt::GlobalColor, App::UavHasher> uavColors;
 		void showPopup(string text);
 	};
 

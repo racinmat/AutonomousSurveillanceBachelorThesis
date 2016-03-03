@@ -38,7 +38,7 @@ namespace App
 		return areAllInputsUsed;
 	}
 
-	shared_ptr<UavForRRT> LinkedState::getUav(shared_ptr<UavForRRT> uav) const
+	shared_ptr<UavInterface> LinkedState::getBaseUav(shared_ptr<UavInterface> uav) const
 	{
 		for(auto other : uavs)
 		{
@@ -47,7 +47,7 @@ namespace App
 				return other;
 			}
 		}
-		throw "No equal node found for node " + to_string(uav->getId());
+//		throw "No equal node found for node " + to_string(uav->getId());
 	}
 
 	bool LinkedState::areUavsInGoals()
@@ -85,9 +85,16 @@ namespace App
 		previous = state;
 	}
 
-	vector<shared_ptr<UavForRRT>> LinkedState::getUavs() const
+	vector<shared_ptr<UavInterface>> LinkedState::getBaseUavs() const
 	{
-		return uavs;
+		vector<shared_ptr<UavInterface>> baseUavs = vector<shared_ptr<UavInterface>>(uavs.size());
+		int i = 0;
+		for(auto uav : uavs)
+		{
+			baseUavs[i] = uav;
+			i++;
+		}
+		return baseUavs;
 	}
 
 	void LinkedState::setUavs(const vector<shared_ptr<UavForRRT>> shared_ptrs)
@@ -103,6 +110,11 @@ namespace App
 	double LinkedState::getTime() const
 	{
 		return time;
+	}
+
+	vector<shared_ptr<UavForRRT>> LinkedState::getUavsForRRT()
+	{
+		return uavs;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const LinkedState& obj)
@@ -132,7 +144,7 @@ namespace App
 	{
 		for (auto uav : lhs.uavs)
 		{
-			if (*uav->getPointParticle().get() != *rhs.getUav(uav)->getPointParticle().get())
+			if (*uav->getPointParticle().get() != *rhs.getBaseUav(uav)->getPointParticle().get())
 			{
 				return false;
 			}
