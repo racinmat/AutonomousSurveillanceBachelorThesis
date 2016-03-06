@@ -6,5 +6,6 @@ class Point2D : public Point3D
 public:
 	Point2D(double x, double y);
 	virtual ~Point2D();
+	double getDistance(Point2D point);
 };
 

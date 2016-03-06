@@ -251,7 +251,7 @@ namespace App
 				logger->logText("node is outside of world bounds");
 			}
 		}
-		if (!check_obstacle_vcollide_single(newState, map))
+		if (!checkCollisionsInTrajectories(newState, map))
 		{
 			isStateValid = false;
 			if (debug)
@@ -270,22 +270,22 @@ namespace App
 		return isStateValid;
 	}
 	//returns true, when no collisions are detected, returns false, when there are any collisions
-	bool CollisionDetector::check_obstacle_vcollide_single(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
+	bool CollisionDetector::checkCollisionsInTrajectories(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
 		//TODO: zamyslet se, jestli neslouèit tuto metodu a checkObstaclesInTrajectories do jedné, protože øešení kolizí trvá neskuteènì dlouho
 		double uav_size = configuration->getUavSize();
 		for (auto uav : new_node->getBaseUavs())
 		{
 			auto uavLocation = uav->getPointParticle()->getLocation();
+			auto rotation = uav->getPointParticle()->getRotation()->getZ();
 
-			double x = uavLocation->getX();
-			double y = uavLocation->getY();
-			double x1 = x - uav_size / 2;
-			double y1 = y - uav_size / 2;
-			double x2 = x + uav_size / 2;
-			double y2 = y + uav_size / 2;
-			//TODO: pøidìlat otoèení podle úhlu UAV
-			Rectangle2D uavRectangle(x1, y1, x2, y2);
+			double x = uavLocation->getX();//coordinates of UAV when UAV has rotation = 0
+			double y = uavLocation->getY();//UAV is approximated as square
+			double coef = sqrt(2) * (uav_size / 2);	//distance of corner from middle is sqrt(2) * size of uav/2
+
+
+			Rectangle2D uavRectangle(x - uav_size / 2, y - uav_size / 2, uav_size, uav_size);
+			uavRectangle.rotate(rotation);
 			if (collidesWithObstacles(uavRectangle, map))
 			{
 				return false;
@@ -299,19 +299,77 @@ namespace App
 		double uav_size = configuration->getUavSize();
 		for (auto uav : oldState->getBaseUavs())
 		{
-			auto newUavLocation = newState->getBaseUav(uav)->getPointParticle()->getLocation();
+			//trajectory of UAV between 2 states is approximed by line. When approximating UAV as square, we get rectangle, where can not be collisions
+			//by knowing these 2 states and size of UAV square, I count rectangle coords and rotate whole rectangle
 
-			double xOld = uav->getPointParticle()->getLocation()->getX();
-			double yOld = uav->getPointParticle()->getLocation()->getY();
+			/*
+
+			                                                                           `..
+			                                                                        `````` rotated rectangle
+			                                                                     `````````
+			                                                                  .```````````.
+			                                                               .```````````````
+			                                                            .``````````````````
+			                                                         .`````````````````````.
+			                                                      .`````````````````````````
+			                                                   .````````````````````````````
+			                                                `.````````````````````````````````
+			                                             `.```````````````````````````````````
+			not rotated rectangle                     `.``````````````````````````````````````
+			,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,::,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+			``````````````````````````````````` ..````````````````````````````````````````````.`
+			```````````````````````````````` ..```````````````````````````````newLocation``````
+			``````````````````````````````..`````````````````````````````````````,'`````````````
+			```````````````````````````..`````````````````````````````````````,,```````````````.
+			````````````````````````..`````````````````````````````````````,.```````````````````
+			`````````````````````..`````````````````````````````````````,.```````````````````````
+			``````````````````.``````````````````````````````````````,.`````````````````````````.
+			```````````````.``````````````````````````````````````,.`````````````````````````````
+			````````````.``````````````````````````````````````,.`````````````````````````````````
+			`````````.``````````````````````````````````````,.```````````````````````````````````.
+			``````.``````````````````````````````````````,````````````````````````````````````.`
+			```.``````````````````````````````````middle```````````````````````````````````.````
+			`,`````````````````````````````````````.,````````````````````````````````````.```````
+			.`.``````````````````````````````````.,````````````````````````````````````.``````````
+			`.```````````````````````````````.,````````````````````````````````````.`````````````
+			`.````````````````````````````.,````````````````````````````````````.````````````````
+			..`````````````````````````.,````````````````````````````````````.```````````````````
+			.``````````````````````.,````````````````````````````````````.``````````````````````
+			.```````````````````,,````````````````````````````````````.`````````````````````````
+			,````````````````,.````````````````````````````````````.````````````````````````````
+			`````````````',.````````````````````````````````````.```````````````````````````````
+			`````````````,```````````````````````````````````.``````````````````````````````````
+			`.````````oldLocation`````````````````````````.` ```````````````````````````````````
+			```````````````````````````````````````````..```````````````````````````````````````
+			  ````````````````````````````````````` .`
+			  .``````````````````````````````````.`
+			    ```````````````````````````````.`
+			    ````````````````````````````.`
+			    .````````````````````````.`
+			      ```````````````````````
+			      ``````````````````.`
+			      .``````````````.`
+			       ```````````.`
+			       ``````````
+			       .``````
+			       ```
+
+			*/	
+
+			auto oldUavLocation = uav->getPointParticle()->getLocation();
+			auto newUavLocation = newState->getBaseUav(uav)->getPointParticle()->getLocation();
+			auto distance = oldUavLocation->getDistance(newUavLocation);
+
+			double xOld = oldUavLocation->getX();
+			double yOld = oldUavLocation->getY();
 			double xNew = newUavLocation->getX();
 			double yNew = newUavLocation->getY();
 
-			double x1 = min(xOld, xNew) - uav_size / 2;
-			double y1 = min(yOld, yNew) - uav_size / 2;
-			double x2 = max(xOld, xNew) + uav_size / 2;
-			double y2 = max(yOld, yNew) + uav_size / 2;
-			//TODO: pøidìlat otoèení podle úhlu UAV. Možná ignorovat koncové natoèení UAV
-			Rectangle2D uavRectangle(x1, y1, x2, y2);
+			double middleX = (xOld + xNew) / 2;
+			double middleY = (yOld + yNew) / 2;
+
+			Rectangle2D uavRectangle(middleX - distance / 2 - uav_size / 2, middleY - uav_size / 2, distance + uav_size, uav_size);
+			uavRectangle.rotate(atan2(yNew - yOld, xNew - xOld));
 			if (collidesWithObstacles(uavRectangle, map))
 			{
 				return false;

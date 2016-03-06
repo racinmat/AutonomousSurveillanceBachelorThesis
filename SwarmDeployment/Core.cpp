@@ -73,12 +73,12 @@ namespace App
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
-		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 		MapProcessor mapProcessor = MapProcessor(logger);	
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celı roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 
+		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 		vector<shared_ptr<State>> statePath;
 
 		{		//zkouším mít pro rrt-path vlastní scope, aby se uvolnila pamì po skonèení rrtpath

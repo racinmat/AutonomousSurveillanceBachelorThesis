@@ -179,19 +179,19 @@ namespace App
 		//	cout << found << endl;		//false
 
 
-		auto rect1 = Rectangle2D(0, 0, 2, 2);
-		auto rect2 = Rectangle2D(2.1, 2, 2, 2);
+//		auto rect1 = Rectangle2D(0, 0, 2, 2);
+//		auto rect2 = Rectangle2D(2.1, 2, 2, 2);
 
 //		auto start = clock();
 
-		cout << ColDetect::coldetect(rect1, rect2) << endl;
+//		cout << ColDetect::coldetect(rect1, rect2) << endl;
 			
 //		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 //		cout << to_string(duration) << " miliseconds to calculate coldetect" << endl;
 
 //		start = clock();
 
-		cout << ColDetect::coldetectWithoutTransformation(rect1, rect2) << endl;
+//		cout << ColDetect::coldetectWithoutTransformation(rect1, rect2) << endl;
 
 //		duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 //		cout << to_string(duration) << " miliseconds to calculate coldetect after refactoring" << endl;
@@ -805,6 +805,39 @@ namespace App
 //		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 //
 //		cout << to_string(duration) << " miliseconds to calculate distance" << endl;
+
+
+		double uav_size = 6;
+		auto oldUavLocation = make_shared<Point>(80, 50);
+		auto newUavLocation = make_shared<Point>(94.03206, 54.56);
+		auto distance = oldUavLocation->getDistance(newUavLocation);
+		
+		double xOld = oldUavLocation->getX();
+		double yOld = oldUavLocation->getY();
+		double xNew = newUavLocation->getX();
+		double yNew = newUavLocation->getY();
+		
+		double middleX = (xOld + xNew) / 2;
+		double middleY = (yOld + yNew) / 2;
+
+		Rectangle2D uavRectangle(middleX - distance / 2 - uav_size / 2, middleY - uav_size / 2, distance + uav_size, uav_size);
+
+		cout << "distance:" << distance << endl;
+		cout << "middle:" << middleX << ", " << middleY << endl;
+
+		cout << "p1: " << uavRectangle.p1.getX() << ", " << uavRectangle.p1.getY() << endl;
+		cout << "p2: " << uavRectangle.p2.getX() << ", " << uavRectangle.p2.getY() << endl;
+		cout << "p3: " << uavRectangle.p3.getX() << ", " << uavRectangle.p3.getY() << endl;
+		cout << "p4: " << uavRectangle.p4.getX() << ", " << uavRectangle.p4.getY() << endl;
+
+		cout << "after rotation: " << endl;
+
+		uavRectangle.rotate(atan2(yNew - yOld, xNew - xOld));
+
+		cout << "p1: " << uavRectangle.p1.getX() << ", " << uavRectangle.p1.getY() << endl;
+		cout << "p2: " << uavRectangle.p2.getX() << ", " << uavRectangle.p2.getY() << endl;
+		cout << "p3: " << uavRectangle.p3.getX() << ", " << uavRectangle.p3.getY() << endl;
+		cout << "p4: " << uavRectangle.p4.getX() << ", " << uavRectangle.p4.getY() << endl;
 
 		cin.get();
 	}

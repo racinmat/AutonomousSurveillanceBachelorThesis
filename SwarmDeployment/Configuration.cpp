@@ -15,8 +15,8 @@ namespace App
 //		worldWidth = 1000;
 		worldHeight = 800;	//k mapě 8
 		worldWidth = 800;
-//		uavSize = 0.5;
-		uavSize = 50;		//k mapě 8, měřeno na velké UAV
+//		uavSize = 0.5;		//UAV is aapproximated by square, uavSize is length of one side of square
+		uavSize = 60;		//k mapě 8, měřeno na velkém UAV, délka strany. 
 		samplingRadius = 60;		//poloměr kružnice, která je okolo bodu z A staru a okolo které se vybírá náhodný bod
 		drawPeriod = 1;
 		inputSamplesDist = 1;
