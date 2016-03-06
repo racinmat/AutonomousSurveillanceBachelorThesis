@@ -10,9 +10,10 @@ namespace App
 		//todo: refactorovat a vyrábìt nové stavy z factory, která jim bude pøedávat délku used_inputs pole podle konfigurace v konstruktoru.
 		used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
 		fill(used_inputs.begin(), used_inputs.end(), false);
+//		cout << "creating state " << index << endl;
 	}
 
-	LinkedState::LinkedState(const LinkedState& other) : index(other.index + 1), used_inputs(other.used_inputs), time(other.time)
+	LinkedState::LinkedState(const LinkedState& other) : used_inputs(other.used_inputs), index(lastIndex++), time(other.time)
 	{
 		for (auto uav : other.uavs)
 		{
@@ -22,10 +23,12 @@ namespace App
 		{
 			previous = other.previous;
 		}
+//		cout << "creating state " << index << endl;
 	}
 
 	LinkedState::~LinkedState()
 	{
+//		cout << "destroying state " << index << endl;
 	}
 
 	bool LinkedState::areAllInputsUsed()

@@ -20,3 +20,18 @@ std::vector<double> Triangle3D::toVector() const
 {
 	return std::vector<double> ({ point1.getX(), point1.getY(), point1.getZ(), point2.getX(), point2.getY(), point2.getZ(), point3.getX(), point3.getY(), point3.getZ() });
 }
+
+Point3D Triangle3D::getPoint1() const
+{
+	return point1;
+}
+
+Point3D Triangle3D::getPoint2() const
+{
+	return point2;
+}
+
+Point3D Triangle3D::getPoint3() const
+{
+	return point3;
+}

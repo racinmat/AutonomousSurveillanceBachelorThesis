@@ -33,7 +33,7 @@ namespace App
 	protected:
 		shared_ptr<Configuration> configuration;
 		shared_ptr<LoggerInterface> logger;
-		bool collidesWithObstacles(Triangle3D triangle, shared_ptr<Map> map);
+		bool collidesWithObstacles(Rectangle2D rectangle, shared_ptr<Map> map);
 	};
 
 }

@@ -64,10 +64,9 @@ namespace App
 	void Core::run()
 	{
 		
-		clock_t start;
-		double duration;
-
-		start = clock();
+//		clock_t start;
+//		double duration;
+//		start = clock();
 
 		MapFactory mapFactory;
 		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
@@ -79,15 +78,17 @@ namespace App
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
-		auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
-		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-		duration = (clock() - start) / double(CLOCKS_PER_SEC);
-
-		cout << to_string(duration) << "seconds to discretize map and find path" << endl;
 
 		vector<shared_ptr<State>> statePath;
 
-		{
+		{		//zkouším mít pro rrt-path vlastní scope, aby se uvolnila pamì po skonèení rrtpath
+			auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+			auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+//			duration = (clock() - start) / double(CLOCKS_PER_SEC);
+//
+//			cout << to_string(duration) << "seconds to discretize map and find path" << endl;
+
+
 			auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
 			shared_ptr<LinkedState> lastState;
@@ -101,9 +102,8 @@ namespace App
 
 			auto path = pathHandler->getPath(lastState);
 
-			statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubbinse a neplete tam zbyteènosti z rrt-path
+			statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubinse a neplete tam zbyteènosti z rrt-path
 		}
-
 		logger->logBestPath(statePath);
 		persister->savePathToJson(statePath, map, "before-dubins");
 
@@ -188,7 +188,7 @@ namespace App
 		bool debug = configuration->getDebug();
 		double guiding_near_dist = configuration->getGuidingNearDist();
 
-		cout << "Starting RRT-path...";
+		cout << "Starting RRT-path..." << endl;
 
 		vector<shared_ptr<LinkedState>> states = vector<shared_ptr<LinkedState>>();
 		auto initialState = stateFactory->createState();
@@ -326,7 +326,6 @@ namespace App
 		output->finalNodes.push_back(states[states.size() - 1]);	//poslední prvek
 		check_near_goal(newState->getUavsForRRT(), map);
 		output->goals_reached = newState->areUavsInGoals();
-		//todo: ošetøit nodes a final_nodes proti nullpointerùm a vyházet null nody
 		output->nodes = states;
 		logger->logText("RRT-Path finished");
 		return output;

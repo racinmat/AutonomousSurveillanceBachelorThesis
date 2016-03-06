@@ -9,7 +9,7 @@ namespace App
 	Configuration::Configuration()
 	{
 		aStarCellSize = 50;
-		mapNumber = 5;
+		mapNumber = 8;
 		uavCount = 3;
 //		worldHeight = 1000;
 //		worldWidth = 1000;
@@ -24,7 +24,7 @@ namespace App
 		rrtMinNodes = 1;
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
-		debug = false;
+		debug = true;
 //		distanceOfNewNodes = 30;
 		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
 //		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
@@ -47,14 +47,15 @@ namespace App
 		checkFov = false;
 		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
 		stop = false;
-		textOutputEnabled = false;
+		textOutputEnabled = true;
 		narrowPassageDivisor = 1;
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
 		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
-		obstacleIncrement = 30 + relativeDistanceMin/5;			//virtuální zvětšení překážek
+//		obstacleIncrement = 30 + relativeDistanceMin / 5;			//virtuální zvětšení překážek
+		obstacleIncrement = 30;			//virtuální zvětšení překážek
 		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů
 		maxSampleCount = 2700;
 

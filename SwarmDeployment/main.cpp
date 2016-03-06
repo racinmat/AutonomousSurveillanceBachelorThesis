@@ -179,27 +179,99 @@ namespace App
 		//	cout << found << endl;		//false
 
 
-		//	auto tri_uav = Triangle3D(
-		//		Point3D(72.811994693764177, 78.646404722814680, 1), 
-		//		Point3D(73.311994693764177, 78.646404722814680, 1), 
-		//		Point3D(73.061994693764177, 79.146404722814680, 1));
-		//	double trans[] = { 3.1284838758924138, 14.529960666841021, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
-		//	double zero_trans[] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 };
-		//
-		//	auto tri1_obs = vector<Triangle3D>(1);
-		//	auto tri2_obs = vector<Triangle3D>(1);
-		//	int j = 0;
-		//	tri1_obs[0] = Triangle3D(
-		//		Point3D(0, 400, 1),
-		//		Point3D(700, 400, 1),
-		//		Point3D(700, 450, 1));
-		//	tri2_obs[0] = Triangle3D(
-		//		Point3D(0, 400, 1),
-		//		Point3D(0, 50, 1),
-		//		Point3D(700, 450, 1));
-		//
-		//	cout << "tri1:" << ColDetect::coldetect(tri_uav, tri1_obs[j], trans, zero_trans) << endl;
-		//	cout << "tri2:" << ColDetect::coldetect(tri_uav, tri2_obs[j], trans, zero_trans) << endl;
+		auto rect1 = Rectangle2D(0, 0, 2, 2);
+		auto rect2 = Rectangle2D(2.1, 2, 2, 2);
+
+//		auto start = clock();
+
+		cout << ColDetect::coldetect(rect1, rect2) << endl;
+			
+//		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//		cout << to_string(duration) << " miliseconds to calculate coldetect" << endl;
+
+//		start = clock();
+
+		cout << ColDetect::coldetectWithoutTransformation(rect1, rect2) << endl;
+
+//		duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//		cout << to_string(duration) << " miliseconds to calculate coldetect after refactoring" << endl;
+
+
+//		auto triangles = rect1.toTriangles();
+//
+//		start = clock();
+//
+//		for (size_t i = 0; i < 50000000; i++)
+//		{
+//			double v1[3], v2[3], v3[3];
+//			for (int j = 0; j < triangles.size(); j++) {
+//				auto tri = triangles[j];
+//				auto p1 = tri.getPoint1();
+//				v1[0] = p1.getX();
+//				v1[1] = p1.getY();
+//				v1[2] = p1.getZ();
+//
+//				auto p2 = tri.getPoint2();
+//				v2[0] = p2.getX();
+//				v2[1] = p2.getY();
+//				v2[2] = p2.getZ();
+//
+//				auto p3 = tri.getPoint3();
+//				v3[0] = p3.getX();
+//				v3[1] = p3.getY();
+//				v3[2] = p3.getZ();
+//			}
+//		}
+//
+//		duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//		cout << to_string(duration) << " miliseconds to assert with cache" << endl;
+//
+//		start = clock();
+//
+//		for (size_t i = 0; i < 50000000; i++)
+//		{
+//			double v1[3], v2[3], v3[3];
+//			for (int j = 0; j < triangles.size(); j++) {
+//				auto tri = triangles[j];
+//				v1[0] = tri.getPoint1().getX();
+//				v1[1] = tri.getPoint1().getY();
+//				v1[2] = tri.getPoint1().getZ();
+//
+//				v2[0] = tri.getPoint2().getX();
+//				v2[1] = tri.getPoint2().getY();
+//				v2[2] = tri.getPoint2().getZ();
+//
+//				v3[0] = tri.getPoint3().getX();
+//				v3[1] = tri.getPoint3().getY();
+//				v3[2] = tri.getPoint3().getZ();
+//			}
+//		}
+//
+//		duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//		cout << to_string(duration) << " miliseconds to assert with some cache" << endl;
+//
+//		start = clock();
+//
+//		for (size_t i = 0; i < 50000000; i++)
+//		{
+//			double v1[3], v2[3], v3[3];
+//			for (int j = 0; j < triangles.size(); j++) {
+//				v1[0] = triangles[j].getPoint1().getX();
+//				v1[1] = triangles[j].getPoint1().getY();
+//				v1[2] = triangles[j].getPoint1().getZ();
+//
+//				v2[0] = triangles[j].getPoint2().getX();
+//				v2[1] = triangles[j].getPoint2().getY();
+//				v2[2] = triangles[j].getPoint2().getZ();
+//
+//				v3[0] = triangles[j].getPoint3().getX();
+//				v3[1] = triangles[j].getPoint3().getY();
+//				v3[2] = triangles[j].getPoint3().getZ();
+//			}
+//		}
+//
+//		duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+//		cout << to_string(duration) << " miliseconds to assert without cache" << endl;
 
 
 //			// testování rychlosti motion modelu kvùli optimalizaci
@@ -708,20 +780,20 @@ namespace App
 //			cout << state << endl;
 //		}
 
-		char* buffer = new char[100];
-		
-		// Get the current working directory: 
-		buffer = _getcwd(buffer, 100);
-		printf("%s \nLength: %d\n", buffer, strlen(buffer));
-		free(buffer);
-		
-
-		Persister persister = Persister();
-		auto tuple = persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-29-12-19-16-resampled.json");
-
-		vector<shared_ptr<State>> path;
-		shared_ptr<Map> map;
-		tie(path, map) = tuple;
+//		char* buffer = new char[100];
+//		
+//		// Get the current working directory: 
+//		buffer = _getcwd(buffer, 100);
+//		printf("%s \nLength: %d\n", buffer, strlen(buffer));
+//		free(buffer);
+//		
+//
+//		Persister persister = Persister();
+//		auto tuple = persister.loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-29-12-19-16-resampled.json");
+//
+//		vector<shared_ptr<State>> path;
+//		shared_ptr<Map> map;
+//		tie(path, map) = tuple;
 
 //		auto start = clock();
 
@@ -742,8 +814,8 @@ int main(int argc, char *argv[])
 {
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
-//	testing();
+//	returnValue = runGui(argc, argv);
+	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
 }

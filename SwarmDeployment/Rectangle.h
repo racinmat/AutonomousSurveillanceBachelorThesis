@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Point.h"
 #include <memory>
+#include "VCollide/Rectangle2D.h"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ namespace App
 		shared_ptr<Point> getMiddle();
 		mObject toJson() const;
 		static shared_ptr<Rectangle> fromJson(mObject data);
+		Rectangle2D toColDetectRectandle();
 
 	protected:
 		shared_ptr<Point> location;

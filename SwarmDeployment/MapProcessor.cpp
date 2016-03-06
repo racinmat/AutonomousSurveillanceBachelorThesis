@@ -66,7 +66,7 @@ namespace App
 
 		for (auto uavStart : map->getUavsStart())
 		{
-			if (colDetect.coldetect(
+			if (colDetect.coldetectWithoutTransformation(
 				Rectangle2D(uavStart->getPointParticle()->getLocation()->getX() - uavSize / 2, uavStart->getPointParticle()->getLocation()->getY() - uavSize / 2, uavSize, uavSize), cell))
 			{
 				return Grid::UAV;
@@ -75,7 +75,7 @@ namespace App
 
 		for (auto obstacle : map->getObstacles())
 		{
-			if (colDetect.coldetect(
+			if (colDetect.coldetectWithoutTransformation(
 				Rectangle2D(obstacle->rectangle->getX(), obstacle->rectangle->getY(), obstacle->rectangle->getWidth(), obstacle->rectangle->getHeight()), cell))
 			{
 				return Grid::Obstacle;
@@ -84,7 +84,7 @@ namespace App
 
 		for (auto goal : map->getGoals())
 		{
-			if (colDetect.coldetect(
+			if (colDetect.coldetectWithoutTransformation(
 				Rectangle2D(goal->getRectangle()->getX(), goal->getRectangle()->getY(), goal->getRectangle()->getWidth(), goal->getRectangle()->getHeight()), cell))
 			{
 				return Grid::Goal;

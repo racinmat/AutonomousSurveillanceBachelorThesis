@@ -68,6 +68,11 @@ namespace App
 		return make_shared<Rectangle>(0, 0, 0, 0);
 	}
 
+	Rectangle2D Rectangle::toColDetectRectandle()
+	{
+		return Rectangle2D(getX(), getY(), m_width, m_height);
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

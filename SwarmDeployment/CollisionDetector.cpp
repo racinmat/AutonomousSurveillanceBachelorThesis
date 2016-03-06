@@ -276,21 +276,17 @@ namespace App
 		double uav_size = configuration->getUavSize();
 		for (auto uav : new_node->getBaseUavs())
 		{
-			double x = uav->getPointParticle()->getLocation()->getX();
-			double y = uav->getPointParticle()->getLocation()->getY();
+			auto uavLocation = uav->getPointParticle()->getLocation();
+
+			double x = uavLocation->getX();
+			double y = uavLocation->getY();
 			double x1 = x - uav_size / 2;
 			double y1 = y - uav_size / 2;
-			double z1 = 1;
 			double x2 = x + uav_size / 2;
-			double y2 = y - uav_size / 2;
-			double z2 = 1;
-			double x3 = x;
-			double y3 = y + uav_size / 2;
-			double z3 = 1;
-
-			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
-
-			if (collidesWithObstacles(tri_uav, map))
+			double y2 = y + uav_size / 2;
+			//TODO: pøidìlat otoèení podle úhlu UAV
+			Rectangle2D uavRectangle(x1, y1, x2, y2);
+			if (collidesWithObstacles(uavRectangle, map))
 			{
 				return false;
 			}
@@ -303,20 +299,20 @@ namespace App
 		double uav_size = configuration->getUavSize();
 		for (auto uav : oldState->getBaseUavs())
 		{
-			double x = uav->getPointParticle()->getLocation()->getX();
-			double y = uav->getPointParticle()->getLocation()->getY();
-			double x1 = x - uav_size / 2;
-			double y1 = y - uav_size / 2;
-			double z1 = 1;
-			double x2 = x + uav_size / 2;
-			double y2 = y + uav_size / 2;
-			double z2 = 1;
-			double x3 = newState->getBaseUav(uav)->getPointParticle()->getLocation()->getX();
-			double y3 = newState->getBaseUav(uav)->getPointParticle()->getLocation()->getY();
-			double z3 = 1;
+			auto newUavLocation = newState->getBaseUav(uav)->getPointParticle()->getLocation();
 
-			Triangle3D tri_uav = Triangle3D(Point3D(x1, y1, z1), Point3D(x2, y2, z2), Point3D(x3, y3, z3));
-			if (collidesWithObstacles(tri_uav, map))
+			double xOld = uav->getPointParticle()->getLocation()->getX();
+			double yOld = uav->getPointParticle()->getLocation()->getY();
+			double xNew = newUavLocation->getX();
+			double yNew = newUavLocation->getY();
+
+			double x1 = min(xOld, xNew) - uav_size / 2;
+			double y1 = min(yOld, yNew) - uav_size / 2;
+			double x2 = max(xOld, xNew) + uav_size / 2;
+			double y2 = max(yOld, yNew) + uav_size / 2;
+			//TODO: pøidìlat otoèení podle úhlu UAV. Možná ignorovat koncové natoèení UAV
+			Rectangle2D uavRectangle(x1, y1, x2, y2);
+			if (collidesWithObstacles(uavRectangle, map))
 			{
 				return false;
 			}
@@ -345,25 +341,14 @@ namespace App
 		this->logger = logger;
 	}
 
-	bool CollisionDetector::collidesWithObstacles(Triangle3D triangle, shared_ptr<Map> map)
+	bool CollisionDetector::collidesWithObstacles(Rectangle2D rectangle, shared_ptr<Map> map)
 	{
-
-		double zero_trans[] = { 0,0,0, 1,0,0, 0,1,0, 0,0,1 };
 
 		for (auto obs : map->getObstacles())
 		{
-			Point3D p1 = Point3D(obs->rectangle->getX(), obs->rectangle->getY(), 1);
-			Point3D p2 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY(), 1);
-			Point3D p3 = Point3D(obs->rectangle->getX() + obs->rectangle->getWidth(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-			Point3D p4 = Point3D(obs->rectangle->getX(), obs->rectangle->getY() + obs->rectangle->getHeight(), 1);
-
-			Triangle3D tri1_obs = Triangle3D(p1, p2, p3);
-			Triangle3D tri2_obs = Triangle3D(p1, p4, p3);
-
-
-			bool col = ColDetect::coldetect(triangle, tri1_obs, zero_trans, zero_trans);
-			col = col || ColDetect::coldetect(triangle, tri2_obs, zero_trans, zero_trans);
-			if (col)
+			auto obstacleRectangle = obs->rectangle->toColDetectRectandle();
+			auto collision = ColDetect::coldetectWithoutTransformation(obstacleRectangle, rectangle);
+			if (collision)
 			{
 				return true;
 			}

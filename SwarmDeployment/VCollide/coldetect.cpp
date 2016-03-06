@@ -26,6 +26,32 @@ void ColDetect::addTris(double *tris, int n, VCollide &vc) {
 	vc.EndObject();
 }
 
+void ColDetect::addPolygon(std::vector<Triangle3D> triangles, VCollide& vc)
+{
+	int id;
+	double v1[3], v2[3], v3[3];
+	vc.NewObject(&id);
+	for (int j = 0; j < triangles.size(); j++) {
+		auto tri = triangles[j];
+		auto p1 = tri.getPoint1();
+		v1[0] = p1.getX();
+		v1[1] = p1.getY();
+		v1[2] = p1.getZ();
+
+		auto p2 = tri.getPoint2();
+		v2[0] = p2.getX();
+		v2[1] = p2.getY();
+		v2[2] = p2.getZ();
+
+		auto p3 = tri.getPoint3();
+		v3[0] = p3.getX();
+		v3[1] = p3.getY();
+		v3[2] = p3.getZ();
+		vc.AddTri(v1, v2, v3, j);
+	}
+	vc.EndObject();
+}
+
 void ColDetect::update(double *tr, int t, int ntrans, double vc_trans[][4]) {
 	vc_trans[0][0] = tr[t + 3 * ntrans];
 	vc_trans[1][0] = tr[t + 6 * ntrans];
@@ -91,6 +117,19 @@ bool ColDetect::coldetect(Rectangle2D rect1, Rectangle2D rect2) {//splits rectan
 		coldetect(rect1triangles[0], rect2triangles[1]) ||
 		coldetect(rect1triangles[1], rect2triangles[0]) ||
 		coldetect(rect1triangles[1], rect2triangles[1]);
+}
+
+bool ColDetect::coldetectWithoutTransformation(Rectangle2D rect1, Rectangle2D rect2)
+{
+	VCReport report;
+	VCollide vc;
+	addPolygon(rect1.toTriangles(), vc);
+	addPolygon(rect2.toTriangles(), vc);
+
+	vc.Collide(&report);
+	//return true in case of collision
+	return report.numObjPairs() > 0;
+
 }
 
 ColDetect::ColDetect()
