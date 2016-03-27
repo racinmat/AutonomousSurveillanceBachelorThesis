@@ -39,11 +39,11 @@ namespace App
 		logger(make_shared<LoggerInterface>()), configuration(configuration), 
 		stateFactory(make_shared<StateFactory>(configuration)),
 		inputGenerator(make_shared<InputGenerator>(configuration->getInputSamplesDist(), configuration->getInputSamplesPhi())),
-		coverageResolver(make_shared<AoICoverageResolver>()), 
+		coverageResolver(make_shared<AoICoverageResolver>(configuration)), 
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
 		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)),
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
-		persister(make_shared<Persister>()),
+		persister(make_shared<Persister>(configuration)),
 		guidingPathFactory(make_shared<GuidingPathFactory>(logger)),
 		resampler(make_shared<Resampler>(configuration, stateFactory, motionModel))
 	{
@@ -94,7 +94,7 @@ namespace App
 			shared_ptr<LinkedState> lastState;
 			if (output->goals_reached)
 			{
-				lastState = coverageResolver->get_best_fitness(output->finalNodes, map, configuration->getGoalElementSize(), configuration->getWorldWidth(), configuration->getWorldHeight());
+				lastState = coverageResolver->get_best_fitness(output->finalNodes, map);
 			} else
 			{
 				lastState = get_closest_node_to_goal(output->nodes, paths, map);

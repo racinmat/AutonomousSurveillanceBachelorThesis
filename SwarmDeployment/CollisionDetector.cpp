@@ -251,14 +251,15 @@ namespace App
 				logger->logText("node is outside of world bounds");
 			}
 		}
-		if (!checkCollisionsInTrajectories(newState, map))
-		{
-			isStateValid = false;
-			if (debug)
-			{
-				logger->logText("node has obstacles in vcollide");
-			}
-		}
+		//when using obstacles amplifying and colliding the whole trajectory with width same as UAV width, new state does not have collisions, when whole trajectory to new state does not have collisions
+//		if (!checkCollisionsInNewState(newState, map))
+//		{
+//			isStateValid = false;
+//			if (debug)
+//			{
+//				logger->logText("node has obstacles in vcollide");
+//			}
+//		}
 		if (!checkObstaclesInTrajectories(oldState, newState, map))
 		{
 			isStateValid = false;
@@ -270,7 +271,7 @@ namespace App
 		return isStateValid;
 	}
 	//returns true, when no collisions are detected, returns false, when there are any collisions
-	bool CollisionDetector::checkCollisionsInTrajectories(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
+	bool CollisionDetector::checkCollisionsInNewState(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
 		//TODO: zamyslet se, jestli neslouèit tuto metodu a checkObstaclesInTrajectories do jedné, protože øešení kolizí trvá neskuteènì dlouho
 		double uav_size = configuration->getUavSize();

@@ -3,14 +3,12 @@
 #include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
 #include <json_spirit_v4.08/json_spirit/json_spirit_writer.h>
 #include "Strings.h"
-
-//include <boost/algorithm/string.hpp>
-//include <boost/algorithm/string/split.hpp>
+#include "Configuration.h"
 
 namespace App
 {
 
-	Persister::Persister()
+	Persister::Persister(shared_ptr<Configuration> configuration) : configuration(configuration)
 	{
 	}
 
@@ -85,7 +83,9 @@ namespace App
 
 		mObject content;
 
-		content["map"] = map->toJson();
+		auto jsonMap  = map->toJson();
+		jsonMap["size"] = max(configuration->getWorldHeight(), configuration->getWorldWidth());
+		content["map"] = jsonMap;
 
 		mArray jsonPath;
 		for (auto state : path) {

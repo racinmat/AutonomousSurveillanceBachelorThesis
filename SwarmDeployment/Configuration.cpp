@@ -51,11 +51,15 @@ namespace App
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
-		goalElementSize = 1;
+//		goalElementSize = 1;
+		goalElementSize = 50;	// během testování a debuggování AoIcoverage
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30;			//virtuální zvětšení překážek
 		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů
 		maxSampleCount = 2700;
+
+		uavCameraX = 150;
+		uavCameraY = 100;
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -302,5 +306,15 @@ namespace App
 	int Configuration::getMaxSampleCount() const
 	{
 		return maxSampleCount;
+	}
+
+	int Configuration::getUavCameraX() const
+	{
+		return uavCameraX;
+	}
+
+	int Configuration::getUavCameraY() const
+	{
+		return uavCameraY;
 	}
 }

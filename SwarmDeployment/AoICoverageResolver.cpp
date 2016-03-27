@@ -2,27 +2,31 @@
 #include <algorithm>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include "Configuration.h"
+#include <boost/spirit/home/karma.hpp>
+
+using namespace boost::spirit::karma;
 
 namespace App
 {
 
-	AoICoverageResolver::AoICoverageResolver()
+	AoICoverageResolver::AoICoverageResolver(shared_ptr<Configuration> configuration) : configuration(configuration)
 	{
 	}
-
 
 	AoICoverageResolver::~AoICoverageResolver()
 	{
 	}
 
-	shared_ptr<LinkedState> AoICoverageResolver::get_best_fitness(vector<shared_ptr<LinkedState>> final_nodes, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
+	shared_ptr<LinkedState> AoICoverageResolver::get_best_fitness(vector<shared_ptr<LinkedState>> final_nodes, shared_ptr<Map> map)
 	{
+
 		goalMatrixInitialized = false;	//invalidace cache pøed zaèátkem hledání
 
 		auto finalStatesFitness = unordered_map<shared_ptr<LinkedState>, double>();
 		for (auto finalState : final_nodes)
 		{
-			finalStatesFitness[finalState] = fitness_function(finalState, map, elementSize, worldWidth, worldHeight);
+			finalStatesFitness[finalState] = fitness_function(finalState, map);
 		}
 
 		//finding solution with best fitness
@@ -32,11 +36,16 @@ namespace App
 		return min.first;
 	}
 
-	double AoICoverageResolver::fitness_function(shared_ptr<LinkedState> final_node, shared_ptr<Map> map, int elementSize, int worldWidth, int worldHeight)
+	double AoICoverageResolver::fitness_function(shared_ptr<LinkedState> final_node, shared_ptr<Map> map)
 	{
+		int elementSize = configuration->getGoalElementSize();
+		int worldHeight = configuration->getWorldHeight();
+		int worldWidth = configuration->getWorldWidth();
+
+		double notAoIInitialValue = 10000;	//some really high value. When I search for minimum, area outside of AoI should have big numbers
 		double initialValue = 100;
-		double uavCameraX = (150 / elementSize);
-		double uavCameraY = floor(100 / elementSize);
+		double uavCameraX = (configuration->getUavCameraX() / elementSize);
+		double uavCameraY = floor(configuration->getUavCameraY() / elementSize);
 		double halfCameraX = floor(uavCameraX / 2);
 		double halfCameraY = floor(uavCameraY / 2);
 		double uavInitValue = 1 / 2;
@@ -51,14 +60,18 @@ namespace App
 
 		if (!goalMatrixInitialized)
 		{
-			goalMatrix = ublas::matrix<double>(rowCount, columnCount, 0);//initializes matrix with 0
+			goalMatrix = ublas::matrix<double>(rowCount, columnCount, notAoIInitialValue);		//initializes matrix with really big value
 			for (auto goal : map->getGoals())
 			{
 				//filling goal in matrix with initial value
 				auto rect = goal->getRectangle();
 				auto width = floor(rect->getWidth() / elementSize);
 				auto height = floor(rect->getHeight() / elementSize);
-				ublas::subrange(goalMatrix, rect->getX(), rect->getX() + width, rect->getY(), rect->getY() + height) = ublas::matrix<double>(width, height, initialValue);
+				auto minX = floor(rect->getX() / elementSize);
+				auto maxX = floor((rect->getX() + rect->getWidth()) / elementSize);
+				auto minY = floor(rect->getY() / elementSize);
+				auto maxY = floor((rect->getY() + rect->getHeight()) / elementSize);
+				ublas::subrange(goalMatrix, minX, maxX, minY, maxY) = ublas::matrix<double>(width, height, initialValue);
 			}
 			goalMatrixInitialized = true;
 		}
@@ -77,11 +90,11 @@ namespace App
 
 			//filling goal in matrix with initial value
 			auto loc = uav.getPointParticle()->getLocation();
-			int minX = max<int>(floor(loc->getX() - halfCameraX), 0);
-			int maxX = min<int>(floor(loc->getX() + halfCameraX), rowCount - 1);
-			int minY = max<int>(floor(loc->getY() - halfCameraY), 0);
-			int maxY = min<int>(floor(loc->getY() + halfCameraY), columnCount - 1);
-			ublas::subrange(matrix, minX, maxX, minY, maxY) = ublas::matrix<double>(uavCameraX, uavCameraY, uavInitValue);
+			int minX = max<int>(floor((loc->getX() - halfCameraX) / elementSize), 0);
+			int maxX = min<int>(floor((loc->getX() + halfCameraX) / elementSize), rowCount - 1);
+			int minY = max<int>(floor((loc->getY() - halfCameraY) / elementSize), 0);
+			int maxY = min<int>(floor((loc->getY() + halfCameraY) / elementSize), columnCount - 1);
+			ublas::subrange(matrix, minX, maxX, minY, maxY) = ublas::matrix<double>(maxX - minX, maxY - minY, uavInitValue);
 		}
 
 		//vytvoøení prùniku nenulových hodnot a úprava hodnot matice mapy
@@ -92,6 +105,8 @@ namespace App
 
 			goalMatrix = element_prod(goalMatrix, matrix);
 		}
+
+		std::ofstream("node_" + to_string(final_node->getIndex()) + "_matrix.txt") << format_delimited(columns(goalMatrix.size2())[auto_], '\t', goalMatrix.data()) << "\n";
 
 		return sum(prod(ublas::scalar_vector<double>(goalMatrix.size1()), goalMatrix));	//sum of whole matrix, for weird reason, I must multiply here (prod), fuck you C++ http://stackoverflow.com/questions/24398059/how-do-i-sum-all-elements-in-a-ublas-matrix
 	}
