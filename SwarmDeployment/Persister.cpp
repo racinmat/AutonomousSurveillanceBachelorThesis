@@ -10,6 +10,7 @@ namespace App
 
 	Persister::Persister(shared_ptr<Configuration> configuration) : configuration(configuration)
 	{
+		outputDirectory = "output/";
 	}
 
 
@@ -19,7 +20,7 @@ namespace App
 
 	void Persister::savePath(vector<shared_ptr<State>> path)
 	{
-		ofstream file = ofstream("path-" + Strings::currentDateTime() +  ".txt");
+		ofstream file = ofstream(outputDirectory + "path-" + Strings::currentDateTime() +  ".txt");
 		for (auto state : path) {
 			file << *state << ", " << endl;
 		}
@@ -29,19 +30,19 @@ namespace App
 
 	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
-		const string file_name("path-" + Strings::currentDateTime() + ".json");
+		const string file_name(outputDirectory + "path-" + Strings::currentDateTime() + ".json");
 		savePathToJsonFile(path, map, file_name);
 	}
 
 	void Persister::savePathToJson(vector<shared_ptr<State>> path, shared_ptr<Map> map, string postfix)
 	{
-		const string file_name("path-" + Strings::currentDateTime() + "-" + postfix + ".json");
+		const string file_name(outputDirectory + "path-" + Strings::currentDateTime() + "-" + postfix + ".json");
 		savePathToJsonFile(path, map, file_name);
 	}
 
 	void Persister::savePathToCsv(vector<shared_ptr<State>> path, string postfix)
 	{
-		const string file_name("path-" + Strings::currentDateTime() + "-" + postfix + ".csv");
+		const string file_name(outputDirectory + "path-" + Strings::currentDateTime() + "-" + postfix + ".csv");
 		ofstream os(file_name);         //Opening file to print info to
 		for (auto state : path)
 		{

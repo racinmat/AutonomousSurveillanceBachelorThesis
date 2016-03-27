@@ -20,6 +20,7 @@ namespace App
 	private:
 		void savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string name);
 		shared_ptr<Configuration> configuration;
+		string outputDirectory;
 	};
 
 }

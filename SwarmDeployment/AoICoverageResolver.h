@@ -17,8 +17,8 @@ namespace App
 
 	protected:
 		double fitness_function(shared_ptr<LinkedState> final_node, shared_ptr<Map> map);
+		void initializeMapMatrix(shared_ptr<Map> map);
 		ublas::matrix<double> goalMatrix; //jako property kvùli cacheování
-		bool goalMatrixInitialized;
 		shared_ptr<Configuration> configuration;
 	};
 

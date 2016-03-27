@@ -20,8 +20,7 @@ namespace App
 
 	shared_ptr<LinkedState> AoICoverageResolver::get_best_fitness(vector<shared_ptr<LinkedState>> final_nodes, shared_ptr<Map> map)
 	{
-
-		goalMatrixInitialized = false;	//invalidace cache pøed zaèátkem hledání
+		initializeMapMatrix(map);
 
 		auto finalStatesFitness = unordered_map<shared_ptr<LinkedState>, double>();
 		for (auto finalState : final_nodes)
@@ -38,17 +37,16 @@ namespace App
 
 	double AoICoverageResolver::fitness_function(shared_ptr<LinkedState> final_node, shared_ptr<Map> map)
 	{
+		ublas::matrix<double> currentGoalMatrix = ublas::matrix<double>(goalMatrix);	//copy cnstructor, so the original goal matrix does not change
+
 		int elementSize = configuration->getGoalElementSize();
 		int worldHeight = configuration->getWorldHeight();
 		int worldWidth = configuration->getWorldWidth();
-
-		double notAoIInitialValue = 10000;	//some really high value. When I search for minimum, area outside of AoI should have big numbers
-		double initialValue = 100;
-		double uavCameraX = (configuration->getUavCameraX() / elementSize);
-		double uavCameraY = floor(configuration->getUavCameraY() / elementSize);
+		double uavCameraX = configuration->getUavCameraX();
+		double uavCameraY = configuration->getUavCameraY();
 		double halfCameraX = floor(uavCameraX / 2);
 		double halfCameraY = floor(uavCameraY / 2);
-		double uavInitValue = 1 / 2;
+		double uavInitValue = 0.5;
 
 		//do matice (vektoru vektorù) si budu ukládat hodnoty, jak uav vidí dané místo. matice je cíl diskretizovaný stejnì jako pøi a star hledání.
 		//prázdný cíl má hodnotu 100. pokud cíl vidí UAV, vydìlí se hodnota dvìma. Nejmenší souèet je nejlepší.
@@ -57,25 +55,6 @@ namespace App
 		//inicializace matice cílù. Všechny cíle jsou v jedné matici
 		int rowCount = floor(worldHeight / elementSize);
 		int columnCount = floor(worldWidth / elementSize);
-
-		if (!goalMatrixInitialized)
-		{
-			goalMatrix = ublas::matrix<double>(rowCount, columnCount, notAoIInitialValue);		//initializes matrix with really big value
-			for (auto goal : map->getGoals())
-			{
-				//filling goal in matrix with initial value
-				auto rect = goal->getRectangle();
-				auto width = floor(rect->getWidth() / elementSize);
-				auto height = floor(rect->getHeight() / elementSize);
-				auto minX = floor(rect->getX() / elementSize);
-				auto maxX = floor((rect->getX() + rect->getWidth()) / elementSize);
-				auto minY = floor(rect->getY() / elementSize);
-				auto maxY = floor((rect->getY() + rect->getHeight()) / elementSize);
-				ublas::subrange(goalMatrix, minX, maxX, minY, maxY) = ublas::matrix<double>(width, height, initialValue);
-			}
-			goalMatrixInitialized = true;
-		}
-
 
 		//inicializace matic UAV
 		auto uavMatrixes = unordered_map<UavForRRT, ublas::matrix<double>, UavHasher>();
@@ -95,6 +74,7 @@ namespace App
 			int minY = max<int>(floor((loc->getY() - halfCameraY) / elementSize), 0);
 			int maxY = min<int>(floor((loc->getY() + halfCameraY) / elementSize), columnCount - 1);
 			ublas::subrange(matrix, minX, maxX, minY, maxY) = ublas::matrix<double>(maxX - minX, maxY - minY, uavInitValue);
+			uavMatrixes[uav] = matrix;	//for some weird reason, refence is not working, so I have to reassign the value
 		}
 
 		//vytvoøení prùniku nenulových hodnot a úprava hodnot matice mapy
@@ -103,12 +83,34 @@ namespace App
 			auto uav = uavMatrix.first;
 			auto matrix = uavMatrix.second;
 
-			goalMatrix = element_prod(goalMatrix, matrix);
+			currentGoalMatrix = element_prod(currentGoalMatrix, matrix);
 		}
 
-		std::ofstream("node_" + to_string(final_node->getIndex()) + "_matrix.txt") << format_delimited(columns(goalMatrix.size2())[auto_], '\t', goalMatrix.data()) << "\n";
-
-		return sum(prod(ublas::scalar_vector<double>(goalMatrix.size1()), goalMatrix));	//sum of whole matrix, for weird reason, I must multiply here (prod), fuck you C++ http://stackoverflow.com/questions/24398059/how-do-i-sum-all-elements-in-a-ublas-matrix
+		return sum(prod(ublas::scalar_vector<double>(currentGoalMatrix.size1()), currentGoalMatrix));	//sum of whole matrix, for weird reason, I must multiply here (prod), fuck you C++ http://stackoverflow.com/questions/24398059/how-do-i-sum-all-elements-in-a-ublas-matrix
 	}
 
+	void AoICoverageResolver::initializeMapMatrix(shared_ptr<Map> map)
+	{
+		int elementSize = configuration->getGoalElementSize();
+		int worldHeight = configuration->getWorldHeight();
+		int worldWidth = configuration->getWorldWidth();
+		int rowCount = floor(worldHeight / elementSize);
+		int columnCount = floor(worldWidth / elementSize);
+		double notAoIInitialValue = 0;	//zero, because zero does not get any lower when divided
+		double initialValue = 100;
+
+		goalMatrix = ublas::matrix<double>(rowCount, columnCount, notAoIInitialValue);		//initializes matrix with really big value
+		for (auto goal : map->getGoals())
+		{
+			//filling goal in matrix with initial value
+			auto rect = goal->getRectangle();
+			auto width = floor(rect->getWidth() / elementSize);
+			auto height = floor(rect->getHeight() / elementSize);
+			auto minX = floor(rect->getX() / elementSize);
+			auto maxX = floor((rect->getX() + rect->getWidth()) / elementSize);
+			auto minY = floor(rect->getY() / elementSize);
+			auto maxY = floor((rect->getY() + rect->getHeight()) / elementSize);
+			ublas::subrange(goalMatrix, minX, maxX, minY, maxY) = ublas::matrix<double>(width, height, initialValue);
+		}
+	}
 }

@@ -88,8 +88,8 @@ namespace boost { namespace numeric {
      * \tparam L the storage organization. It can be either \c row_major or \c column_major. Default is \c row_major
      * \tparam A the type of Storage array. Default is \c unbounded_array
      */
-    template<class T, class L, class A>
-    class matrix:
+	template<class T, class L, class A>
+	class matrix:
         public matrix_container<matrix<T, L, A> > {
 
         typedef T *pointer;

@@ -277,7 +277,7 @@ namespace Ui
 		QWidget *w = mainWindow;
 		static int count = 0;
 		QPixmap p = QPixmap::grabWidget(w);
-		p.save(QString::fromStdString("path-" + Strings::currentDateTime() + ".png"));
+		p.save(QString::fromStdString("output/path-" + Strings::currentDateTime() + ".png"));
 	}
 
 	void GuiDrawer::clear()

@@ -37,7 +37,8 @@ namespace App
 //		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
 		timeStep = 0.5;
 //		timeStep = 1;
-		relativeDistanceMax = 80;
+		relativeDistanceMax = 180;
+//		relativeDistanceMax = 80;
 		relativeDistanceMin = 20;
 //		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
 //		relativeDistanceMin = 170;		//pro mapu 8
