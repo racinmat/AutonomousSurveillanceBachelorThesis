@@ -2,13 +2,14 @@
 #include "VCollide/ColDetect.h"
 #include "memory"
 #include <algorithm>
+#include "Configuration.h"
 
 using namespace std;
 
 namespace App
 {
 
-	MapProcessor::MapProcessor(shared_ptr<LoggerInterface> logger) : logger(logger)
+	MapProcessor::MapProcessor(shared_ptr<LoggerInterface> logger, shared_ptr<Configuration> configuration) : logger(logger), configuration(configuration)
 	{
 	}
 
@@ -16,10 +17,13 @@ namespace App
 	{
 	}
 
-	shared_ptr<MapGraph> MapProcessor::mapToNodes(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize, bool allowSwarmSplitting)
+	shared_ptr<MapGraph> MapProcessor::mapToNodes(shared_ptr<Map> map)
 	{
+//		, int cellSize, int worldWidth, int worldHeigh, double uavSize, bool allowSwarmSplitting
+		int cellSize = configuration->getAStarCellSize();
+		bool allowSwarmSplitting = configuration->getAllowSwarmSplitting();
 		//firstly we have to get map as 2D matrix, grid
-		auto mapGrid = getMapGrid(map, cellSize, worldWidth, worldHeigh, uavSize);	//map object and parameters to 2D matrix of enums (grid)
+		auto mapGrid = getMapGrid(map);	//map object and parameters to 2D matrix of enums (grid)
 		logger->logMapGrid(mapGrid);
 		//now we get nodes from this grid
 		auto nodes = gridToNodes(mapGrid, cellSize);
@@ -39,8 +43,11 @@ namespace App
 		return graph;
 	}
 
-	vector<vector<Grid>> MapProcessor::getMapGrid(shared_ptr<Map> map, int cellSize, int worldWidth, int worldHeigh, double uavSize)
+	vector<vector<Grid>> MapProcessor::getMapGrid(shared_ptr<Map> map)
 	{
+		int cellSize = configuration->getAStarCellSize();
+		int worldWidth = configuration->getWorldWidth();
+		int worldHeigh = configuration->getWorldHeight();
 		int gridRow = 0;
 		int rows = floor(double(worldWidth) / double(cellSize));	//zaokrouhluji dolù, abych nevzorkoval nedefinovanou èást mapy
 		int columns = floor(double(worldHeigh) / double(cellSize));	//radši oøíznu kus mapy, než z mapy vyjet
@@ -51,7 +58,7 @@ namespace App
 			int gridColumn = 0;
 			for (int j = cellSize; j <= worldHeigh; j += cellSize)
 			{
-				grid[gridRow][gridColumn] = analyzeCell(map, Point(i - cellSize, j - cellSize), Point(i, j), uavSize);
+				grid[gridRow][gridColumn] = analyzeCell(map, Point(i - cellSize, j - cellSize), Point(i, j));
 				gridColumn++;
 			}
 			gridRow++;
@@ -59,8 +66,9 @@ namespace App
 		return grid;
 	}
 
-	Grid MapProcessor::analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper, double uavSize)
+	Grid MapProcessor::analyzeCell(shared_ptr<Map> map, Point leftBottom, Point rightUpper)
 	{
+		double uavSize = configuration->getUavSize();
 		ColDetect colDetect;
 		Rectangle2D cell = Rectangle2D(leftBottom.getX(), leftBottom.getY(), rightUpper.getX() - leftBottom.getX(), rightUpper.getY() - leftBottom.getY());
 

@@ -21,6 +21,7 @@
 #include "GuidingPathFactory.h"
 #include "MotionModel.h"
 #include "Resampler.h"
+#include "MapProcessor.h"
 
 using namespace std;
 
@@ -73,6 +74,7 @@ namespace App
 		shared_ptr<Persister> persister;
 		shared_ptr<GuidingPathFactory> guidingPathFactory;
 		shared_ptr<Resampler> resampler;
+		shared_ptr<MapProcessor> mapProcessor;
 
 		void testGui();
 

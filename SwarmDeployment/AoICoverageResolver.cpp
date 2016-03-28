@@ -104,13 +104,11 @@ namespace App
 		{
 			//filling goal in matrix with initial value
 			auto rect = goal->getRectangle();
-			auto width = floor(rect->getWidth() / elementSize);
-			auto height = floor(rect->getHeight() / elementSize);
-			auto minX = floor(rect->getX() / elementSize);
-			auto maxX = floor((rect->getX() + rect->getWidth()) / elementSize);
-			auto minY = floor(rect->getY() / elementSize);
-			auto maxY = floor((rect->getY() + rect->getHeight()) / elementSize);
-			ublas::subrange(goalMatrix, minX, maxX, minY, maxY) = ublas::matrix<double>(width, height, initialValue);
+			auto minX = max<double>(floor(rect->getX() / elementSize), 0);
+			auto maxX = min<double>(floor(rect->getX() + rect->getWidth()) / elementSize, rowCount - 1);
+			auto minY = max<double>(floor(rect->getY() / elementSize), 0);
+			auto maxY = min<double>(floor(rect->getY() + rect->getHeight()) / elementSize, columnCount - 1);
+			ublas::subrange(goalMatrix, minX, maxX, minY, maxY) = ublas::matrix<double>(maxX - minX, maxY - minY, initialValue);
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace App
 	Configuration::Configuration()
 	{
 		aStarCellSize = 50;
-		mapNumber = 8;
+		mapNumber = 9;
 		uavCount = 3;
 		worldHeight = 1000;
 		worldWidth = 1000;
@@ -25,20 +25,17 @@ namespace App
 		rrtMaxNodes = 20000;
 		nearCount = 1000;
 		debug = true;
-		distanceOfNewNodes = 30;
-//		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
+		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
 		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
 //		guidingNearDist = 100;
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
-//		maxTurn = PI / 150;				//pro numerický model
 		maxTurn = 2 * tan(PI / 150);	//pro analytický model
 //		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
-		timeStep = 0.5;
-//		timeStep = 1;
-		relativeDistanceMax = 180;
+		timeStep = 1;
 //		relativeDistanceMax = 80;
+		relativeDistanceMax = 300;
 		relativeDistanceMin = 20;
 //		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
 //		relativeDistanceMin = 170;		//pro mapu 8
@@ -52,8 +49,7 @@ namespace App
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
-//		goalElementSize = 1;
-		goalElementSize = 50;	// během testování a debuggování AoIcoverage
+		goalElementSize = 1;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30;			//virtuální zvětšení překážek
 		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů

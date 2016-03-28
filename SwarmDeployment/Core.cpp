@@ -45,7 +45,8 @@ namespace App
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
 		persister(make_shared<Persister>(configuration)),
 		guidingPathFactory(make_shared<GuidingPathFactory>(logger)),
-		resampler(make_shared<Resampler>(configuration, stateFactory, motionModel))
+		resampler(make_shared<Resampler>(configuration, stateFactory, motionModel)),
+		mapProcessor(make_shared<MapProcessor>(logger, configuration))
 	{
 		pathHandler = make_shared<PathHandler>(collisionDetector);
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
@@ -73,7 +74,7 @@ namespace App
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
-		MapProcessor mapProcessor = MapProcessor(logger);	
+//		MapProcessor mapProcessor = MapProcessor(logger);	
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
@@ -82,7 +83,7 @@ namespace App
 		vector<shared_ptr<State>> statePath;
 
 		{		//zkouším mít pro rrt-path vlastní scope, aby se uvolnila pamì po skonèení rrtpath
-			auto nodes = mapProcessor.mapToNodes(map, configuration->getAStarCellSize(), configuration->getWorldWidth(), configuration->getWorldHeight(), configuration->getUavSize(), configuration->getAllowSwarmSplitting());
+			auto nodes = mapProcessor->mapToNodes(map);
 			auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
 //			duration = (clock() - start) / double(CLOCKS_PER_SEC);
 //
@@ -180,7 +181,6 @@ namespace App
 
 	shared_ptr<Output> Core::rrtPath(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map, vector<shared_ptr<Node>> mapNodes)
 	{
-		int uavCount = configuration->getUavCount();
 		int rrt_min_nodes = configuration->getRrtMinNodes();
 		int rrt_max_nodes = configuration->getRrtMaxNodes();
 		int number_of_solutions = configuration->getNumberOfSolutions();

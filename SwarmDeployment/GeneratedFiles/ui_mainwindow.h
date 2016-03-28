@@ -93,6 +93,8 @@ public:
          << QApplication::translate("MainWindow", "Map 6", 0)
          << QApplication::translate("MainWindow", "Map 7", 0)
          << QApplication::translate("MainWindow", "Map 8", 0)
+         << QApplication::translate("MainWindow", "Map 9", 0)
+         << QApplication::translate("MainWindow", "Map 10", 0)
         );
         stop->setText(QApplication::translate("MainWindow", "Stop", 0));
     } // retranslateUi
