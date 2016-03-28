@@ -168,8 +168,8 @@ namespace App
 			}
 		}
 
-		bool allUavsHaveNeighbors = false;		//is true when each uav has required amount of required neighbours or more
-		bool oneOrMoreNeighbors = false;		//is true when each uav has one or more neighbours
+		bool allUavsHaveNeighbors = true;		//is true when each uav has required amount of required neighbours or more
+		bool oneOrMoreNeighbors = true;		//is true when each uav has one or more neighbours
 		for (auto neighbor : neighbors)
 		{
 			allUavsHaveNeighbors = allUavsHaveNeighbors && neighbor >= required_neighbors;
