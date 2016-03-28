@@ -93,7 +93,8 @@ namespace App
 				notImprovedCount++;
 			}
 			iterationCount++;
-			if (iterationCount > 50 && (distanceDifference / initialPathDistance) / double(iterationCount) < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
+			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
+			if (iterationCount > 50 && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
 			{
 				break;					//pojistka proti pøíliš pomalé optimalizaci
 			}

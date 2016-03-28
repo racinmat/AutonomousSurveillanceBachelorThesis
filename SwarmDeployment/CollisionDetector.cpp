@@ -158,7 +158,7 @@ namespace App
 				auto uavI = node->getBaseUavs()[i]->getPointParticle()->getLocation();
 				double uavIphi = node->getBaseUavs()[i]->getPointParticle()->getRotation()->getZ();
 				auto uavJ = node->getBaseUavs()[j]->getPointParticle()->getLocation();
-				double uavJphi = node->getBaseUavs()[i]->getPointParticle()->getRotation()->getZ();
+				double uavJphi = node->getBaseUavs()[j]->getPointParticle()->getRotation()->getZ();
 
 				if (uavI->getDistance(uavJ) < relative_distance_max && (!check_fov || fabs(uavIphi - uavJphi) < localization_angle / 2))	//fabs je abs pro float
 				{
@@ -168,12 +168,12 @@ namespace App
 			}
 		}
 
-		bool allUavsHaveNeighbors = false;
-		bool oneOrMoreNeighbors = false;
+		bool allUavsHaveNeighbors = false;		//is true when each uav has required amount of required neighbours or more
+		bool oneOrMoreNeighbors = false;		//is true when each uav has one or more neighbours
 		for (auto neighbor : neighbors)
 		{
-			allUavsHaveNeighbors = allUavsHaveNeighbors || neighbor >= required_neighbors;
-			oneOrMoreNeighbors = oneOrMoreNeighbors || neighbor >= 1;
+			allUavsHaveNeighbors = allUavsHaveNeighbors && neighbor >= required_neighbors;
+			oneOrMoreNeighbors = oneOrMoreNeighbors && neighbor >= 1;
 		}
 
 		// Check whether each UAV has required number of neighbors
@@ -185,7 +185,7 @@ namespace App
 		else
 			// Whole swarm
 		{
-			int twoOrMoreNeighbors = 0;
+			int twoOrMoreNeighbors = 0;	//count uavs with 2 or more neighbors
 			if (oneOrMoreNeighbors)
 			{
 				//				char buffer[1024];
@@ -195,7 +195,7 @@ namespace App
 				{
 					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
 				}
-				return twoOrMoreNeighbors >= number_of_uavs - 2;
+				return twoOrMoreNeighbors >= number_of_uavs - 2;		//is true when all uavs except of 2 have 2 or more neighbors. This is condition for chain. In chain, 2 uavs have 1 or more neighbors and rest of uavs have 2 or more neighbors.
 			}
 
 		}

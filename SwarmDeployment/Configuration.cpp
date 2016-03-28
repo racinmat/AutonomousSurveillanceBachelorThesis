@@ -35,7 +35,7 @@ namespace App
 //		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
 		timeStep = 1;
 //		relativeDistanceMax = 80;
-		relativeDistanceMax = 300;
+		relativeDistanceMax = 150;
 		relativeDistanceMin = 20;
 //		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
 //		relativeDistanceMin = 170;		//pro mapu 8
@@ -57,6 +57,8 @@ namespace App
 
 		uavCameraX = 150;
 		uavCameraY = 100;
+
+		placementMethod = PlacementMethod::Chain;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -313,5 +315,10 @@ namespace App
 	int Configuration::getUavCameraY() const
 	{
 		return uavCameraY;
+	}
+
+	PlacementMethod Configuration::getPlacementMethod() const
+	{
+		return placementMethod;
 	}
 }

@@ -28,6 +28,7 @@
 #define PI 3.14159265358979323846
 #include "PathHandler.h"
 #include "CarLikeAnalyticMotionModel.h"
+#include "EmptyPath.h"
 
 using namespace std;
 using namespace boost::numeric;
@@ -74,7 +75,6 @@ namespace App
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
-//		MapProcessor mapProcessor = MapProcessor(logger);	
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 		map->amplifyObstacles(configuration->getObstacleIncrement());
@@ -224,7 +224,6 @@ namespace App
 
 		int i = 0; // poèet expandovaných nodes, hned na zaèátku se zvýší o jedna
 		int m = 0; // poèet nalezených cest
-		int s = 2; // poèet prùchodù cyklem ? prostì se to jen zvìtší o 1 pøi každém prùchodu, nikde se nepoužívá
 
 		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // number_of_solutions je asi 10 000.
 		{
@@ -299,7 +298,6 @@ namespace App
 			}
 
 			states.push_back(newState);
-			s++;
 
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
 			check_near_goal(newState->getUavsForRRT(), map);
@@ -361,16 +359,16 @@ namespace App
 			for (auto group : uavGroups)
 			{
 				//teï je v groupCurrentIndexes current_index pro každé UAV pro danou path z dané group
-				auto center = group->getBestNode();
-				logger->logRandomStatesCenter(center->getPoint());
 				for (auto uav : group->getUavs())
 				{
-					if (uav->isGoalReached())
+					if (uav->isGoalReached())		// v pøípadì PlacementMethod::Chain se toto u UAV, která nejsou krajní, spustí vždy
 					{
 						randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);
 					}
 					else
 					{
+						auto center = group->getBestNode();	//v pøípadì PlacementMethod::Chain 
+						logger->logRandomStatesCenter(center->getPoint());
 						randomStates[*uav.get()] = random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius());
 					}
 				}
@@ -808,7 +806,44 @@ namespace App
 		}
 		else
 		{
-			uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
+			auto placementMethod = configuration->getPlacementMethod();
+			if (placementMethod == PlacementMethod::Standard)
+			{
+				uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
+			}
+			else if (placementMethod == PlacementMethod::Chain)
+			{
+				auto uavCount = configuration->getUavCount();
+
+				//pokud mám PlacementMethod::Chain, mám 3 skupiny. První UAV je jeden konec, poslední UAV je druhý konec, zbytek UAV nemají cíl a jsou 3. skupina
+				//uavGroups.size == 2, protože jsou 2 cesty. 
+				auto firstUavGroup = vector<shared_ptr<UavForRRT>>(1);
+				auto lastUavGroup = vector<shared_ptr<UavForRRT>>(1);
+				auto restOfUavsGroup = vector<shared_ptr<UavForRRT>>();
+
+				firstUavGroup[0] = state->getUavsForRRT()[0];
+				lastUavGroup[0] = state->getUavsForRRT()[uavCount - 1];	// poslední UAV
+				uavGroups[0] = make_shared<UavGroup>(firstUavGroup, guiding_paths[0]);
+				uavGroups[1] = make_shared<UavGroup>(lastUavGroup, guiding_paths[1]);
+
+				auto wholeMapGoal = make_shared<Goal>(0, 0, configuration->getWorldWidth(), configuration->getWorldHeight());
+
+				for (size_t j = 1; j < uavCount - 1; j++)
+				{
+					auto uav = state->getUavsForRRT()[j];
+					uav->setReachedGoal(wholeMapGoal);		//aby fungoval správnì pohyb UAV, která nejsou v PlacementMethod::Chain na kraji, je tøeba, aby se pohybovaly pomocí RRT, tedy jako kdyby byly v cíli
+					restOfUavsGroup.push_back(uav);
+				}
+
+				// protože na konci nìkterá UAV musí skonèit mimo AoI, musím pro nì udìlat nìco, co se bude tváøit vždy jako cíl. Proto udìlám virtuální cíl velký jako celá mapa
+				uavGroups.push_back(make_shared<UavGroup>(restOfUavsGroup, make_shared<EmptyPath>(wholeMapGoal)));
+			}
+			else
+			{
+				throw "Unknown placement method option.";
+			}
+
+
 		}
 		return uavGroups;
 	}

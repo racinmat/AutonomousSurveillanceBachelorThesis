@@ -219,6 +219,7 @@ namespace App
 
 	vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> MapProcessor::getEndNodes(vector<shared_ptr<Node>> nodes, shared_ptr<Map> map, int cellSize, bool allowSwarmSplitting)
 	{
+		auto placementMethod = configuration->getPlacementMethod();
 		vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> endNodes;
 		if (allowSwarmSplitting)
 		{
@@ -229,34 +230,50 @@ namespace App
 				auto goal = map->getGoals()[i];
 				auto middle = goal->getMiddle();
 
-				for (auto node : nodes)
-				{
-					if (node->contains(middle, cellSize / 2))	//nalezení node, ve které je støed
-					{
-						endNodes[i] = make_tuple(node, goal);
-						break;
-					}
-				}
+				auto node = findFirstNodeInRange(nodes, middle, cellSize / 2);
+				endNodes[i] = make_tuple(node, goal);
 			}
 		} else
 		{
-			endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(1);
-			//end node je jen jedna, pro celı goalGroup
-			auto goalMiddle = map->getGoalGroup()->getMiddle();
-
-			double range = -cellSize / 2;	//zaènu zápornì, protoe hned na zaèátku pøièítám.
-			do		//pokud je v cílové node pøekáka, zvìtším radius o 1 a hledám dál
+			if (placementMethod == PlacementMethod::Standard)
 			{
-				range += cellSize;	//todo: contains metoda pracuje v range pro ètverec, moná by bylo dobré to pøedìlat na krunici
-				for (auto node : nodes)
+				//hledám node, která je nejblíe vypoèítanému støedu a kde není pøekáka
+				endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(1);
+				//end node je jen jedna, pro celı goalGroup
+				auto goalMiddle = map->getGoalGroup()->getMiddle();
+
+				double range = -cellSize / 2;	//zaènu zápornì, protoe hned na zaèátku pøièítám.
+				do		//pokud je v cílové node pøekáka, zvìtším radius o 1 a hledám dál
 				{
-					if (node->getGridType() != Grid::Obstacle && node->contains(goalMiddle, range))	//nalezení node, ve které je støed
-					{
-						endNodes[0] = make_tuple(node, map->getGoalGroup());
-						break;
-					}
+					range += cellSize;	//todo: contains metoda pracuje v range pro ètverec, moná by bylo dobré to pøedìlat na krunici
+					auto node = findFirstNodeInRange(nodes, goalMiddle, range);
+					endNodes[0] = make_tuple(node, map->getGoalGroup());
+				} while (!get<0>(endNodes[0]));
+			} else if(placementMethod == PlacementMethod::Chain)
+			{
+				//funguje pouze pro 2 AoI
+				endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(1);
+
+				if (map->countGoals() != 2)
+				{
+					throw "PlacementMethod::Chain works only for 2 goals.";
 				}
-			} while (!get<0>(endNodes[0]));
+
+				//end node pro kadı cíl zvláš
+				endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(2);
+
+				for (size_t i = 0; i < map->getGoals().size(); i++)
+				{
+					auto goal = map->getGoals()[i];
+					auto middle = goal->getMiddle();
+
+					auto node = findFirstNodeInRange(nodes, middle, cellSize / 2);
+					endNodes[i] = make_tuple(node, goal);
+				}
+			}else
+			{
+				throw "Unknown placement method option.";
+			}
 		}
 
 		return endNodes;
@@ -317,5 +334,16 @@ namespace App
 	{
 		double reference = 20;
 		return double(cellSize) / reference;
+	}
+
+	shared_ptr<Node> MapProcessor::findFirstNodeInRange(vector<shared_ptr<Node>>nodes, shared_ptr<Point> point, double range)
+	{
+		for (auto node : nodes)
+		{
+			if (node->getGridType() != Grid::Obstacle && node->contains(point, range))	//nalezení node, ve které je støed
+			{
+				return node;
+			}
+		}
 	}
 }

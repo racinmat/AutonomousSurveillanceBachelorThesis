@@ -27,6 +27,7 @@ namespace App
 		shared_ptr<LoggerInterface> logger;
 		shared_ptr<Configuration> configuration;
 		double getDistanceBetweenNodes(int cellSize);
+		shared_ptr<Node> findFirstNodeInRange(vector<shared_ptr<Node>>nodes, shared_ptr<Point> point, double range);
 	};
 
 }

@@ -59,6 +59,7 @@ namespace App
 		virtual int getMaxSampleCount() const;
 		virtual int getUavCameraX() const;
 		virtual int getUavCameraY() const;
+		virtual PlacementMethod getPlacementMethod() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -100,9 +101,9 @@ namespace App
 		int obstacleIncrement;
 		int maxSampleFrequency;		//used for resampling of trajectories before exporting to csv, max frequency UAV is able to follow
 		int maxSampleCount;			//max count of samples that fit to UAV internal memory
-
 		int uavCameraX;
 		int uavCameraY;
+		PlacementMethod placementMethod;
 	};
 
 }
