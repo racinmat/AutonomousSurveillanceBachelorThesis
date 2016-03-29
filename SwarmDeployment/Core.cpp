@@ -855,7 +855,7 @@ namespace App
 		{
 			for (auto obstacle : map->getObstacles())
 			{
-				if (obstacle->rectangle->getDistance(uav->getPointParticle()->getLocation()) < minimalDistance);
+				if (obstacle->rectangle->getDistance(uav->getPointParticle()->getLocation()) < minimalDistance)
 				{
 					configuration->setZeroStepEnabled(true);
 					return;
@@ -863,4 +863,5 @@ namespace App
 			}
 		}
 	}
+
 }

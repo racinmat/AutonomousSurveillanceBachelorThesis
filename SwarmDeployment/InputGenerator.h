@@ -24,7 +24,7 @@ protected:
 	//this is map<tuple<all input params string representation>, output>. I make string representation from all inputs and compare it to strings in map
 	map<string, vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>>> cache;	//for same inputs are always same outputs. There will be stored inputs and their outputs.
 	bool isInCache(string stringRepresentation);
-	string argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs);
+	string argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs, bool zeroInputEnabled);
 };
 
 }

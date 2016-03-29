@@ -19,7 +19,7 @@ namespace App {
 			throw "Uavs size is 0. No inputs are generated";
 		}
 
-		string stringRepresentation = argumentsToString(distance_of_new_nodes, max_turn, uavs);
+		string stringRepresentation = argumentsToString(distance_of_new_nodes, max_turn, uavs, zeroInputEnabled);
 		if (isInCache(stringRepresentation))
 		{
 			return cache[stringRepresentation];
@@ -60,9 +60,9 @@ namespace App {
 		return cache.find(stringRepresentation) != cache.end();
 	}
 
-	string InputGenerator::argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs)
+	string InputGenerator::argumentsToString(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs, bool zeroInputEnabled)
 	{
-		string string = "d:" + to_string(distance_of_new_nodes) + "m:" + to_string(max_turn);
+		string string = "d:" + to_string(distance_of_new_nodes) + "m:" + to_string(max_turn) + "z:" + to_string(zeroInputEnabled);
 		for (auto uav : uavs)
 		{
 			string += "id:" + to_string(uav->getId());
