@@ -73,6 +73,50 @@ namespace App
 		return Rectangle2D(getX(), getY(), m_width, m_height);
 	}
 
+	double Rectangle::getDistance(shared_ptr<Point> point) const
+	{
+		if (point->getX() > location->getX() && point->getX() < (location->getX() + m_width))	//bod je přímo nad nebo pod obdélníkem, vzdálenost je jen rozdíl y
+		{
+			if (point->getY() < location->getY())
+			{
+				return fabs(point->getY() - location->getY());
+			} else if (point->getY() > (location->getY() + m_height))
+			{
+				return fabs(point->getY() - (location->getY() + m_height));
+			} else
+			{
+				return 0;
+			}
+		}
+
+		if (point->getY() > location->getY() && point->getY() < (location->getY() + m_height))	//bod je přímo vedle obdélníku, vzdálenost je jen rozdíl x
+		{
+			if (point->getX() < location->getX())
+			{
+				return fabs(point->getX() - location->getX());
+			}
+			else if (point->getX() > (location->getX() + m_width))
+			{
+				return fabs(point->getX() - (location->getX() + m_width));
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		auto leftBottom = location;
+		auto rightBottom = make_shared<Point>(*location.get());
+		rightBottom->changeX(m_width);
+		auto leftTop = make_shared<Point>(*location.get());
+		leftTop->changeY(m_height);
+		auto rightTop = make_shared<Point>(*location.get());
+		rightTop->changeX(m_width);
+		rightTop->changeY(m_height);
+
+		min(min(point->getDistance(leftBottom), point->getDistance(rightBottom)), min(point->getDistance(leftTop), point->getDistance(rightTop)));	//pokud je nejblíže bodu nějaký vrchol obdélníku, vybere se ten nejbližší
+	}
+
 	int Rectangle::getX() const
 	{
 		return location->getX();

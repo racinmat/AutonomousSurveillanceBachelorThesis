@@ -35,11 +35,11 @@ namespace App
 //		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
 		timeStep = 1;
 //		relativeDistanceMax = 80;
-		relativeDistanceMax = 150;
-		relativeDistanceMin = 20;
+		relativeDistanceMax = 180;
+		relativeDistanceMin = 24;
 //		relativeDistanceMax = 500;		//pro mapu 8, 100 pixelů je 1 metr
 //		relativeDistanceMin = 170;		//pro mapu 8
-		localizationAngle = (3 * PI) / 4;
+		localizationAngle = 2 * PI;
 		requiredNeighbors = 1;
 		checkFov = false;
 		allowSwarmSplitting = false;	//nemá smysl mít true, protože pak ztrácím vlastnosti roje. pro celý roj jen jedna guiding path
@@ -49,16 +49,17 @@ namespace App
 		exitNarrowPassageTreshold = 1;
 		narrowPassageCount = 0;
 		divisionCount = 0;
-		goalElementSize = 1;
+		goalElementSize = 10;
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30;			//virtuální zvětšení překážek
 		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů
 		maxSampleCount = 2700;
-
 		uavCameraX = 150;
 		uavCameraY = 100;
-
 		placementMethod = PlacementMethod::Chain;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
+		zeroStepEnabled = false;
+		smartZeroStepEnabling = true;	//turns on zero step, when at least one UAV is near oblascle
+		smartZeroStepEnablingDistance = 50;
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -156,7 +157,12 @@ namespace App
 
 	int Configuration::getInputCount() const
 	{
-		return pow(getInputSamplesDist() * getInputSamplesPhi(), getUavCount());
+		int oneUavInputs = getInputSamplesDist() * getInputSamplesPhi();
+		if (zeroStepEnabled)
+		{
+			oneUavInputs++;
+		}
+		return pow(oneUavInputs, getUavCount());
 	}
 
 	int Configuration::getRrtMinNodes() const
@@ -320,5 +326,25 @@ namespace App
 	PlacementMethod Configuration::getPlacementMethod() const
 	{
 		return placementMethod;
+	}
+
+	bool Configuration::getZeroStepEnabled() const
+	{
+		return zeroStepEnabled;
+	}
+
+	bool Configuration::getSmartZeroStepEnabling() const
+	{
+		return smartZeroStepEnabling;
+	}
+
+	int Configuration::getSmartZeroStepEnablingDistance() const
+	{
+		return smartZeroStepEnablingDistance;
+	}
+
+	void Configuration::setZeroStepEnabled(const bool zero_step_enabled)
+	{
+		zeroStepEnabled = zero_step_enabled;
 	}
 }

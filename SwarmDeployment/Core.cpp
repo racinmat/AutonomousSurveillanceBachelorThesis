@@ -77,9 +77,11 @@ namespace App
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
-		map->amplifyObstacles(configuration->getObstacleIncrement());
 
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
+
+		map->amplifyObstacles(configuration->getObstacleIncrement());
+
 		vector<shared_ptr<State>> statePath;
 
 		{		//zkouším mít pro rrt-path vlastní scope, aby se uvolnila pamì po skonèení rrtpath
@@ -93,7 +95,7 @@ namespace App
 			auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
 			shared_ptr<LinkedState> lastState;
-			if (output->goals_reached)
+			if (output->goals_reached || configuration->getPlacementMethod() == PlacementMethod::Chain)	//u PlacementMethod::Chain nemusí všechna UAV dorazit do cíle
 			{
 				lastState = coverageResolver->get_best_fitness(output->finalNodes, map);
 			} else
@@ -299,6 +301,8 @@ namespace App
 
 			states.push_back(newState);
 
+			checkSmartZeroStepEnabling(newState, map);
+
 			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloží do current_index, kolik nodes zbývá danému UAV do cíle
 			check_near_goal(newState->getUavsForRRT(), map);
 
@@ -491,7 +495,7 @@ namespace App
 
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
-		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavsForRRT());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavsForRRT(), configuration->getZeroStepEnabled());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		//translations jsou výstupy z modelu
 		vector<shared_ptr<LinkedState>> tempStates = vector<shared_ptr<LinkedState>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
 		
@@ -765,7 +769,8 @@ namespace App
 	vector<shared_ptr<UavGroup>> Core::splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state, bool allowSwarmSplitting)
 	{
 		vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
-		if (allowSwarmSplitting)
+		auto placementMethod = configuration->getPlacementMethod();
+		if (allowSwarmSplitting || placementMethod == PlacementMethod::Chain)		//pro úèely chainu rozdìlím UAV na 2 skupiny, každá míøí do jednoho cíle, a øetìz se neroztrhne jen díky relativní lokalizaci
 		{
 			int number_of_uavs = map->getUavsStart().size();
 
@@ -806,44 +811,7 @@ namespace App
 		}
 		else
 		{
-			auto placementMethod = configuration->getPlacementMethod();
-			if (placementMethod == PlacementMethod::Standard)
-			{
-				uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
-			}
-			else if (placementMethod == PlacementMethod::Chain)
-			{
-				auto uavCount = configuration->getUavCount();
-
-				//pokud mám PlacementMethod::Chain, mám 3 skupiny. První UAV je jeden konec, poslední UAV je druhý konec, zbytek UAV nemají cíl a jsou 3. skupina
-				//uavGroups.size == 2, protože jsou 2 cesty. 
-				auto firstUavGroup = vector<shared_ptr<UavForRRT>>(1);
-				auto lastUavGroup = vector<shared_ptr<UavForRRT>>(1);
-				auto restOfUavsGroup = vector<shared_ptr<UavForRRT>>();
-
-				firstUavGroup[0] = state->getUavsForRRT()[0];
-				lastUavGroup[0] = state->getUavsForRRT()[uavCount - 1];	// poslední UAV
-				uavGroups[0] = make_shared<UavGroup>(firstUavGroup, guiding_paths[0]);
-				uavGroups[1] = make_shared<UavGroup>(lastUavGroup, guiding_paths[1]);
-
-				auto wholeMapGoal = make_shared<Goal>(0, 0, configuration->getWorldWidth(), configuration->getWorldHeight());
-
-				for (size_t j = 1; j < uavCount - 1; j++)
-				{
-					auto uav = state->getUavsForRRT()[j];
-					uav->setReachedGoal(wholeMapGoal);		//aby fungoval správnì pohyb UAV, která nejsou v PlacementMethod::Chain na kraji, je tøeba, aby se pohybovaly pomocí RRT, tedy jako kdyby byly v cíli
-					restOfUavsGroup.push_back(uav);
-				}
-
-				// protože na konci nìkterá UAV musí skonèit mimo AoI, musím pro nì udìlat nìco, co se bude tváøit vždy jako cíl. Proto udìlám virtuální cíl velký jako celá mapa
-				uavGroups.push_back(make_shared<UavGroup>(restOfUavsGroup, make_shared<EmptyPath>(wholeMapGoal)));
-			}
-			else
-			{
-				throw "Unknown placement method option.";
-			}
-
-
+			uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vím, že pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
 		}
 		return uavGroups;
 	}
@@ -874,4 +842,25 @@ namespace App
 		return min.first;
 	}
 
+	void Core::checkSmartZeroStepEnabling(shared_ptr<LinkedState> state, shared_ptr<Map> map)
+	{
+		if (!configuration->getSmartZeroStepEnabling())
+		{
+			return;
+		}
+
+		int minimalDistance = configuration->getSmartZeroStepEnablingDistance();
+		bool isUAVtooNearToObstacle = false;
+		for (auto uav : state->getUavsForRRT())
+		{
+			for (auto obstacle : map->getObstacles())
+			{
+				if (obstacle->rectangle->getDistance(uav->getPointParticle()->getLocation()) < minimalDistance);
+				{
+					configuration->setZeroStepEnabled(true);
+					return;
+				}
+			}
+		}
+	}
 }

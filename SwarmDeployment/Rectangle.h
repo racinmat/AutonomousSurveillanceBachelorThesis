@@ -31,6 +31,7 @@ namespace App
 		mObject toJson() const;
 		static shared_ptr<Rectangle> fromJson(mObject data);
 		Rectangle2D toColDetectRectandle();
+		double getDistance(shared_ptr<Point> point) const;
 
 	protected:
 		shared_ptr<Point> location;

@@ -12,7 +12,7 @@ namespace App {
 	{
 	}
 
-	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs)
+	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> InputGenerator::generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs, bool zeroInputEnabled)
 	{
 		if (uavs.size() == 0)
 		{
@@ -25,15 +25,21 @@ namespace App {
 			return cache[stringRepresentation];
 		}
 
-		auto oneUavInputs = generateOneUavInputs(distance_of_new_nodes, max_turn);
+		auto oneUavInputs = generateOneUavInputs(distance_of_new_nodes, max_turn, zeroInputEnabled);
 		auto inputs = generator.generateNTuplet(oneUavInputs, uavs);		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
 		cache[stringRepresentation] = inputs;
 		return inputs;
 	}
 
-	vector<CarLikeControl> InputGenerator::generateOneUavInputs(int distance_of_new_nodes, double max_turn)
+	vector<CarLikeControl> InputGenerator::generateOneUavInputs(int distance_of_new_nodes, double max_turn, bool zeroInputEnabled)
 	{
 		vector<CarLikeControl> oneUavInputs = vector<CarLikeControl>();
+
+		if (zeroInputEnabled)
+		{
+			CarLikeControl zeroInput = CarLikeControl(0, 0);
+			oneUavInputs.push_back(zeroInput);
+		}
 
 		for (size_t k = 0; k < input_samples_dist; k++)
 		{

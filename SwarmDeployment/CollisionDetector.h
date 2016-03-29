@@ -3,8 +3,10 @@
 #include "State.h"
 #include "VCollide/Triangle3D.h"
 #include "LoggerInterface.h"
+#include <boost/numeric/ublas/matrix.hpp>
 
 using namespace std;
+using namespace boost::numeric;
 
 namespace App
 {
@@ -29,6 +31,7 @@ namespace App
 		bool checkObstaclesInTrajectories(shared_ptr<StateInterface> oldState, shared_ptr<StateInterface> newState, shared_ptr<Map> map);
 		bool isInitialSwarmStateFeasible(shared_ptr<StateInterface> state);
 		void setLogger(shared_ptr<LoggerInterface> logger);
+		bool isGraphConnected(ublas::matrix<int> adjacencyMatrix);
 
 	protected:
 		shared_ptr<Configuration> configuration;

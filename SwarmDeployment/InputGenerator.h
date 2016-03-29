@@ -13,11 +13,11 @@ class InputGenerator
 public:
 	InputGenerator(int input_samples_dist, int input_samples_phi);
 	virtual ~InputGenerator();
-	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs);
+	vector<unordered_map<UavForRRT, CarLikeControl, UavHasher>> generateAllInputs(int distance_of_new_nodes, double max_turn, vector<shared_ptr<UavForRRT>> uavs, bool zeroInputEnabled);
 
 protected:
 	NTupletGenerator generator;
-	vector<CarLikeControl> generateOneUavInputs(int distance_of_new_nodes, double max_turn);
+	vector<CarLikeControl> generateOneUavInputs(int distance_of_new_nodes, double max_turn, bool zeroInputEnabled);
 	int input_samples_dist;	//poèítám s tím, že se bìhem bìhu aplikace nemìní, proto jsou to fieldy a ne argumenty funkcí
 	int input_samples_phi;
 

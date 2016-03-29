@@ -2,6 +2,7 @@
 #include "Configuration.h"
 #include "VCollide/Triangle3D.h"
 #include "VCollide/ColDetect.h"
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 namespace App
 {
@@ -150,6 +151,8 @@ namespace App
 			}
 		}
 
+		auto uavAdjacencyMatrix = ublas::matrix<int>(number_of_uavs, number_of_uavs, 0);
+
 		// Check maximal distance between UAVs
 		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
 		{
@@ -164,16 +167,18 @@ namespace App
 				{
 					neighbors[i]++;
 					neighbors[j]++;
+					uavAdjacencyMatrix(i, j) = 1;
+					uavAdjacencyMatrix(j, i) = 1;
 				}
 			}
 		}
 
+		//TODO: zkontrolovat, zda jsou UAV celistvým øetìzem, pomocí DFS nebo BFS prohledat celý graf (graf sestavím z adjacency matrix tak, že 1 je tam, kde jsou UAV ve správné vzdálenosti a jinde je 0)
+
 		bool allUavsHaveNeighbors = true;		//is true when each uav has required amount of required neighbours or more
-		bool oneOrMoreNeighbors = true;		//is true when each uav has one or more neighbours
 		for (auto neighbor : neighbors)
 		{
 			allUavsHaveNeighbors = allUavsHaveNeighbors && neighbor >= required_neighbors;
-			oneOrMoreNeighbors = oneOrMoreNeighbors && neighbor >= 1;
 		}
 
 		// Check whether each UAV has required number of neighbors
@@ -183,21 +188,9 @@ namespace App
 			return allUavsHaveNeighbors;
 		}
 		else
-			// Whole swarm
 		{
-			int twoOrMoreNeighbors = 0;	//count uavs with 2 or more neighbors
-			if (oneOrMoreNeighbors)
-			{
-				//				char buffer[1024];
-				//				sprintf(buffer, "Neighbors: %d %d %d %d \n", neighbors[0], neighbors[1], neighbors[2], neighbors[3]);
-				//				logger->logText(buffer);
-				for (auto neighbor : neighbors)
-				{
-					neighbor > 1 ? twoOrMoreNeighbors++ : NULL;
-				}
-				return twoOrMoreNeighbors >= number_of_uavs - 2;		//is true when all uavs except of 2 have 2 or more neighbors. This is condition for chain. In chain, 2 uavs have 1 or more neighbors and rest of uavs have 2 or more neighbors.
-			}
-
+			// Whole swarm
+			return isGraphConnected(uavAdjacencyMatrix) && allUavsHaveNeighbors;
 		}
 		return false;
 	}
@@ -415,4 +408,47 @@ namespace App
 
 		return false;
 	}
+
+	// if graph is connected, all uavs are in one swarm.
+	// adjacency matrix is built from feasible UAV distances. If UAVS have distance between min and max, edge is between them, otherwise, edge is not between them.
+	// Thus graph is created, represented by adjacency matrix
+	// DFS determines whether graph is connected or not. If all nodes are discovered, graph is connected
+	bool CollisionDetector::isGraphConnected(ublas::matrix<int> adjacencyMatrix)
+	{
+		vector<int> visited = vector<int>();	//array of indexes
+
+		vector<int> opened = vector<int>();		//array of indexes
+		vector<bool> closed = vector<bool>(adjacencyMatrix.size1());		//index is node, bool is closed
+		fill(closed.begin(), closed.end(), false);		// Mark all the vertices as not closed
+
+
+
+		int currentNode;	//I start searching from first UAV, node is represented by index
+		opened.push_back(0);
+		visited.push_back(0);
+
+		bool noneOpened = false;
+		while (!noneOpened)
+		{
+			currentNode = *opened.begin();	//pick last element
+			opened.erase(opened.begin());	//remove last element
+
+			closed[currentNode] = true;
+			auto currentNodeRow = row(adjacencyMatrix, currentNode);
+			for (size_t i = 0; i < currentNodeRow.size(); i++)
+			{
+				bool isNodeOpened = find(opened.begin(), opened.end(), i) != opened.end();
+				if (currentNodeRow[i] == 1 && !closed[i] && !isNodeOpened)
+				{
+					opened.push_back(i);
+					visited.push_back(i);
+				}
+			}
+
+			noneOpened = opened.empty();
+		}
+
+		return visited.size() == adjacencyMatrix.size1();	//if count of visited elements id equal to size of matrix, all elements were visited and graph is connected
+	}
+
 }

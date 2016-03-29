@@ -53,7 +53,7 @@ namespace App
 //		throw "No equal node found for node " + to_string(uav->getId());
 	}
 
-	bool LinkedState::areUavsInGoals()
+	bool LinkedState::areUavsInGoals() const
 	{
 		bool allInGoals = true;
 		for (auto uav : uavs)

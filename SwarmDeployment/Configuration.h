@@ -60,6 +60,10 @@ namespace App
 		virtual int getUavCameraX() const;
 		virtual int getUavCameraY() const;
 		virtual PlacementMethod getPlacementMethod() const;
+		virtual bool getZeroStepEnabled() const;
+		virtual bool getSmartZeroStepEnabling() const;
+		virtual int getSmartZeroStepEnablingDistance() const;
+		virtual void setZeroStepEnabled(const bool zero_step_enabled);
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -104,6 +108,9 @@ namespace App
 		int uavCameraX;
 		int uavCameraY;
 		PlacementMethod placementMethod;
+		bool zeroStepEnabled;
+		bool smartZeroStepEnabling;	//turns on zero step, when at least one UAV is near oblascle
+		int smartZeroStepEnablingDistance;
 	};
 
 }

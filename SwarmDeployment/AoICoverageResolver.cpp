@@ -86,6 +86,8 @@ namespace App
 			currentGoalMatrix = element_prod(currentGoalMatrix, matrix);
 		}
 
+		std::ofstream("aoiMatrixes/node_" + to_string(final_node->getIndex()) + "_matrix.txt") << format_delimited(columns(currentGoalMatrix.size2())[auto_], '\t', currentGoalMatrix.data()) << endl;
+
 		return sum(prod(ublas::scalar_vector<double>(currentGoalMatrix.size1()), currentGoalMatrix));	//sum of whole matrix, for weird reason, I must multiply here (prod), fuck you C++ http://stackoverflow.com/questions/24398059/how-do-i-sum-all-elements-in-a-ublas-matrix
 	}
 

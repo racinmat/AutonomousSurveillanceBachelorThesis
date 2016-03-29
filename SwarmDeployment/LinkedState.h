@@ -21,7 +21,7 @@ namespace App
 		bool areAllInputsUsed();
 		friend std::ostream& operator<<(std::ostream& os, const LinkedState& obj);
 		virtual shared_ptr<UavInterface> getBaseUav(shared_ptr<UavInterface> uav) const override;	//used to acquire uav with same id as uav in argument, even if uav locations differ. It uses == to compare
-		bool areUavsInGoals();
+		bool areUavsInGoals() const;
 		virtual double getDistanceOfNewNodes() const;
 		virtual void setDistanceOfNewNodes(const double distance_of_new_nodes);
 		virtual int getIndex() const;

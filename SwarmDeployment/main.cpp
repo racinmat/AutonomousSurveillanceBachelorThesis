@@ -514,55 +514,55 @@ namespace App
 		//
 		//	MATRIX TESTING AND EXAMPLES
 		//
-			ublas::matrix<double> m(3, 3, 4);
-			cout << m << endl;
-		
-			boost::numeric::ublas::vector<double> v(2, 3);
-			cout << v << endl;
-		//
-		////	project(m, ublas::range(1, 1), ublas::range(0, 2)) = v;
-		//
-			auto m1 = ublas::matrix<double>(4, 4, 0);
-			m1(1, 1) = 2;
-			m1(1, 2) = 2;
-			m1(2, 1) = 2;
-			m1(2, 2) = 2;
-		
-		
-			ublas::matrix<double> m2 = ublas::matrix<double>(4, 4, 4);
-			ublas::matrix<double> m7 = ublas::matrix<double>(2, 2, 3);
-			ublas::matrix<double> m6 = ublas::matrix<double>(4, 4, 0);
-		//	project(m6, ublas::range(1, 2), ublas::range(1, 2)) = m7;
-			ublas::subrange(m2, 1, 3, 1, 3) = ublas::matrix<double>(2, 2, 3);	//assigning smaller matrix to subvector
-		
-			cout << "m1: " << endl;
-			cout << format_delimited(columns(m1.size2())[auto_], '\t', m1.data()) << endl;
-		
-			cout << "m7: " << endl;
-			cout << format_delimited(columns(m7.size2())[auto_], '\t', m7.data()) << endl;
-		
-			cout << "m6: " << endl;
-			cout << format_delimited(columns(m6.size2())[auto_], '\t', m6.data()) << endl;
-		
-			cout << "m2: " << endl;
-			cout << format_delimited(columns(m2.size2())[auto_], '\t', m2.data()) << endl;
-		
-			ublas::matrix<double> m3 = prod(m1, m2);
-			ublas::matrix<double> m4 = element_prod(m1, m2);
-
-			cout << "m3: " << endl;
-			cout << format_delimited(columns(m3.size2())[auto_], '\t', m3.data()) << endl;
-
-			cout << "m4: " << endl;
-			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
-
-			m4 = element_prod(m4, m2);
-			cout << "m4: " << endl;
-			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
-
-			m4 = element_prod(m4, m2);
-			cout << "m4: " << endl;
-			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
+//			ublas::matrix<double> m(3, 3, 4);
+//			cout << m << endl;
+//		
+//			boost::numeric::ublas::vector<double> v(2, 3);
+//			cout << v << endl;
+//		//
+//		////	project(m, ublas::range(1, 1), ublas::range(0, 2)) = v;
+//		//
+//			auto m1 = ublas::matrix<double>(4, 4, 0);
+//			m1(1, 1) = 2;
+//			m1(1, 2) = 2;
+//			m1(2, 1) = 2;
+//			m1(2, 2) = 2;
+//		
+//		
+//			ublas::matrix<double> m2 = ublas::matrix<double>(4, 4, 4);
+//			ublas::matrix<double> m7 = ublas::matrix<double>(2, 2, 3);
+//			ublas::matrix<double> m6 = ublas::matrix<double>(4, 4, 0);
+//		//	project(m6, ublas::range(1, 2), ublas::range(1, 2)) = m7;
+//			ublas::subrange(m2, 1, 3, 1, 3) = ublas::matrix<double>(2, 2, 3);	//assigning smaller matrix to subvector
+//		
+//			cout << "m1: " << endl;
+//			cout << format_delimited(columns(m1.size2())[auto_], '\t', m1.data()) << endl;
+//		
+//			cout << "m7: " << endl;
+//			cout << format_delimited(columns(m7.size2())[auto_], '\t', m7.data()) << endl;
+//		
+//			cout << "m6: " << endl;
+//			cout << format_delimited(columns(m6.size2())[auto_], '\t', m6.data()) << endl;
+//		
+//			cout << "m2: " << endl;
+//			cout << format_delimited(columns(m2.size2())[auto_], '\t', m2.data()) << endl;
+//		
+//			ublas::matrix<double> m3 = prod(m1, m2);
+//			ublas::matrix<double> m4 = element_prod(m1, m2);
+//
+//			cout << "m3: " << endl;
+//			cout << format_delimited(columns(m3.size2())[auto_], '\t', m3.data()) << endl;
+//
+//			cout << "m4: " << endl;
+//			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
+//
+//			m4 = element_prod(m4, m2);
+//			cout << "m4: " << endl;
+//			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
+//
+//			m4 = element_prod(m4, m2);
+//			cout << "m4: " << endl;
+//			cout << format_delimited(columns(m4.size2())[auto_], '\t', m4.data()) << endl;
 
 			//
 		//	vector<int> arr = {1, 2, 3, 4, 5};
@@ -836,6 +836,50 @@ namespace App
 //		cout << "p2: " << uavRectangle.p2.getX() << ", " << uavRectangle.p2.getY() << endl;
 //		cout << "p3: " << uavRectangle.p3.getX() << ", " << uavRectangle.p3.getY() << endl;
 //		cout << "p4: " << uavRectangle.p4.getX() << ", " << uavRectangle.p4.getY() << endl;
+
+		auto configuration = make_shared<Configuration>();
+		auto collisionDetector = make_shared<CollisionDetector>(configuration);
+
+		//		Matrix m1:
+		//		1, 1, 1, 0, 0
+		//		1, 1, 1, 0, 0
+		//		1, 1, 1, 0, 0
+		//		0, 0, 0, 1, 1
+		//		0, 0, 0, 1, 1
+
+		auto m1 = ublas::matrix<double>(5, 5, 0);
+
+		subrange(m1, 0, 3, 0, 3) = ublas::matrix<double>(3, 3, 1);
+		subrange(m1, 3, 5, 3, 5) = ublas::matrix<double>(2, 2, 1);
+
+		//		Matrix m1:
+		//		1, 1, 1, 0, 0
+		//		1, 1, 1, 0, 0
+		//		1, 1, 1, 1, 0
+		//		0, 0, 1, 1, 1
+		//		0, 0, 0, 1, 1
+
+		auto m2 = ublas::matrix<double>(m1);
+		m2(3, 2) = 1;
+		m2(2, 3) = 1;
+
+
+		auto start = clock();
+
+//		cout << "m1, not connected:" << endl;
+//		cout << collisionDetector->isGraphConnected(m1) << endl;
+//
+//		cout << "m2, connected:" << endl;
+//		cout << collisionDetector->isGraphConnected(m2) << endl;
+		for (size_t i = 0; i < 1000; i++)
+		{
+			collisionDetector->isGraphConnected(m1);
+			collisionDetector->isGraphConnected(m2);
+		}
+
+		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
+
+		cout << to_string(duration) << " miliseconds to check connectivity" << endl;
 
 		cin.get();
 	}

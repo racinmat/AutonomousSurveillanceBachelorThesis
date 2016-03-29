@@ -58,6 +58,7 @@ namespace App
 		Point roundToNodeCoords(Point point);	//zaokrouhlí bod na souøadnice støedu node, abych mohl vyhledávat efektivnì mezi nodami
 		vector<shared_ptr<UavGroup>> splitUavsToGroups(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state, bool allowSwarmSplitting);
 		shared_ptr<LinkedState> get_closest_node_to_goal(vector<shared_ptr<LinkedState>> states, vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map);
+		void checkSmartZeroStepEnabling(shared_ptr<LinkedState> state, shared_ptr<Map> map);
 
 	protected:
 		shared_ptr<LoggerInterface> logger;
