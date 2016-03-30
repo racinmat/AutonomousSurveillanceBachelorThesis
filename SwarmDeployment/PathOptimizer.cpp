@@ -30,7 +30,8 @@ namespace App
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit = 100;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
-		double minOptimizationSpeed = 0.05 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 5% na 1000 iterací.
+//		double minOptimizationSpeed = 0.05 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 5% na 1000 iterací.
+		double minOptimizationSpeed = 0.08 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 5% na 1000 iterací.
 		int notImprovedCount = 0;
 		int iterationCount = 0;
 		double initialPathDistance = distanceResolver->getLengthOfPath(path);

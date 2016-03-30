@@ -496,31 +496,29 @@ namespace App
 		//poèet všech možných "kombinací" je variace s opakováním (n-tuple anglicky). 
 		//inputs jsou vstupy do modelu, kombinace všech možných vstupù (vstupy pro jedno uav se vygenerují výše, jsou v oneUavInputs)
 		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavsForRRT(), configuration->getZeroStepEnabled());		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
-		//translations jsou výstupy z modelu
+		//tempStates jsou výstupy z modelu, input se stejným indexem jako tempState je vstup do motion modelu, který vede na tempState
 		vector<shared_ptr<LinkedState>> tempStates = vector<shared_ptr<LinkedState>>(inputCount);	//stavy, které jsou výstupem všech vygenerovaných vstupù do motion modelu
-		
+		vector<double> d = vector<double>(inputCount);
+
 		for (size_t i = 0; i < inputs.size(); i++)
 		{
 			auto input = inputs[i];
 			auto tempState = carLikeMotionModel(nearState, input);	//this method changes near_node
 			tempStates[i] = tempState;
-		}
-
-		vector<double> d = vector<double>(inputCount);
-		//todo: možná zrefactorovat a schovat do jednoho cyklu, který je výše
-		//todo: kde to pùjde, pužít range-based loop, iteraci místo klasického foru
-		//Distance to s_rand when using different inputs
-		for (size_t i = 0; i < d.size(); i++)
-		{
-			auto tempState = tempStates[i];
+			//Distance to s_rand when using different inputs
 			d[i] = 0;
 			for (auto uav : tempState->getUavsForRRT())
 			{
 				d[i] += randomState[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
 			}
 		}
+		//d je pole vzdáleností mezi randomState a tempStaty. Vybírá se ten nejbližší validní tempState
 
-		
+
+		//TODO: opravit i pøi zmìnì poètu vstupù, protože u tempState je nový poèet vstupù, ale u nearState je starý, menší poèet vstupù
+
+
+		//TODO: možná si sesortovat vzdálenosti jednou bokem a pak pøistupovat k sesortovaným vzdálenostem, abych nemusel poøád hledat minValue. Zjistit hodnoty m, pokud je m vyší než log(inputCount), vyplatí se sortovat
 		// Find vector with minimal distance to s_rand and return it
 		if (relative_localization)
 		{
@@ -558,7 +556,14 @@ namespace App
 					continue;
 				}
 
-				if (nearState->used_inputs[index])
+				if (nearState->used_inputs.size() != inputCount)	//nastane ve chvíli, kdy je zapnuto smartZeroStepEnabling, UAV se pøiblíží k pøekážce a zmìní se poèet vstupù, je zapotøebí upravit délku pole
+				{
+					nearState->used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
+					fill(nearState->used_inputs.begin(), nearState->used_inputs.end(), false);	//nastavím false, snad to nebude vadit, nìkteré vstupy se kdyžtak vyzkouší vícekrát
+
+				}
+
+				if (nearState->used_inputs[index])	//used_inputs se používá k tomu, jaké vstupy do motion modelu lze použít, abychom se pohnuli z nearState nìkam jinam
 				{
 					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
 					if (debug)
