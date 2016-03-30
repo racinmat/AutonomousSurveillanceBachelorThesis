@@ -559,7 +559,7 @@ namespace App
 				if (nearState->used_inputs.size() != inputCount)	//nastane ve chvíli, kdy je zapnuto smartZeroStepEnabling, UAV se pøiblíí k pøekáce a zmìní se poèet vstupù, je zapotøebí upravit délku pole
 				{
 					nearState->used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
-					fill(nearState->used_inputs.begin(), nearState->used_inputs.end(), false);	//nastavím false, snad to nebude vadit, nìkteré vstupy se kdytak vyzkouší vícekrát
+					fill(nearState->used_inputs.begin(), nearState->used_inputs.end(), false);	//nastavím false, snad to nebude vadit, kus stromu se projde znovu
 
 				}
 

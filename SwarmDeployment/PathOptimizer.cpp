@@ -37,7 +37,7 @@ namespace App
 		double initialPathDistance = distanceResolver->getLengthOfPath(path);
 		double distanceDifference = 0;
 
-		while (notImprovedCount < stopLimit)
+		while (true)
 		{
 			auto startIndex = Random::index(path);	//indexy jsou kvùli jednoduššímu pohybu v poli
 			auto endIndex = Random::index(path);
@@ -95,9 +95,22 @@ namespace App
 			}
 			iterationCount++;
 			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
-			if (iterationCount > 50 && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
+			if (distanceDifference > 0 && iterationCount > 50 && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
 			{
+				std::ofstream out("output/optimization.txt");
+				out << "optimization speed limit is too slow: distance difference: " + to_string(distanceDifference) + 
+					", initial path distance: " + to_string(initialPathDistance) + 
+					", iteration count: " + to_string(iterationCount);
+				out.close();
 				break;					//pojistka proti pøíliš pomalé optimalizaci
+			}
+			if (notImprovedCount > stopLimit)
+			{
+				std::ofstream out("output/optimization.txt");
+				out << "optimization did not change distance for many cycles: iteration count: " + to_string(iterationCount) +
+					", not improved count: " + to_string(notImprovedCount);
+				out.close();
+				break;					//pokud se mnohokrát za sebou nezkrátí cesta, ooptimalizace skonèí
 			}
 		}
 		return path;

@@ -162,7 +162,12 @@ namespace App
 		{
 			oneUavInputs++;
 		}
-		return pow(oneUavInputs, getUavCount());
+		auto total = pow(oneUavInputs, getUavCount());
+		if (zeroStepEnabled)
+		{
+			total--;	//pokud je povolený nulový vstup, odeberu 1. kombinaci, jsou je nulový vstup pro všechna UAV najednou
+		}
+		return total;
 	}
 
 	int Configuration::getRrtMinNodes() const

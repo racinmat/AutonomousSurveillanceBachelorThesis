@@ -27,6 +27,12 @@ namespace App {
 
 		auto oneUavInputs = generateOneUavInputs(distance_of_new_nodes, max_turn, zeroInputEnabled);
 		auto inputs = generator.generateNTuplet(oneUavInputs, uavs);		//poèet všech kombinací je poèet všech možných vstupù jednoho UAV ^ poèet UAV
+
+		if (zeroInputEnabled)	//odebrání nulových vstupù pro všechna UAV najednou, aby se vždy alespoò jedno pohnulo, je to vždy první prvek
+		{
+			inputs.erase(inputs.begin());
+		}
+
 		cache[stringRepresentation] = inputs;
 		return inputs;
 	}
