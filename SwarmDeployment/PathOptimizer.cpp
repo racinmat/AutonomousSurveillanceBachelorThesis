@@ -27,11 +27,29 @@ namespace App
 	vector<shared_ptr<State>> PathOptimizer::optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		double pathLength = distanceResolver->getLengthOfPath(path);
+		int uavCount = path[0]->getUavs().size();
+		int minPathPartDistance = 10;
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
-		int stopLimit = 100;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil
-//		double minOptimizationSpeed = 0.05 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 5% na 1000 iterací.
-		double minOptimizationSpeed = 0.08 / 1000;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 5% na 1000 iterací.
+		int stopLimit;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil, vypadá to, že s více UAV se musí zvýšit i konstanta
+
+		bool fuckingHack = configuration->getPlacementMethod() == PlacementMethod::Chain && configuration->getUavCount() > 4;
+		if (fuckingHack) {
+			stopLimit = 40 * uavCount;
+		} else
+		{
+			stopLimit = 200;
+		}
+
+		double minOptimizationSpeed;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 24% na 1000 iterací na uav. Pøi vyšším poètu UAV je celková cesta delší, takže se mìní podíl. Takže dìlím konstantu poètem UAV.
+		if (fuckingHack) {
+			minOptimizationSpeed = (0.3 / 1000) / (uavCount * 6);
+		}
+		else
+		{
+			minOptimizationSpeed = (0.05 / 1000);
+		}
+
 		int notImprovedCount = 0;
 		int iterationCount = 0;
 		double initialPathDistance = distanceResolver->getLengthOfPath(path);
@@ -41,7 +59,7 @@ namespace App
 		{
 			auto startIndex = Random::index(path);	//indexy jsou kvùli jednoduššímu pohybu v poli
 			auto endIndex = Random::index(path);
-			while (startIndex == endIndex)
+			while (abs(startIndex - endIndex) < minPathPartDistance)
 			{
 				endIndex = Random::index(path);
 			}
@@ -95,12 +113,14 @@ namespace App
 			}
 			iterationCount++;
 			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
-			if (distanceDifference > 0 && iterationCount > 50 && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
+			if (distanceDifference > 0 && iterationCount > (40 * uavCount) && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
 			{
 				std::ofstream out("output/optimization.txt");
 				out << "optimization speed limit is too slow: distance difference: " + to_string(distanceDifference) + 
 					", initial path distance: " + to_string(initialPathDistance) + 
-					", iteration count: " + to_string(iterationCount);
+					", iteration count: " + to_string(iterationCount) + 
+					", optimizationSpeed: " + to_string(optimizationSpeed) + 
+					", minimal optimization speed: " + to_string(minOptimizationSpeed);
 				out.close();
 				break;					//pojistka proti pøíliš pomalé optimalizaci
 			}
