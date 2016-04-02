@@ -129,17 +129,26 @@ namespace App
 		map9->addObstacle(make_shared<Obstacle>(300, 550, 350, 50));
 		maps.push_back(map9);
 
-
 		shared_ptr<Map> map10 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map10->addUavStart(make_shared<UavForRRT>(80 + i * uavDistance, 50, PI / 2));
+			map10->addUavStart(make_shared<UavForRRT>(400 + i * uavDistance, 50, PI / 2));
 		}
 
-		map10->addGoal(make_shared<Goal>(1, 850, 450, 150));
-		map10->addGoal(make_shared<Goal>(551, 850, 450, 150));
-		map10->addObstacle(make_shared<Obstacle>(450, 750, 100, 250));
+		map10->addGoal(make_shared<Goal>(1, 600, 400, 400));
+		map10->addGoal(make_shared<Goal>(551, 600, 450, 400));
+		map10->addObstacle(make_shared<Obstacle>(400, 550, 150, 450));
 		maps.push_back(map10);
+
+		shared_ptr<Map> map11 = make_shared<Map>();
+		for (int i = 0; i < uavCount; i++)
+		{
+			map11->addUavStart(make_shared<UavForRRT>(280 + i * uavDistance, 50, PI / 2));
+		}
+		map11->addGoal(make_shared<Goal>(001, 501, 200, 200));
+		map11->addGoal(make_shared<Goal>(801, 501, 200, 200));
+		maps.push_back(map11);
+
 		return maps;
 	}
 

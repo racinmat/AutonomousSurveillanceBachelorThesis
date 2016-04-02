@@ -104,6 +104,11 @@
       <string>Map 10</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Map 11</string>
+     </property>
+    </item>
    </widget>
    <widget class="QPushButton" name="stop">
     <property name="geometry">
