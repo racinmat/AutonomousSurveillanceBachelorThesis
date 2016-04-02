@@ -27,7 +27,7 @@ namespace App
 		debug = true;
 		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
 //		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
-		guidingNearDist = 40;		//pro SplacementMethod::Chain
+		guidingNearDist = 38;		//pro SplacementMethod::Chain
 //		guidingNearDist = 100;		//pro mapu 8, kde jsou velké vzdálenosti mezi 
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
@@ -57,9 +57,9 @@ namespace App
 		maxSampleCount = 2700;
 		uavCameraX = 150;
 		uavCameraY = 100;
-		placementMethod = PlacementMethod::Standard;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
+		placementMethod = PlacementMethod::Chain;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
 		zeroStepEnabled = false;
-		smartZeroStepEnabling = false;	//turns on zero step, when at least one UAV is near oblascle
+		smartZeroStepEnabling = true;	//turns on zero step, when at least one UAV is near oblascle
 		smartZeroStepEnablingDistance = 50;
 
 		if (relativeDistanceMin > relativeDistanceMax)

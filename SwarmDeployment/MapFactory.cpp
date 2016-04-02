@@ -124,9 +124,9 @@ namespace App
 		}
 
 		map9->addGoal(make_shared<Goal>(300, 600, 150, 200));
-		map9->addGoal(make_shared<Goal>(550, 600, 150, 200));
-		map9->addObstacle(make_shared<Obstacle>(450, 600, 100, 400));
-		map9->addObstacle(make_shared<Obstacle>(300, 550, 400, 50));
+		map9->addGoal(make_shared<Goal>(500, 600, 150, 200));
+		map9->addObstacle(make_shared<Obstacle>(450, 600, 50, 400));
+		map9->addObstacle(make_shared<Obstacle>(300, 550, 350, 50));
 		maps.push_back(map9);
 
 
@@ -140,7 +140,6 @@ namespace App
 		map10->addGoal(make_shared<Goal>(551, 850, 450, 150));
 		map10->addObstacle(make_shared<Obstacle>(450, 750, 100, 250));
 		maps.push_back(map10);
-
 		return maps;
 	}
 
