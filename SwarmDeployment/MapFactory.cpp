@@ -120,7 +120,7 @@ namespace App
 		shared_ptr<Map> map9 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map9->addUavStart(make_shared<UavForRRT>(380 + i * uavDistance, 50, PI / 2));
+			map9->addUavStart(make_shared<UavForRRT>(400 + i * uavDistance, 50, PI / 2));
 		}
 
 		map9->addGoal(make_shared<Goal>(300, 600, 150, 200));

@@ -43,11 +43,11 @@ namespace App
 
 		double minOptimizationSpeed;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 24% na 1000 iterací na uav. Pøi vyšším poètu UAV je celková cesta delší, takže se mìní podíl. Takže dìlím konstantu poètem UAV.
 		if (fuckingHack) {
-			minOptimizationSpeed = (0.3 / 1000) / (uavCount * 6);
+			minOptimizationSpeed = 0.05 / double(1000);
 		}
 		else
 		{
-			minOptimizationSpeed = (0.05 / 1000);
+			minOptimizationSpeed = 0.05 / double(1000);
 		}
 
 		int notImprovedCount = 0;
@@ -112,6 +112,13 @@ namespace App
 				notImprovedCount++;
 			}
 			iterationCount++;
+
+			//prùbìžnì odebírám duplicitní stavy, abych zrychlil optimalizaci
+			if (iterationCount % 1000 == 0)
+			{
+				path = removeDuplicitStates(path);
+			}
+
 			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
 			if (distanceDifference > 0 && iterationCount > (40 * uavCount) && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
 			{

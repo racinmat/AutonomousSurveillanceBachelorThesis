@@ -26,8 +26,9 @@ namespace App
 		nearCount = 1000;
 		debug = true;
 		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
-		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
-//		guidingNearDist = 100;
+//		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
+		guidingNearDist = 40;		//pro SplacementMethod::Chain
+//		guidingNearDist = 100;		//pro mapu 8, kde jsou velké vzdálenosti mezi 
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;
 		nearestNeighborMethod = NNMethod::Total;
