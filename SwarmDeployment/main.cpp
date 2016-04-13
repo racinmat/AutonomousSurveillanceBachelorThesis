@@ -38,10 +38,13 @@ namespace App
 		auto configuration = make_shared<Configuration>();
 		auto core = make_shared<Core>(configuration);
 		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
-		core->run();
+//		core->run();
+		vector<double> frequencies = {2, 3, 4, 5};
+//		vector<double> frequencies = {2, 3, 4, 5, 8, 10, 12, 14, 16, 18, 20};
+		core->loadAndOptimizeByDubins("C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\output\\path-04-13-23-22-16-before-dubins.json", frequencies);
 
 		int returnValue = 0;
-		cin.get();
+//		cin.get();
 		return returnValue;
 	}
 
@@ -888,8 +891,8 @@ namespace App
 int main(int argc, char *argv[])
 {
 	int returnValue = 0;
-//	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
+	returnValue = run(argc, argv);
+//	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;

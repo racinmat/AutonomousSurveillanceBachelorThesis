@@ -5,6 +5,8 @@
 #include "Dubins/geom/geom.h"
 #include "LoggerInterface.h"
 #include "MotionModel.h"
+#include "Persister.h"
+#include "Resampler.h"
 
 namespace App
 {
@@ -16,7 +18,7 @@ namespace App
 	public:
 		PathOptimizer(shared_ptr<DistanceResolver> distanceResolver, shared_ptr<Configuration> configuration, 
 			shared_ptr<MotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
-			shared_ptr<LoggerInterface> logger);
+			shared_ptr<LoggerInterface> logger, shared_ptr<Persister> persister, shared_ptr<Resampler> resampler);
 		virtual ~PathOptimizer();
 		vector<shared_ptr<State>> optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map);
 		pair<vector<shared_ptr<State>>, bool> optimizePathPart(int startIndex, int endIndex, shared_ptr<Map> map, vector<shared_ptr<State>> path);
@@ -29,6 +31,8 @@ namespace App
 		shared_ptr<MotionModel> motionModel;
 		shared_ptr<CollisionDetector> collisionDetector;
 		shared_ptr<LoggerInterface> logger;
+		shared_ptr<Persister> persister;
+		shared_ptr<Resampler> resampler;
 		//pøedávám indexy, protože potøebuji iterovat od endu do konce pole
 	};
 

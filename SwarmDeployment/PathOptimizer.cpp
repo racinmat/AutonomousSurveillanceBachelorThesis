@@ -12,9 +12,9 @@ namespace App
 
 	PathOptimizer::PathOptimizer(shared_ptr<DistanceResolver> distanceResolver, shared_ptr<Configuration> configuration, 
 		shared_ptr<MotionModel> motionModel, shared_ptr<CollisionDetector> collisionDetector, 
-		shared_ptr<LoggerInterface> logger) :
+		shared_ptr<LoggerInterface> logger, shared_ptr<Persister> persister, shared_ptr<Resampler> resampler) :
 		distanceResolver(distanceResolver), configuration(configuration), motionModel(motionModel), collisionDetector(collisionDetector), 
-		logger(logger)
+		logger(logger), persister(persister), resampler(resampler)
 	{
 	}
 
@@ -29,6 +29,8 @@ namespace App
 		double pathLength = distanceResolver->getLengthOfPath(path);
 		int uavCount = path[0]->getUavs().size();
 		int minPathPartDistance = 10;
+
+		std::map<double, double> dataToGraph;
 
 		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
 		int stopLimit;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil, vypadá to, že s více UAV se musí zvýšit i konstanta
@@ -54,6 +56,7 @@ namespace App
 		int iterationCount = 0;
 		double initialPathDistance = distanceResolver->getLengthOfPath(path);
 		double distanceDifference = 0;
+		double newPathDistance;
 
 		while (true)
 		{
@@ -96,7 +99,7 @@ namespace App
 				newPath.insert(newPath.end(), pathMiddlePart.begin(), pathMiddlePart.end());
 				newPath.insert(newPath.end(), pathLastPart.begin(), pathLastPart.end());
 
-				double newPathDistance = distanceResolver->getLengthOfPath(newPath);
+				newPathDistance = distanceResolver->getLengthOfPath(newPath);
 				if (newPathDistance < pathLength)
 				{
 					notImprovedCount = 0;
@@ -111,7 +114,9 @@ namespace App
 			{
 				notImprovedCount++;
 			}
+
 			iterationCount++;
+			dataToGraph[iterationCount] = newPathDistance;
 
 			//prùbìžnì odebírám duplicitní stavy, abych zrychlil optimalizaci
 			if (iterationCount % 1000 == 0)
@@ -122,24 +127,27 @@ namespace App
 			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
 			if (distanceDifference > 0 && iterationCount > (40 * uavCount) && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
 			{
-				std::ofstream out("output/optimization.txt");
-				out << "optimization speed limit is too slow: distance difference: " + to_string(distanceDifference) + 
-					", initial path distance: " + to_string(initialPathDistance) + 
-					", iteration count: " + to_string(iterationCount) + 
-					", optimizationSpeed: " + to_string(optimizationSpeed) + 
-					", minimal optimization speed: " + to_string(minOptimizationSpeed);
-				out.close();
+//				std::ofstream out("output/optimization.txt");
+//				out << "optimization speed limit is too slow: distance difference: " + to_string(distanceDifference) + 
+//					", initial path distance: " + to_string(initialPathDistance) + 
+//					", iteration count: " + to_string(iterationCount) + 
+//					", optimizationSpeed: " + to_string(optimizationSpeed) + 
+//					", minimal optimization speed: " + to_string(minOptimizationSpeed);
+//				out.close();
 				break;					//pojistka proti pøíliš pomalé optimalizaci
 			}
 			if (notImprovedCount > stopLimit)
 			{
-				std::ofstream out("output/optimization.txt");
-				out << "optimization did not change distance for many cycles: iteration count: " + to_string(iterationCount) +
-					", not improved count: " + to_string(notImprovedCount);
-				out.close();
+//				std::ofstream out("output/optimization.txt");
+//				out << "optimization did not change distance for many cycles: iteration count: " + to_string(iterationCount) +
+//					", not improved count: " + to_string(notImprovedCount);
+//				out.close();
 				break;					//pokud se mnohokrát za sebou nezkrátí cesta, ooptimalizace skonèí
 			}
 		}
+
+		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + to_string(resampler->getNewFrequency()) + "Hz");
+
 		return path;
 	}
 

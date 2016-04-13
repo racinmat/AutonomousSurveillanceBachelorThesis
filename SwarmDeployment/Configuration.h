@@ -64,6 +64,7 @@ namespace App
 		virtual bool getSmartZeroStepEnabling() const;
 		virtual int getSmartZeroStepEnablingDistance() const;
 		virtual void setZeroStepEnabled(const bool zero_step_enabled);
+		virtual void setMaxSampleFrequency(const int max_sample_frequency);
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.

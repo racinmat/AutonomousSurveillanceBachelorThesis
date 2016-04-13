@@ -40,6 +40,7 @@ namespace App
 		void setLogger(shared_ptr<LoggerInterface> logger);
 		void logConfigurationChange();
 		shared_ptr<Output> rrtPath(vector<shared_ptr<Path>> paths, shared_ptr<Configuration> configuration, shared_ptr<Map> map, vector<shared_ptr<Node>> mapNodes);
+		void loadAndOptimizeByDubins(string filename, vector<double> frequencies);
 
 
 		unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state);

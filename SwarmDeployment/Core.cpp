@@ -50,7 +50,7 @@ namespace App
 		mapProcessor(make_shared<MapProcessor>(logger, configuration))
 	{
 		pathHandler = make_shared<PathHandler>(collisionDetector);
-		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger);
+		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger, persister, resampler);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
 		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
@@ -331,6 +331,38 @@ namespace App
 		output->nodes = states;
 		logger->logText("RRT-Path finished");
 		return output;
+	}
+
+	void Core::loadAndOptimizeByDubins(string filename, vector<double> frequencies)
+	{
+		MapFactory mapFactory;
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
+		map->amplifyObstacles(configuration->getObstacleIncrement());
+
+		auto tuple = persister->loadPathFromJson(filename);
+		
+		vector<shared_ptr<State>> statePathOriginal;
+		vector<shared_ptr<State>> statePath;
+		shared_ptr<Map> loadedMap;
+		tie(statePathOriginal, loadedMap) = tuple;
+
+		for(auto frequency : frequencies)
+		{
+			configuration->setMaxSampleFrequency(frequency);
+
+			statePath = resampler->resampleToMaxFrequency(statePathOriginal);
+			persister->savePathToJson(statePath, map, "resampled");
+
+			statePath = pathOptimizer->optimizePathByDubins(statePath, map);
+			statePath = pathOptimizer->removeDuplicitStates(statePath);
+
+			persister->savePath(statePath);
+			persister->savePathToJson(statePath, map, "optimized");
+			persister->savePathToCsv(statePath, "optimized");
+			cout << "frequency " + to_string(frequency) + " completed" << endl;
+		}
+
 	}
 
 	unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> Core::random_state_guided(vector<shared_ptr<Path>> guiding_paths, shared_ptr<Map> map, shared_ptr<LinkedState> state)

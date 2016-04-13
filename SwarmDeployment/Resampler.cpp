@@ -15,7 +15,7 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 	double maxFrequency = configuration->getMaxSampleFrequency();
 	double maxSampleCount = configuration->getMaxSampleCount();
 	int maxAvailableFrequency = maxSampleCount / totalTime;
-	double newFrequency = min<double>(maxAvailableFrequency, maxFrequency);	//pokud je maxFrequency vìtší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
+	newFrequency = min<double>(maxAvailableFrequency, maxFrequency);	//pokud je maxFrequency vìtší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
 	int ratio = floor(newFrequency / currentFrequency);	//bude ratio krát více vzorkù
 	double newStepSize = configuration->getDistanceOfNewNodes() / ratio;
 
@@ -72,4 +72,9 @@ double Resampler::getNearestNextTimeOfOldPath(double time)
 
 Resampler::~Resampler()
 {
+}
+
+double Resampler::getNewFrequency() const
+{
+	return newFrequency;
 }

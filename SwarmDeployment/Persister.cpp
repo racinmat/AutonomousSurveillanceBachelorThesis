@@ -79,6 +79,15 @@ namespace App
 		return tuple<vector<shared_ptr<State>>, shared_ptr<Map>>(path, map);
 	}
 
+	void Persister::writeGraphData(std::map<double, double> data, string name)
+	{
+		ofstream os(name + "-" + Strings::currentDateTime() + ".csv");
+		for (auto &entry : data) {
+			os << entry.first << "; " << entry.second << endl;
+		}
+		os.close();
+	}
+
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
 	{
 
@@ -98,6 +107,7 @@ namespace App
 
 		write_formatted(content, os);
 		os.close();
-
 	}
+
+
 }
