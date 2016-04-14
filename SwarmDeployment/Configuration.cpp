@@ -54,7 +54,8 @@ namespace App
 		slowerMotionNearObstacles = false;
 		obstacleIncrement = 30;			//virtuální zvětšení překážek
 		maxSampleFrequency = 20;	//s 70Hz trval dubins příšerně dlouho, zvláště kvůli coldetectu, možná refactorovat použití coldetectu a zjistit, jak do něj narvat víc věcí najednou. Tím bych mohl volat 4x méně coldetectů
-		maxSampleCount = 2700;
+//		maxSampleCount = 2700;		//reálný počet na fyzickém UAV
+		maxSampleCount = 10000000;	//nějaký vysoký počet, aby se limit neprojevil
 		uavCameraX = 150;
 		uavCameraY = 100;
 		placementMethod = PlacementMethod::Standard;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.

@@ -81,7 +81,7 @@ namespace App
 
 	void Persister::writeGraphData(std::map<double, double> data, string name)
 	{
-		ofstream os(name + "-" + Strings::currentDateTime() + ".csv");
+		ofstream os(name + ".csv");
 		for (auto &entry : data) {
 			os << entry.first << "; " << entry.second << endl;
 		}

@@ -19,6 +19,12 @@ vector<shared_ptr<State>> Resampler::resampleToMaxFrequency(vector<shared_ptr<St
 	int ratio = floor(newFrequency / currentFrequency);	//bude ratio krát více vzorkù
 	double newStepSize = configuration->getDistanceOfNewNodes() / ratio;
 
+
+	if (ratio == 1)
+	{
+		return path;
+	}
+
 	//resampling will be only to more samples, because I do not need lower resolution
 	//resampling will be only by whole numbers, it is sufficient
 

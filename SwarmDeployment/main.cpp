@@ -33,15 +33,48 @@ using namespace boost::spirit::karma;
 namespace App
 {
 
+	bool fileExists(const std::string& filename) {
+		ifstream ifile(filename.c_str());
+		return bool(ifile);
+	}
+
 	int run(int argc, char *argv[])
 	{
 		auto configuration = make_shared<Configuration>();
 		auto core = make_shared<Core>(configuration);
+		configuration->setMapNumber(0);
 		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
 //		core->run();
-		vector<double> frequencies = {2, 3, 4, 5};
-//		vector<double> frequencies = {2, 3, 4, 5, 8, 10, 12, 14, 16, 18, 20};
-		core->loadAndOptimizeByDubins("C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\output\\path-04-13-23-22-16-before-dubins.json", frequencies);
+
+
+		vector<double> frequencies;
+		std::string filename;
+//		frequencies = { 2, 3, 4, 5, 6, 8, 10, 12 };
+//		frequencies = {2, 3, 4, 5, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30};
+//		frequencies = { 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+
+		//load frequencies from file
+		if (!fileExists("frequencies.json"))
+		{
+			cout << "file \"frequencies.json\" does not exist." << endl;
+			return 1;
+		}
+
+		ifstream is("frequencies.json");
+		mValue value;
+		read(is, value);
+		is.close();
+		auto fileNameData = value.get_obj().at("path");
+		filename = fileNameData.get_str();
+		auto frequenciesData = value.get_obj().at("frequencies");
+		for (auto frequency : frequenciesData.get_array())
+		{
+			frequencies.push_back(frequency.get_int());
+//			cout << frequency.get_int() << endl;
+		}		//end of loading;
+
+//		cout << filename << endl;
+		core->loadAndOptimizeByDubins(filename, frequencies);
 
 		int returnValue = 0;
 //		cin.get();

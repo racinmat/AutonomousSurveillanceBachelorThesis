@@ -3,6 +3,7 @@
 #include "Dubins/geom/geom.h"
 #include "Configuration.h"
 #include "PathHandler.h"
+#include "Strings.h"
 
 using namespace geom;
 
@@ -112,6 +113,7 @@ namespace App
 				distanceDifference = initialPathDistance - newPathDistance;
 			} else
 			{
+				newPathDistance = distanceResolver->getLengthOfPath(path);
 				notImprovedCount++;
 			}
 
@@ -146,7 +148,7 @@ namespace App
 			}
 		}
 
-		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + to_string(resampler->getNewFrequency()) + "Hz");
+		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + Strings::currentDateTime()  + "-" + to_string(resampler->getNewFrequency()) + "Hz");
 
 		return path;
 	}

@@ -21,7 +21,7 @@ Rectangle2D::~Rectangle2D()
 
 void Rectangle2D::rotate(double rotation)
 {
-	cout << "rotating: " << rotation << endl;
+//	cout << "rotating: " << rotation << endl;
 
 	double x = (p1.getX() + p2.getX() + p3.getX() + p4.getX()) / 4;
 	double y = (p1.getY() + p2.getY() + p3.getY() + p4.getY()) / 4;
@@ -29,8 +29,8 @@ void Rectangle2D::rotate(double rotation)
 
 	double distance = middle.getDistance(p1);	//distance of corner from middle is same from all corners
 
-	cout << "middle: " << middle.getX() << ", " << middle.getY() << endl;
-	cout << "distance: " << distance << endl;
+//	cout << "middle: " << middle.getX() << ", " << middle.getY() << endl;
+//	cout << "distance: " << distance << endl;
 
 	double angle1 = atan2(p1.getY() - middle.getY(), p1.getX() - middle.getX());
 	double angle2 = atan2(p2.getY() - middle.getY(), p2.getX() - middle.getX());

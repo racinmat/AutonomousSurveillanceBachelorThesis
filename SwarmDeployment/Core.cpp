@@ -352,14 +352,14 @@ namespace App
 			configuration->setMaxSampleFrequency(frequency);
 
 			statePath = resampler->resampleToMaxFrequency(statePathOriginal);
-			persister->savePathToJson(statePath, map, "resampled");
-
-			statePath = pathOptimizer->optimizePathByDubins(statePath, map);
-			statePath = pathOptimizer->removeDuplicitStates(statePath);
-
-			persister->savePath(statePath);
-			persister->savePathToJson(statePath, map, "optimized");
-			persister->savePathToCsv(statePath, "optimized");
+//			persister->savePathToJson(statePath, map, "resampled");
+//
+			pathOptimizer->optimizePathByDubins(statePath, map);
+//			statePath = pathOptimizer->removeDuplicitStates(statePath);
+//
+//			persister->savePath(statePath);
+//			persister->savePathToJson(statePath, map, "optimized");
+//			persister->savePathToCsv(statePath, "optimized");
 			cout << "frequency " + to_string(frequency) + " completed" << endl;
 		}
 

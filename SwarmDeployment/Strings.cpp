@@ -17,7 +17,7 @@ std::string Strings::currentDateTime()
 	struct tm * dt;
 	char buffer[30];
 	dt = localtime(&rawtime);
-	strftime(buffer, sizeof(buffer), "%m-%d-%H-%M-%y", dt);
+	strftime(buffer, sizeof(buffer), "%m-%d-%y-%H-%M", dt);
 	return std::string(buffer);
 
 }
