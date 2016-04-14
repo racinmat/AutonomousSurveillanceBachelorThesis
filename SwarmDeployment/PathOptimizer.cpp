@@ -148,7 +148,16 @@ namespace App
 			}
 		}
 
-		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + Strings::currentDateTime()  + "-" + to_string(resampler->getNewFrequency()) + "Hz");
+		string frequencyString;
+		if (ceilf(resampler->getNewFrequency()) == resampler->getNewFrequency())	//if new frequency is integer
+		{
+			frequencyString = to_string(int(resampler->getNewFrequency()));
+		} else
+		{
+			frequencyString = to_string(resampler->getNewFrequency());
+		}
+
+		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + Strings::currentDateTime()  + "-" + frequencyString + "Hz");
 
 		return path;
 	}
