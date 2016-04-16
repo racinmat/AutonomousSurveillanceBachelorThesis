@@ -21,6 +21,7 @@
 #include <direct.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <Windows.h>
 
 #define PI 3.14159265358979323846
 #include <filesystem>
@@ -38,29 +39,36 @@ namespace App
 		return bool(ifile);
 	}
 
-	int run(int argc, char *argv[])
-	{
+	int runResamplingAndDubinsOptimization() {
+
 		auto configuration = make_shared<Configuration>();
 		auto core = make_shared<Core>(configuration);
 		configuration->setMapNumber(0);
 		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
-//		core->run();
-
 
 		vector<double> frequencies;
 		std::string filename;
-//		frequencies = { 2, 3, 4, 5, 6, 8, 10, 12 };
-//		frequencies = {2, 3, 4, 5, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30};
-//		frequencies = { 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+
+		//get current directory
+		HMODULE hModule = GetModuleHandleW(NULL);
+		WCHAR wcharPath[MAX_PATH];
+		GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
+		wstring ws(wcharPath);
+		std::string path(ws.begin(), ws.end());
+		std::string exeName = "SwarmDeployment.exe";
+		path = path.substr(0, path.size() - exeName.size());
+		cout << path << endl;
+		std::string configFile = "frequencies.json";
+		std::string configPath = path + configFile;
 
 		//load frequencies from file
-		if (!fileExists("frequencies.json"))
+		if (!fileExists(configPath))
 		{
 			cout << "file \"frequencies.json\" does not exist." << endl;
 			return 1;
 		}
 
-		ifstream is("frequencies.json");
+		ifstream is(configPath);
 		mValue value;
 		read(is, value);
 		is.close();
@@ -70,15 +78,27 @@ namespace App
 		for (auto frequency : frequenciesData.get_array())
 		{
 			frequencies.push_back(frequency.get_int());
-//			cout << frequency.get_int() << endl;
+			//			cout << frequency.get_int() << endl;
 		}		//end of loading;
 
-//		cout << filename << endl;
+				//		cout << filename << endl;
 		core->loadAndOptimizeByDubins(filename, frequencies);
 
-		int returnValue = 0;
-//		cin.get();
-		return returnValue;
+		//		cin.get();
+		return 0;
+
+	}
+
+	int run(int argc, char *argv[])
+	{
+		auto configuration = make_shared<Configuration>();
+		auto core = make_shared<Core>(configuration);
+		configuration->setMapNumber(0);
+		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
+//		core->run();
+
+		runResamplingAndDubinsOptimization();
+		return 0;
 	}
 
 //	class A
