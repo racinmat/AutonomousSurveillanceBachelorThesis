@@ -157,7 +157,7 @@ namespace App
 			frequencyString = to_string(resampler->getNewFrequency());
 		}
 
-		persister->writeGraphData(dataToGraph, "output/dubinsResult-" + Strings::currentDateTime()  + "-" + frequencyString + "Hz");
+		persister->writeGraphData(dataToGraph, "dubinsResult-" + Strings::currentDateTime()  + "-" + frequencyString + "Hz");
 
 		return path;
 	}

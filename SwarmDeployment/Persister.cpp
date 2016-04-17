@@ -4,13 +4,24 @@
 #include <json_spirit_v4.08/json_spirit/json_spirit_writer.h>
 #include "Strings.h"
 #include "Configuration.h"
+#include <Windows.h>
 
 namespace App
 {
 
 	Persister::Persister(shared_ptr<Configuration> configuration) : configuration(configuration)
 	{
-		outputDirectory = "output/";
+		HMODULE hModule = GetModuleHandleW(NULL);
+		WCHAR wcharPath[MAX_PATH];
+		GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
+		wstring ws(wcharPath);
+
+		std::string path(ws.begin(), ws.end());
+		std::string exeName = "SwarmDeployment.exe";
+		path = path.substr(0, path.size() - exeName.size());
+
+
+		outputDirectory = path + "output/";
 	}
 
 
@@ -81,7 +92,7 @@ namespace App
 
 	void Persister::writeGraphData(std::map<double, double> data, string name)
 	{
-		ofstream os(name + ".csv");
+		ofstream os(outputDirectory + name + ".csv");
 		for (auto &entry : data) {
 			os << entry.first << "; " << entry.second << endl;
 		}

@@ -354,11 +354,11 @@ namespace App
 			statePath = resampler->resampleToMaxFrequency(statePathOriginal);
 //			persister->savePathToJson(statePath, map, "resampled");
 //
-			pathOptimizer->optimizePathByDubins(statePath, map);
-//			statePath = pathOptimizer->removeDuplicitStates(statePath);
-//
+			statePath = pathOptimizer->optimizePathByDubins(statePath, map);
+			statePath = pathOptimizer->removeDuplicitStates(statePath);
+
 //			persister->savePath(statePath);
-//			persister->savePathToJson(statePath, map, "optimized");
+			persister->savePathToJson(statePath, map, "optimized");
 //			persister->savePathToCsv(statePath, "optimized");
 			cout << "frequency " + to_string(frequency) + " completed" << endl;
 		}
