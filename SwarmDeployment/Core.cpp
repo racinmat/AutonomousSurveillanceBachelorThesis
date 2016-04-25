@@ -344,8 +344,7 @@ namespace App
 		
 		vector<shared_ptr<State>> statePathOriginal;
 		vector<shared_ptr<State>> statePath;
-		shared_ptr<Map> loadedMap;
-		tie(statePathOriginal, loadedMap) = tuple;
+		tie(statePathOriginal, map) = tuple;
 
 		for(auto frequency : frequencies)
 		{

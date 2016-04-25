@@ -5,6 +5,11 @@
 #include "PathHandler.h"
 #include "Strings.h"
 
+//kvùli naèítání vyuité pamìti
+//http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
+#include "windows.h"
+#include "psapi.h"
+
 using namespace geom;
 
 namespace App
@@ -41,7 +46,8 @@ namespace App
 			stopLimit = 40 * uavCount;
 		} else
 		{
-			stopLimit = 200;
+//			stopLimit = 200;
+			stopLimit = 15000;
 		}
 
 		double minOptimizationSpeed;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 24% na 1000 iterací na uav. Pøi vyšším poètu UAV je celková cesta delší, take se mìní podíl. Take dìlím konstantu poètem UAV.
@@ -50,7 +56,8 @@ namespace App
 		}
 		else
 		{
-			minOptimizationSpeed = 0.05 / double(1000);
+//			minOptimizationSpeed = 0.05 / double(1000);
+			minOptimizationSpeed = 0.000001 / double(1000);
 		}
 
 		int notImprovedCount = 0;
@@ -146,6 +153,21 @@ namespace App
 //				out.close();
 				break;					//pokud se mnohokrát za sebou nezkrátí cesta, ooptimalizace skonèí
 			}
+
+			if (iterationCount % 10 == 0)
+			{
+				PROCESS_MEMORY_COUNTERS_EX pmc;
+				GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+				SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+				SIZE_T usedMB = virtualMemUsedByMe / 1024 / 1024;
+				if (usedMB > 1900)
+				{
+					break;
+				}
+				//				cout << to_string(usedMB) << endl;
+				//end of getting used memory by this process
+			}
+
 		}
 
 		string frequencyString;
