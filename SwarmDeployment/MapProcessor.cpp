@@ -243,12 +243,13 @@ namespace App
 				auto goalMiddle = map->getGoalGroup()->getMiddle();
 
 				double range = -cellSize / 2;	//zaènu zápornì, protože hned na zaèátku pøièítám.
+				shared_ptr<Node> node = nullptr;
 				do		//pokud je v cílové node pøekážka, zvìtším radius o 1 a hledám dál
 				{
 					range += cellSize;	//todo: contains metoda pracuje v range pro ètverec, možná by bylo dobré to pøedìlat na kružnici
-					auto node = findFirstNodeInRange(nodes, goalMiddle, range);
-					endNodes[0] = make_tuple(node, map->getGoalGroup());
-				} while (!get<0>(endNodes[0]));
+					node = findFirstNodeInRange(nodes, goalMiddle, range);
+				} while (!node);
+				endNodes[0] = make_tuple(node, map->getGoalGroup());
 			} else if(placementMethod == PlacementMethod::Chain)
 			{
 				//funguje pouze pro 2 AoI
@@ -345,5 +346,6 @@ namespace App
 				return node;
 			}
 		}
+		return nullptr;
 	}
 }

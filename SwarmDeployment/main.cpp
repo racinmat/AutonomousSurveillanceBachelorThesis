@@ -944,8 +944,8 @@ namespace App
 int main(int argc, char *argv[])
 {
 	int returnValue = 0;
-	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
+//	returnValue = run(argc, argv);
+	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
