@@ -9,7 +9,7 @@
 namespace App
 {
 
-	Persister::Persister(shared_ptr<Configuration> configuration) : configuration(configuration)
+	Persister::Persister(shared_ptr<Configuration> configuration, shared_ptr<DistanceResolver> distanceResolver) : configuration(configuration), distanceResolver(distanceResolver)
 	{
 		HMODULE hModule = GetModuleHandleW(NULL);
 		WCHAR wcharPath[MAX_PATH];
@@ -97,6 +97,50 @@ namespace App
 			os << entry.first << "; " << entry.second << endl;
 		}
 		os.close();
+	}
+
+	void Persister::writePathData(vector<shared_ptr<State>> path)
+	{
+		int uavCount = path[0]->getUavs().size();
+		vector<std::map<double, double>> distancesToNearestNeighbour(uavCount);
+
+		std::map<double, double> distanceToGoal;
+		int iter = 0;
+
+
+		auto goalState = path[path.size() - 1];
+		for (auto state : path)
+		{
+			iter++;
+
+			for (size_t i = 0; i < state->getBaseUavs().size(); i++)
+			{
+				auto uav = state->getBaseUavs()[i];
+				double distanceToNearestNeighbour = DBL_MAX;
+				for (size_t j = 0; j < state->getBaseUavs().size(); j++)
+				{
+					if (i == j)
+					{
+						continue;
+					}
+					auto anotherUav = state->getBaseUavs()[j];
+					auto distance = uav->getPointParticle()->getLocation()->getDistance(anotherUav->getPointParticle()->getLocation());
+					if (distance < distanceToNearestNeighbour)
+					{
+						distanceToNearestNeighbour = distance;
+					}
+				}
+				distancesToNearestNeighbour[i][iter] = distanceToNearestNeighbour;
+			}
+
+			distanceToGoal[iter] = distanceResolver->getDistance(state, goalState);
+		}
+
+		for (size_t i = 0; i < distancesToNearestNeighbour.size(); i++)
+		{
+			writeGraphData(distancesToNearestNeighbour[i], "distances-to-nearest-neighbour-" + to_string(i));
+		}
+		writeGraphData(distanceToGoal, "distance-to-goal");
 	}
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)

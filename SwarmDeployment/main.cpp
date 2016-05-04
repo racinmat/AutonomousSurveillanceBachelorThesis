@@ -89,6 +89,20 @@ namespace App
 
 	}
 
+	int runRRTPath() {
+
+		auto configuration = make_shared<Configuration>();
+		auto core = make_shared<Core>(configuration);
+		configuration->setMapNumber(0);
+		configuration->setCore(core);	//toto nemohu zavolat uvnitø konstruktoru
+
+		core->runRRTPath();
+
+		//cin.get();
+		return 0;
+
+	}
+
 	int run(int argc, char *argv[])
 	{
 		auto configuration = make_shared<Configuration>();
@@ -97,7 +111,8 @@ namespace App
 		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
 //		core->run();
 
-		runResamplingAndDubinsOptimization();
+//		runResamplingAndDubinsOptimization();
+		runRRTPath();
 		return 0;
 	}
 
@@ -944,8 +959,8 @@ namespace App
 int main(int argc, char *argv[])
 {
 	int returnValue = 0;
-//	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
+	returnValue = run(argc, argv);
+//	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;

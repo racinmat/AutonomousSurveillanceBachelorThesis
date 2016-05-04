@@ -132,7 +132,8 @@ namespace App
 		shared_ptr<Map> map10 = make_shared<Map>();
 		for (int i = 0; i < uavCount; i++)
 		{
-			map10->addUavStart(make_shared<UavForRRT>(400 + i * uavDistance, 50, PI / 2));
+//			map10->addUavStart(make_shared<UavForRRT>(400 + i * uavDistance, 50, PI / 2));
+			map10->addUavStart(make_shared<UavForRRT>(50 + i * uavDistance, 50, PI / 2));
 		}
 
 		map10->addGoal(make_shared<Goal>(1, 600, 400, 400));

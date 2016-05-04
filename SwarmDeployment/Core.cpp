@@ -44,7 +44,7 @@ namespace App
 		distanceResolver(make_shared<DistanceResolver>(configuration)),
 		motionModel(make_shared<CarLikeAnalyticMotionModel>(configuration, logger)),
 		collisionDetector(make_shared<CollisionDetector>(configuration)),
-		persister(make_shared<Persister>(configuration)),
+		persister(make_shared<Persister>(configuration, distanceResolver)),
 		guidingPathFactory(make_shared<GuidingPathFactory>(logger)),
 		resampler(make_shared<Resampler>(configuration, stateFactory, motionModel)),
 		mapProcessor(make_shared<MapProcessor>(logger, configuration))
@@ -65,7 +65,6 @@ namespace App
 
 	void Core::run()
 	{
-		
 //		clock_t start;
 //		double duration;
 //		start = clock();
@@ -75,6 +74,8 @@ namespace App
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
+
+
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 
@@ -82,33 +83,12 @@ namespace App
 
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 
-		vector<shared_ptr<State>> statePath;
+		vector<shared_ptr<State>> statePath = runRRTPath();
 
-		{		//zkouším mít pro rrt-path vlastní scope, aby se uvolnila pamì po skonèení rrtpath
-			auto nodes = mapProcessor->mapToNodes(map);
-			auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
-//			duration = (clock() - start) / double(CLOCKS_PER_SEC);
-//
-//			cout << to_string(duration) << "seconds to discretize map and find path" << endl;
-
-
-			auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
-
-			shared_ptr<LinkedState> lastState;
-			if (output->goals_reached || configuration->getPlacementMethod() == PlacementMethod::Chain)	//u PlacementMethod::Chain nemusí všechna UAV dorazit do cíle
-			{
-				lastState = coverageResolver->get_best_fitness(output->finalNodes, map);
-			} else
-			{
-				lastState = get_closest_node_to_goal(output->nodes, paths, map);
-			}
-
-			auto path = pathHandler->getPath(lastState);
-
-			statePath = PathHandler::createStatePath(path);	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubinse a neplete tam zbyteènosti z rrt-path
-		}
 		logger->logBestPath(statePath);
 		persister->savePathToJson(statePath, map, "before-dubins");
+//		persister->writePathData(statePath);
+
 
 		//instead of searching the way, I use saved way to be optimized
 //		auto tuple = persister->loadPathFromJson("C:\\Users\\Azathoth\\Documents\\visual studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\path-02-28-20-25-16-before-dubins.json");
@@ -132,6 +112,46 @@ namespace App
 
 //		testGui();
 
+	}
+
+	vector<shared_ptr<State>> Core::runRRTPath()
+	{
+		MapFactory mapFactory;
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+
+
+		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
+		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
+		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
+
+		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
+
+		map->amplifyObstacles(configuration->getObstacleIncrement());
+
+		auto nodes = mapProcessor->mapToNodes(map);
+		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
+		//			duration = (clock() - start) / double(CLOCKS_PER_SEC);
+		//
+		//			cout << to_string(duration) << "seconds to discretize map and find path" << endl;
+
+
+		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
+
+		shared_ptr<LinkedState> lastState;
+		if (output->goals_reached || configuration->getPlacementMethod() == PlacementMethod::Chain)	//u PlacementMethod::Chain nemusí všechna UAV dorazit do cíle
+		{
+			lastState = coverageResolver->get_best_fitness(output->finalNodes, map);
+		}
+		else
+		{
+			lastState = get_closest_node_to_goal(output->nodes, paths, map);
+		}
+
+		auto path = pathHandler->getPath(lastState);
+
+		auto statePath = PathHandler::createStatePath(path);
+		persister->writePathData(statePath);
+		return statePath;	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubinse a neplete tam zbyteènosti z rrt-path
 	}
 
 	void Core::testGui()
@@ -336,7 +356,7 @@ namespace App
 	void Core::loadAndOptimizeByDubins(string filename, vector<double> frequencies)
 	{
 		MapFactory mapFactory;
-		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protože se v nich generují starty uav, a ty se mohou mìnit podle konfigurace
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 

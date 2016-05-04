@@ -58,9 +58,17 @@ namespace App
 		maxSampleCount = 10000000;	//nějaký vysoký počet, aby se limit neprojevil
 		uavCameraX = 150;
 		uavCameraY = 100;
+
+		//standard method
 		placementMethod = PlacementMethod::Standard;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
 		zeroStepEnabled = false;
 		smartZeroStepEnabling = false;	//turns on zero step, when at least one UAV is near oblascle
+
+		//chain method
+//		placementMethod = PlacementMethod::Chain;	//placement in AoI. Standard is one guiding path (or more paths, depending on allowSwarmSplitting), Chain is chain method.
+//		zeroStepEnabled = false;
+//		smartZeroStepEnabling = true;	//turns on zero step, when at least one UAV is near oblascle
+
 		smartZeroStepEnablingDistance = 50;
 
 		if (relativeDistanceMin > relativeDistanceMax)
