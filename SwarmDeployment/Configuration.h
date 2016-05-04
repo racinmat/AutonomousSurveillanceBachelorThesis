@@ -65,6 +65,7 @@ namespace App
 		virtual int getSmartZeroStepEnablingDistance() const;
 		virtual void setZeroStepEnabled(const bool zero_step_enabled);
 		virtual void setMaxSampleFrequency(const int max_sample_frequency);
+		virtual int getMaxFinalNaodes() const;
 
 	protected:
 		shared_ptr<Core> core;	//if change in configuration happens from GUI, Core needs to be notified to call logger and pass changed Map to it.
@@ -112,6 +113,7 @@ namespace App
 		bool zeroStepEnabled;
 		bool smartZeroStepEnabling;	//turns on zero step, when at least one UAV is near oblascle
 		int smartZeroStepEnablingDistance;
+		int maxFinalNaodes;
 	};
 
 }

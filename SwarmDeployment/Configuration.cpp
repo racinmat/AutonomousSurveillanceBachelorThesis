@@ -70,6 +70,7 @@ namespace App
 //		smartZeroStepEnabling = true;	//turns on zero step, when at least one UAV is near oblascle
 
 		smartZeroStepEnablingDistance = 50;
+		maxFinalNaodes = 300;
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -366,5 +367,10 @@ namespace App
 	void Configuration::setMaxSampleFrequency(const int max_sample_frequency)
 	{
 		maxSampleFrequency = max_sample_frequency;
+	}
+
+	int Configuration::getMaxFinalNaodes() const
+	{
+		return maxFinalNaodes;
 	}
 }

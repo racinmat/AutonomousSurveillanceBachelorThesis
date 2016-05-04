@@ -138,9 +138,9 @@ namespace App
 
 		for (size_t i = 0; i < distancesToNearestNeighbour.size(); i++)
 		{
-			writeGraphData(distancesToNearestNeighbour[i], "distances-to-nearest-neighbour-" + to_string(i));
+			writeGraphData(distancesToNearestNeighbour[i], "distances-to-nearest-neighbour-" + to_string(i) + "-" + Strings::currentDateTime());
 		}
-		writeGraphData(distanceToGoal, "distance-to-goal");
+		writeGraphData(distanceToGoal, "distance-to-goal-" + Strings::currentDateTime());
 	}
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)

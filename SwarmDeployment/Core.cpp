@@ -253,6 +253,12 @@ namespace App
 			{
 				break;
 			}
+
+			if (configuration->getMaxFinalNaodes() < output->finalNodes.size())
+			{
+				break;
+			}
+
 			i++;	// initial node je 0. prvek, proto vkládám od 1
 
 //			%Random state
