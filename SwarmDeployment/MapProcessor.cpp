@@ -43,6 +43,11 @@ namespace App
 		return graph;
 	}
 
+	void MapProcessor::setLogger(const shared_ptr<LoggerInterface> logger_interface)
+	{
+		logger = logger_interface;
+	}
+
 	vector<vector<Grid>> MapProcessor::getMapGrid(shared_ptr<Map> map)
 	{
 		int cellSize = configuration->getAStarCellSize();

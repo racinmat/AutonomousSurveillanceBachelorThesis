@@ -97,10 +97,15 @@ namespace App
 	{
 		for (auto obstacle : this->obstacles)
 		{
-			obstacle->rectangle->setX(obstacle->rectangle->getX() - sizeIncrement);
-			obstacle->rectangle->setY(obstacle->rectangle->getY() - sizeIncrement);
-			obstacle->rectangle->setWidth(obstacle->rectangle->getWidth() + 2 * sizeIncrement);
-			obstacle->rectangle->setHeight(obstacle->rectangle->getHeight() + 2 * sizeIncrement);
+			//hot bugfix so the obstacles wont overlap the map boundaries. The min and max height and width of the map should be taken from configuration.
+			int minX = obstacle->rectangle->getX() - sizeIncrement;
+			int minY = obstacle->rectangle->getY() - sizeIncrement;
+			int maxX = obstacle->rectangle->getWidth() + 2 * sizeIncrement;
+			int maxY = obstacle->rectangle->getHeight() + 2 * sizeIncrement;
+			obstacle->rectangle->setX(minX < 0 ? 0 : minX);
+			obstacle->rectangle->setY(minY < 0 ? 0 : minY);
+			obstacle->rectangle->setWidth(maxX > 1000 ? 1000 : maxX);
+			obstacle->rectangle->setHeight(maxY > 1000 ? 1000 : maxY);
 		}
 	}
 

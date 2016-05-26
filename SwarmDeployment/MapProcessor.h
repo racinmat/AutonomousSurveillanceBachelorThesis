@@ -16,6 +16,7 @@ namespace App
 		MapProcessor(shared_ptr<LoggerInterface> logger, shared_ptr<Configuration> configuration);
 		virtual ~MapProcessor();
 		shared_ptr<MapGraph> mapToNodes(shared_ptr<Map> map);
+		virtual void setLogger(const shared_ptr<LoggerInterface> logger_interface);
 
 	protected:
 		vector<vector<Grid>> getMapGrid(shared_ptr<Map> map);	//returns 2D matrix as grid of map

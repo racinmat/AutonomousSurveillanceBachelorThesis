@@ -124,9 +124,9 @@ namespace App
 		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
 		//Celý roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
 
-		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
-
 		map->amplifyObstacles(configuration->getObstacleIncrement());
+
+		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
 		auto nodes = mapProcessor->mapToNodes(map);
 		auto paths = guidingPathFactory->createGuidingPaths(nodes->getAllNodes(), nodes->getStartNode(), nodes->getEndNodes());
@@ -193,6 +193,7 @@ namespace App
 		pathOptimizer->setLogger(logger);
 		motionModel->setLogger(logger);
 		collisionDetector->setLogger(logger);
+		mapProcessor->setLogger(logger);
 	}
 
 	void Core::logConfigurationChange()

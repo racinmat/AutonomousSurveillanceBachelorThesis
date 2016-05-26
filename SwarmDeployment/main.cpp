@@ -93,7 +93,7 @@ namespace App
 
 		auto configuration = make_shared<Configuration>();
 		auto core = make_shared<Core>(configuration);
-		configuration->setMapNumber(0);
+		configuration->setMapNumber(3);
 		configuration->setCore(core);	//toto nemohu zavolat uvnitø konstruktoru
 
 		core->runRRTPath();
@@ -959,8 +959,8 @@ namespace App
 int main(int argc, char *argv[])
 {
 	int returnValue = 0;
-	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
+//	returnValue = run(argc, argv);
+	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;
