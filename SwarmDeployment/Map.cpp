@@ -100,12 +100,32 @@ namespace App
 			//hot bugfix so the obstacles wont overlap the map boundaries. The min and max height and width of the map should be taken from configuration.
 			int minX = obstacle->rectangle->getX() - sizeIncrement;
 			int minY = obstacle->rectangle->getY() - sizeIncrement;
-			int maxX = obstacle->rectangle->getWidth() + 2 * sizeIncrement;
-			int maxY = obstacle->rectangle->getHeight() + 2 * sizeIncrement;
-			obstacle->rectangle->setX(minX < 0 ? 0 : minX);
-			obstacle->rectangle->setY(minY < 0 ? 0 : minY);
-			obstacle->rectangle->setWidth(maxX > 1000 ? 1000 : maxX);
-			obstacle->rectangle->setHeight(maxY > 1000 ? 1000 : maxY);
+			int width = obstacle->rectangle->getWidth() + 2 * sizeIncrement;
+			int height = obstacle->rectangle->getHeight() + 2 * sizeIncrement;
+			int maxX = minX + width;
+			int maxY = minY + height;
+			if (maxX > 1000)
+			{
+				width = width - (maxX - 1000);
+			}
+			if (maxY > 1000)
+			{
+				width = width - (maxY - 1000);
+			}
+			if (minX < 0)
+			{
+				width -= 0 - minX;
+				minX = 0;
+			}
+			if (minY < 0)
+			{
+				height -= 0 - minY;
+				minY = 0;
+			}
+			obstacle->rectangle->setX(minX);
+			obstacle->rectangle->setY(minY);
+			obstacle->rectangle->setWidth(width);
+			obstacle->rectangle->setHeight(height);
 		}
 	}
 

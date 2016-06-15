@@ -16,7 +16,8 @@ namespace App
 		GuidingPathFactory(shared_ptr<LoggerInterface> logger);
 		virtual ~GuidingPathFactory();
 		vector<shared_ptr<Path>> createGuidingPaths(vector<shared_ptr<Node>> nodes, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends);
-	
+		virtual void setLogger(const shared_ptr<LoggerInterface> logger_interface);
+
 	protected:
 		shared_ptr<LoggerInterface> logger;
 		shared_ptr<PathFindingAlgorithm> algorithm;

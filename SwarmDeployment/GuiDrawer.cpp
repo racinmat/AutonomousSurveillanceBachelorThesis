@@ -49,7 +49,10 @@ namespace Ui
 		{
 			auto p = start->getPointParticle()->getLocation();
 			Qt::GlobalColor uavColor = getRandomColor();
-			uavColors[*start.get()] = uavColor;
+			if (uavColors.find(*start.get()) == uavColors.end())
+			{
+				uavColors[*start.get()] = uavColor;
+			}
 			addCross(p->getX(), p->getY(), 3, uavColor);
 		}
 
@@ -89,7 +92,7 @@ namespace Ui
 		int y = 12;
 		for (auto node : nodes)
 		{
-			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
+//			addText(QString::fromStdString(to_string(int(node->getCost()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
 //			addText(QString::fromStdString(to_string(int(node->getDistanceToObstacle()))), node->getPoint()->getX() + x, node->getPoint()->getY() + y);
 		}
 		mainWindow->updateView();
@@ -112,19 +115,19 @@ namespace Ui
 //			scene->addRect(endPoint->getPoint()->getX() - cellSize/2, endPoint->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::yellow), QBrush(Qt::yellow));
 //		}
 
-		for (auto path : paths)
-		{
-			shared_ptr<Node> previous = nullptr;
-			for (auto node : path->getNodes())
-			{
-				if (previous != nullptr)
-				{
-					auto line = scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
-				}
-				previous = node;
-			}
-		}
-		mainWindow->updateView();
+//		for (auto path : paths)
+//		{
+//			shared_ptr<Node> previous = nullptr;
+//			for (auto node : path->getNodes())
+//			{
+//				if (previous != nullptr)
+//				{
+//					auto line = scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
+//				}
+//				previous = node;
+//			}
+//		}
+//		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logText(string string)
@@ -154,14 +157,14 @@ namespace Ui
 //			width = 2;
 		}
 
-		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
-		{
-			auto uav = nearNode->getUavsForRRT()[i];
-			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
-		}
+//		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
+//		{
+//			auto uav = nearNode->getUavsForRRT()[i];
+//			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+//			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+//			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+//				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+//		}
 
 //		QString time = QString("%1").arg(newNode->getTime());
 //		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
@@ -178,14 +181,14 @@ namespace Ui
 			width = 2;
 		}
 
-		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
-		{
-			auto uav = nearNode->getUavs()[i];
-			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
-		}
+//		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
+//		{
+//			auto uav = nearNode->getUavs()[i];
+//			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+//			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+//			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+//				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+//		}
 
 		//		QString time = QString("%1").arg(newNode->getTime());
 		//		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
@@ -203,12 +206,12 @@ namespace Ui
 //			scene->addEllipse(point->getX(), point->getY(), 2, 2, QPen(uavColors[uav]));	//todo? zjistit, jak se iteruje pøes unordered_map
 ////			addCross(randomStates[i]->getX(), randomStates[i]->getY(), 3, uavColors[i]);
 //		}
-//		mainWindow->updateView();
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logRandomStatesCenter(shared_ptr<Point> center)
 	{
-		scene->addEllipse(center->getX(), center->getY(), 3, 3, QPen(Qt::black), QBrush(Qt::black));
+//		scene->addEllipse(center->getX(), center->getY(), 3, 3, QPen(Qt::black), QBrush(Qt::black));
 		mainWindow->updateView();
 	}
 
@@ -250,26 +253,26 @@ namespace Ui
 
 	void GuiDrawer::logDubinsPaths(unordered_map<UavForRRT, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
-//		for (auto pair : dubinsPaths)
-//		{
-//			auto uav = pair.first;
-//			auto dubins = pair.second.first;
-//			auto radius = dubins.getRadius();
-//			auto circle1Center = dubins.getFirstArc().getCenter();
-//			auto circle2Center = dubins.getSecondArc().getCenter();
-//			addCircle(circle1Center.getX(), circle1Center.getY(), radius, Qt::black);
-//			addCircle(circle2Center.getX(), circle2Center.getY(), radius, Qt::black);
-//			if (dubins.isCCC)
-//			{
-//				auto middleCircleCenter = dubins.getCenterArc().getCenter();
-//				scene->addEllipse(middleCircleCenter.getX(), middleCircleCenter.getY(), radius, radius, QPen(Qt::black), QBrush(Qt::transparent));
-//			} else
-//			{
-//				auto line = dubins.getCenter();
-//				scene->addLine(line.p1.getX(), line.p1.getY(), line.p2.getX(), line.p2.getY(), QPen(Qt::black));
-//			}
-//			mainWindow->updateView();
-//		}
+		for (auto pair : dubinsPaths)
+		{
+			auto uav = pair.first;
+			auto dubins = pair.second.first;
+			auto radius = dubins.getRadius();
+			auto circle1Center = dubins.getFirstArc().getCenter();
+			auto circle2Center = dubins.getSecondArc().getCenter();
+			addCircle(circle1Center.getX(), circle1Center.getY(), radius, Qt::black);
+			addCircle(circle2Center.getX(), circle2Center.getY(), radius, Qt::black);
+			if (dubins.isCCC)
+			{
+				auto middleCircleCenter = dubins.getCenterArc().getCenter();
+				scene->addEllipse(middleCircleCenter.getX(), middleCircleCenter.getY(), radius, radius, QPen(Qt::black), QBrush(Qt::transparent));
+			} else
+			{
+				auto line = dubins.getCenter();
+				scene->addLine(line.p1.getX(), line.p1.getY(), line.p2.getX(), line.p2.getY(), QPen(Qt::black));
+			}
+			mainWindow->updateView();
+		}
 	}
 
 	void GuiDrawer::saveVisualMap()
@@ -331,24 +334,44 @@ namespace Ui
 
 	Qt::GlobalColor GuiDrawer::getRandomColor()
 	{
-		Qt::GlobalColor blackList[] = { Qt::white, Qt::transparent };
-		Qt::GlobalColor color = Qt::GlobalColor(rand() % Qt::transparent);	//tansparent is last color of enum
-		for (auto blacklisted : blackList)
+		Qt::GlobalColor privileged[] = { Qt::red, Qt::green, Qt::blue };
+		int privilegedUsed = 0;
+		int privilegedSize = 3;
+		Qt::GlobalColor blackList[] = { Qt::white, Qt::transparent, Qt::yellow, Qt::darkYellow, Qt::cyan };
+		Qt::GlobalColor color;
+		bool isBlacklisted;
+		bool isTaken;
+
+		do
 		{
-			if (color == blacklisted)
+			isBlacklisted = false;
+			isTaken = false;
+			if (privilegedUsed < privilegedSize)
 			{
-				color = Qt::GlobalColor(rand() % Qt::transparent);
+				color = privileged[privilegedUsed];
+				privilegedUsed++;
+			} else
+			{
+				color = Qt::GlobalColor(rand() % Qt::transparent); 	//tansparent is last color of enum
 			}
-		}
-		for (auto pair : uavColors)
-		{
-			auto another = pair.second;
-			if (color == another)
+			for (auto blacklisted : blackList)
 			{
-				color = Qt::GlobalColor(rand() % Qt::transparent);
+				if (color == blacklisted)
+				{
+					isBlacklisted = true;
+				}
 			}
 
-		}
+			for (auto pair : uavColors)
+			{
+				auto another = pair.second;
+				if (color == another)
+				{
+					isTaken = true;
+				}
+			}
+		} while (isBlacklisted || isTaken);
+
 		return color;
 	}
 

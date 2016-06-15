@@ -23,4 +23,8 @@ namespace App
 		return paths;
 	}
 
+	void GuidingPathFactory::setLogger(const shared_ptr<LoggerInterface> logger_interface)
+	{
+		logger = logger_interface;
+	}
 }

@@ -10,7 +10,7 @@ namespace App
 	}
 
 	Node::Node(shared_ptr<Point> point, Grid gridType) :
-		point(point), cost(1), gridType(gridType), distanceToObstacle(INT32_MAX)
+		point(point), cost(0), gridType(gridType), distanceToObstacle(INT32_MAX)
 	{
 	}
 
