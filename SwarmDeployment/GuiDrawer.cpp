@@ -27,6 +27,8 @@ namespace Ui
 
 	void GuiDrawer::logSelectedMap(shared_ptr<Map> map, int worldWidth, int worldHeight)
 	{
+		uavColors = unordered_map<App::UavInterface, Qt::GlobalColor, App::UavHasher>();
+
 		QTextStream cout(stdout);
 		cout << "logging selected map" << endl;
 		clear();
@@ -334,10 +336,10 @@ namespace Ui
 
 	Qt::GlobalColor GuiDrawer::getRandomColor()
 	{
-		Qt::GlobalColor privileged[] = { Qt::red, Qt::green, Qt::blue };
+		Qt::GlobalColor privileged[] = { Qt::red, Qt::darkGreen, Qt::blue };
 		int privilegedUsed = 0;
 		int privilegedSize = 3;
-		Qt::GlobalColor blackList[] = { Qt::white, Qt::transparent, Qt::yellow, Qt::darkYellow, Qt::cyan };
+		Qt::GlobalColor blackList[] = { Qt::white, Qt::transparent, Qt::yellow, Qt::darkYellow, Qt::cyan, Qt::magenta };
 		Qt::GlobalColor color;
 		bool isBlacklisted;
 		bool isTaken;
