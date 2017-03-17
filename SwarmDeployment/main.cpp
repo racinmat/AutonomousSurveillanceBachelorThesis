@@ -1,4 +1,4 @@
-#include "Configuration.h"
+Ôªø#include "Configuration.h"
 #include "Core.h"
 #include <iostream>
 #include <memory>
@@ -94,7 +94,7 @@ namespace App
 		auto configuration = make_shared<Configuration>();
 		auto core = make_shared<Core>(configuration);
 		configuration->setMapNumber(3);
-		configuration->setCore(core);	//toto nemohu zavolat uvnit¯ konstruktoru
+		configuration->setCore(core);	//toto nemohu zavolat uvnit√∏ konstruktoru
 
 		core->runRRTPath();
 
@@ -248,7 +248,7 @@ namespace App
 //		cout << to_string(duration) << " miliseconds to assert without cache" << endl;
 
 
-//			// testov·nÌ rychlosti motion modelu kv˘li optimalizaci
+//			// testov√°n√≠ rychlosti motion modelu kv√πli optimalizaci
 //		auto configuration = make_shared<Configuration>();
 //		auto core = make_shared<Core>(configuration);
 //		//	MapFactory factory;
@@ -287,16 +287,16 @@ namespace App
 //			double duration;
 //
 //
-//			//poËet vöech moûn˝ch "kombinacÌ" je variace s opakov·nÌm (n-tuple anglicky).
+//			//po√®et v≈°ech mo≈æn√Ωch "kombinac√≠" je variace s opakov√°n√≠m (n-tuple anglicky).
 //			//inputs jsou vstupy do modelu
 ////			for (size_t i = 0; i < 10000; i++)
 ////			{
-////				distance_of_new_nodes = 20 * (i % 10);	//10 r˘zn˝ch vstup˘ do gener·toru, abych zjistil rychlost s cache
-//				auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());	//poËet vöech kombinacÌ je poËet vöech moûn˝ch vstup˘ jednoho UAV ^ poËet UAV
-//				//pokud m·m 10 vstup˘ v cache u samotnÈho NTupleGeneratoru, je to asi 2x pomalejöÌ neû bez cache. Takûe pro samotn˝ NTupleGenerator cache nepouûÌvat
-//				//mÌsto toho pouûiju cache pro celÈ generov·nÌ vstup˘
-//				//asi 800 ms na 1000 bÏh˘ a 10 vstup˘
-//				//s cache asi 300 ms na 1000 bÏh˘ a 10 vstup˘
+////				distance_of_new_nodes = 20 * (i % 10);	//10 r√πzn√Ωch vstup√π do gener√°toru, abych zjistil rychlost s cache
+//				auto inputs = generator.generateAllInputs(distance_of_new_nodes, max_turn, near_node->getUavs());	//po√®et v≈°ech kombinac√≠ je po√®et v≈°ech mo≈æn√Ωch vstup√π jednoho UAV ^ po√®et UAV
+//				//pokud m√°m 10 vstup√π v cache u samotn√©ho NTupleGeneratoru, je to asi 2x pomalej≈°√≠ ne≈æ bez cache. Tak≈æe pro samotn√Ω NTupleGenerator cache nepou≈æ√≠vat
+//				//m√≠sto toho pou≈æiju cache pro cel√© generov√°n√≠ vstup√π
+//				//asi 800 ms na 1000 b√¨h√π a 10 vstup√π
+//				//s cache asi 300 ms na 1000 b√¨h√π a 10 vstup√π
 ////			}
 ////			duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
 ////
@@ -318,7 +318,7 @@ namespace App
 //				double end_time = configuration->getTimeStep();
 //
 //				//main simulation loop
-//				//todo: vöude, kde pouûÌv·m push_back se podÌvat, zda by neölo na zaË·tku naalokovat pole, aby se nemusela dynamicky mÏnit velikost
+//				//todo: v≈°ude, kde pou≈æ√≠v√°m push_back se pod√≠vat, zda by ne≈°lo na za√®√°tku naalokovat pole, aby se nemusela dynamicky m√¨nit velikost
 //
 //				for (auto uav : newNode->getUavs())
 //				{
@@ -346,7 +346,7 @@ namespace App
 //				double end_time = configuration->getTimeStep();
 //
 //				//main simulation loop
-//				//todo: vöude, kde pouûÌv·m push_back se podÌvat, zda by neölo na zaË·tku naalokovat pole, aby se nemusela dynamicky mÏnit velikost
+//				//todo: v≈°ude, kde pou≈æ√≠v√°m push_back se pod√≠vat, zda by ne≈°lo na za√®√°tku naalokovat pole, aby se nemusela dynamicky m√¨nit velikost
 //
 //				for (auto uav : newNode->getUavs())
 //				{
@@ -370,7 +370,7 @@ namespace App
 //			cout << "new motion model curve " << newMotionModel->getMinimalCurveRadius() << endl;
 
 		// toto nemodifikuje pole
-		//	auto ratios = vector<double>(5); //pomÏry jednotliv˝ch ploch ku celkovÈ ploöe. DlouhÈ jako poËet cÌl˘, tedy poËet guiding paths
+		//	auto ratios = vector<double>(5); //pom√¨ry jednotliv√Ωch ploch ku celkov√© plo≈°e. Dlouh√© jako po√®et c√≠l√π, tedy po√®et guiding paths
 		//	double totalVolume = 0;
 		//	for (size_t i = 0; i < 5; i++)
 		//	{
@@ -378,7 +378,7 @@ namespace App
 		//		ratios[i] = volume;
 		//		totalVolume += volume;
 		//	}
-		//	for_each(ratios.begin(), ratios.end(), [totalVolume](double ratio) { return ratio /= totalVolume; });	//kaûd˝ prvek je v rozsahu od 0 do 1
+		//	for_each(ratios.begin(), ratios.end(), [totalVolume](double ratio) { return ratio /= totalVolume; });	//ka≈æd√Ω prvek je v rozsahu od 0 do 1
 		//	
 		//	cout << ratios[0] << endl;		//0
 		//	cout << ratios[1] << endl;		//1
@@ -421,7 +421,7 @@ namespace App
 		//	unordered_map<string, int> map1;
 		//	map1["Jedna"] = 1;
 		//	map1["Dva"] = 2;
-		//	map1["T¯i"] = 3;
+		//	map1["T√∏i"] = 3;
 		//
 		//	unordered_map<B, int, BHasher> map;
 		//	map[*a.get()] = 1;
@@ -429,7 +429,7 @@ namespace App
 		//	map[*c.get()] = 3;
 		//	map[*d.get()] = 4;
 		//
-		//	//heureka, koneËnÏ pro mapu a == b
+		//	//heureka, kone√®n√¨ pro mapu a == b
 		//	cout << map[*a.get()] << endl; //2
 		//	cout << map[*b.get()] << endl; //2
 		//	cout << map[*c.get()] << endl; //4
@@ -446,7 +446,7 @@ namespace App
 		//	map2[c] = 3;
 		//	map2[d] = 4;
 		//
-		//	//heureka, koneËnÏ pro mapu a == b
+		//	//heureka, kone√®n√¨ pro mapu a == b
 		//	cout << map2[a] << endl; //2
 		//	cout << map2[b] << endl; //2
 		//	cout << map2[c] << endl; //4
@@ -462,8 +462,8 @@ namespace App
 		//	vector<int> vec = {1,2,3,4,5,6,7,8,9};
 		//	vector<int> vec2 = vector<int>(vec.size());
 		//	vector<int> vec3 = vector<int>(vec.size());
-		//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return i % 2 == 0; });	//po zkopÌrov·nÌ jsou ve zbytku novÈho pole nuly
-		//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return false; });	//po zkopÌrov·nÌ jsou vöude nuly
+		//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return i % 2 == 0; });	//po zkop√≠rov√°n√≠ jsou ve zbytku nov√©ho pole nuly
+		//	copy_if(vec.begin(), vec.end(), vec2.begin(), [](int i) {return false; });	//po zkop√≠rov√°n√≠ jsou v≈°ude nuly
 		//
 		//	vector<int> vec4 = vector<int>(vec.size());
 		//	vector<int> vec5 = vector<int>(vec.size());
@@ -569,10 +569,10 @@ namespace App
 		//	auto p = c.lineLineIntersection(p1, p2, p3, p4);
 		//
 		//	cout << *p << endl;
-		//	cout << isfinite(p->getX()) << endl;	//vracÌ false
-		//	cout << isfinite(p->getY()) << endl;	//vracÌ false
+		//	cout << isfinite(p->getX()) << endl;	//vrac√≠ false
+		//	cout << isfinite(p->getY()) << endl;	//vrac√≠ false
 
-		//// pr·ce s poli
+		//// pr√°ce s poli
 		//	vector<int> vec1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		//	vector<int> vec2 = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
 		//	for (auto e : vec1) {
@@ -584,12 +584,12 @@ namespace App
 		//	}
 		//	cout << endl;
 		//
-		//	vec1 = vector<int>(vec2.begin() + 3, vec2.end());	//subvector, vykousnutÌ Ë·sti vektoru
+		//	vec1 = vector<int>(vec2.begin() + 3, vec2.end());	//subvector, vykousnut√≠ √®√°sti vektoru
 		//	for (auto e : vec1) {
 		//		cout << e << ", ";
 		//	}
 		//	cout << endl;
-		//	vec1 = vector<int>(vec2.begin() + 3, vec2.begin() + 7);	//subvector, vykousnutÌ Ë·sti vektoru
+		//	vec1 = vector<int>(vec2.begin() + 3, vec2.begin() + 7);	//subvector, vykousnut√≠ √®√°sti vektoru
 		//	for (auto e : vec1) {
 		//		cout << e << ", ";
 		//	}
@@ -600,15 +600,15 @@ namespace App
 		//		cout << e << ", ";
 		//	}
 		//	cout << endl;
-		//	//	//spojenÌ 3 Ë·stÌ cesty
+		//	//	//spojen√≠ 3 √®√°st√≠ cesty
 		//	vector<int> vec3 = vector<int>(vec1.begin(), vec1.begin() + 4);
-		//	vec3.insert(vec3.end(), vec2.begin(), vec2.end());		//vloûenÌ za pole
+		//	vec3.insert(vec3.end(), vec2.begin(), vec2.end());		//vlo≈æen√≠ za pole
 		//	for (auto e : vec3) {
 		//		cout << e << ", ";
 		//	}
 		//	cout << endl;
 		//
-		//	vec3.insert(vec3.begin() + 2, vec2.begin(), vec2.end());	//vloûenÌ dovnit¯ pole, ne na kraj
+		//	vec3.insert(vec3.begin() + 2, vec2.begin(), vec2.end());	//vlo≈æen√≠ dovnit√∏ pole, ne na kraj
 		//	for (auto e : vec3) {
 		//		cout << e << ", ";
 		//	}
@@ -618,21 +618,21 @@ namespace App
 		//
 		//	vector<int> path = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		//	vector<int> trajectoryPart = { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
-		//	vector<int> pathFirstPart;		//Ë·st p¯ed dubinsem
-		//	vector<int> pathMiddlePart = trajectoryPart;	//Ë·st nahrazen· dubinsem
-		//	vector<int> pathLastPart;		//Ë·st po dubinsovi
+		//	vector<int> pathFirstPart;		//√®√°st p√∏ed dubinsem
+		//	vector<int> pathMiddlePart = trajectoryPart;	//√®√°st nahrazen√° dubinsem
+		//	vector<int> pathLastPart;		//√®√°st po dubinsovi
 		//
 		//	int startIndex = 5;
 		//	int endIndex = 8;
 		//
-		//	if (startIndex > 0)	//p¯ed vyseknutou Ë·stÌ je dalöÌ Ë·st
+		//	if (startIndex > 0)	//p√∏ed vyseknutou √®√°st√≠ je dal≈°√≠ √®√°st
 		//	{
-		//		pathFirstPart = vector<int>(path.begin(), path.begin() + startIndex);	//subvector, vykousnutÌ Ë·sti vektoru
+		//		pathFirstPart = vector<int>(path.begin(), path.begin() + startIndex);	//subvector, vykousnut√≠ √®√°sti vektoru
 		//	}
 		//
-		//	if (endIndex < path.size() - 1)	//po vyseknutÈ Ë·sti je jeötÏ dalöÌ Ë·st
+		//	if (endIndex < path.size() - 1)	//po vyseknut√© √®√°sti je je≈°t√¨ dal≈°√≠ √®√°st
 		//	{
-		//		pathLastPart = vector<int>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnutÌ Ë·sti vektoru
+		//		pathLastPart = vector<int>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnut√≠ √®√°sti vektoru
 		//	}
 		//
 		//	auto newPath = pathFirstPart;
@@ -645,7 +645,7 @@ namespace App
 		//	cout << endl;
 
 
-		//	narovn·v·nÌ zk¯Ìûen˝ch cest 1
+		//	narovn√°v√°n√≠ zk√∏√≠≈æen√Ωch cest 1
 		//	StateFactory factory(configuration);
 		//	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
 		//
@@ -687,7 +687,7 @@ namespace App
 		//		cout << *state << endl;
 		//	}
 
-		//	narovn·v·nÌ zk¯Ìûen˝ch cest 2
+		//	narovn√°v√°n√≠ zk√∏√≠≈æen√Ωch cest 2
 		//	StateFactory factory(configuration);
 		//	PathHandler pathHandler(make_shared<CollisionDetector>(configuration));
 		//
