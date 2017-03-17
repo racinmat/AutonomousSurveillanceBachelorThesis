@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Queries>
+  <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>not my code project</Name>
+notmycode from f in Application.Projects
+where !f.Name.Contains("SwarmDeployment")
+select f
+]]></Query>
+  <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>not my code namespaces</Name>
+notmycode from n in Namespaces
+where 
+!n.Name.EqualsAny("App", "AStar", "Ui")
+select n]]></Query>
+</Queries>

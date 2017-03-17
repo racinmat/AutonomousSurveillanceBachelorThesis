@@ -49,6 +49,10 @@ namespace Ui
 		Qt::GlobalColor getRandomColor();
 		unordered_map<App::UavInterface, Qt::GlobalColor, App::UavHasher> uavColors;
 		void showPopup(string text);
+		bool showDubins;
+		bool showRRTPath;
+		bool showRRT;
+		bool showGuidingPaths;
 	};
 
 }

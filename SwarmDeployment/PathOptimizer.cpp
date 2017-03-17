@@ -56,8 +56,9 @@ namespace App
 		}
 		else
 		{
-			minOptimizationSpeed = 0.05 / double(1000);
-//			minOptimizationSpeed = 0.000001 / double(1000);
+//			minOptimizationSpeed = 0.05 / double(1000);
+			minOptimizationSpeed = 0.2 / double(1000);
+			//			minOptimizationSpeed = 0.000001 / double(1000);
 		}
 
 		int notImprovedCount = 0;

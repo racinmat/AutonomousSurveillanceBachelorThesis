@@ -218,3 +218,7 @@ ModelManifest.xml
 /AutonomousSurveillanceBachelorThesis.opensdf
 /.vs/AutonomousSurveillanceBachelorThesis/v14/.suo
 *.VC.opendb
+/SwarmDeployment/aoiMatrixes/
+/SwarmDeployment/output/
+/SwarmDeployment/output-deprecated/
+/SwarmDeployment/CppDependOut/

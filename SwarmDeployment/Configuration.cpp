@@ -27,7 +27,7 @@ namespace App
 		debug = true;
 		distanceOfNewNodes = 20;	//k mapě 8, rychlost 20 cm/s
 //		guidingNearDist = 40;		//max. vzdálenost od bodu z guidingPath, aby se použil další bod na cestě
-		guidingNearDist = 38;		//pro SplacementMethod::Chain
+		guidingNearDist = 38;		//pro PlacementMethod::Chain
 //		guidingNearDist = 100;		//pro mapu 8, kde jsou velké vzdálenosti mezi 
 		numberOfSolutions = 10000;
 		guidedSamplingPropability = 1;

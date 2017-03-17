@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -80,24 +80,24 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        start->setText(QApplication::translate("MainWindow", "Start", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
+        start->setText(QApplication::translate("MainWindow", "Start", Q_NULLPTR));
         map->clear();
         map->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "Map 0", 0)
-         << QApplication::translate("MainWindow", "Map 1", 0)
-         << QApplication::translate("MainWindow", "Map 2", 0)
-         << QApplication::translate("MainWindow", "Map 3", 0)
-         << QApplication::translate("MainWindow", "Map 4", 0)
-         << QApplication::translate("MainWindow", "Map 5", 0)
-         << QApplication::translate("MainWindow", "Map 6", 0)
-         << QApplication::translate("MainWindow", "Map 7", 0)
-         << QApplication::translate("MainWindow", "Map 8", 0)
-         << QApplication::translate("MainWindow", "Map 9", 0)
-         << QApplication::translate("MainWindow", "Map 10", 0)
-         << QApplication::translate("MainWindow", "Map 11", 0)
+         << QApplication::translate("MainWindow", "Map 0", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 1", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 2", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 3", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 4", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 5", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 6", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 7", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 8", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 9", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 10", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Map 11", Q_NULLPTR)
         );
-        stop->setText(QApplication::translate("MainWindow", "Stop", 0));
+        stop->setText(QApplication::translate("MainWindow", "Stop", Q_NULLPTR));
     } // retranslateUi
 
 };

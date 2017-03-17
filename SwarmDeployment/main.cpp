@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-#include "Gui.h"					//zakomentovat pro noGui
+//#include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
@@ -115,106 +115,6 @@ namespace App
 		runRRTPath();
 		return 0;
 	}
-
-//	class A
-//	{
-//	public:
-//		A()
-//		{
-//		}
-//		A(const A& other) : x(other.x), y(other.y)
-//		{
-//		}
-//		A(double x, double y) : x(x), y(y)
-//		{
-//		}
-//		double x;
-//		double y;
-//	};
-//
-//	template <class T>
-//	inline void hash_combine(size_t& seed, const T& v)
-//	{
-//		hash<T> hasher;
-//		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-//	}
-
-
-	//class B
-	//{
-	//
-	//public:
-	//	B() : ints(vector<int>()), id(lastId++)
-	//	{
-	//	}
-	//	B(const B& other) : ints(vector<int>())
-	//	{
-	//		for (auto a : other.as)
-	//		{
-	//			as.push_back(make_shared<A>(*a.get()));
-	//		}
-	//		ints = other.ints;
-	//		id = other.id;
-	//	}
-	//
-	//	friend bool operator==(const B& lhs, const B& rhs)
-	//	{
-	//		return lhs.id == rhs.id;
-	//	}
-	//
-	//	friend bool operator!=(const B& lhs, const B& rhs)
-	//	{
-	//		return !(lhs == rhs);
-	//	}
-	//
-	//	size_t hash_value() const
-	//	{
-	//		size_t seed = 0x2277B8A9;
-	//		hash_combine(seed, id);
-	//		return seed;
-	//	}
-	//
-	//	static size_t hash(const B& obj)
-	//	{
-	//		return obj.hash_value();
-	//	}
-	//
-	//	vector<shared_ptr<A>> as;
-	//	vector<int> ints;
-	//	int id;
-	//	static int lastId;
-	//
-	//};
-	//
-	//int B::lastId = 0;
-	//
-	//
-	//class BHasher
-	//{
-	//public:
-	//	size_t operator() (B const& key) const
-	//	{
-	//		return key.hash_value();
-	//	}
-	//};
-	//
-	//class BPtrHasher
-	//{
-	//public:
-	//	size_t operator() (shared_ptr<B> const& key) const
-	//	{
-	//		return key->hash_value();
-	//	}
-	//};
-	//
-	//class EqualFn
-	//{
-	//public:
-	//	bool operator() (B const& t1, B const& t2) const
-	//	{
-	//		return t1 == t2;
-	//	}
-	//};
 
 	void testing()
 	{
@@ -866,47 +766,6 @@ namespace App
 
 //		auto start = clock();
 
-//		DistanceResolver resolver = DistanceResolver(make_shared<Configuration>());
-//		for (size_t i = 0; i < 100; i++)
-//		{
-//			resolver.getLengthOfPath(path);
-//		}
-//		auto duration = (clock() - start) * 1000 / double(CLOCKS_PER_SEC);
-//
-//		cout << to_string(duration) << " miliseconds to calculate distance" << endl;
-
-
-//		double uav_size = 6;
-//		auto oldUavLocation = make_shared<Point>(80, 50);
-//		auto newUavLocation = make_shared<Point>(94.03206, 54.56);
-//		auto distance = oldUavLocation->getDistance(newUavLocation);
-//		
-//		double xOld = oldUavLocation->getX();
-//		double yOld = oldUavLocation->getY();
-//		double xNew = newUavLocation->getX();
-//		double yNew = newUavLocation->getY();
-//		
-//		double middleX = (xOld + xNew) / 2;
-//		double middleY = (yOld + yNew) / 2;
-//
-//		Rectangle2D uavRectangle(middleX - distance / 2 - uav_size / 2, middleY - uav_size / 2, distance + uav_size, uav_size);
-//
-//		cout << "distance:" << distance << endl;
-//		cout << "middle:" << middleX << ", " << middleY << endl;
-//
-//		cout << "p1: " << uavRectangle.p1.getX() << ", " << uavRectangle.p1.getY() << endl;
-//		cout << "p2: " << uavRectangle.p2.getX() << ", " << uavRectangle.p2.getY() << endl;
-//		cout << "p3: " << uavRectangle.p3.getX() << ", " << uavRectangle.p3.getY() << endl;
-//		cout << "p4: " << uavRectangle.p4.getX() << ", " << uavRectangle.p4.getY() << endl;
-//
-//		cout << "after rotation: " << endl;
-//
-//		uavRectangle.rotate(atan2(yNew - yOld, xNew - xOld));
-//
-//		cout << "p1: " << uavRectangle.p1.getX() << ", " << uavRectangle.p1.getY() << endl;
-//		cout << "p2: " << uavRectangle.p2.getX() << ", " << uavRectangle.p2.getY() << endl;
-//		cout << "p3: " << uavRectangle.p3.getX() << ", " << uavRectangle.p3.getY() << endl;
-//		cout << "p4: " << uavRectangle.p4.getX() << ", " << uavRectangle.p4.getY() << endl;
 
 		auto configuration = make_shared<Configuration>();
 		auto collisionDetector = make_shared<CollisionDetector>(configuration);
@@ -959,8 +818,8 @@ namespace App
 int main(int argc, char *argv[])
 {
 	int returnValue = 0;
-//	returnValue = run(argc, argv);
-	returnValue = runGui(argc, argv);
+	returnValue = run(argc, argv);
+//	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;

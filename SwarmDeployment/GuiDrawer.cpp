@@ -19,6 +19,10 @@ namespace Ui
 		text(text)
 	{
 		LoggerInterface();
+		showDubins = true;
+		showRRT = true;
+		showRRTPath = true;
+		showGuidingPaths = true;
 	}
 
 	GuiDrawer::~GuiDrawer()
@@ -110,6 +114,12 @@ namespace Ui
 	void GuiDrawer::logGuidingPaths(vector<shared_ptr<Path>> paths, shared_ptr<Node> start, vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> ends)
 	{
 		int cellSize = configuration->getAStarCellSize();
+
+		if ( ! showGuidingPaths)
+		{
+			return;
+		}
+
 //		scene->addRect(start->getPoint()->getX() - cellSize/2, start->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::darkCyan), QBrush(Qt::darkCyan));
 //		for (auto end : ends)
 //		{
@@ -117,19 +127,21 @@ namespace Ui
 //			scene->addRect(endPoint->getPoint()->getX() - cellSize/2, endPoint->getPoint()->getY() - cellSize/2, cellSize, cellSize, QPen(Qt::yellow), QBrush(Qt::yellow));
 //		}
 
-//		for (auto path : paths)
-//		{
-//			shared_ptr<Node> previous = nullptr;
-//			for (auto node : path->getNodes())
-//			{
-//				if (previous != nullptr)
-//				{
-//					auto line = scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(Qt::blue));
-//				}
-//				previous = node;
-//			}
-//		}
-//		mainWindow->updateView();
+		int width = 3;
+
+		for (auto path : paths)
+		{
+			shared_ptr<Node> previous = nullptr;
+			for (auto node : path->getNodes())
+			{
+				if (previous != nullptr)
+				{
+					auto line = scene->addLine(previous->getPoint()->getX(), previous->getPoint()->getY(), node->getPoint()->getX(), node->getPoint()->getY(), QPen(QBrush(Qt::black), width));
+				}
+				previous = node;
+			}
+		}
+		mainWindow->updateView();
 	}
 
 	void GuiDrawer::logText(string string)
@@ -152,21 +164,26 @@ namespace Ui
 
 	void GuiDrawer::logNewState(shared_ptr<LinkedState> nearNode, shared_ptr<LinkedState> newNode, bool optimization)
 	{
-		int width = 1;
+		int width = 2;
 		if (optimization)
 		{
-			width = 1;
-//			width = 2;
+			width = 3;
 		}
 
-//		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
-//		{
-//			auto uav = nearNode->getUavsForRRT()[i];
-//			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-//			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-//			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-//				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
-//		}
+
+		if (!showRRT)
+		{
+			return;
+		}
+
+		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
+		{
+			auto uav = nearNode->getUavsForRRT()[i];
+			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+		}
 
 //		QString time = QString("%1").arg(newNode->getTime());
 //		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
@@ -177,20 +194,25 @@ namespace Ui
 
 	void GuiDrawer::logNewState(shared_ptr<State> nearNode, shared_ptr<State> newNode, bool optimization)
 	{
-		int width = 1;
+		int width = 2;
 		if (optimization)
 		{
-			width = 2;
+			width = 3;
 		}
 
-//		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
-//		{
-//			auto uav = nearNode->getUavs()[i];
-//			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-//			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
-//			scene->addLine(oldLoc->getX(), oldLoc->getY(),
-//				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
-//		}
+		if (!showRRTPath)
+		{
+			return;
+		}
+
+		for (size_t i = 0; i < nearNode->getBaseUavs().size(); i++)
+		{
+			auto uav = nearNode->getUavs()[i];
+			auto oldLoc = nearNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			auto newLoc = newNode->getBaseUavs()[i]->getPointParticle()->getLocation();
+			scene->addLine(oldLoc->getX(), oldLoc->getY(),
+				newLoc->getX(), newLoc->getY(), QPen(QBrush(uavColors[*uav.get()]), width));
+		}
 
 		//		QString time = QString("%1").arg(newNode->getTime());
 		//		auto loc = newNode->getUavs()[0]->getPointParticle()->getLocation();
@@ -227,7 +249,17 @@ namespace Ui
 		int width = 2;
 		if (optimization)
 		{
-			width = 4;
+			width = 3;
+			if (!showDubins)
+			{
+				return;
+			}
+		} else
+		{
+			if (!showRRTPath)
+			{
+				return;
+			}
 		}
 
 		bool first = true;
@@ -255,6 +287,11 @@ namespace Ui
 
 	void GuiDrawer::logDubinsPaths(unordered_map<UavForRRT, pair<geom::Dubins, bool>, UavHasher> dubinsPaths)
 	{
+		if (!showDubins)
+		{
+			return;
+		}
+
 		for (auto pair : dubinsPaths)
 		{
 			auto uav = pair.first;
