@@ -5,6 +5,7 @@
 #include "Strings.h"
 #include "Configuration.h"
 #include <Windows.h>
+#include <cfloat>
 
 namespace App
 {

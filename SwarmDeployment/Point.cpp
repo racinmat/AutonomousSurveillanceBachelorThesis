@@ -1,5 +1,6 @@
 #include "Point.h"
 #include <string>
+#include <cfloat>
 
 namespace App
 {

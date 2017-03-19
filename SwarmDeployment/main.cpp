@@ -2,7 +2,7 @@
 #include "Core.h"
 #include <iostream>
 #include <memory>
-#include "VCollide\ColDetect.h"
+#include "VCollide/ColDetect.h"
 #include <locale>
 #include <valarray>
 #include <unordered_map>
