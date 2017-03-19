@@ -219,6 +219,14 @@ ModelManifest.xml
 /.vs/AutonomousSurveillanceBachelorThesis/v14/.suo
 *.VC.opendb
 /SwarmDeployment/aoiMatrixes/
+aoiMatrixes/
+GeneratedFiles/
+Win32/Release/output/
+/Win32/Debug/
+/Win32/Release/
 /SwarmDeployment/output/
 /SwarmDeployment/output-deprecated/
 /SwarmDeployment/CppDependOut/
+*.tlog
+Thumbs.db
+*.idb
