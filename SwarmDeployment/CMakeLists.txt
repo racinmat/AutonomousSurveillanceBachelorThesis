@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(ROOT_SOURCE_DIR .)
 include_directories("${ROOT_SOURCE_DIR}")
 
+find_package(Qt5Widgets REQUIRED)
+
 set(SOURCE_FILES
 
         json_spirit/json_spirit_reader.cpp json_spirit/json_spirit_reader.h
@@ -179,3 +181,5 @@ set(SOURCE_FILES
         UavInterface.h)
 
 add_executable(SwarmDeployment ${SOURCE_FILES})
+
+target_link_libraries(myqtproject Qt5::Widgets)

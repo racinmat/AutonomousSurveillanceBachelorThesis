@@ -2,7 +2,7 @@
 #include "Point.h"
 #include "memory"
 #include "Dubins/geom/Position.h"
-#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+#include <json_spirit/json_spirit_reader.h>
 #include "Dubins/geom/Dubins.h"
 
 using namespace std;

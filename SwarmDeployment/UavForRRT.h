@@ -3,7 +3,7 @@
 #include <vector>
 #include "Goal.h"
 #include "GuidingPathsCurrentPositions.h"
-#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+#include <json_spirit/json_spirit_reader.h>
 #include "CarLikeControl.h"
 #include "UavInterface.h"
 

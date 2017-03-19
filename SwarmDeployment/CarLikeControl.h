@@ -1,6 +1,6 @@
 #pragma once
 #include <ostream>
-#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+#include <json_spirit/json_spirit_reader.h>
 
 using namespace json_spirit;
 
@@ -23,8 +23,8 @@ namespace App
 		static CarLikeControl fromJson(mValue data);
 
 	protected:
-		double step;	//krok vpøed
-		double turn;	//otoèka
+		double step;	//krok vpï¿½ed
+		double turn;	//otoï¿½ka
 	};
 
 }
