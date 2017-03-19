@@ -1,10 +1,11 @@
+#include <cfloat>
 #include "GoalGroup.h"
 #include "Random.h"
 
 namespace App
 {
 		
-	GoalGroup::GoalGroup() //inicializuji až lazy. Todo: možná pøedìlat, aby se goalGroup vytvoøil builderPaternem, pak budu moct eager loadovat
+	GoalGroup::GoalGroup() //inicializuji aï¿½ lazy. Todo: moï¿½nï¿½ pï¿½edï¿½lat, aby se goalGroup vytvoï¿½il builderPaternem, pak budu moct eager loadovat
 	{
 	}
 	
@@ -64,7 +65,7 @@ namespace App
 
 	void GoalGroup::initializeRectangle()
 	{
-		//nejdøíve najdu 2 krají body ze všech obdélníkù (cílù) (levý dolní a pravý horní), abych z nìj pak vytvoøil velký, všepokrývající obdélník.
+		//nejdï¿½ï¿½ve najdu 2 krajï¿½ body ze vï¿½ech obdï¿½lnï¿½kï¿½ (cï¿½lï¿½) (levï¿½ dolnï¿½ a pravï¿½ hornï¿½), abych z nï¿½j pak vytvoï¿½il velkï¿½, vï¿½epokrï¿½vajï¿½cï¿½ obdï¿½lnï¿½k.
 		double leftLowerX = DBL_MAX;
 		double leftLowerY = DBL_MAX;
 		double rightUpperX = DBL_MIN;

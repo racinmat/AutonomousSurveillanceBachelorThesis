@@ -2,6 +2,7 @@
 #include "VCollide/ColDetect.h"
 #include "memory"
 #include <algorithm>
+#include <cfloat>
 #include "Configuration.h"
 
 using namespace std;
@@ -54,8 +55,8 @@ namespace App
 		int worldWidth = configuration->getWorldWidth();
 		int worldHeigh = configuration->getWorldHeight();
 		int gridRow = 0;
-		int rows = floor(double(worldWidth) / double(cellSize));	//zaokrouhluji dolù, abych nevzorkoval nedefinovanou èást mapy
-		int columns = floor(double(worldHeigh) / double(cellSize));	//radši oøíznu kus mapy, ne z mapy vyjet
+		int rows = floor(double(worldWidth) / double(cellSize));	//zaokrouhluji dolï¿½, abych nevzorkoval nedefinovanou ï¿½ï¿½st mapy
+		int columns = floor(double(worldHeigh) / double(cellSize));	//radï¿½i oï¿½ï¿½znu kus mapy, neï¿½ z mapy vyjet
 		auto grid = vector<vector<Grid>>(rows);						
 		for (int i = cellSize; i <= worldWidth; i += cellSize)
 		{
@@ -109,8 +110,8 @@ namespace App
 
 	vector<shared_ptr<Node>> MapProcessor::gridToNodes(vector<vector<Grid>> mapGrid, int cellSize)
 	{
-		double cost_neighbor = 30; // cena node, pokud je nìkde vedle ní pøekáka
-		double cost_diagonal = 15; // cena node, pokud je diagonálnì k ní pøekáka
+		double cost_neighbor = 30; // cena node, pokud je nï¿½kde vedle nï¿½ pï¿½ekï¿½ka
+		double cost_diagonal = 15; // cena node, pokud je diagonï¿½lnï¿½ k nï¿½ pï¿½ekï¿½ka
 		auto nodes = vector<shared_ptr<Node>>(mapGrid.size() * mapGrid[0].size());
 		int index = 0;
 
@@ -128,7 +129,7 @@ namespace App
 			}
 		}
 
-		index = 0;	//index dané node
+		index = 0;	//index danï¿½ node
 
 		//adding of neighbors, when all nodes are added
 		for (size_t i = 0; i < mapGrid.size(); i++)
@@ -142,8 +143,8 @@ namespace App
 					for (int q = -1; q <= 1; q++)
 					{
 						bool isNeighbor = p != 0 || q != 0;
-						bool isOutOfMap = (i + p) < 0 || (j  + q) < 0 //kontrola 1. øádku a 1. sloupce
-							|| (i + p) >= mapGrid.size() || (j + q) >= row.size(); //kontrola posledního øádku a posledního sloupce
+						bool isOutOfMap = (i + p) < 0 || (j  + q) < 0 //kontrola 1. ï¿½ï¿½dku a 1. sloupce
+							|| (i + p) >= mapGrid.size() || (j + q) >= row.size(); //kontrola poslednï¿½ho ï¿½ï¿½dku a poslednï¿½ho sloupce
 						if (
 							isNeighbor && !isOutOfMap
 						) {
@@ -152,16 +153,16 @@ namespace App
 							{
 								if (neighbor->getGridType() == Grid::Obstacle)
 								{
-									if (p == 0 || q == 0)	//pøímı soused
+									if (p == 0 || q == 0)	//pï¿½ï¿½mï¿½ soused
 									{
 										node->increaseCost(cost_neighbor);
 									}
-									else	//soused na diagonále
+									else	//soused na diagonï¿½le
 									{
 										node->increaseCost(cost_diagonal);
 									}
 								}
-								//sousedy pøidávám vdy, kvùli urèování vzdále nosti od pøekáek. u a staru si sousedy filtruju a expanduji jen do sousedù bez pøekáek
+								//sousedy pï¿½idï¿½vï¿½m vï¿½dy, kvï¿½li urï¿½ovï¿½nï¿½ vzdï¿½le nosti od pï¿½ekï¿½ek. u a staru si sousedy filtruju a expanduji jen do sousedï¿½ bez pï¿½ekï¿½ek
 								bool isDiagonal = p != 0 && q != 0;
 								node->addNeighbor(neighbor, isDiagonal);
 							}
@@ -180,14 +181,14 @@ namespace App
 		shared_ptr<Node> startNode;
 		int uavCount = map->countUavs();
 
-		//pokud zaèínají UAV na zaèátku jinak natoèená ne je smìr vedocí cesty, musí se sloitì otáèet, proto vyberu ze všech nodes, na kterıch leí nìjaké uav, node, která leí ve smìru prùmìrného otoèení UAV
-		//smìr uèím podle úhlu, kterı daná node svírá s prùmìrnım bodem mezi všemi UAV.
+		//pokud zaï¿½ï¿½najï¿½ UAV na zaï¿½ï¿½tku jinak natoï¿½enï¿½ neï¿½ je smï¿½r vedocï¿½ cesty, musï¿½ se sloï¿½itï¿½ otï¿½ï¿½et, proto vyberu ze vï¿½ech nodes, na kterï¿½ch leï¿½ï¿½ nï¿½jakï¿½ uav, node, kterï¿½ leï¿½ï¿½ ve smï¿½ru prï¿½mï¿½rnï¿½ho otoï¿½enï¿½ UAV
+		//smï¿½r uï¿½ï¿½m podle ï¿½hlu, kterï¿½ danï¿½ node svï¿½rï¿½ s prï¿½mï¿½rnï¿½m bodem mezi vï¿½emi UAV.
 		vector<shared_ptr<Node>> startingNodes = vector<shared_ptr<Node>>();
 		for (auto node : nodes)
 		{
 			for (auto uav : map->getUavsStart())
 			{
-				if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezení node, ve které je støed
+				if (node->contains(uav->getPointParticle()->getLocation()->getX(), uav->getPointParticle()->getLocation()->getY(), cellSize / 2))	//nalezenï¿½ node, ve kterï¿½ je stï¿½ed
 				{
 					startingNodes.push_back(node);
 					break;
@@ -228,7 +229,7 @@ namespace App
 		vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>> endNodes;
 		if (allowSwarmSplitting)
 		{
-			//end node pro kadı cíl zvláš
+			//end node pro kaï¿½dï¿½ cï¿½l zvláš
 			endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(map->getGoals().size());
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
@@ -242,16 +243,16 @@ namespace App
 		{
 			if (placementMethod == PlacementMethod::Standard)
 			{
-				//hledám node, která je nejblíe vypoèítanému støedu a kde není pøekáka
+				//hledï¿½m node, kterï¿½ je nejblï¿½e vypoï¿½ï¿½tanï¿½mu stï¿½edu a kde nenï¿½ pï¿½ekï¿½ka
 				endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(1);
-				//end node je jen jedna, pro celı goalGroup
+				//end node je jen jedna, pro celï¿½ goalGroup
 				auto goalMiddle = map->getGoalGroup()->getMiddle();
 
-				double range = -cellSize / 2;	//zaènu zápornì, protoe hned na zaèátku pøièítám.
+				double range = -cellSize / 2;	//zaï¿½nu zï¿½pornï¿½, protoï¿½e hned na zaï¿½ï¿½tku pï¿½iï¿½ï¿½tï¿½m.
 				shared_ptr<Node> node = nullptr;
-				do		//pokud je v cílové node pøekáka, zvìtším radius o 1 a hledám dál
+				do		//pokud je v cï¿½lovï¿½ node pï¿½ekï¿½ka, zvï¿½tï¿½ï¿½m radius o 1 a hledï¿½m dï¿½l
 				{
-					range += cellSize;	//todo: contains metoda pracuje v range pro ètverec, moná by bylo dobré to pøedìlat na krunici
+					range += cellSize;	//todo: contains metoda pracuje v range pro ï¿½tverec, moï¿½nï¿½ by bylo dobrï¿½ to pï¿½edï¿½lat na kruï¿½nici
 					node = findFirstNodeInRange(nodes, goalMiddle, range);
 				} while (!node);
 				endNodes[0] = make_tuple(node, map->getGoalGroup());
@@ -265,7 +266,7 @@ namespace App
 					throw "PlacementMethod::Chain works only for 2 goals.";
 				}
 
-				//end node pro kadı cíl zvláš
+				//end node pro kaï¿½dï¿½ cï¿½l zvláš
 				endNodes = vector<tuple<shared_ptr<Node>, shared_ptr<GoalInterface>>>(2);
 
 				for (size_t i = 0; i < map->getGoals().size(); i++)
@@ -287,13 +288,13 @@ namespace App
 
 	void MapProcessor::countDistancesToObstacles(vector<shared_ptr<Node>> nodes, int cellSize)
 	{
-		//nejdøíve zaènu od nodes s pøekákami. ty expanduji (pouze direct neighbors) a expandovanım nodám uloím vzdálenost 1 a uloím sousedy do seznamu. Pùvodní nody ze seznamu odebírám.
-		//pak opakuji, zvyšuji vzdálenost. neohodnocenou node poznám podle nìjaké defaultní hodnoty.
-		//pokud je ji node ohodnocená, ale našel jsem ji s vìtší vzdáleností od jiné pøekáky, pøepíšu vìtší vzdálenost menší vzdáleností.
-		//max. tolik expanzí, kolik je šíøka mapy. více není potøeba. 
-		//nevím, jestli expandovat zvláš kadou pøekáku nebo najednou
+		//nejdï¿½ï¿½ve zaï¿½nu od nodes s pï¿½ekï¿½kami. ty expanduji (pouze direct neighbors) a expandovanï¿½m nodï¿½m uloï¿½ï¿½m vzdï¿½lenost 1 a uloï¿½ï¿½m sousedy do seznamu. Pï¿½vodnï¿½ nody ze seznamu odebï¿½rï¿½m.
+		//pak opakuji, zvyï¿½uji vzdï¿½lenost. neohodnocenou node poznï¿½m podle nï¿½jakï¿½ defaultnï¿½ hodnoty.
+		//pokud je jiï¿½ node ohodnocenï¿½, ale naï¿½el jsem ji s vï¿½tï¿½ï¿½ vzdï¿½lenostï¿½ od jinï¿½ pï¿½ekï¿½ky, pï¿½epï¿½u vï¿½tï¿½ï¿½ vzdï¿½lenost menï¿½ï¿½ vzdï¿½lenostï¿½.
+		//max. tolik expanzï¿½, kolik je ï¿½ï¿½ï¿½ka mapy. vï¿½ce nenï¿½ potï¿½eba. 
+		//nevï¿½m, jestli expandovat zvláš kaï¿½dou pï¿½ekï¿½ku nebo najednou
 
-		//todo: vyzkoušet, jak je to s push_back a plnì neobsazenım vektorem		
+		//todo: vyzkouï¿½et, jak je to s push_back a plnï¿½ neobsazenï¿½m vektorem		
 		vector<shared_ptr<Node>> openedNodes = vector<shared_ptr<Node>>();
 		for (auto node : nodes)
 		{
@@ -310,8 +311,8 @@ namespace App
 			{
 				node = openedNodes[0];
 				openedNodes.erase(remove(openedNodes.begin(), openedNodes.end(), node));	//erase remove idiom. for removing. really, c++? really?
-			} while (!node && !openedNodes.empty());	//kontrola null pointeru a neprázdného pole
-			if (!node)	//pole se vyprázdnilo a tak je node null
+			} while (!node && !openedNodes.empty());	//kontrola null pointeru a neprï¿½zdnï¿½ho pole
+			if (!node)	//pole se vyprï¿½zdnilo a tak je node null
 			{
 				break;
 			}
@@ -335,7 +336,7 @@ namespace App
 		}
 	}
 
-	//aby se vzdálenost node od pøekáky nemìnila podle hustoty diskretizace (pøi 2x hustších ètvercích se bude vzdálenost jevit jako 2x vìtší), pøepoèítá se vzdálenost podle cellSize
+	//aby se vzdï¿½lenost node od pï¿½ekï¿½ky nemï¿½nila podle hustoty diskretizace (pï¿½i 2x hustï¿½ï¿½ch ï¿½tvercï¿½ch se bude vzdï¿½lenost jevit jako 2x vï¿½tï¿½ï¿½), pï¿½epoï¿½ï¿½tï¿½ se vzdï¿½lenost podle cellSize
 	double MapProcessor::getDistanceBetweenNodes(int cellSize)
 	{
 		double reference = 20;
@@ -346,7 +347,7 @@ namespace App
 	{
 		for (auto node : nodes)
 		{
-			if (node->getGridType() != Grid::Obstacle && node->contains(point, range))	//nalezení node, ve které je støed
+			if (node->getGridType() != Grid::Obstacle && node->contains(point, range))	//nalezenï¿½ node, ve kterï¿½ je stï¿½ed
 			{
 				return node;
 			}

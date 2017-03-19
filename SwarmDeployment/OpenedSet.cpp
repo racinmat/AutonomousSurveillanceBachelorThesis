@@ -1,3 +1,4 @@
+#include <cfloat>
 #include "OpenedSet.h"
 
 namespace AStar
@@ -16,7 +17,7 @@ namespace AStar
 	bool OpenedSet::contains(shared_ptr<NodeWrapper> node)
 	{
 		if (NodeSet::contains(node)) {// when some node is in opened list, but same node is later found in shorter path, I need to switch these nodes, so node with shorter path would be in opened list instead of node with longer path.
-			auto another = find(node); //získám stejnou node, do které jsem pøišel odjinud a porovnám délky
+			auto another = find(node); //zï¿½skï¿½m stejnou node, do kterï¿½ jsem pï¿½iï¿½el odjinud a porovnï¿½m dï¿½lky
 			if (another->getTotalCost() > node->getTotalCost()) {
 				erase(another);
 				insert(node);

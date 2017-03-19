@@ -95,14 +95,10 @@ set(SOURCE_FILES
         GoalGroup.h
         GoalInterface.cpp
         GoalInterface.h
-        Gui.cpp
-        Gui.h
         GuidingPathFactory.cpp
         GuidingPathFactory.h
         GuidingPathsCurrentPositions.cpp
         GuidingPathsCurrentPositions.h
-        GuiDrawer.cpp
-        GuiDrawer.h
         InputGenerator.cpp
         InputGenerator.h
         LinkedState.cpp
@@ -110,8 +106,6 @@ set(SOURCE_FILES
         LoggerInterface.cpp
         LoggerInterface.h
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
         Map.cpp
         Map.h
         MapFactory.cpp
