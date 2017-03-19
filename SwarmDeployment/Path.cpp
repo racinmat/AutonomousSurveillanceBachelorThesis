@@ -1,5 +1,4 @@
 ﻿#include "Path.h"
-#include <xhash>
 
 namespace App
 {
