@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cstdlib>
 
 class Random
 {
@@ -9,7 +10,7 @@ public:
 	static double inRange(double from, double to);
 	static double fromZeroToOne();
 	template < typename T>
-	//když pøesunu tìlo funkce do cpp souboru, pøestane fungovat kompilace, because fuck you, C++. http://stackoverflow.com/questions/3040480/c-template-function-compiles-in-header-but-not-implementation/3040706#3040706
+	//kdyï¿½ pï¿½esunu tï¿½lo funkce do cpp souboru, pï¿½estane fungovat kompilace, because fuck you, C++. http://stackoverflow.com/questions/3040480/c-template-function-compiles-in-header-but-not-implementation/3040706#3040706
 	static T element(std::vector<T> const vector)
 	{
 		return vector[index(vector)];
