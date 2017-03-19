@@ -18,7 +18,6 @@
 #include "dubins_test.h"
 #include "Random.h"
 #include "CarLikeAnalyticMotionModel.h"
-#include <direct.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
