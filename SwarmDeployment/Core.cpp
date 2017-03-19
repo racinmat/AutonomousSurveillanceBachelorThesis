@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <cfloat>
 
 #define PI 3.14159265358979323846
 #include "PathHandler.h"
@@ -53,9 +54,9 @@ namespace App
 		pathOptimizer = make_shared<PathOptimizer>(distanceResolver, configuration, motionModel, collisionDetector, logger, persister, resampler);
 		setLogger(make_shared<LoggerInterface>());	//I will use LoggerInterface as NilObject for Logger, because I am too lazy to write NilObject Class.
 
-		MapFactory mapFactory;	//mapa se musí vygenerovat hned, aby se mohla vykreslit v gui, ale pøed spuštìním se musí pøekreslit
+		MapFactory mapFactory;	//mapa se musï¿½ vygenerovat hned, aby se mohla vykreslit v gui, ale pï¿½ed spuï¿½tï¿½nï¿½m se musï¿½ pï¿½ekreslit
 		maps = mapFactory.createMaps(configuration->getUavCount());	
-		//todo: udìlat nìjakou inicializaci, která bude mimo kontruktor, abych i mohl zavolat vdy na zaèátku runu, aby se proèistily cache, apod.
+		//todo: udï¿½lat nï¿½jakou inicializaci, kterï¿½ bude mimo kontruktor, abych i mohl zavolat vï¿½dy na zaï¿½ï¿½tku runu, aby se proï¿½istily cache, apod.
 	}
 
 
@@ -70,14 +71,14 @@ namespace App
 //		start = clock();
 
 		MapFactory mapFactory;
-		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protoe se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musï¿½ generovat znovu, protoï¿½e se v nich generujï¿½ starty uav, a ty se mohou mï¿½nit podl ekonfigurace
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 
 
-		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
-		//Celı roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
+		//nejdï¿½ï¿½ve potï¿½ebuji z cï¿½lï¿½ udï¿½lat jeden shluk cï¿½lï¿½ jako jednolitou plochu a tomu najï¿½t stï¿½ed. 
+		//Celï¿½ roj pak mï¿½ jen jednu vedoucï¿½ cestu, do stï¿½edu shluku. Pak se pomocï¿½ rrt roj rozmisï¿½uje v oblasti celï¿½ho shluku
 
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
@@ -117,12 +118,12 @@ namespace App
 	vector<shared_ptr<State>> Core::runRRTPath()
 	{
 		MapFactory mapFactory;
-		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protoe se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musï¿½ generovat znovu, protoï¿½e se v nich generujï¿½ starty uav, a ty se mohou mï¿½nit podl ekonfigurace
 
 
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
-		//nejdøíve potøebuji z cílù udìlat jeden shluk cílù jako jednolitou plochu a tomu najít støed. 
-		//Celı roj pak má jen jednu vedoucí cestu, do støedu shluku. Pak se pomocí rrt roj rozmisuje v oblasti celého shluku
+		//nejdï¿½ï¿½ve potï¿½ebuji z cï¿½lï¿½ udï¿½lat jeden shluk cï¿½lï¿½ jako jednolitou plochu a tomu najï¿½t stï¿½ed. 
+		//Celï¿½ roj pak mï¿½ jen jednu vedoucï¿½ cestu, do stï¿½edu shluku. Pak se pomocï¿½ rrt roj rozmisï¿½uje v oblasti celï¿½ho shluku
 
 		logger->logSelectedMap(map, configuration->getWorldWidth(), configuration->getWorldHeight());
 
@@ -138,7 +139,7 @@ namespace App
 		auto output = rrtPath(paths, configuration, map, nodes->getAllNodes());
 
 		shared_ptr<LinkedState> lastState;
-		if (output->goals_reached || configuration->getPlacementMethod() == PlacementMethod::Chain)	//u PlacementMethod::Chain nemusí všechna UAV dorazit do cíle
+		if (output->goals_reached || configuration->getPlacementMethod() == PlacementMethod::Chain)	//u PlacementMethod::Chain nemusï¿½ vï¿½echna UAV dorazit do cï¿½le
 		{
 			lastState = coverageResolver->get_best_fitness(output->finalNodes, map);
 		}
@@ -151,19 +152,19 @@ namespace App
 
 		auto statePath = PathHandler::createStatePath(path);
 		persister->writePathData(statePath);
-		return statePath;	//pøesype data do struktury, která má pouze vìci nezbytné pro Dubinse a neplete tam zbyteènosti z rrt-path
+		return statePath;	//pï¿½esype data do struktury, kterï¿½ mï¿½ pouze vï¿½ci nezbytnï¿½ pro Dubinse a neplete tam zbyteï¿½nosti z rrt-path
 	}
 
 	void Core::testGui()
 	{
-//		//testing kreslení UAV
+//		//testing kreslenï¿½ UAV
 //		MapFactory mapFactory;
-//		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protoe se v nich generují starty uav, a ty se mohou mìnit podl ekonfigurace
+//		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musï¿½ generovat znovu, protoï¿½e se v nich generujï¿½ starty uav, a ty se mohou mï¿½nit podl ekonfigurace
 //		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 //		auto initialState = stateFactory->createState();
 //		initialState->setUavs(map->getUavsStart());
 //		auto initState = make_shared<State>(*initialState.get());
-//		//inicializace finálního stavu
+//		//inicializace finï¿½lnï¿½ho stavu
 //		auto lastState = make_shared<State>(*initialState.get());
 //		int i = 0;
 //		for (auto uav : lastState->getBaseUavs())
@@ -235,8 +236,8 @@ namespace App
 
 		auto final_nodes = vector<shared_ptr<LinkedState>>();
 
-		//pøíprava mapy <stringová reprezentace bodu, node> pro rychlé urèování souèasné node
-		auto nodesMap = std::map<string, shared_ptr<Node>>();	//todo: naplnit na zaèátku
+		//pï¿½ï¿½prava mapy <stringovï¿½ reprezentace bodu, node> pro rychlï¿½ urï¿½ovï¿½nï¿½ souï¿½asnï¿½ node
+		auto nodesMap = std::map<string, shared_ptr<Node>>();	//todo: naplnit na zaï¿½ï¿½tku
 		for (auto node : mapNodes)
 		{
 			nodesMap[node->getPoint()->toString()] = node;
@@ -246,8 +247,8 @@ namespace App
 		shared_ptr<LinkedState> nearState = initialState;
 		auto output = make_shared<Output>();
 
-		int i = 0; // poèet expandovanıch nodes, hned na zaèátku se zvıší o jedna
-		int m = 0; // poèet nalezenıch cest
+		int i = 0; // poï¿½et expandovanï¿½ch nodes, hned na zaï¿½ï¿½tku se zvï¿½ï¿½ï¿½ o jedna
+		int m = 0; // poï¿½et nalezenï¿½ch cest
 
 		while ((m <= number_of_solutions || i < rrt_min_nodes) && i < rrt_max_nodes) // number_of_solutions je asi 10 000.
 		{
@@ -261,17 +262,17 @@ namespace App
 				break;
 			}
 
-			i++;	// initial node je 0. prvek, proto vkládám od 1
+			i++;	// initial node je 0. prvek, proto vklï¿½dï¿½m od 1
 
 //			%Random state
-			unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrátí pole náhodnıch bodù, jeden pro kadou kvadrokoptéru
+			unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> s_rand = random_state_guided(guiding_paths, map, nearState); // vrï¿½tï¿½ pole nï¿½hodnï¿½ch bodï¿½, jeden pro kaï¿½dou kvadrokoptï¿½ru
 
 			//Finding appropriate nearest neighbor
-			int k = 0;	//poèítadlo nepouitelnıch nodes
+			int k = 0;	//poï¿½ï¿½tadlo nepouï¿½itelnï¿½ch nodes
 			bool near_found = false;
 
 			auto isNewUavPosition = false;
-			//opakování, dokud nenajdu vyhovující øešení, poèítají se prùchody cyklem kvùli uvíznutí
+			//opakovï¿½nï¿½, dokud nenajdu vyhovujï¿½cï¿½ ï¿½eï¿½enï¿½, poï¿½ï¿½tajï¿½ se prï¿½chody cyklem kvï¿½li uvï¿½znutï¿½
 			while (!near_found)
 			{
 				if (k > near_count)
@@ -282,7 +283,7 @@ namespace App
 				nearState = nearest_neighbor(s_rand, states, k);
 
 				newState = select_input(s_rand, nearState, map, nodesMap);
-				// Vypadá to, e near_node je ve funkci select_input zmìnìná kvùli kontrole pøekáek
+				// Vypadï¿½ to, ï¿½e near_node je ve funkci select_input zmï¿½nï¿½nï¿½ kvï¿½li kontrole pï¿½ekï¿½ek
 
 				bool allInputsUsed = nearState->areAllInputsUsed();
 
@@ -292,9 +293,9 @@ namespace App
 					isNearUavPosition = isNearUavPosition || uavPosition != false;
 				}
 
-				isNewUavPosition = newState != false;	//pointer je empty , pokud se pro UAV nenašla vhodná další pozice
+				isNewUavPosition = newState != false;	//pointer je empty , pokud se pro UAV nenaï¿½la vhodnï¿½ dalï¿½ï¿½ pozice
 
-				//poèítadlo uvíznutí. UAV uvízlo, pokud je tento if true
+				//poï¿½ï¿½tadlo uvï¿½znutï¿½. UAV uvï¿½zlo, pokud je tento if true
 				if (allInputsUsed || !isNewUavPosition || !isNearUavPosition)	//kontrola empty new_node
 				{
 					k++;
@@ -308,7 +309,7 @@ namespace App
 				}
 			}
 
-			if (!isNewUavPosition)	//spustí se v pøípadì, e se nedorazilo do cíle a nenašla se ádná cesta
+			if (!isNewUavPosition)	//spustï¿½ se v pï¿½ï¿½padï¿½, ï¿½e se nedorazilo do cï¿½le a nenaï¿½la se ï¿½ï¿½dnï¿½ cesta
 			{
 				check_expandability(states);
 				logger->logText("NaN in new node");
@@ -331,20 +332,20 @@ namespace App
 
 			checkSmartZeroStepEnabling(newState, map);
 
-			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloí do current_index, kolik nodes zbıvá danému UAV do cíle
+			guiding_point_reached(newState, guiding_paths, guiding_near_dist); // zde se uloï¿½ï¿½ do current_index, kolik nodes zbï¿½vï¿½ danï¿½mu UAV do cï¿½le
 			check_near_goal(newState->getUavsForRRT(), map);
 
 			output->distancesToGoal = vector<double>(states.size());
-			if (newState->areUavsInGoals()) // pokud je nalezen cíl
+			if (newState->areUavsInGoals()) // pokud je nalezen cï¿½l
 			{
 				output->goals_reached = newState->areUavsInGoals();
-				output->finalNodes.push_back(newState);	//rekurzí se ze stavu dá získat celá cesta
+				output->finalNodes.push_back(newState);	//rekurzï¿½ se ze stavu dï¿½ zï¿½skat celï¿½ cesta
 				char buffer[1024];
 				m++;
 				sprintf(buffer, "%d viable paths found so far.", m);
 				logger->logText(buffer);
 			}
-			output->distancesToGoal[i] = newState->getDistanceOfNewNodes();	//tohle dát do promìnné State, nastavit v select_input a pak to ze State tahat
+			output->distancesToGoal[i] = newState->getDistanceOfNewNodes();	//tohle dï¿½t do promï¿½nnï¿½ State, nastavit v select_input a pak to ze State tahat
 
 			if (i % configuration->getDrawPeriod() == 0)
 			{
@@ -353,7 +354,7 @@ namespace App
 			}
 		}
 		
-		output->finalNodes.push_back(states[states.size() - 1]);	//poslední prvek
+		output->finalNodes.push_back(states[states.size() - 1]);	//poslednï¿½ prvek
 		check_near_goal(newState->getUavsForRRT(), map);
 		output->goals_reached = newState->areUavsInGoals();
 		output->nodes = states;
@@ -364,7 +365,7 @@ namespace App
 	void Core::loadAndOptimizeByDubins(string filename, vector<double> frequencies)
 	{
 		MapFactory mapFactory;
-		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musí generovat znovu, protoe se v nich generují starty uav, a ty se mohou mìnit podle konfigurace
+		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se musï¿½ generovat znovu, protoï¿½e se v nich generujï¿½ starty uav, a ty se mohou mï¿½nit podle konfigurace
 		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 
@@ -400,18 +401,18 @@ namespace App
 		unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStates;
 
 		double random = Random::fromZeroToOne();
-		if (random > guided_sampling_prob) //vybírá se náhodnı vzorek
+		if (random > guided_sampling_prob) //vybï¿½rï¿½ se nï¿½hodnï¿½ vzorek
 		{
 			int index = 0;
 			for (auto uav : state->getUavsForRRT())
 			{
 				if (uav->isGoalReached())
-				{//todo: s tímhle nìco udìlat, a nepøistupovat k poli takhle teple pøes indexy
-					randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);	//pokud je n-té UAV v cíli, vybere se náhodnı bod z cílové plochy, kam UAV dorazilo
+				{//todo: s tï¿½mhle nï¿½co udï¿½lat, a nepï¿½istupovat k poli takhle teple pï¿½es indexy
+					randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);	//pokud je n-tï¿½ UAV v cï¿½li, vybere se nï¿½hodnï¿½ bod z cï¿½lovï¿½ plochy, kam UAV dorazilo
 				}
 				else
 				{
-					randomStates[*uav.get()] = random_state(0, 0, worldWidth, worldHeight, map); // pokud n-té UAV není v cíli, vybere se náhodnı bod z celé mapy
+					randomStates[*uav.get()] = random_state(0, 0, worldWidth, worldHeight, map); // pokud n-tï¿½ UAV nenï¿½ v cï¿½li, vybere se nï¿½hodnï¿½ bod z celï¿½ mapy
 				}
 			}
 			return randomStates;
@@ -421,23 +422,23 @@ namespace App
 			vector<shared_ptr<UavGroup>> uavGroups = splitUavsToGroups(guiding_paths, map, state, configuration->getAllowSwarmSplitting());
 			for (auto group : uavGroups)
 			{
-				//teï je v groupCurrentIndexes current_index pro kadé UAV pro danou path z dané group
+				//teï¿½ je v groupCurrentIndexes current_index pro kaï¿½dï¿½ UAV pro danou path z danï¿½ group
 				for (auto uav : group->getUavs())
 				{
-					if (uav->isGoalReached())		// v pøípadì PlacementMethod::Chain se toto u UAV, která nejsou krajní, spustí vdy
+					if (uav->isGoalReached())		// v pï¿½ï¿½padï¿½ PlacementMethod::Chain se toto u UAV, kterï¿½ nejsou krajnï¿½, spustï¿½ vï¿½dy
 					{
 						randomStates[*uav.get()] = random_state_goal(uav->getReachedGoal(), map);
 					}
 					else
 					{
-						auto center = group->getBestNode();	//v pøípadì PlacementMethod::Chain 
+						auto center = group->getBestNode();	//v pï¿½ï¿½padï¿½ PlacementMethod::Chain 
 						logger->logRandomStatesCenter(center->getPoint());
 						randomStates[*uav.get()] = random_state_polar(center->getPoint(), map, 0, configuration->getSamplingRadius());
 					}
 				}
 			}
 
-			//pøeskládání randomStates podle ID UAV.
+			//pï¿½esklï¿½dï¿½nï¿½ randomStates podle ID UAV.
 			vector<int> uavIds = vector<int>(randomStates.size());
 			unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomStatesSorted;
 			int index = 0;
@@ -450,7 +451,7 @@ namespace App
 			sort(uavIds.begin(), uavIds.end());
 			for (int uavId : uavIds)
 			{
-				//nalezení uav s danım id
+				//nalezenï¿½ uav s danï¿½m id
 				for (auto pair : randomStates)
 				{
 					auto uav = pair.first;
@@ -472,7 +473,7 @@ namespace App
 
 		vector<shared_ptr<LinkedState>> near_arr = vector<shared_ptr<LinkedState>>();
 		shared_ptr<LinkedState> near_node;
-		vector<tuple<double, shared_ptr<LinkedState>>> stateDistances;	//celková vzdálenost pro danı State, ukládám tam hamilt_dist, zatím pouze pro debug, nikde se nepouívá
+		vector<tuple<double, shared_ptr<LinkedState>>> stateDistances;	//celkovï¿½ vzdï¿½lenost pro danï¿½ State, uklï¿½dï¿½m tam hamilt_dist, zatï¿½m pouze pro debug, nikde se nepouï¿½ï¿½vï¿½
 		int s = 1;
 		double current_best = DBL_MAX;
 		
@@ -491,7 +492,7 @@ namespace App
 			
 			double totalDistance = distanceResolver->getDistance(tmp_node, randomStates);
 
-			stateDistances.push_back(make_tuple(totalDistance, tmp_node));	//zde je celková vdálenost a stav, ke kterému se váe
+			stateDistances.push_back(make_tuple(totalDistance, tmp_node));	//zde je celkovï¿½ vdï¿½lenost a stav, ke kterï¿½mu se vï¿½e
 			char buffer[1024];
 			if (debug)
 			{
@@ -532,13 +533,13 @@ namespace App
 	shared_ptr<LinkedState> Core::select_input(unordered_map<UavForRRT, shared_ptr<Point>, UavHasher> randomState, shared_ptr<LinkedState> nearState, shared_ptr<Map> map, std::map<string, shared_ptr<Node>> mapNodes)
 	{
 		double max_turn = configuration->getMaxTurn();
-		bool relative_localization = true;	//zatím natvrdo, protoe nevím, jak se má chovat druhá monost
+		bool relative_localization = true;	//zatï¿½m natvrdo, protoï¿½e nevï¿½m, jak se mï¿½ chovat druhï¿½ moï¿½nost
 		int uavCount = nearState->getBaseUavs().size();
 		int inputCount = configuration->getInputCount();
 		bool debug = configuration->getDebug();
 		shared_ptr<LinkedState> newState;
 
-		//todo: dodìlat. Sestavit mapu stringReprezentace pointu -> node, udìlat funkci na zaokrouhlování souøadnic (momentálího støedu všech uav), abych získal souøadnice bodu. Podle bohu v mapì najít nodu a tu tam poslat.
+		//todo: dodï¿½lat. Sestavit mapu stringReprezentace pointu -> node, udï¿½lat funkci na zaokrouhlovï¿½nï¿½ souï¿½adnic (momentï¿½lï¿½ho stï¿½edu vï¿½ech uav), abych zï¿½skal souï¿½adnice bodu. Podle bohu v mapï¿½ najï¿½t nodu a tu tam poslat.
 		
 		Point uavMiddle(0, 0);
 		for (auto uav : nearState->getBaseUavs())
@@ -549,14 +550,14 @@ namespace App
 		uavMiddle.setY(uavMiddle.getY() / uavCount);
 
 		uavMiddle = roundToNodeCoords(uavMiddle);
-		shared_ptr<Node> uavMiddleNode = mapNodes[uavMiddle.toString()];	//node, na které se nachází støed všech UAV
+		shared_ptr<Node> uavMiddleNode = mapNodes[uavMiddle.toString()];	//node, na kterï¿½ se nachï¿½zï¿½ stï¿½ed vï¿½ech UAV
 		double distance_of_new_nodes = getDistanceOfNewNodes(uavMiddleNode);
 
-		//poèet všech monıch "kombinací" je variace s opakováním (n-tuple anglicky). 
-		//inputs jsou vstupy do modelu, kombinace všech monıch vstupù (vstupy pro jedno uav se vygenerují vıše, jsou v oneUavInputs)
-		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavsForRRT(), configuration->getZeroStepEnabled());		//poèet všech kombinací je poèet všech monıch vstupù jednoho UAV ^ poèet UAV
-		//tempStates jsou vıstupy z modelu, input se stejnım indexem jako tempState je vstup do motion modelu, kterı vede na tempState
-		vector<shared_ptr<LinkedState>> tempStates = vector<shared_ptr<LinkedState>>(inputCount);	//stavy, které jsou vıstupem všech vygenerovanıch vstupù do motion modelu
+		//poï¿½et vï¿½ech moï¿½nï¿½ch "kombinacï¿½" je variace s opakovï¿½nï¿½m (n-tuple anglicky). 
+		//inputs jsou vstupy do modelu, kombinace vï¿½ech moï¿½nï¿½ch vstupï¿½ (vstupy pro jedno uav se vygenerujï¿½ vï¿½ï¿½e, jsou v oneUavInputs)
+		auto inputs = inputGenerator->generateAllInputs(distance_of_new_nodes, max_turn, nearState->getUavsForRRT(), configuration->getZeroStepEnabled());		//poï¿½et vï¿½ech kombinacï¿½ je poï¿½et vï¿½ech moï¿½nï¿½ch vstupï¿½ jednoho UAV ^ poï¿½et UAV
+		//tempStates jsou vï¿½stupy z modelu, input se stejnï¿½m indexem jako tempState je vstup do motion modelu, kterï¿½ vede na tempState
+		vector<shared_ptr<LinkedState>> tempStates = vector<shared_ptr<LinkedState>>(inputCount);	//stavy, kterï¿½ jsou vï¿½stupem vï¿½ech vygenerovanï¿½ch vstupï¿½ do motion modelu
 		vector<double> d = vector<double>(inputCount);
 
 		for (size_t i = 0; i < inputs.size(); i++)
@@ -571,13 +572,13 @@ namespace App
 				d[i] += randomState[*uav.get()]->getDistance(uav->getPointParticle()->getLocation());
 			}
 		}
-		//d je pole vzdáleností mezi randomState a tempStaty. Vybírá se ten nejbliší validní tempState
+		//d je pole vzdï¿½lenostï¿½ mezi randomState a tempStaty. Vybï¿½rï¿½ se ten nejbliï¿½ï¿½ï¿½ validnï¿½ tempState
 
 
-		//TODO: opravit i pøi zmìnì poètu vstupù, protoe u tempState je novı poèet vstupù, ale u nearState je starı, menší poèet vstupù
+		//TODO: opravit i pï¿½i zmï¿½nï¿½ poï¿½tu vstupï¿½, protoï¿½e u tempState je novï¿½ poï¿½et vstupï¿½, ale u nearState je starï¿½, menï¿½ï¿½ poï¿½et vstupï¿½
 
 
-		//TODO: moná si sesortovat vzdálenosti jednou bokem a pak pøistupovat k sesortovanım vzdálenostem, abych nemusel poøád hledat minValue. Zjistit hodnoty m, pokud je m vyší ne log(inputCount), vyplatí se sortovat
+		//TODO: moï¿½nï¿½ si sesortovat vzdï¿½lenosti jednou bokem a pak pï¿½istupovat k sesortovanï¿½m vzdï¿½lenostem, abych nemusel poï¿½ï¿½d hledat minValue. Zjistit hodnoty m, pokud je m vyï¿½ï¿½ neï¿½ log(inputCount), vyplatï¿½ se sortovat
 		// Find vector with minimal distance to s_rand and return it
 		if (relative_localization)
 		{
@@ -589,11 +590,11 @@ namespace App
 				{
 //					throw "No valid input left";
 					logger->logText("all inputs are used");
-					break;	//vıjimka se nemá vyhazovat
+					break;	//vï¿½jimka se nemï¿½ vyhazovat
 				}
 
-				//todo: pokud mono, refactorovat, a nemusím minimum hledat ruènì
-				int index = 0;	//klíè nejmenší hodnoty vzdálenosti v poli d
+				//todo: pokud moï¿½no, refactorovat, aï¿½ nemusï¿½m minimum hledat ruï¿½nï¿½
+				int index = 0;	//klï¿½ï¿½ nejmenï¿½ï¿½ hodnoty vzdï¿½lenosti v poli d
 				double minValue = DBL_MAX;
 				for (size_t i = 0; i < d.size(); i++)
 				{
@@ -603,11 +604,11 @@ namespace App
 						index = i;
 					}
 				}
-				auto tempState = tempStates[index];	//temp state s nejmenší vzdáleností od náhodnì vybraného bodu z RRT-Path
+				auto tempState = tempStates[index];	//temp state s nejmenï¿½ï¿½ vzdï¿½lenostï¿½ od nï¿½hodnï¿½ vybranï¿½ho bodu z RRT-Path
 
 				if (!collisionDetector->isStateValid(nearState, tempState, map))
 				{
-					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					d[index] = DBL_MAX; //jde o to vyï¿½adit tuto hodnotu z hledï¿½nï¿½ minima
 					if (debug)
 					{
 						logger->logText("state with with index " + to_string(index) + " is not valid");
@@ -615,16 +616,16 @@ namespace App
 					continue;
 				}
 
-				if (nearState->used_inputs.size() != inputCount)	//nastane ve chvíli, kdy je zapnuto smartZeroStepEnabling, UAV se pøiblíí k pøekáce a zmìní se poèet vstupù, je zapotøebí upravit délku pole
+				if (nearState->used_inputs.size() != inputCount)	//nastane ve chvï¿½li, kdy je zapnuto smartZeroStepEnabling, UAV se pï¿½iblï¿½ï¿½ k pï¿½ekï¿½ce a zmï¿½nï¿½ se poï¿½et vstupï¿½, je zapotï¿½ebï¿½ upravit dï¿½lku pole
 				{
-					nearState->used_inputs = vector<bool>(inputCount);		//zatím je zde velikost natvrdo
-					fill(nearState->used_inputs.begin(), nearState->used_inputs.end(), false);	//nastavím false, snad to nebude vadit, kus stromu se projde znovu
+					nearState->used_inputs = vector<bool>(inputCount);		//zatï¿½m je zde velikost natvrdo
+					fill(nearState->used_inputs.begin(), nearState->used_inputs.end(), false);	//nastavï¿½m false, snad to nebude vadit, kus stromu se projde znovu
 
 				}
 
-				if (nearState->used_inputs[index])	//used_inputs se pouívá k tomu, jaké vstupy do motion modelu lze pouít, abychom se pohnuli z nearState nìkam jinam
+				if (nearState->used_inputs[index])	//used_inputs se pouï¿½ï¿½vï¿½ k tomu, jakï¿½ vstupy do motion modelu lze pouï¿½ï¿½t, abychom se pohnuli z nearState nï¿½kam jinam
 				{
-					d[index] = DBL_MAX; //jde o to vyøadit tuto hodnotu z hledání minima
+					d[index] = DBL_MAX; //jde o to vyï¿½adit tuto hodnotu z hledï¿½nï¿½ minima
 					if (debug)
 					{
 						logger->logText("input with index " + to_string(index) + " is used");
@@ -640,8 +641,8 @@ namespace App
 			}
 		} else
 		{
-			//todo: rozhodnout, zda to tady chci, nebo zda bude natvrdo zapnutá relativní lokalizace
-			//vùbec nechápu, co tady dìlá m. Je úplnì out odf scope, zùstává na poslední hodnotì for cyklu.
+			//todo: rozhodnout, zda to tady chci, nebo zda bude natvrdo zapnutï¿½ relativnï¿½ lokalizace
+			//vï¿½bec nechï¿½pu, co tady dï¿½lï¿½ m. Je ï¿½plnï¿½ out odf scope, zï¿½stï¿½vï¿½ na poslednï¿½ hodnotï¿½ for cyklu.
 //		    if ~near_node.used_inputs(m,1)
 //		        index = find(d(:) == min(d(:)),1);
 //		        tmp_node.loc = tmp_nodes(index(1,n)).loc;
@@ -679,7 +680,7 @@ namespace App
 	void Core::guiding_point_reached(shared_ptr<LinkedState> state, vector<shared_ptr<Path>> guiding_paths, double guiding_near_dist)
 	{
 		for (auto guiding_path : guiding_paths) {
-			for (auto node : guiding_path->getNodes())	//todo: moná to pøedìlat a iterovat obrácenì, abych jel odzadu a udìlal break, kdy narazím na currentPoint u uav, abych nemusel kontrolovat isFirstCloserToEnd
+			for (auto node : guiding_path->getNodes())	//todo: moï¿½nï¿½ to pï¿½edï¿½lat a iterovat obrï¿½cenï¿½, abych jel odzadu a udï¿½lal break, kdyï¿½ narazï¿½m na currentPoint u uav, abych nemusel kontrolovat isFirstCloserToEnd
 			{
 				for (auto uav : state->getUavsForRRT())
 				{
@@ -691,7 +692,7 @@ namespace App
 						detect_narrow_passage(node);
 					}
 					auto uavCurrentPoint = uav->getCurrentGuidingPathPositions()->get(guiding_path);
-					if (reached && guiding_path->hasNext(uavCurrentPoint) && guiding_path->isFirstCloserOrSameToEnd(node, uavCurrentPoint)) //ošetøení, aby se UAV nevracela, a by nepøetekl index u guidingPath
+					if (reached && guiding_path->hasNext(uavCurrentPoint) && guiding_path->isFirstCloserOrSameToEnd(node, uavCurrentPoint)) //oï¿½etï¿½enï¿½, aby se UAV nevracela, a by nepï¿½etekl index u guidingPath
 					{
 						uav->getCurrentGuidingPathPositions()->set(guiding_path, guiding_path->getNext(uavCurrentPoint));
 						break;
@@ -717,7 +718,7 @@ namespace App
 			}
 		} else
 		{
-			for (auto uav : uavs)	//aby se pak uav rozmisovala v rámci celé plochy, která pokrıvá cíle
+			for (auto uav : uavs)	//aby se pak uav rozmisï¿½ovala v rï¿½mci celï¿½ plochy, kterï¿½ pokrï¿½vï¿½ cï¿½le
 			{
 				if (map->getGoalGroup()->contains(uav->getPointParticle()->getLocation()))
 				{
@@ -729,10 +730,10 @@ namespace App
 
 	void Core::detect_narrow_passage(shared_ptr<Node> node)
 	{
-		//todo: vymyslet, jak to udìlat, abych odsud nastavil parametry, ale nesahal na celou konfiguraci. udìlat asi nìjakı command na dìlení np_divisorem
+		//todo: vymyslet, jak to udï¿½lat, abych odsud nastavil parametry, ale nesahal na celou konfiguraci. udï¿½lat asi nï¿½jakï¿½ command na dï¿½lenï¿½ np_divisorem
 
 //		global params defaults count
-		if (node->getCost() > 1) {	//cost > 1 mají pøekáky a nody sousedící s pøekákami
+		if (node->getCost() > 1) {	//cost > 1 majï¿½ pï¿½ekï¿½ky a nody sousedï¿½cï¿½ s pï¿½ekï¿½kami
 			configuration->inNarrowPassage();
 		} else {
 			configuration->outsideNarrowPassage();
@@ -795,7 +796,7 @@ namespace App
 		double timeStep = configuration->getTimeStep();
 				
 		//main simulation loop
-		//todo: všude, kde pouívám push_back se podívat, zda by nešlo na zaèátku naalokovat pole, aby se nemusela dynamicky mìnit velikost
+		//todo: vï¿½ude, kde pouï¿½ï¿½vï¿½m push_back se podï¿½vat, zda by neï¿½lo na zaï¿½ï¿½tku naalokovat pole, aby se nemusela dynamicky mï¿½nit velikost
 
 		for (auto uav : newNode->getUavsForRRT())
 		{
@@ -813,14 +814,14 @@ namespace App
 		double base = configuration->getDistanceOfNewNodes();
 		if (configuration->isSlowerMotionNearObstacles())
 		{
-			base *= log(node->getDistanceToObstacle());	//èistì heuristicky vymyšlená funkce, aby to nezrychlovalo moc, kdy to bude dál
+			base *= log(node->getDistanceToObstacle());	//ï¿½istï¿½ heuristicky vymyï¿½lenï¿½ funkce, aby to nezrychlovalo moc, kdyï¿½ to bude dï¿½l
 		}
 		return base;
 	}
 
 	Point Core::roundToNodeCoords(Point point)
 	{
-		//"zaokrouhlí" bod na støed node
+		//"zaokrouhlï¿½" bod na stï¿½ed node
 		int x = point.getX();
 		int y = point.getY();
 		x -= x % configuration->getAStarCellSize();
@@ -834,13 +835,13 @@ namespace App
 	{
 		vector<shared_ptr<UavGroup>> uavGroups = vector<shared_ptr<UavGroup>>(guiding_paths.size());
 		auto placementMethod = configuration->getPlacementMethod();
-		if (allowSwarmSplitting || placementMethod == PlacementMethod::Chain)		//pro úèely chainu rozdìlím UAV na 2 skupiny, kadá míøí do jednoho cíle, a øetìz se neroztrhne jen díky relativní lokalizaci
+		if (allowSwarmSplitting || placementMethod == PlacementMethod::Chain)		//pro ï¿½ï¿½ely chainu rozdï¿½lï¿½m UAV na 2 skupiny, kaï¿½dï¿½ mï¿½ï¿½ï¿½ do jednoho cï¿½le, a ï¿½etï¿½z se neroztrhne jen dï¿½ky relativnï¿½ lokalizaci
 		{
 			int number_of_uavs = map->getUavsStart().size();
 
-			//rozdìlit kvadrokoptéry na skupinky. Jedna skupina pro kadé AoI. Rozdìlit skupiny podle plochy, kterou jednotklivá AoI zabírají
+			//rozdï¿½lit kvadrokoptï¿½ry na skupinky. Jedna skupina pro kaï¿½dï¿½ AoI. Rozdï¿½lit skupiny podle plochy, kterou jednotklivï¿½ AoI zabï¿½rajï¿½
 			//tohle je pro groups. 
-			valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomìry jednotlivıch ploch ku celkové ploše. Dlouhé jako poèet cílù, tedy poèet guiding paths
+			valarray<double> ratios = valarray<double>(guiding_paths.size()); //pomï¿½ry jednotlivï¿½ch ploch ku celkovï¿½ ploï¿½e. Dlouhï¿½ jako poï¿½et cï¿½lï¿½, tedy poï¿½et guiding paths
 			double totalVolume = 0;
 			for (size_t i = 0; i < map->getGoals().size(); i++)
 			{
@@ -849,33 +850,33 @@ namespace App
 				totalVolume += volume;
 			}
 
-			ratios /= totalVolume;	//valarray umoòuje vektorové operace, kadı prvek je v rozsahu od 0 do 1
+			ratios /= totalVolume;	//valarray umoï¿½ï¿½uje vektorovï¿½ operace, kaï¿½dï¿½ prvek je v rozsahu od 0 do 1
 
 
-									//pøerozdìlování kvadrokoptér podle pomìru inspirováno tímto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
+									//pï¿½erozdï¿½lovï¿½nï¿½ kvadrokoptï¿½r podle pomï¿½ru inspirovï¿½no tï¿½mto https://github.com/sebastianbergmann/money/blob/master/src/Money.php#L261
 
-			int uavsInGroups = 0;	//poèítá, kolik uav je rozvrenıch do skupin, kvùli zaokrouhlování
+			int uavsInGroups = 0;	//poï¿½ï¿½tï¿½, kolik uav je rozvrï¿½enï¿½ch do skupin, kvï¿½li zaokrouhlovï¿½nï¿½
 			for (size_t i = 0; i < uavGroups.size(); i++)
 			{
 				int uavsCountInGroup = floor(number_of_uavs * ratios[i]);	//round down
 				auto uavs = vector<shared_ptr<UavForRRT>>(uavsCountInGroup);
 				for (size_t j = 0; j < uavsCountInGroup; j++)
 				{
-					uavs[j] = state->getUavsForRRT()[uavsInGroups + j];	//todo: tuhle èást asi zrefaktorovat. A nìkde mít objekty reprezentující uav, s jeho polohou, apod.
+					uavs[j] = state->getUavsForRRT()[uavsInGroups + j];	//todo: tuhle ï¿½ï¿½st asi zrefaktorovat. A nï¿½kde mï¿½t objekty reprezentujï¿½cï¿½ uav, s jeho polohou, apod.
 				}
 				uavGroups[i] = make_shared<UavGroup>(uavs, guiding_paths[i]);
 				uavsInGroups += uavsCountInGroup;
 			}
-			//rozházet do skupin nepøiøazená uav, která zbyla kvùli zaokrouhlování dolù
+			//rozhï¿½zet do skupin nepï¿½iï¿½azenï¿½ uav, kterï¿½ zbyla kvï¿½li zaokrouhlovï¿½nï¿½ dolï¿½
 			int remaining = map->getUavsStart().size() - uavsInGroups;
-			for (size_t i = 0; i < remaining; i++)	//zbytku je vdycky stejnì nebo ménì ne poètu skupin
+			for (size_t i = 0; i < remaining; i++)	//zbytku je vï¿½dycky stejnï¿½ nebo mï¿½nï¿½ neï¿½ poï¿½tu skupin
 			{
 				uavGroups[i]->addUav(state->getUavsForRRT()[uavsInGroups + i]);
 			}
 		}
 		else
 		{
-			uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vím, e pøi této konfiguraci allowSwarmSplitting je pouze 1 guidingPath, všechna uav jsou v 1 skupinì
+			uavGroups[0] = make_shared<UavGroup>(state->getUavsForRRT(), guiding_paths[0]);	//vï¿½m, ï¿½e pï¿½i tï¿½to konfiguraci allowSwarmSplitting je pouze 1 guidingPath, vï¿½echna uav jsou v 1 skupinï¿½
 		}
 		return uavGroups;
 	}

@@ -33,7 +33,7 @@ public:
 	Vector getDirection() const;
 
 	inline bool invalid(){
-		return isnan(ang);
+		return std::isnan(ang);
 	}
 
 	inline Point getPoint(){return point;}

@@ -86,8 +86,6 @@ set(SOURCE_FILES
         DistanceResolver.cpp
         DistanceResolver.h
         dubins_test.h
-        EmptyGoal.cpp
-        EmptyGoal.h
         EmptyPath.cpp
         EmptyPath.h
         Enums.h
@@ -132,8 +130,6 @@ set(SOURCE_FILES
         NodeWrapper.h
         NTupletGenerator.cpp
         NTupletGenerator.h
-        NumberVector.cpp
-        NumberVector.h
         Obstacle.cpp
         Obstacle.h
         OpenedSet.cpp
