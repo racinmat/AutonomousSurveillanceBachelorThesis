@@ -1,7 +1,7 @@
 #pragma once
 #include "LinkedState.h"
 #include "StateInterface.h"
-#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
+#include <json_spirit/json_spirit_reader.h>
 #include "Uav.h"
 
 using namespace std;

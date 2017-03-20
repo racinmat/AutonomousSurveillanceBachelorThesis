@@ -3,23 +3,37 @@ project(SwarmDeployment)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 set(ROOT_SOURCE_DIR .)
 include_directories("${ROOT_SOURCE_DIR}")
+include_directories(GeneratedFiles)
 
+set (CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32")
+
+set(QT_PATH "D:\\Qt")
+#Build output path of your QT Creator project
+#QT Version used, e.g. Probably found in ${QT_PATH}
+set(QT_VERSION "5.8")
+#Libraries to link to
+#Libraries required. Probably the same as above minus the '::'. find_package() will be called on these
+
+find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui REQUIRED)
 
 set(SOURCE_FILES
 
-        json_spirit/json_spirit_reader.cpp json_spirit/json_spirit_reader.h
-        json_spirit/json_spirit_value.cpp json_spirit/json_spirit_value.h
-        json_spirit/json_spirit_writer.cpp json_spirit/json_spirit_writer.h
-        json_spirit/json_spirit.h
-        json_spirit/json_spirit_error_position.h
-        json_spirit/json_spirit_reader_template.h
-        json_spirit/json_spirit_stream_reader.h
-        json_spirit/json_spirit_utils.h
-        json_spirit/json_spirit_writer_options.h
-        json_spirit/json_spirit_writer_template.h
+#        json_spirit/json_spirit_reader.cpp json_spirit/json_spirit_reader.h
+#        json_spirit/json_spirit_value.cpp json_spirit/json_spirit_value.h
+#        json_spirit/json_spirit_writer.cpp json_spirit/json_spirit_writer.h
+#        json_spirit/json_spirit.h
+#        json_spirit/json_spirit_error_position.h
+#        json_spirit/json_spirit_reader_template.h
+#        json_spirit/json_spirit_stream_reader.h
+#        json_spirit/json_spirit_utils.h
+#        json_spirit/json_spirit_writer_options.h
+#        json_spirit/json_spirit_writer_template.h
 
         Dubins/geom/shape/Circle.cpp
         Dubins/geom/shape/Circle.h
@@ -178,8 +192,16 @@ set(SOURCE_FILES
         UavGroup.cpp
         UavGroup.h
         UavInterface.cpp
-        UavInterface.h)
+        UavInterface.h
+
+        Gui.h
+        Gui.cpp
+        GuiDrawer.h
+        GuiDrawer.cpp
+        mainwindow.h
+        mainwindow.cpp
+        )
 
 add_executable(SwarmDeployment ${SOURCE_FILES})
 
-target_link_libraries(myqtproject Qt5::Widgets)
+target_link_libraries(SwarmDeployment Qt5::Widgets)

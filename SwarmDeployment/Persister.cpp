@@ -1,7 +1,7 @@
 #include "Persister.h"
 #include <fstream>
-#include <json_spirit_v4.08/json_spirit/json_spirit_reader.h>
-#include <json_spirit_v4.08/json_spirit/json_spirit_writer.h>
+#include <json_spirit/json_spirit_reader.h>
+#include <json_spirit/json_spirit_writer.h>
 #include "Strings.h"
 #include "Configuration.h"
 #include <Windows.h>
