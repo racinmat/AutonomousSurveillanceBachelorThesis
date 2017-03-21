@@ -9,31 +9,38 @@ set(ROOT_SOURCE_DIR .)
 include_directories("${ROOT_SOURCE_DIR}")
 include_directories(GeneratedFiles)
 
-set (CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32")
 
-set(QT_PATH "D:\\Qt")
-#Build output path of your QT Creator project
-#QT Version used, e.g. Probably found in ${QT_PATH}
-set(QT_VERSION "5.8")
-#Libraries to link to
-#Libraries required. Probably the same as above minus the '::'. find_package() will be called on these
+set(CMAKE_AUTOMOC ON)
+
+set(CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32\\lib\\cmake")
+
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+
+get_filename_component(MINGW_DLL_DIR ${CMAKE_CXX_COMPILER} PATH)
+install(FILES
+        ${MINGW_DLL_DIR}/libgcc_s_dw2-1.dll
+        ${MINGW_DLL_DIR}/libstdc++-6.dll
+        ${MINGW_DLL_DIR}/libwinpthread-1.dll
+        DESTINATION .
+        )
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Gui REQUIRED)
 
+
 set(SOURCE_FILES
 
-#        json_spirit/json_spirit_reader.cpp json_spirit/json_spirit_reader.h
-#        json_spirit/json_spirit_value.cpp json_spirit/json_spirit_value.h
-#        json_spirit/json_spirit_writer.cpp json_spirit/json_spirit_writer.h
-#        json_spirit/json_spirit.h
-#        json_spirit/json_spirit_error_position.h
-#        json_spirit/json_spirit_reader_template.h
-#        json_spirit/json_spirit_stream_reader.h
-#        json_spirit/json_spirit_utils.h
-#        json_spirit/json_spirit_writer_options.h
-#        json_spirit/json_spirit_writer_template.h
+        json_spirit/json_spirit_reader.cpp json_spirit/json_spirit_reader.h
+        json_spirit/json_spirit_value.cpp json_spirit/json_spirit_value.h
+        json_spirit/json_spirit_writer.cpp json_spirit/json_spirit_writer.h
+        json_spirit/json_spirit.h
+        json_spirit/json_spirit_error_position.h
+        json_spirit/json_spirit_reader_template.h
+        json_spirit/json_spirit_stream_reader.h
+        json_spirit/json_spirit_utils.h
+        json_spirit/json_spirit_writer_options.h
+        json_spirit/json_spirit_writer_template.h
 
         Dubins/geom/shape/Circle.cpp
         Dubins/geom/shape/Circle.h
@@ -204,4 +211,7 @@ set(SOURCE_FILES
 
 add_executable(SwarmDeployment ${SOURCE_FILES})
 
-target_link_libraries(SwarmDeployment Qt5::Widgets)
+target_link_libraries(SwarmDeployment Qt5::Widgets Qt5::Core Qt5::Gui)
+
+qt5_use_modules(SwarmDeployment Core Widgets Gui)
+

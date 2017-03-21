@@ -5,7 +5,7 @@
 #include "PathHandler.h"
 #include "Strings.h"
 
-//kvùli naèítání využité pamìti
+//kvï¿½li naï¿½ï¿½tï¿½nï¿½ vyuï¿½itï¿½ pamï¿½ti
 //http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 #include "windows.h"
 #include "psapi.h"
@@ -29,7 +29,7 @@ namespace App
 	{
 	}
 
-	//optimalizuje cestu pomocí Dubinsových manévrù
+	//optimalizuje cestu pomocï¿½ Dubinsovï¿½ch manï¿½vrï¿½
 	vector<shared_ptr<State>> PathOptimizer::optimizePathByDubins(vector<shared_ptr<State>> path, shared_ptr<Map> map)
 	{
 		double pathLength = distanceResolver->getLengthOfPath(path);
@@ -38,8 +38,8 @@ namespace App
 
 		std::map<double, double> dataToGraph;
 
-		shared_ptr<State> endOfPath = path[path.size() - 1]; //úplnì poslední prvek celé cesty, cíl
-		int stopLimit;			//kolikrát za sebou se nesmí aplikování Dubinse zlepšit trajektorie, aby se algoritmus zastavil, vypadá to, že s více UAV se musí zvýšit i konstanta
+		shared_ptr<State> endOfPath = path[path.size() - 1]; //ï¿½plnï¿½ poslednï¿½ prvek celï¿½ cesty, cï¿½l
+		int stopLimit;			//kolikrï¿½t za sebou se nesmï¿½ aplikovï¿½nï¿½ Dubinse zlepï¿½it trajektorie, aby se algoritmus zastavil, vypadï¿½ to, ï¿½e s vï¿½ce UAV se musï¿½ zvï¿½ï¿½it i konstanta
 
 		bool fuckingHack = configuration->getPlacementMethod() == PlacementMethod::Chain && configuration->getUavCount() > 4;
 		if (fuckingHack) {
@@ -50,7 +50,7 @@ namespace App
 //			stopLimit = 15000;
 		}
 
-		double minOptimizationSpeed;	//nejmenší pomìr mezi poètem iterací a zrychlením cesty. Nyní je to 24% na 1000 iterací na uav. Pøi vyšším poètu UAV je celková cesta delší, takže se mìní podíl. Takže dìlím konstantu poètem UAV.
+		double minOptimizationSpeed;	//nejmenï¿½ï¿½ pomï¿½r mezi poï¿½tem iteracï¿½ a zrychlenï¿½m cesty. Nynï¿½ je to 24% na 1000 iteracï¿½ na uav. Pï¿½i vyï¿½ï¿½ï¿½m poï¿½tu UAV je celkovï¿½ cesta delï¿½ï¿½, takï¿½e se mï¿½nï¿½ podï¿½l. Takï¿½e dï¿½lï¿½m konstantu poï¿½tem UAV.
 		if (fuckingHack) {
 			minOptimizationSpeed = 0.05 / double(1000);
 		}
@@ -69,7 +69,7 @@ namespace App
 
 		while (true)
 		{
-			auto startIndex = Random::index(path);	//indexy jsou kvùli jednoduššímu pohybu v poli
+			auto startIndex = Random::index(path);	//indexy jsou kvï¿½li jednoduï¿½ï¿½ï¿½mu pohybu v poli
 			auto endIndex = Random::index(path);
 			while (abs(startIndex - endIndex) < minPathPartDistance)
 			{
@@ -89,21 +89,21 @@ namespace App
 			if (isPathChanged)
 			{
 				auto trajectoryPart = pair.first;
-				vector<shared_ptr<State>> pathFirstPart;		//èást pøed dubinsem
-				vector<shared_ptr<State>> pathMiddlePart = trajectoryPart;	//èást nahrazená dubinsem
-				vector<shared_ptr<State>> pathLastPart;		//èást po dubinsovi
+				vector<shared_ptr<State>> pathFirstPart;		//ï¿½ï¿½st pï¿½ed dubinsem
+				vector<shared_ptr<State>> pathMiddlePart = trajectoryPart;	//ï¿½ï¿½st nahrazenï¿½ dubinsem
+				vector<shared_ptr<State>> pathLastPart;		//ï¿½ï¿½st po dubinsovi
 				
-				if (startIndex > 0)	//pøed vyseknutou èástí je další èást
+				if (startIndex > 0)	//pï¿½ed vyseknutou ï¿½ï¿½stï¿½ je dalï¿½ï¿½ ï¿½ï¿½st
 				{
-					pathFirstPart = vector<shared_ptr<State>>(path.begin(), path.begin() + startIndex);	//subvector, vykousnutí èásti vektoru, prvek na pozici startIndex už tam není
+					pathFirstPart = vector<shared_ptr<State>>(path.begin(), path.begin() + startIndex);	//subvector, vykousnutï¿½ ï¿½ï¿½sti vektoru, prvek na pozici startIndex uï¿½ tam nenï¿½
 				}
 
-				if (endIndex < path.size() - 1)	//po vyseknuté èásti je ještì další èást
+				if (endIndex < path.size() - 1)	//po vyseknutï¿½ ï¿½ï¿½sti je jeï¿½tï¿½ dalï¿½ï¿½ ï¿½ï¿½st
 				{
-					pathLastPart = vector<shared_ptr<State>>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnutí èásti vektoru
+					pathLastPart = vector<shared_ptr<State>>(path.begin() + endIndex + 1, path.end());	//subvector, vykousnutï¿½ ï¿½ï¿½sti vektoru
 				}
 
-				//spojení 3 èástí cesty
+				//spojenï¿½ 3 ï¿½ï¿½stï¿½ cesty
 				auto newPath = pathFirstPart;
 				newPath.insert(newPath.end(), pathMiddlePart.begin(), pathMiddlePart.end());
 				newPath.insert(newPath.end(), pathLastPart.begin(), pathLastPart.end());
@@ -128,14 +128,14 @@ namespace App
 			iterationCount++;
 			dataToGraph[iterationCount] = newPathDistance;
 
-			//prùbìžnì odebírám duplicitní stavy, abych zrychlil optimalizaci
+			//prï¿½bï¿½nï¿½ odebï¿½rï¿½m duplicitnï¿½ stavy, abych zrychlil optimalizaci
 			if (iterationCount % 1000 == 0)
 			{
 				path = removeDuplicitStates(path);
 			}
 
 			double optimizationSpeed = (distanceDifference / initialPathDistance) / double(iterationCount);
-			if (distanceDifference > 0 && iterationCount > (40 * uavCount) && optimizationSpeed < minOptimizationSpeed)	//znormovaný rozdíl vzdáleností vydìlím poètem iterací
+			if (distanceDifference > 0 && iterationCount > (40 * uavCount) && optimizationSpeed < minOptimizationSpeed)	//znormovanï¿½ rozdï¿½l vzdï¿½lenostï¿½ vydï¿½lï¿½m poï¿½tem iteracï¿½
 			{
 //				std::ofstream out("output/optimization.txt");
 //				out << "optimization speed limit is too slow: distance difference: " + to_string(distanceDifference) + 
@@ -144,7 +144,7 @@ namespace App
 //					", optimizationSpeed: " + to_string(optimizationSpeed) + 
 //					", minimal optimization speed: " + to_string(minOptimizationSpeed);
 //				out.close();
-				break;					//pojistka proti pøíliš pomalé optimalizaci
+				break;					//pojistka proti pï¿½ï¿½liï¿½ pomalï¿½ optimalizaci
 			}
 			if (notImprovedCount > stopLimit)
 			{
@@ -152,22 +152,23 @@ namespace App
 //				out << "optimization did not change distance for many cycles: iteration count: " + to_string(iterationCount) +
 //					", not improved count: " + to_string(notImprovedCount);
 //				out.close();
-				break;					//pokud se mnohokrát za sebou nezkrátí cesta, ooptimalizace skonèí
+				break;					//pokud se mnohokrï¿½t za sebou nezkrï¿½tï¿½ cesta, ooptimalizace skonï¿½ï¿½
 			}
 
-			if (iterationCount % 10 == 0)
-			{
-				PROCESS_MEMORY_COUNTERS_EX pmc;
-				GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
-				SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
-				SIZE_T usedMB = virtualMemUsedByMe / 1024 / 1024;
-				if (usedMB > 1900)
-				{
-					break;
-				}
-				//				cout << to_string(usedMB) << endl;
-				//end of getting used memory by this process
-			}
+//			todo: rewrite to something more multiplatform
+//			if (iterationCount % 10 == 0)
+//			{
+//				PROCESS_MEMORY_COUNTERS_EX pmc;
+//				GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+//				SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+//				SIZE_T usedMB = virtualMemUsedByMe / 1024 / 1024;
+//				if (usedMB > 1900)
+//				{
+//					break;
+//				}
+//				//				cout << to_string(usedMB) << endl;
+//				//end of getting used memory by this process
+//			}
 
 		}
 
@@ -185,25 +186,25 @@ namespace App
 		return path;
 	}
 
-	//bool øíká, zda se cesta zmìnila
+	//bool ï¿½ï¿½kï¿½, zda se cesta zmï¿½nila
 	pair<vector<shared_ptr<State>>, bool> PathOptimizer::optimizePathPart(int startIndex, int endIndex, shared_ptr<Map> map, vector<shared_ptr<State>> path)
 	{
-		vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;	//iterátory použity pouze k vykousnutí èásti cesty, kterou budu mìnit
+		vector<shared_ptr<State>>::const_iterator startIterator = path.begin() + startIndex;	//iterï¿½tory pouï¿½ity pouze k vykousnutï¿½ ï¿½ï¿½sti cesty, kterou budu mï¿½nit
 		vector<shared_ptr<State>>::const_iterator endIterator = path.begin() + endIndex + 1;
 		vector<shared_ptr<State>> pathPart(startIterator, endIterator);
 		auto start = pathPart[0];
 		auto end = pathPart[pathPart.size() - 1];
 
-		double maxSpeed;	//reprezentuje poèet pixelù, které v car like modelu urazí uav za sekundu, tedy step v CarLikeControlu
-		//pøedpoèítám si délky všech dubinsù pøedem
-		unordered_map<Uav, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<Uav, pair<Dubins, bool>, UavHasher>();	//øíká, zda je dubins kratší než pùvodní trajektorie nebo ne
+		double maxSpeed;	//reprezentuje poï¿½et pixelï¿½, kterï¿½ v car like modelu urazï¿½ uav za sekundu, tedy step v CarLikeControlu
+		//pï¿½edpoï¿½ï¿½tï¿½m si dï¿½lky vï¿½ech dubinsï¿½ pï¿½edem
+		unordered_map<Uav, pair<Dubins, bool>, UavHasher> dubinsTrajectories = unordered_map<Uav, pair<Dubins, bool>, UavHasher>();	//ï¿½ï¿½kï¿½, zda je dubins kratï¿½ï¿½ neï¿½ pï¿½vodnï¿½ trajektorie nebo ne
 		bool areAllDubinsTrajectoriesLonger = true;
 		for (auto uav : end->getUavs())
 		{
 			double length = distanceResolver->getLengthOfPath(pathPart, uav);
 
 			auto dubins = Dubins(start->getBaseUav(uav)->getPointParticle()->toPosition(), uav->getPointParticle()->toPosition(), motionModel->getMinimalCurveRadius());
-			double newLength = dubins.getLength();	//vrací délku celého manévru
+			double newLength = dubins.getLength();	//vracï¿½ dï¿½lku celï¿½ho manï¿½vru
 			bool isDubinsShorter = newLength < length;
 			dubinsTrajectories[*uav.get()] = make_pair(dubins, isDubinsShorter);
 			areAllDubinsTrajectoriesLonger = areAllDubinsTrajectoriesLonger && !isDubinsShorter;
@@ -213,21 +214,21 @@ namespace App
 
 		if (areAllDubinsTrajectoriesLonger)
 		{
-			return make_pair(pathPart, false); // pùvodní cesta
+			return make_pair(pathPart, false); // pï¿½vodnï¿½ cesta
 		}
 
-		//nalezení nejdelšího dubbinse z cest pro všechna UAV, které jsou kratší než pùvodní trajektorie, podle nìj se bude diskretizovat
+		//nalezenï¿½ nejdelï¿½ï¿½ho dubbinse z cest pro vï¿½echna UAV, kterï¿½ jsou kratï¿½ï¿½ neï¿½ pï¿½vodnï¿½ trajektorie, podle nï¿½j se bude diskretizovat
 		int largestStepCount = 0;
 		for (auto uav : end->getUavs())
 		{
-			maxSpeed = uav->getPreviousInput().getStep();	//speed == timeStep == délka kroku
+			maxSpeed = uav->getPreviousInput().getStep();	//speed == timeStep == dï¿½lka kroku
 
 			auto pair = dubinsTrajectories[*uav.get()];
 			auto dubins = pair.first;
 			auto isDubinsShorter = pair.second;
-			double newLength = dubins.getLength();	//vrací délku celého manévru
+			double newLength = dubins.getLength();	//vracï¿½ dï¿½lku celï¿½ho manï¿½vru
 			double totalTime = newLength / maxSpeed;	//doba cesty
-			int stepCount = floor(totalTime);	//poèet krokù, doba celého manévru == délka celého manévru / délka kroku
+			int stepCount = floor(totalTime);	//poï¿½et krokï¿½, doba celï¿½ho manï¿½vru == dï¿½lka celï¿½ho manï¿½vru / dï¿½lka kroku
 
 			if (isDubinsShorter && stepCount > largestStepCount)
 			{
@@ -235,21 +236,21 @@ namespace App
 			}
 		}
 
-		if (largestStepCount == 0)	//tak malá cesta, že je menší než krok simulace
+		if (largestStepCount == 0)	//tak malï¿½ cesta, ï¿½e je menï¿½ï¿½ neï¿½ krok simulace
 		{
-			return make_pair(pathPart, false); // pùvodní cesta
+			return make_pair(pathPart, false); // pï¿½vodnï¿½ cesta
 		}
 
-		//zde provedu diskretizaci postupnì pro všechna uav najednou, kus po kusu a pøitom budu kontrolovat všechny podmínky
+		//zde provedu diskretizaci postupnï¿½ pro vï¿½echna uav najednou, kus po kusu a pï¿½itom budu kontrolovat vï¿½echny podmï¿½nky
 		int stepCount = largestStepCount;
 		vector<shared_ptr<State>> newTrajectory = vector<shared_ptr<State>>(stepCount + 1);
 		auto previousState = start;
 		for (size_t i = 0; i <= stepCount; i++)
 		{
 			auto newState = make_shared<State>(*previousState.get());
-			double distanceCompleted = i * maxSpeed;	//uražená cesta v dubinsovì manévru
+			double distanceCompleted = i * maxSpeed;	//uraï¿½enï¿½ cesta v dubinsovï¿½ manï¿½vru
 
-			//zde se pro každé UAV vybere podle typu Dubinsova manévru vhodný input pro motion model
+			//zde se pro kaï¿½dï¿½ UAV vybere podle typu Dubinsova manï¿½vru vhodnï¿½ input pro motion model
 			for (auto uav : newState->getUavs())
 			{
 				auto pair = dubinsTrajectories[*uav.get()];
@@ -261,7 +262,7 @@ namespace App
 					if (distanceCompleted < dubins.getLength())
 					{
 
-						//TODO: zde uložit podle pozice v Dubinsovì manévru vstup
+						//TODO: zde uloï¿½it podle pozice v Dubinsovï¿½ manï¿½vru vstup
 						switch (dubins.getCurrentManeuver(distanceCompleted))
 						{
 						case ManeuverPart::L:
@@ -283,7 +284,7 @@ namespace App
 					}
 					else
 					{	
-						//uav, které už dorazilo do cíle, "poèká" na ostatní
+						//uav, kterï¿½ uï¿½ dorazilo do cï¿½le, "poï¿½kï¿½" na ostatnï¿½
 						pointParticle->setLocation(end->getBaseUav(uav)->getPointParticle()->getLocation());
 						pointParticle->setRotation(end->getBaseUav(uav)->getPointParticle()->getRotation());
 
@@ -291,7 +292,7 @@ namespace App
 					}
 				} else
 				{
-					//pokud je kratší pùvodní cesta pro dané uav, bere se pro dané uav pùvodní cesta, pokud je pùvodní cesta kratší na poèet krokù, uav "èeká" v cíli
+					//pokud je kratï¿½ï¿½ pï¿½vodnï¿½ cesta pro danï¿½ uav, bere se pro danï¿½ uav pï¿½vodnï¿½ cesta, pokud je pï¿½vodnï¿½ cesta kratï¿½ï¿½ na poï¿½et krokï¿½, uav "ï¿½ekï¿½" v cï¿½li
 					shared_ptr<State> currentOldState;
 					if (i >= pathPart.size())
 					{
@@ -313,7 +314,7 @@ namespace App
 			//validace
 			if (!collisionDetector->isStateValid(previousState, newState, map))
 			{
-				return make_pair(pathPart, false); // pùvodní cesta
+				return make_pair(pathPart, false); // pï¿½vodnï¿½ cesta
 			}
 
 			previousState = newState;
@@ -338,7 +339,7 @@ namespace App
 		shared_ptr<State> previous;
 		for (auto state : path)
 		{
-			//pøeskoèení prvního
+			//pï¿½eskoï¿½enï¿½ prvnï¿½ho
 			if (first)
 			{
 				first = false;
@@ -347,7 +348,7 @@ namespace App
 				continue;
 			}
 
-			//porovnání stejných vzdálenosti sousedních stavù
+			//porovnï¿½nï¿½ stejnï¿½ch vzdï¿½lenosti sousednï¿½ch stavï¿½
 			bool areStatesSame = true;
 			for (auto uav : state->getBaseUavs())
 			{
