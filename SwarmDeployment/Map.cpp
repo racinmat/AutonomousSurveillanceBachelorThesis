@@ -64,8 +64,6 @@ namespace App
 		Document::AllocatorType& allocator = d.GetAllocator();
 		Value goals(kArrayType);
 		Value obstacles(kArrayType);
-		object["goals"].SetArray();
-		object["obstacles"].SetArray();
 
 		for (auto goal : this->goals)
 		{
@@ -77,6 +75,8 @@ namespace App
 			obstacles.PushBack(obstacle->rectangle->toJson(d), allocator);
 		}
 
+		object.AddMember("goals", goals, allocator);
+		object.AddMember("obstacles", obstacles, allocator);
 		return object;
 	}
 

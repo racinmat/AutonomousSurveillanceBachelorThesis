@@ -159,18 +159,19 @@ namespace App
 
 		auto jsonMap = map->toJson(d);
 		jsonMap["size"] = max(configuration->getWorldHeight(), configuration->getWorldWidth());
-        d["map"] = jsonMap;
+		d.AddMember("map", jsonMap, allocator);
 
 		Value jsonPath(kArrayType);
 		for (auto state : path) {
 			jsonPath.PushBack(state->toJson(d), allocator);
 		}
-        d["path"] = jsonPath;
+		d.AddMember("path", jsonPath, allocator);
 
 		ofstream os(file_name);
         OStreamWrapper osw(os);
         PrettyWriter<OStreamWrapper> writer(osw);
         d.Accept(writer);
+		writer.Flush();
 
 		os.close();
 	}
