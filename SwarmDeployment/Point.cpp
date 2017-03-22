@@ -2,6 +2,8 @@
 #include <string>
 #include <cfloat>
 
+using namespace rapidjson;
+
 namespace App
 {
 
@@ -108,12 +110,12 @@ namespace App
 		return geom::Point(x, y);
 	}
 
-	mObject Point::toJson() const
+	Value Point::toJson(Document& d) const
 	{
-		mObject object;
-		object["x"] = this->x;
-		object["y"] = this->y;
-		object["z"] = this->z;
+		Value object(kObjectType);
+		object.AddMember("x", this->x, d.GetAllocator());
+		object.AddMember("y", this->y, d.GetAllocator());
+		object.AddMember("z", this->z, d.GetAllocator());
 		return object;
 	}
 

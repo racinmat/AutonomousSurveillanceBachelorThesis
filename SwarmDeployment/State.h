@@ -1,7 +1,6 @@
 #pragma once
 #include "LinkedState.h"
 #include "StateInterface.h"
-#include <json_spirit/json_spirit_reader.h>
 #include "Uav.h"
 
 using namespace std;
@@ -24,8 +23,8 @@ namespace App
 		friend bool operator!=(const State& lhs, const State& rhs);
 		virtual vector<shared_ptr<UavInterface>> getBaseUavs() const override;
 		virtual void swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second);
-		virtual mObject toJson() const;
-		static shared_ptr<State> fromJson(mValue data);
+		virtual Value toJson(Document& d) const;
+		static shared_ptr<State> fromJson(Value& data);
 	protected:
 		vector<shared_ptr<Uav>> uavs;
 	};

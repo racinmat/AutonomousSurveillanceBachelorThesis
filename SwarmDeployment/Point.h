@@ -2,10 +2,10 @@
 #include <memory>
 #include <string>
 #include "Dubins/geom/Point.h"
-#include <json_spirit/json_spirit_reader.h>
+#include "rapidjson/document.h"
 
+using namespace rapidjson;
 using namespace std;
-using namespace json_spirit;
 
 namespace App
 {
@@ -36,7 +36,7 @@ namespace App
 		void moveBy(Point point);
 		void moveBy(double x, double y, double z);
 		geom::Point toGeomPoint();
-		mObject toJson() const;
+		Value toJson(Document& d) const;
 
 	protected:
 		double x;

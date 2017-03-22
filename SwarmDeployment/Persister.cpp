@@ -1,11 +1,15 @@
 #include "Persister.h"
 #include <fstream>
-#include <json_spirit/json_spirit_reader.h>
-#include <json_spirit/json_spirit_writer.h>
 #include "Strings.h"
 #include "Configuration.h"
 #include <Windows.h>
 #include <cfloat>
+#include <rapidjson/ostreamwrapper.h>
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+#include <rapidjson/istreamwrapper.h>
+
+using namespace rapidjson;
 
 namespace App
 {
@@ -77,14 +81,16 @@ namespace App
 	tuple<vector<shared_ptr<State>>, shared_ptr<Map>> Persister::loadPathFromJson(string name)
 	{
 		ifstream is(name);
-		mValue value;
-		read(is, value);
+        IStreamWrapper isw(is);
+        Document d;
+        d.ParseStream(isw);
+
 		is.close();
-		auto mapData = value.get_obj().at("map");
+		auto &mapData = d["map"];
 		auto map = Map::fromJson(mapData);
-		auto pathData = value.get_obj().at("path");
+		auto &pathData = d["path"];
 		auto path = vector<shared_ptr<State>>();
-		for (auto stateData : pathData.get_array())
+		for (auto &stateData : pathData.GetArray())
 		{
 			path.push_back(State::fromJson(stateData));
 		}
@@ -147,21 +153,25 @@ namespace App
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
 	{
 
-		mObject content;
+		Document d;
+		d.SetObject();
+		Document::AllocatorType& allocator = d.GetAllocator();
 
-		auto jsonMap  = map->toJson();
+		auto jsonMap = map->toJson(d);
 		jsonMap["size"] = max(configuration->getWorldHeight(), configuration->getWorldWidth());
-		content["map"] = jsonMap;
+        d["map"] = jsonMap;
 
-		mArray jsonPath;
+		Value jsonPath(kArrayType);
 		for (auto state : path) {
-			jsonPath.push_back(state->toJson());
+			jsonPath.PushBack(state->toJson(d), allocator);
 		}
-		content["path"] = jsonPath;
+        d["path"] = jsonPath;
 
 		ofstream os(file_name);
+        OStreamWrapper osw(os);
+        PrettyWriter<OStreamWrapper> writer(osw);
+        d.Accept(writer);
 
-		write_formatted(content, os);
 		os.close();
 	}
 

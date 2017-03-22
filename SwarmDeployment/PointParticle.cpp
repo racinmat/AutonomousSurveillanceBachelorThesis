@@ -57,21 +57,22 @@ namespace App
 		return geom::Position(location->toGeomPoint(), rotation->getZ());
 	}
 
-	mObject PointParticle::toJson() const
+	Value PointParticle::toJson(Document& d) const
 	{
-		mObject object;
-		object["location"] = this->location->toJson();
-		object["rotation"] = this->rotation->toJson();
+		Value object(kObjectType);
+		rapidjson::Document::AllocatorType &allocator = d.GetAllocator();
+		object.AddMember("location", this->location->toJson(d), allocator);
+		object.AddMember("rotation", this->rotation->toJson(d), allocator);
 		return object;
 	}
 
-	shared_ptr<PointParticle> PointParticle::fromJson(mObject data)
+	shared_ptr<PointParticle> PointParticle::fromJson(Value data)
 	{
-		auto location = data.at("location");
-		auto x = location.get_obj().at("x").get_real();
-		auto y = location.get_obj().at("y").get_real();
-		auto rotation = data.at("rotation");
-		auto z = rotation.get_obj().at("z").get_real();
+		auto &location = data["location"];
+		auto x = location["x"].GetDouble();
+		auto y = location["y"].GetDouble();
+		auto &rotation = data["rotation"];
+		auto z = rotation["z"].GetDouble();
 		return make_shared<PointParticle>(x, y, z);
 	}
 

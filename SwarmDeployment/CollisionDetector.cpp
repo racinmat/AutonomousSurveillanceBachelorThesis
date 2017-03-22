@@ -115,7 +115,7 @@ namespace App
 		throw "uavs are not intersecting";
 	}
 
-	bool CollisionDetector::checkRelativeLocalization(shared_ptr<StateInterface> node)	//todo: zjistit, zda funguje správnì, pokud je nastaven 1 soused a vypnut swarm splitting
+	bool CollisionDetector::checkRelativeLocalization(shared_ptr<StateInterface> node)	//todo: zjistit, zda funguje sprï¿½vnï¿½, pokud je nastaven 1 soused a vypnut swarm splitting
 	{
 		int number_of_uavs = node->getBaseUavs().size();
 		double relative_distance_min = configuration->getRelativeDistanceMin();
@@ -137,7 +137,7 @@ namespace App
 		}
 
 		// Check minimal distance between UAVs
-		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
+		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda sprï¿½vnï¿½ sedï¿½ a neutï¿½kajï¿½ o 1
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
@@ -154,7 +154,7 @@ namespace App
 		auto uavAdjacencyMatrix = ublas::matrix<int>(number_of_uavs, number_of_uavs, 0);
 
 		// Check maximal distance between UAVs
-		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda správnì sedí a neutíkají o 1
+		for (size_t i = 0; i < number_of_uavs - 1; i++)	//todo: zkontrolovat indexy, zda sprï¿½vnï¿½ sedï¿½ a neutï¿½kajï¿½ o 1
 		{
 			for (size_t j = i + 1; j < number_of_uavs; j++)
 			{
@@ -173,7 +173,7 @@ namespace App
 			}
 		}
 
-		//TODO: zkontrolovat, zda jsou UAV celistvým øetìzem, pomocí DFS nebo BFS prohledat celý graf (graf sestavím z adjacency matrix tak, že 1 je tam, kde jsou UAV ve správné vzdálenosti a jinde je 0)
+		//TODO: zkontrolovat, zda jsou UAV celistvï¿½m ï¿½etï¿½zem, pomocï¿½ DFS nebo BFS prohledat celï¿½ graf (graf sestavï¿½m z adjacency matrix tak, ï¿½e 1 je tam, kde jsou UAV ve sprï¿½vnï¿½ vzdï¿½lenosti a jinde je 0)
 
 		bool allUavsHaveNeighbors = true;		//is true when each uav has required amount of required neighbours or more
 		for (auto neighbor : neighbors)
@@ -266,7 +266,7 @@ namespace App
 	//returns true, when no collisions are detected, returns false, when there are any collisions
 	bool CollisionDetector::checkCollisionsInNewState(shared_ptr<StateInterface> new_node, shared_ptr<Map> map)
 	{
-		//TODO: zamyslet se, jestli neslouèit tuto metodu a checkObstaclesInTrajectories do jedné, protože øešení kolizí trvá neskuteènì dlouho
+		//TODO: zamyslet se, jestli neslouï¿½it tuto metodu a checkObstaclesInTrajectories do jednï¿½, protoï¿½e ï¿½eï¿½enï¿½ kolizï¿½ trvï¿½ neskuteï¿½nï¿½ dlouho
 		double uav_size = configuration->getUavSize();
 		for (auto uav : new_node->getBaseUavs())
 		{
@@ -398,7 +398,7 @@ namespace App
 
 		for (auto obs : map->getObstacles())
 		{
-			auto obstacleRectangle = obs->rectangle->toColDetectRectandle();
+			auto obstacleRectangle = obs->rectangle->toColDetectRectangle();
 			auto collision = ColDetect::coldetectWithoutTransformation(obstacleRectangle, rectangle);
 			if (collision)
 			{

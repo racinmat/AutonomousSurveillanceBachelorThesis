@@ -58,35 +58,38 @@ namespace App
 		return goalGroup;
 	}
 
-	mObject Map::toJson() const
+	Value Map::toJson(Document& d) const
 	{
-		mArray goals;
+		Value object(kObjectType);
+		Document::AllocatorType& allocator = d.GetAllocator();
+		Value goals(kArrayType);
+		Value obstacles(kArrayType);
+		object["goals"].SetArray();
+		object["obstacles"].SetArray();
+
 		for (auto goal : this->goals)
 		{
-			goals.push_back(goal->getRectangle()->toJson());
+			goals.PushBack(goal->getRectangle()->toJson(d), allocator);
 		}
 
-		mArray obstacles;
 		for (auto obstacle : this->originalObstacles)
 		{
-			obstacles.push_back(obstacle->rectangle->toJson());
+			obstacles.PushBack(obstacle->rectangle->toJson(d), allocator);
 		}
-		mObject object;
-		object["goals"] = goals;
-		object["obstacles"] = obstacles;
+
 		return object;
 	}
 
-	shared_ptr<Map> Map::fromJson(mValue data)
+	shared_ptr<Map> Map::fromJson(Value& data)
 	{
 		auto map = make_shared<Map>();
-		auto goals = data.get_obj().at("goals");
-		auto obstacles = data.get_obj().at("obstacles");
-		for (auto goal : goals.get_array())
+		auto &goals = data["goals"];
+		auto &obstacles = data["obstacles"];
+		for (auto &goal : goals.GetArray())
 		{
 			map->addGoal(Goal::fromJson(goal));
 		}
-		for (auto obstacle : obstacles.get_array())
+		for (auto &obstacle : obstacles.GetArray())
 		{
 			map->addObstacle(Obstacle::fromJson(obstacle));
 		}

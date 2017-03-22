@@ -3,11 +3,8 @@
 #include <vector>
 #include "Goal.h"
 #include "GuidingPathsCurrentPositions.h"
-#include <json_spirit/json_spirit_reader.h>
 #include "CarLikeControl.h"
 #include "UavInterface.h"
-
-using namespace json_spirit;
 
 namespace App
 {
@@ -27,8 +24,8 @@ namespace App
 		virtual void setReachedGoal(shared_ptr<GoalInterface> reachedGoal);
 		virtual shared_ptr<Goal> getConcreteGoal();
 		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
-		mObject toJson() const;
-		static shared_ptr<UavForRRT> fromJson(mValue data);
+		Value toJson(Document& d) const;
+		static shared_ptr<UavForRRT> fromJson(Value data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);
 		virtual void setPreviousInputStep(double step);

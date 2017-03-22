@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
+#include <rapidjson/istreamwrapper.h>
 
 #define PI 3.14159265358979323846
 
@@ -67,15 +68,17 @@ namespace App
 		}
 
 		ifstream is(configPath);
-		mValue value;
-		read(is, value);
+		IStreamWrapper isw(is);
+		Document d;
+		d.ParseStream(isw);
+
 		is.close();
-		auto fileNameData = value.get_obj().at("path");
-		filename = fileNameData.get_str();
-		auto frequenciesData = value.get_obj().at("frequencies");
-		for (auto frequency : frequenciesData.get_array())
+		auto &fileNameData = d["path"];
+		filename = fileNameData.GetString();
+		auto &frequenciesData = d["frequencies"];
+		for (auto& frequency : frequenciesData.GetArray())
 		{
-			frequencies.push_back(frequency.get_int());
+			frequencies.push_back(frequency.GetInt());
 			//			cout << frequency.get_int() << endl;
 		}		//end of loading;
 

@@ -38,18 +38,18 @@ namespace App
 		this->step = step;
 	}
 
-	mObject CarLikeControl::toJson() const
+	Document CarLikeControl::toJson() const
 	{
-		mObject object;
-		object["step"] = this->step;
-		object["turn"] = this->turn;
-		return object;
+		Document d;
+		d["step"] = this->step;
+		d["turn"] = this->turn;
+		return d;
 	}
 
-	CarLikeControl CarLikeControl::fromJson(mValue data)
+	CarLikeControl CarLikeControl::fromJson(Value data)
 	{
-		auto step = data.get_obj().at("step").get_real();
-		auto turn = data.get_obj().at("turn").get_real();
+		auto step = data["step"].GetDouble();
+		auto turn = data["turn"].GetDouble();
 		return CarLikeControl(step, turn);
 	}
 

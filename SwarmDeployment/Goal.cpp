@@ -30,13 +30,13 @@ namespace App
 		return make_shared<Point>(x, y);
 	}
 
-	shared_ptr<Goal> Goal::fromJson(mValue data)
+	shared_ptr<Goal> Goal::fromJson(Value& data)
 	{
-		auto height = data.get_obj().at("height").get_int();
-		auto width = data.get_obj().at("width").get_int();
-		auto location = data.get_obj().at("location");
-		auto x = location.get_obj().at("x").get_int();
-		auto y = location.get_obj().at("y").get_int();
+		auto height = data["height"].GetInt();
+		auto width = data["width"].GetInt();
+		auto &location = data["location"];
+		auto x = location["x"].GetInt();
+		auto y = location["y"].GetInt();
 		return make_shared<Goal>(x, y, width, height);
 	}
 

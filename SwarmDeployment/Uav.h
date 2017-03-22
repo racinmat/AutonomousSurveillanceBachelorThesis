@@ -3,11 +3,9 @@
 #include <vector>
 #include "Goal.h"
 #include "GuidingPathsCurrentPositions.h"
-#include <json_spirit/json_spirit_reader.h>
 #include "CarLikeControl.h"
 #include "UavInterface.h"
 
-using namespace json_spirit;
 
 namespace App
 {
@@ -23,8 +21,8 @@ namespace App
 		explicit Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ);
 		virtual ~Uav();
 		friend ostream& operator<<(ostream& os, const Uav& obj);
-		mObject toJson() const;
-		static shared_ptr<Uav> fromJson(mValue data);
+		Value toJson(Document& d) const;
+		static shared_ptr<Uav> fromJson(Value& data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);
 		virtual void setPreviousInputStep(double step);

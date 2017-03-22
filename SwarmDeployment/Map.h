@@ -4,9 +4,10 @@
 #include <vector>
 #include <memory>
 #include "GoalGroup.h"
+#include "rapidjson/document.h"
 
+using namespace rapidjson;
 using namespace std;
-using namespace json_spirit;
 
 namespace App
 {
@@ -26,8 +27,8 @@ namespace App
 		vector<shared_ptr<UavForRRT>> getUavsStart();
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
-		mObject toJson() const;
-		static shared_ptr<Map> fromJson(mValue json);
+		Value toJson(Document& d) const;
+		static shared_ptr<Map> fromJson(Value& json);
 		void amplifyObstacles(int sizeIncrement);
 
 	protected:

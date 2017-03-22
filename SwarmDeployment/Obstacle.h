@@ -13,7 +13,7 @@ namespace App
 	public:
 		Obstacle(int x, int y, int width, int heigth);
 		Obstacle(const Obstacle& other);
-		static shared_ptr<Obstacle> fromJson(mValue data);
+		static shared_ptr<Obstacle> fromJson(Value& data);
 		virtual ~Obstacle();
 		shared_ptr<Rectangle> rectangle;
 	};

@@ -1,8 +1,8 @@
 #pragma once
 #include <ostream>
-#include <json_spirit/json_spirit_reader.h>
+#include "rapidjson/document.h"
 
-using namespace json_spirit;
+using namespace rapidjson;
 
 namespace App
 {
@@ -19,8 +19,8 @@ namespace App
 		virtual double getTurn() const;
 		friend std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj);
 		virtual void setStep(const double step);
-		mObject toJson() const;
-		static CarLikeControl fromJson(mValue data);
+		Document toJson() const;
+		static CarLikeControl fromJson(Value data);
 
 	protected:
 		double step;	//krok vp�ed

@@ -1,7 +1,5 @@
 #include "State.h"
 
-using namespace json_spirit;
-
 namespace App
 {
 	State::State()
@@ -89,22 +87,23 @@ namespace App
 		secondUav->setId(tempId);
 	}
 
-	mObject State::toJson() const
+	Value State::toJson(Document& d) const
 	{
-		mObject object;
+		Value object(kObjectType);
+		Document::AllocatorType& allocator = d.GetAllocator();
 		for (auto uav : this->uavs)
 		{
-			object[to_string(uav->getId())] = uav->toJson();
+			object.AddMember(Value{}.SetString(to_string(uav->getId()).c_str(), to_string(uav->getId()).length(), allocator), uav->toJson(d), allocator);
 		}
 		return object;
 	}
 
-	shared_ptr<State> State::fromJson(mValue data)
+	shared_ptr<State> State::fromJson(Value& data)
 	{
 		auto state = make_shared<State>();
-		for (auto uavData : data.get_obj())
+		for (auto &uavData : data.GetArray())
 		{
-			state->uavs.push_back(Uav::fromJson(uavData.second));
+			state->uavs.push_back(Uav::fromJson(uavData));
 		}
 		return state;
 	}

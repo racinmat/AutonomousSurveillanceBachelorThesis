@@ -1,4 +1,7 @@
 ﻿#include "Rectangle.h"
+#include "rapidjson/document.h"
+
+using namespace rapidjson;
 
 namespace App
 {
@@ -52,23 +55,24 @@ namespace App
 		return make_shared<Point>(getX() + getWidth()/2, getY() + getHeight()/2);
 	}
 
-	mObject Rectangle::toJson() const
+	Value Rectangle::toJson(Document& d) const
 	{
-		mObject object;
-		object["location"] = this->location->toJson();
-		object["width"] = this->m_width;
-		object["height"] = this->m_height;
+		Document::AllocatorType& allocator = d.GetAllocator();
+		Value object(kObjectType);
+		object.AddMember("location", this->location->toJson(d), allocator);
+		object.AddMember("width", this->m_width, allocator);
+		object.AddMember("height", this->m_height, allocator);
 		return object;
 	}
 
-	shared_ptr<Rectangle> Rectangle::fromJson(mObject data)
+	shared_ptr<Rectangle> Rectangle::fromJson(Value data)
 	{
 		//TODO: dodělat
 //		auto rectangle = make_shared<Rectangle>(data.at("location").get_obj("x"), data.at("location").get_obj("y"), data.at("width"), data.at("height"));
 		return make_shared<Rectangle>(0, 0, 0, 0);
 	}
 
-	Rectangle2D Rectangle::toColDetectRectandle()
+	Rectangle2D Rectangle::toColDetectRectangle()
 	{
 		return Rectangle2D(getX(), getY(), m_width, m_height);
 	}

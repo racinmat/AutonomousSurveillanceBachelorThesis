@@ -45,20 +45,20 @@ namespace App
 		return os << "id: " << obj.id << endl << "pointParticle: " << *obj.pointParticle;
 	}
 
-	mObject Uav::toJson() const
+	Value Uav::toJson(Document& d) const
 	{
-		mObject object;
-		object["id"] = this->id;
-		object["pointParticle"] = this->pointParticle->toJson();
-		object["previousInput"] = this->previousInput.toJson();
+		Value object(kObjectType);
+		object.AddMember("id", this->id, d.GetAllocator());
+		object.AddMember("pointParticle", this->pointParticle->toJson(d), d.GetAllocator());
+		object.AddMember("previousInput", this->previousInput.toJson(), d.GetAllocator());
 		return object;
 	}
 
-	shared_ptr<Uav> Uav::fromJson(mValue data)
+	shared_ptr<Uav> Uav::fromJson(Value& data)
 	{
-		auto pointParticleData = data.get_obj().at("pointParticle").get_obj();
-		auto id = data.get_obj().at("id").get_int();
-		auto previousInputData = data.get_obj().at("previousInput").get_obj();
+		auto pointParticleData = data["pointParticle"].GetObject();
+		auto id = data["id"].GetInt();
+		auto previousInputData = data["previousInput"].GetObject();
 		auto uav = make_shared<Uav>(PointParticle::fromJson(pointParticleData));
 		uav->id = id;
 		uav->previousInput = CarLikeControl::fromJson(previousInputData);

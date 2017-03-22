@@ -2,6 +2,9 @@
 #include "Point.h"
 #include <memory>
 #include "VCollide/Rectangle2D.h"
+#include "rapidjson/document.h"
+
+using namespace rapidjson;
 
 using namespace std;
 
@@ -28,9 +31,9 @@ namespace App
 		friend bool operator!=(const Rectangle& lhs, const Rectangle& rhs);
 		friend size_t hash_value(const Rectangle& obj);
 		shared_ptr<Point> getMiddle();
-		mObject toJson() const;
-		static shared_ptr<Rectangle> fromJson(mObject data);
-		Rectangle2D toColDetectRectandle();
+		Value toJson(Document& d) const;
+		static shared_ptr<Rectangle> fromJson(Value data);
+		Rectangle2D toColDetectRectangle();
 		double getDistance(shared_ptr<Point> point) const;
 
 	protected:

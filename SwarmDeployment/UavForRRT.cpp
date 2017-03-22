@@ -71,20 +71,21 @@ namespace App
 		return currentGuidingPathPositions;
 	}
 
-	mObject UavForRRT::toJson() const
+	Value UavForRRT::toJson(Document& d) const
 	{
-		mObject object;
-		object["id"] = this->id;
-		object["pointParticle"] = this->pointParticle->toJson();
-		object["previousInput"] = this->previousInput.toJson();
+		Value object(kObjectType);
+		Document::AllocatorType& allocator = d.GetAllocator();
+		object.AddMember("id", Value().SetInt(this->id), d.GetAllocator());
+		object.AddMember("pointParticle", this->pointParticle->toJson(d), allocator);
+		object.AddMember("previousInput", this->previousInput.toJson(), allocator);
 		return object;
 	}
 
-	shared_ptr<UavForRRT> UavForRRT::fromJson(mValue data)
+	shared_ptr<UavForRRT> UavForRRT::fromJson(Value data)
 	{
-		auto pointParticleData = data.get_obj().at("pointParticle").get_obj();
-		auto id = data.get_obj().at("id").get_int();
-		auto previousInputData = data.get_obj().at("previousInput").get_obj();
+		auto pointParticleData = data["pointParticle"].GetObject();
+		auto id = data["id"].GetInt();
+		auto previousInputData = data["previousInput"].GetObject();
 		auto uav = make_shared<UavForRRT>(PointParticle::fromJson(pointParticleData));
 		uav->id = id;
 		uav->previousInput = CarLikeControl::fromJson(previousInputData);
