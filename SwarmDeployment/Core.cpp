@@ -121,7 +121,7 @@ namespace App
 		maps = mapFactory.createMaps(configuration->getUavCount());	//mapy se mus� generovat znovu, proto�e se v nich generuj� starty uav, a ty se mohou m�nit podl ekonfigurace
 
 
-		shared_ptr<Map> map = maps.at(configuration->getMapNumber());
+		shared_ptr<Map> map = (shared_ptr<Map> &&) maps.at((unsigned int) configuration->getMapNumber());
 		//nejd��ve pot�ebuji z c�l� ud�lat jeden shluk c�l� jako jednolitou plochu a tomu naj�t st�ed. 
 		//Cel� roj pak m� jen jednu vedouc� cestu, do st�edu shluku. Pak se pomoc� rrt roj rozmis�uje v oblasti cel�ho shluku
 
