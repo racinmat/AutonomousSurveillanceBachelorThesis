@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.2)
 project(SwarmDeployment)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -9,10 +9,18 @@ set(ROOT_SOURCE_DIR .)
 include_directories("${ROOT_SOURCE_DIR}")
 include_directories(GeneratedFiles)
 
+message(${GUI})
 
-set(CMAKE_AUTOMOC ON)
+if(GUI MATCHES "TRUE")
+    message("with gui")
+else(GUI MATCHES "TRUE")
+    message("without gui")
+endif(GUI MATCHES "TRUE")
 
-set(CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32\\lib\\cmake")
+if (GUI MATCHES "TRUE")
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32\\lib\\cmake")
+endif (GUI MATCHES "TRUE")
 
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 
@@ -24,13 +32,14 @@ install(FILES
         DESTINATION .
         )
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Gui REQUIRED)
+if (GUI MATCHES "TRUE")
+    find_package(Qt5Core REQUIRED)
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5Gui REQUIRED)
+endif (GUI MATCHES "TRUE")
 
 
 set(SOURCE_FILES
-
         Dubins/geom/shape/Circle.cpp
         Dubins/geom/shape/Circle.h
         Dubins/geom/shape/Ellipse.cpp
@@ -190,17 +199,30 @@ set(SOURCE_FILES
         UavInterface.cpp
         UavInterface.h
 
-        Gui.h
-        Gui.cpp
-        GuiDrawer.h
-        GuiDrawer.cpp
-        mainwindow.h
-        mainwindow.cpp
+#        Gui.h
+#        Gui.cpp
+#        GuiDrawer.h
+#        GuiDrawer.cpp
+#        mainwindow.h
+#        mainwindow.cpp
         )
+
+if (GUI MATCHES "TRUE")
+    set(SOURCE_FILES
+            ${SOURCE_FILES}
+            Gui.h
+            Gui.cpp
+            GuiDrawer.h
+            GuiDrawer.cpp
+            mainwindow.h
+            mainwindow.cpp
+    )
+endif (GUI MATCHES "TRUE")
+
 
 add_executable(SwarmDeployment ${SOURCE_FILES})
 
-target_link_libraries(SwarmDeployment Qt5::Widgets Qt5::Core Qt5::Gui)
-
-qt5_use_modules(SwarmDeployment Core Widgets Gui)
-
+if (GUI MATCHES "TRUE")
+    target_link_libraries(SwarmDeployment Qt5::Widgets Qt5::Core Qt5::Gui)
+    qt5_use_modules(SwarmDeployment Core Widgets Gui)
+endif (GUI MATCHES "TRUE")

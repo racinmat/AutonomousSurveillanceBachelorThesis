@@ -818,6 +818,7 @@ namespace App
 
 int main(int argc, char *argv[])
 {
+	cout << "Starting..." << endl;
 	int returnValue = 0;
 //	returnValue = run(argc, argv);
 	returnValue = runGui(argc, argv);
