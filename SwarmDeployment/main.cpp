@@ -57,7 +57,7 @@ namespace App
         path = path.substr(0, path.size() - exeName.size());
         return path;
     #elif __linux__
-        MAXPATHLEN = 10000
+        int MAXPATHLEN = 10000;
         char temp[MAXPATHLEN];
         return ( getcwd(temp, MAXPATHLEN) ? std::string( temp ) : std::string("") );
     #endif
