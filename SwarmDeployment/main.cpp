@@ -822,16 +822,16 @@ namespace App
 int main(int argc, char *argv[])
 {
 
+    int returnValue = 0;
 	cout << "Starting..." << endl;
 #if (GUI == TRUE)
     cout << "Starting with gui" << endl;
+	returnValue = runGui(argc, argv);
 #else
     cout << "Starting without gui" << endl;
+	returnValue = run(argc, argv);
 #endif
 
-	int returnValue = 0;
-	returnValue = run(argc, argv);
-//	returnValue = runGui(argc, argv);
 //	testing();
 //	returnValue = dubins_test(argc, argv);
 	return returnValue;

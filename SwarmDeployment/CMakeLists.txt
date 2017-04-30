@@ -7,20 +7,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(ROOT_SOURCE_DIR .)
 include_directories("${ROOT_SOURCE_DIR}")
-include_directories(GeneratedFiles)
 
-message(${GUI})
+if(GUI STREQUAL "TRUE")
+    include_directories(GeneratedFiles)
+endif(GUI STREQUAL "TRUE")
 
-if(GUI MATCHES "TRUE")
+
+message("GUI:")
+message("${GUI}")
+
+if(GUI STREQUAL "TRUE")
     message("with gui")
-else(GUI MATCHES "TRUE")
+else(GUI STREQUAL "TRUE")
     message("without gui")
-endif(GUI MATCHES "TRUE")
+endif(GUI STREQUAL "TRUE")
 
-if (GUI MATCHES "TRUE")
+if (GUI STREQUAL "TRUE")
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_PREFIX_PATH "D:\\Qt\\5.8\\mingw53_32\\lib\\cmake")
-endif (GUI MATCHES "TRUE")
+endif (GUI STREQUAL "TRUE")
 
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 
@@ -32,11 +37,11 @@ install(FILES
         DESTINATION .
         )
 
-if (GUI MATCHES "TRUE")
+if (GUI STREQUAL "TRUE")
     find_package(Qt5Core REQUIRED)
     find_package(Qt5Widgets REQUIRED)
     find_package(Qt5Gui REQUIRED)
-endif (GUI MATCHES "TRUE")
+endif (GUI STREQUAL "TRUE")
 
 
 set(SOURCE_FILES
@@ -207,7 +212,7 @@ set(SOURCE_FILES
 #        mainwindow.cpp
         )
 
-if (GUI MATCHES "TRUE")
+if (GUI STREQUAL "TRUE")
     set(SOURCE_FILES
             ${SOURCE_FILES}
             Gui.h
@@ -217,12 +222,47 @@ if (GUI MATCHES "TRUE")
             mainwindow.h
             mainwindow.cpp
     )
-endif (GUI MATCHES "TRUE")
+endif (GUI STREQUAL "TRUE")
+
+
+#the output setting must be before adding executable!
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/cmake-build-release")
+endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+if(CMAKE_BUILD_TYPE STREQUAL "ReleaseNoGui")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/cmake-build-releasenogui")
+endif(CMAKE_BUILD_TYPE STREQUAL "ReleaseNoGui")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/cmake-build-debug")
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+if(CMAKE_BUILD_TYPE STREQUAL "DebugNoGui")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/cmake-build-debugnogui")
+endif(CMAKE_BUILD_TYPE STREQUAL "DebugNoGui")
+
+
+message("CMAKE_BUILD_TYPE:")
+message("${CMAKE_BUILD_TYPE}")
+message("CMAKE_RUNTIME_OUTPUT_DIRECTORY:")
+message("${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
 
 
 add_executable(SwarmDeployment ${SOURCE_FILES})
 
-if (GUI MATCHES "TRUE")
+if (GUI STREQUAL "TRUE")
     target_link_libraries(SwarmDeployment Qt5::Widgets Qt5::Core Qt5::Gui)
     qt5_use_modules(SwarmDeployment Core Widgets Gui)
-endif (GUI MATCHES "TRUE")
+    add_definitions(-DGUI=TRUE)
+endif (GUI STREQUAL "TRUE")
+
+
+#message("EXECUTABLE_OUTPUT_PATH:")
+#message("${EXECUTABLE_OUTPUT_PATH}")
+#message("RUNTIME_OUTPUT_DIRECTORY:")
+#get_target_property(outp SwarmDeployment RUNTIME_OUTPUT_DIRECTORY)
+#message("${outp}")
+#message("CMAKE_BINARY_DIR:")
+#message("${CMAKE_BINARY_DIR}")
