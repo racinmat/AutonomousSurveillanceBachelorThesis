@@ -203,14 +203,7 @@ set(SOURCE_FILES
         UavGroup.h
         UavInterface.cpp
         UavInterface.h
-
-#        Gui.h
-#        Gui.cpp
-#        GuiDrawer.h
-#        GuiDrawer.cpp
-#        mainwindow.h
-#        mainwindow.cpp
-        )
+    )
 
 if (GUI STREQUAL "TRUE")
     set(SOURCE_FILES

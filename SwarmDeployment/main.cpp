@@ -19,13 +19,18 @@
 #include "CarLikeAnalyticMotionModel.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <Windows.h>
 #include <rapidjson/istreamwrapper.h>
 
 #define PI 3.14159265358979323846
 
-#if (GUI == TRUE)
+#ifdef GUI
     #include "Gui.h"
+#endif
+
+#ifdef _WIN32
+    #include <Windows.h>
+#elif __linux__
+
 #endif
 
 using std::cout;
@@ -41,6 +46,23 @@ namespace App
 		return bool(ifile);
 	}
 
+    std::string getCurrentWorkingDir() {
+    #ifdef _WIN32
+        HMODULE hModule = GetModuleHandleW(NULL);
+        WCHAR wcharPath[MAX_PATH];
+        GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
+        wstring ws(wcharPath);
+        std::string path(ws.begin(), ws.end());
+        std::string exeName = "SwarmDeployment.exe";
+        path = path.substr(0, path.size() - exeName.size());
+        return path;
+    #elif __linux__
+        MAXPATHLEN = 10000
+        char temp[MAXPATHLEN];
+        return ( getcwd(temp, MAXPATHLEN) ? std::string( temp ) : std::string("") );
+    #endif
+    }
+
 	int runResamplingAndDubinsOptimization() {
 
 		auto configuration = make_shared<Configuration>();
@@ -52,13 +74,7 @@ namespace App
 		std::string filename;
 
 		//get current directory
-		HMODULE hModule = GetModuleHandleW(NULL);
-		WCHAR wcharPath[MAX_PATH];
-		GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
-		wstring ws(wcharPath);
-		std::string path(ws.begin(), ws.end());
-		std::string exeName = "SwarmDeployment.exe";
-		path = path.substr(0, path.size() - exeName.size());
+        std::string path = getCurrentWorkingDir();
 		cout << path << endl;
 		std::string configFile = "frequencies.json";
 		std::string configPath = path + configFile;
@@ -824,7 +840,7 @@ int main(int argc, char *argv[])
 
     int returnValue = 0;
 	cout << "Starting..." << endl;
-#if (GUI == TRUE)
+#ifdef GUI
     cout << "Starting with gui" << endl;
 	returnValue = runGui(argc, argv);
 #else
