@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include "MapFactory.h"
 #include "MapProcessor.h"
-//#include "Gui.h"					//zakomentovat pro noGui
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 #include <boost/numeric/ublas/vector.hpp>
@@ -24,6 +23,10 @@
 #include <rapidjson/istreamwrapper.h>
 
 #define PI 3.14159265358979323846
+
+#if (GUI == TRUE)
+    #include "Gui.h"
+#endif
 
 using std::cout;
 using std::endl;
