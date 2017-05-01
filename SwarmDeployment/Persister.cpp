@@ -2,11 +2,11 @@
 #include <fstream>
 #include "Strings.h"
 #include "Configuration.h"
-#include <Windows.h>
 #include <cfloat>
 #include <rapidjson/ostreamwrapper.h>
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
+#include "FileSystem.h"
 #include <rapidjson/istreamwrapper.h>
 
 using namespace rapidjson;
@@ -16,16 +16,7 @@ namespace App
 
 	Persister::Persister(shared_ptr<Configuration> configuration, shared_ptr<DistanceResolver> distanceResolver) : configuration(configuration), distanceResolver(distanceResolver)
 	{
-		HMODULE hModule = GetModuleHandleW(NULL);
-		WCHAR wcharPath[MAX_PATH];
-		GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
-		wstring ws(wcharPath);
-
-		std::string path(ws.begin(), ws.end());
-		std::string exeName = "SwarmDeployment.exe";
-		path = path.substr(0, path.size() - exeName.size());
-
-
+		std::string path = FileSystem::getCurrentWorkingDir();
 		outputDirectory = path + "output/";
 	}
 

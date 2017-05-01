@@ -203,7 +203,7 @@ set(SOURCE_FILES
         UavGroup.h
         UavInterface.cpp
         UavInterface.h
-    )
+        FileSystem.cpp FileSystem.h)
 
 if (GUI STREQUAL "TRUE")
     set(SOURCE_FILES

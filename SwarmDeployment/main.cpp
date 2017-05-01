@@ -27,11 +27,8 @@
     #include "Gui.h"
 #endif
 
-#ifdef _WIN32
-    #include <Windows.h>
-#elif __linux__
+#include "FileSystem.h"
 
-#endif
 
 using std::cout;
 using std::endl;
@@ -46,23 +43,6 @@ namespace App
 		return bool(ifile);
 	}
 
-    std::string getCurrentWorkingDir() {
-    #ifdef _WIN32
-        HMODULE hModule = GetModuleHandleW(NULL);
-        WCHAR wcharPath[MAX_PATH];
-        GetModuleFileNameW(hModule, wcharPath, MAX_PATH);
-        wstring ws(wcharPath);
-        std::string path(ws.begin(), ws.end());
-        std::string exeName = "SwarmDeployment.exe";
-        path = path.substr(0, path.size() - exeName.size());
-        return path;
-    #elif __linux__
-        int MAXPATHLEN = 10000;
-        char temp[MAXPATHLEN];
-        return ( getcwd(temp, MAXPATHLEN) ? std::string( temp ) : std::string("") );
-    #endif
-    }
-
 	int runResamplingAndDubinsOptimization() {
 
 		auto configuration = make_shared<Configuration>();
@@ -74,7 +54,7 @@ namespace App
 		std::string filename;
 
 		//get current directory
-        std::string path = getCurrentWorkingDir();
+        std::string path = FileSystem::getCurrentWorkingDir();
 		cout << path << endl;
 		std::string configFile = "frequencies.json";
 		std::string configPath = path + configFile;
