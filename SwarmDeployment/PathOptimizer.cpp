@@ -7,8 +7,6 @@
 
 //kv�li na��t�n� vyu�it� pam�ti
 //http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
-#include "windows.h"
-#include "psapi.h"
 
 using namespace geom;
 
