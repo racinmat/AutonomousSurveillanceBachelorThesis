@@ -151,23 +151,13 @@ namespace App
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
 	{
-		bool debug = configuration->getDebug();
-		if (debug) {
-			cout << "Persister: going to save path to json file." << endl;
-		}
 
 		Document d;
 		d.SetObject();
 		Document::AllocatorType& allocator = d.GetAllocator();
 
 		auto jsonMap = map->toJson(allocator);
-		if (debug) {
-			cout << "Persister: Going to calculate size of map." << endl;
-		}
 		int mapSize = max(configuration->getWorldHeight(), configuration->getWorldWidth());
-		if (debug) {
-			cout << "Persister: Map size calculated, it is: " << mapSize << endl;
-		}
 		jsonMap.AddMember("size", mapSize, allocator);
 		d.AddMember("map", jsonMap, allocator);
 
@@ -178,10 +168,6 @@ namespace App
 		}
 		d.AddMember("path", jsonPath, allocator);
 
-		if (debug) {
-			cout << "Persister: json object built, opening file stream." << endl;
-		}
-
 		ofstream os(file_name);
         OStreamWrapper osw(os);
         PrettyWriter<OStreamWrapper> writer(osw);
@@ -190,9 +176,6 @@ namespace App
 
 		os.close();
 
-		if (debug) {
-			cout << "Persister: path successfuly saved to json file." << endl;
-		}
 	}
 
 
