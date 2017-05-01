@@ -30,7 +30,7 @@ namespace App
 		guidingNearDist = 38;		//pro PlacementMethod::Chain
 //		guidingNearDist = 100;		//pro mapu 8, kde jsou velké vzdálenosti mezi 
 		numberOfSolutions = 10000;
-		guidedSamplingPropability = 1;
+		guidedSamplingProbability = 1;
 		nearestNeighborMethod = NNMethod::Total;
 		maxTurn = 2 * tan(PI / 150);	//pro analytický model
 //		maxTurn = 0.02;	//pro analytický model, mapa 8, poloměr křivosti 0.5 metru, tedy 50 cm
@@ -70,7 +70,7 @@ namespace App
 //		smartZeroStepEnabling = true;	//turns on zero step, when at least one UAV is near oblascle
 
 		smartZeroStepEnablingDistance = 50;
-		maxFinalNaodes = 300;
+		maxFinalNodes = 300;
 
 		if (relativeDistanceMin > relativeDistanceMax)
 		{
@@ -218,7 +218,7 @@ namespace App
 
 	double Configuration::getGuidedSamplingPropability() const
 	{
-		return guidedSamplingPropability;
+		return guidedSamplingProbability;
 	}
 
 	NNMethod Configuration::getNearestNeighborMethod() const
@@ -369,8 +369,8 @@ namespace App
 		maxSampleFrequency = max_sample_frequency;
 	}
 
-	int Configuration::getMaxFinalNaodes() const
+	int Configuration::getMaxFinalNodes() const
 	{
-		return maxFinalNaodes;
+		return maxFinalNodes;
 	}
 }

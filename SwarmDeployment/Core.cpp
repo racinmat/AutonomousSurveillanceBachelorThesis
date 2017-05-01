@@ -257,7 +257,7 @@ namespace App
 				break;
 			}
 
-			if (configuration->getMaxFinalNaodes() < output->finalNodes.size())
+			if (configuration->getMaxFinalNodes() < output->finalNodes.size())
 			{
 				break;
 			}

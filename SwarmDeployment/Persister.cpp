@@ -18,6 +18,7 @@ namespace App
 	{
 		std::string path = FileSystem::getCurrentWorkingDir();
 		outputDirectory = path + "output/";
+
 	}
 
 
@@ -27,6 +28,12 @@ namespace App
 
 	void Persister::savePath(vector<shared_ptr<State>> path)
 	{
+		bool debug = configuration->getDebug();
+		if (debug) {
+			cout << "saving foubnd path to directory: " + outputDirectory << endl;
+		}
+
+
 		ofstream file(outputDirectory + "path-" + Strings::currentDateTime() +  ".txt");
 		for (auto state : path) {
 			file << *state << ", " << endl;
