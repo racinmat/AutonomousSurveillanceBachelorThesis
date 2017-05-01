@@ -27,7 +27,7 @@ namespace App
 
 	void Persister::savePath(vector<shared_ptr<State>> path)
 	{
-		ofstream file = ofstream(outputDirectory + "path-" + Strings::currentDateTime() +  ".txt");
+		ofstream file(outputDirectory + "path-" + Strings::currentDateTime() +  ".txt");
 		for (auto state : path) {
 			file << *state << ", " << endl;
 		}
