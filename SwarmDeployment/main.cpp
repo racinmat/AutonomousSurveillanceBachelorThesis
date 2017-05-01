@@ -109,10 +109,10 @@ namespace App
 		auto core = make_shared<Core>(configuration);
 		configuration->setMapNumber(0);
 		configuration->setCore(core);	//toto nemohu zavolat uvnit? konstruktoru
-//		core->run();
+		core->run();
 
 //		runResamplingAndDubinsOptimization();
-		runRRTPath();
+//		runRRTPath();
 		return 0;
 	}
 
