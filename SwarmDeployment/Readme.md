@@ -1,5 +1,6 @@
 Compilation:
     rm CMakeCache.txt
+    rm -r CMakeFiles/
     cmake -DCMAKE_BUILD_TYPE=ReleaseNoGui .
     make
 

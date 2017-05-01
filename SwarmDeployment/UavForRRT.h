@@ -24,7 +24,7 @@ namespace App
 		virtual void setReachedGoal(shared_ptr<GoalInterface> reachedGoal);
 		virtual shared_ptr<Goal> getConcreteGoal();
 		virtual shared_ptr<GuidingPathsCurrentPositions> getCurrentGuidingPathPositions() const;
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<UavForRRT> fromJson(Value data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);

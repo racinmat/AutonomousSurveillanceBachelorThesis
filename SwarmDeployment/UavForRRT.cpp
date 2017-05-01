@@ -71,13 +71,12 @@ namespace App
 		return currentGuidingPathPositions;
 	}
 
-	Value UavForRRT::toJson(Document& d) const
+	Value UavForRRT::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		Document::AllocatorType& allocator = d.GetAllocator();
-		object.AddMember("id", Value().SetInt(this->id), d.GetAllocator());
-		object.AddMember("pointParticle", this->pointParticle->toJson(d), allocator);
-		object.AddMember("previousInput", this->previousInput.toJson(), allocator);
+		object.AddMember("id", Value().SetInt(this->id), allocator);
+		object.AddMember("pointParticle", this->pointParticle->toJson(allocator), allocator);
+		object.AddMember("previousInput", this->previousInput.toJson(allocator), allocator);
 		return object;
 	}
 

@@ -87,13 +87,14 @@ namespace App
 		secondUav->setId(tempId);
 	}
 
-	Value State::toJson(Document& d) const
+	Value State::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		Document::AllocatorType& allocator = d.GetAllocator();
 		for (auto uav : this->uavs)
 		{
-			object.AddMember(Value{}.SetString(to_string(uav->getId()).c_str(), to_string(uav->getId()).length(), allocator), uav->toJson(d), allocator);
+			Value uavName(to_string(uav->getId()).c_str(), allocator);
+			object.AddMember(uavName.Move(), uav->toJson(allocator), allocator);
+//			object.AddMember(to_string(uav->getId()).c_str(), uav->toJson(allocator), allocator);
 		}
 		return object;
 	}

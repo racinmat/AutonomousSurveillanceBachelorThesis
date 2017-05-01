@@ -55,11 +55,10 @@ namespace App
 		return make_shared<Point>(getX() + getWidth()/2, getY() + getHeight()/2);
 	}
 
-	Value Rectangle::toJson(Document& d) const
+	Value Rectangle::toJson(Document::AllocatorType& allocator) const
 	{
-		Document::AllocatorType& allocator = d.GetAllocator();
 		Value object(kObjectType);
-		object.AddMember("location", this->location->toJson(d), allocator);
+		object.AddMember("location", this->location->toJson(allocator), allocator);
 		object.AddMember("width", this->m_width, allocator);
 		object.AddMember("height", this->m_height, allocator);
 		return object;
@@ -67,9 +66,9 @@ namespace App
 
 	shared_ptr<Rectangle> Rectangle::fromJson(Value data)
 	{
-		//TODO: dodělat
-//		auto rectangle = make_shared<Rectangle>(data.at("location").get_obj("x"), data.at("location").get_obj("y"), data.at("width"), data.at("height"));
-		return make_shared<Rectangle>(0, 0, 0, 0);
+		auto width = data["width"].GetInt();
+		auto height = data["height"].GetInt();
+		return make_shared<Rectangle>(data["location"]["x"].GetInt(), data["location"]["y"].GetInt(), width, height);
 	}
 
 	Rectangle2D Rectangle::toColDetectRectangle()

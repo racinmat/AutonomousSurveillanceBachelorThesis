@@ -23,7 +23,7 @@ namespace App
 		friend bool operator!=(const State& lhs, const State& rhs);
 		virtual vector<shared_ptr<UavInterface>> getBaseUavs() const override;
 		virtual void swapUavs(shared_ptr<Uav> first, shared_ptr<Uav> second);
-		virtual Value toJson(Document& d) const;
+		virtual Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<State> fromJson(Value& data);
 	protected:
 		vector<shared_ptr<Uav>> uavs;

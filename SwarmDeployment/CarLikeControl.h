@@ -19,7 +19,7 @@ namespace App
 		virtual double getTurn() const;
 		friend std::ostream& operator<<(std::ostream& os, const CarLikeControl& obj);
 		virtual void setStep(const double step);
-		Document toJson() const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static CarLikeControl fromJson(Value data);
 
 	protected:

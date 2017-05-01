@@ -31,7 +31,7 @@ namespace App
 		friend bool operator!=(const Rectangle& lhs, const Rectangle& rhs);
 		friend size_t hash_value(const Rectangle& obj);
 		shared_ptr<Point> getMiddle();
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<Rectangle> fromJson(Value data);
 		Rectangle2D toColDetectRectangle();
 		double getDistance(shared_ptr<Point> point) const;

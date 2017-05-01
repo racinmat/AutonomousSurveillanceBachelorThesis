@@ -3,6 +3,7 @@
 #include "Strings.h"
 #include "Configuration.h"
 #include <cfloat>
+#include <rapidjson/document.h>
 #include <rapidjson/ostreamwrapper.h>
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
@@ -150,20 +151,36 @@ namespace App
 
 	void Persister::savePathToJsonFile(vector<shared_ptr<State>> path, shared_ptr<Map> map, string file_name)
 	{
+		bool debug = configuration->getDebug();
+		if (debug) {
+			cout << "Persister: going to save path to json file." << endl;
+		}
 
 		Document d;
 		d.SetObject();
 		Document::AllocatorType& allocator = d.GetAllocator();
 
-		auto jsonMap = map->toJson(d);
-		jsonMap["size"] = max(configuration->getWorldHeight(), configuration->getWorldWidth());
+		auto jsonMap = map->toJson(allocator);
+		if (debug) {
+			cout << "Persister: Going to calculate size of map." << endl;
+		}
+		int mapSize = max(configuration->getWorldHeight(), configuration->getWorldWidth());
+		if (debug) {
+			cout << "Persister: Map size calculated, it is: " << mapSize << endl;
+		}
+		jsonMap.AddMember("size", mapSize, allocator);
 		d.AddMember("map", jsonMap, allocator);
 
 		Value jsonPath(kArrayType);
 		for (auto state : path) {
-			jsonPath.PushBack(state->toJson(d), allocator);
+			auto stateJson = state->toJson(allocator);
+			jsonPath.PushBack(stateJson, allocator);
 		}
 		d.AddMember("path", jsonPath, allocator);
+
+		if (debug) {
+			cout << "Persister: json object built, opening file stream." << endl;
+		}
 
 		ofstream os(file_name);
         OStreamWrapper osw(os);
@@ -172,6 +189,10 @@ namespace App
 		writer.Flush();
 
 		os.close();
+
+		if (debug) {
+			cout << "Persister: path successfuly saved to json file." << endl;
+		}
 	}
 
 

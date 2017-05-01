@@ -110,15 +110,22 @@ namespace App
 		return geom::Point(x, y);
 	}
 
-	Value Point::toJson(Document& d) const
+	Value Point::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		object.AddMember("x", this->x, d.GetAllocator());
-		object.AddMember("y", this->y, d.GetAllocator());
-		object.AddMember("z", this->z, d.GetAllocator());
+		object.AddMember("x", this->x, allocator);
+		object.AddMember("y", this->y, allocator);
+		object.AddMember("z", this->z, allocator);
 		return object;
 	}
 
+	shared_ptr<Point> fromJson(Value data)
+	{
+		auto x = data["x"].GetInt();
+		auto y = data["y"].GetInt();
+		auto z = data["z"].GetInt();
+		return make_shared<Point>(x, y, z);
+	}
 	std::ostream& operator<<(std::ostream& os, const Point& obj)
 	{
 		return os
@@ -147,4 +154,5 @@ namespace App
 		seed ^= (seed << 6) + (seed >> 2) + 0x169EA197 + static_cast<size_t>(obj.z);
 		return seed;
 	}
+
 }

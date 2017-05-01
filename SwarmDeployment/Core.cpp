@@ -75,6 +75,7 @@ namespace App
 
 
 		shared_ptr<Map> map = (shared_ptr<Map> &&) maps.at((unsigned int) configuration->getMapNumber());
+		bool debug = configuration->getDebug();
 
 
 		//nejd��ve pot�ebuji z c�l� ud�lat jeden shluk c�l� jako jednolitou plochu a tomu naj�t st�ed. 
@@ -85,9 +86,18 @@ namespace App
 		map->amplifyObstacles(configuration->getObstacleIncrement());
 
 		vector<shared_ptr<State>> statePath = runRRTPath();
+		if(debug) {
+			cout << "Done RRT-Path, persisting results." << endl;
+		}
 
 		logger->logBestPath(statePath);
+		if(debug) {
+			cout << "Best path loggged, going to save paths to json." << endl;
+		}
 		persister->savePathToJson(statePath, map, "before-dubins");
+		if(debug) {
+			cout << "Done saving paths to json." << endl;
+		}
 //		persister->writePathData(statePath);
 
 
@@ -98,13 +108,26 @@ namespace App
 //		shared_ptr<Map> loadedMap;
 //		tie(statePath, loadedMap) = tuple;
 
-
+		if(debug) {
+			cout << "Resampling to maximal frequency." << endl;
+		}
 		statePath = resampler->resampleToMaxFrequency(statePath);
 		persister->savePathToJson(statePath, map, "resampled");
 
+		if(debug) {
+			cout << "Optimizing by dubins." << endl;
+		}
 		statePath = pathOptimizer->optimizePathByDubins(statePath, map);
+
+		if(debug) {
+			cout << "Removing duplicit states." << endl;
+		}
 		statePath = pathOptimizer->removeDuplicitStates(statePath);
 
+
+		if(debug) {
+			cout << "Done. Persistinh results." << endl;
+		}
 		logger->logBestPath(statePath, true);
 		logger->saveVisualMap();
 		persister->savePath(statePath);

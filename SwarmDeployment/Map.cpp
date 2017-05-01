@@ -58,21 +58,20 @@ namespace App
 		return goalGroup;
 	}
 
-	Value Map::toJson(Document& d) const
+	Value Map::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		Document::AllocatorType& allocator = d.GetAllocator();
 		Value goals(kArrayType);
 		Value obstacles(kArrayType);
 
 		for (auto goal : this->goals)
 		{
-			goals.PushBack(goal->getRectangle()->toJson(d), allocator);
+			goals.PushBack(goal->getRectangle()->toJson(allocator), allocator);
 		}
 
 		for (auto obstacle : this->originalObstacles)
 		{
-			obstacles.PushBack(obstacle->rectangle->toJson(d), allocator);
+			obstacles.PushBack(obstacle->rectangle->toJson(allocator), allocator);
 		}
 
 		object.AddMember("goals", goals, allocator);

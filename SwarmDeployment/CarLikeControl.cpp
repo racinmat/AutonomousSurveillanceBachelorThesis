@@ -38,12 +38,12 @@ namespace App
 		this->step = step;
 	}
 
-	Document CarLikeControl::toJson() const
+	Value CarLikeControl::toJson(Document::AllocatorType& allocator) const
 	{
-		Document d;
-		d["step"] = this->step;
-		d["turn"] = this->turn;
-		return d;
+		Value object(kObjectType);
+		object.AddMember("step", this->step, allocator);
+		object.AddMember("turn", this->turn, allocator);
+		return object;
 	}
 
 	CarLikeControl CarLikeControl::fromJson(Value data)

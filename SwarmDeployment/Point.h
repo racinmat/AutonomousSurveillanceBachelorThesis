@@ -36,7 +36,8 @@ namespace App
 		void moveBy(Point point);
 		void moveBy(double x, double y, double z);
 		geom::Point toGeomPoint();
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
+		static shared_ptr<Point> fromJson(Value data);
 
 	protected:
 		double x;

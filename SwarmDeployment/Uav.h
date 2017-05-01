@@ -21,7 +21,7 @@ namespace App
 		explicit Uav(double locationX, double locationY, double locationZ, double rotationX, double rotationY, double rotationZ);
 		virtual ~Uav();
 		friend ostream& operator<<(ostream& os, const Uav& obj);
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<Uav> fromJson(Value& data);
 		virtual CarLikeControl getPreviousInput() const;
 		virtual void setPreviousInput(const CarLikeControl car_like_control);

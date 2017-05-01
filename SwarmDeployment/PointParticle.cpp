@@ -57,12 +57,11 @@ namespace App
 		return geom::Position(location->toGeomPoint(), rotation->getZ());
 	}
 
-	Value PointParticle::toJson(Document& d) const
+	Value PointParticle::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		rapidjson::Document::AllocatorType &allocator = d.GetAllocator();
-		object.AddMember("location", this->location->toJson(d), allocator);
-		object.AddMember("rotation", this->rotation->toJson(d), allocator);
+		object.AddMember("location", this->location->toJson(allocator), allocator);
+		object.AddMember("rotation", this->rotation->toJson(allocator), allocator);
 		return object;
 	}
 

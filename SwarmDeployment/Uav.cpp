@@ -45,12 +45,12 @@ namespace App
 		return os << "id: " << obj.id << endl << "pointParticle: " << *obj.pointParticle;
 	}
 
-	Value Uav::toJson(Document& d) const
+	Value Uav::toJson(Document::AllocatorType& allocator) const
 	{
 		Value object(kObjectType);
-		object.AddMember("id", this->id, d.GetAllocator());
-		object.AddMember("pointParticle", this->pointParticle->toJson(d), d.GetAllocator());
-		object.AddMember("previousInput", this->previousInput.toJson(), d.GetAllocator());
+		object.AddMember("id", this->id, allocator);
+		object.AddMember("pointParticle", this->pointParticle->toJson(allocator), allocator);
+		object.AddMember("previousInput", this->previousInput.toJson(allocator), allocator);
 		return object;
 	}
 

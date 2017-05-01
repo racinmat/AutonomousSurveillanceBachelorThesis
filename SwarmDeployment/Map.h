@@ -27,7 +27,7 @@ namespace App
 		vector<shared_ptr<UavForRRT>> getUavsStart();
 		int countUavs() const;
 		virtual shared_ptr<GoalGroup> getGoalGroup() const;
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<Map> fromJson(Value& json);
 		void amplifyObstacles(int sizeIncrement);
 

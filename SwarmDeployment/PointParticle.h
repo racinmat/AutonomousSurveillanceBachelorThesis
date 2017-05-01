@@ -27,7 +27,7 @@ namespace App
 		geom::Position toPosition();
 		friend bool operator==(const PointParticle& lhs, const PointParticle& rhs);
 		friend bool operator!=(const PointParticle& lhs, const PointParticle& rhs);
-		Value toJson(Document& d) const;
+		Value toJson(Document::AllocatorType& allocator) const;
 		static shared_ptr<PointParticle> fromJson(Value data);
 
 	protected:
